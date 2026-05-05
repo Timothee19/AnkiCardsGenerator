@@ -1,0 +1,34 @@
+# Environment & secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Generated Anki decks (too large for git)
+*.apkg
+
+# Generated output folders (timestamped runs)
+*_20*_*/
+
+# Course text files (large, user-specific)
+*.txt
+
+# PDF files
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Gemini/AI tools
+.gemini/
