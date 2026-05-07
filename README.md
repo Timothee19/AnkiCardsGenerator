@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/banner.png" alt="Anki Cards Generator Banner" width="100%"/>
-</p>
-
 <h1 align="center">📚 Anki Cards Generator</h1>
 
 <p align="center">
