@@ -1,4 +1,6 @@
-
+<p align="center">
+  <img src="docs/banner.png" alt="Anki Cards Generator Banner" width="100%"/>
+</p>
 
 <h1 align="center">📚 Anki Cards Generator</h1>
 
@@ -11,7 +13,7 @@
   <img src="https://img.shields.io/badge/Mistral_AI-OCR_%2B_LLM-orange?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiLz48L3N2Zz4=" alt="Mistral AI"/>
   <img src="https://img.shields.io/badge/LaTeX-MathJax-green?logo=latex&logoColor=white" alt="LaTeX MathJax"/>
   <img src="https://img.shields.io/badge/Anki-.apkg_export-blueviolet?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiLz48L3N2Zz4=" alt="Anki .apkg"/>
-  <img src="https://img.shields.io/badge/version-0.97-brightgreen" alt="Version 0.97"/>
+  <img src="https://img.shields.io/badge/version-0.99-brightgreen" alt="Version 0.99"/>
   <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="License MIT"/>
 </p>
 
@@ -45,6 +47,7 @@ It leverages a **multi-agent AI pipeline** powered by **Mistral AI** to:
 | 🛡️ **LaTeX JSON Shield** | Custom `fix_llm_json_escaping()` protects `\text`, `\frac`, `\nu`, `\rho` from JSON escape collisions |
 | 🧹 **Post-QA filters** | Rejects image-only fronts, multiple-choice questions, and truncated/incomplete cards |
 | 🔀 **Semantic deduplication** | 2-stage pipeline (Supervisor identifies duplicates by front → Combiner merges with full context) |
+| 🚀 **Multithreading** | Parallelized API calls (`ThreadPoolExecutor`) drastically reduces generation time for large PDFs |
 | 🖼️ **Image injection** | Images extracted by OCR are annotated, enriched with captions, and injected into the most relevant cards |
 | 📊 **Detailed logging** | Full pipeline trace in `pipeline_logs.md` (QA decisions, rewrites, rejections, fusions) |
 
@@ -131,7 +134,7 @@ echo "MISTRAL_API_KEY=your_api_key_here" > .env
 ### Usage
 
 ```bash
-python AnkiGeneratorRobustV0.97.py
+python AnkiGeneratorRobustV0.99.py
 ```
 
 A file dialog will appear — select your PDF and let the pipeline run. The output will be saved in a timestamped folder:
@@ -253,6 +256,8 @@ The QA system operates at multiple levels:
 | V0.965 | Cloze parsing fixes, improved `fix_llm_json_escaping` |
 | V0.967 | Image injection overhaul, targeted HTML escaping, rule K (alignment), ~50 LaTeX commands |
 | **V0.97** | **Restored `fix_llm_json_escaping`** (critical bug fix), truncation filters, rules 13/L/M |
+| **V0.98** | **Image Coverage Audit**, 120-char math wrapping, `\tag{}` replacement, robust JSON control-char recovery, filtered empty clozes |
+| **V0.99** | **Parallelization (Multithreading)**, math/formatting extraction from `\text{}`, restored 75-char limit, double-ampersand alignment fix |
 
 ---
 
@@ -272,11 +277,11 @@ The QA system operates at multiple levels:
 
 ```
 AnkiCardsGenerator/
-├── AnkiGeneratorRobustV0.97.py   # 🎯 Main script (~1700 lines)
+├── AnkiGeneratorRobustV0.99.py   # 🎯 Main script (~1900 lines)
 ├── .env                           # API key configuration
 ├── docs/
 │   └── banner.png                 # Repository banner
-├── COMPTE_RENDU_V097.md           # Detailed technical report (FR)
+├── COMPTE_RENDU_V099.md           # Detailed technical report (FR)
 └── [output folders]/              # Generated per run
     ├── extracted_course_text.md
     ├── image_annotations.json
@@ -289,11 +294,8 @@ AnkiCardsGenerator/
 
 ## ⚠️ Known Limitations
 
-- **Processing time**: No API call parallelization — a 50+ page PDF may take 30+ minutes
+- **Rate Limits**: Heavy use of the Mistral API via parallel processing (`max_workers=5`) may hit rate limits on free tiers.
 - **Language support**: Post-QA regex filters are optimized for English and French
-- **Empty sibling cards**: Malformed clozes can produce empty fronts (not explicitly filtered)
-- **Non-deterministic deduplication**: The Supervisor uses `json_object` mode, which may occasionally produce malformed JSON
-- **Image coverage**: If the Generator doesn't reference an OCR-extracted image in any card, the image is silently dropped
 
 ---
 
@@ -302,7 +304,7 @@ AnkiCardsGenerator/
 Contributions are welcome! Here's how to get started:
 
 1. **Fork** the repository
-2. **Duplicate** the main script before modifying: `cp AnkiGeneratorRobustV0.97.py AnkiGeneratorRobustV0.XX.py`
+2. **Duplicate** the main script before modifying: `cp AnkiGeneratorRobustV0.99.py AnkiGeneratorRobustV0.XX.py`
 3. **Test syntax**: `python -c "import py_compile; py_compile.compile('AnkiGeneratorRobustV0.XX.py', doraise=True)"`
 4. **Run** on a test PDF and inspect `pipeline_logs.md`
 5. **Submit** a pull request with a description of your changes
