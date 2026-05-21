@@ -1,7 +1,7 @@
-<h1 align="center">📚 Anki Cards Generator</h1>
+<h1 align="center">📚 Anki Cards Generator V1.195</h1>
 
 <p align="center">
-  <b>Automatically generate high-quality Anki flashcard decks from university-level PDF courses using Mistral AI.</b>
+  <b>Automatically generate high-quality, cognitively optimized Anki flashcard decks from university-level PDF courses using Mistral AI.</b>
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/Mistral_AI-OCR_%2B_LLM-orange?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiLz48L3N2Zz4=" alt="Mistral AI"/>
   <img src="https://img.shields.io/badge/LaTeX-MathJax-green?logo=latex&logoColor=white" alt="LaTeX MathJax"/>
   <img src="https://img.shields.io/badge/Anki-.apkg_export-blueviolet?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0id2hpdGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiLz48L3N2Zz4=" alt="Anki .apkg"/>
-  <img src="https://img.shields.io/badge/version-0.99-brightgreen" alt="Version 0.99"/>
+  <img src="https://img.shields.io/badge/version-1.195-brightgreen" alt="Version 1.195"/>
   <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="License MIT"/>
 </p>
 
@@ -19,15 +19,19 @@
 
 **Anki Cards Generator** is an end-to-end Python pipeline that transforms any **university-level PDF** (engineering, mathematics, physics, computer science…) into a **ready-to-import Anki deck** (`.apkg`) with perfectly rendered **LaTeX/MathJax** equations.
 
-It leverages a **multi-agent AI pipeline** powered by **Mistral AI** to:
+With the **Terminal Version (V1.195)**, the project has evolved from a simple text extractor to a **Cognitive AI Tutor**. Based on advanced pedagogical research (Cognitive Load Theory, Spaced Repetition, Mnemonic Medium), the AI generates cards designed to allow a student to learn an entire course *exclusively* through flashcards, without ever reading the source material.
 
-1. **OCR** — Extract text and images from the PDF with `mistral-ocr-latest`
-2. **Generate** — Create pedagogically rich flashcards (Basic, Cloze with sibling cards, Two-sided) via `mistral-large`
-3. **Quality-control** — Automatically review, fix, and reject faulty cards via a QA agent (`mistral-small`)
-4. **Deduplicate** — Identify and merge semantically redundant cards with a 2-stage Supervisor + Combiner pipeline
-5. **Export** — Produce a polished `.apkg` file importable directly into Anki
+---
 
-> **One command, one PDF → a complete, study-ready Anki deck.**
+## 🎓 The "Zero-Reading" Paradigm (New in V1.195)
+
+The V1.195 update represents a **massive pedagogical overhaul**. We redesigned the AI prompts based on cognitive science to shift from "mechanical memorization" (rote learning) to "deep conceptual understanding".
+
+- 🧠 **Elaborative Interrogation**: The AI is forced to generate "Why" and "How" questions, establishing causal logic instead of just extracting facts.
+- 🌉 **Bridge Cards (Cartes de Liaison)**: The AI automatically creates synthesis cards that connect isolated concepts together, building a macroscopic view of the chapter.
+- 🏗️ **Contextual Scaffolding (Mnemonic Medium)**: Every standard (Basique) card now includes a mandatory `Contexte Explicatif` section on the back. It re-explains the intuition, analogies, and the global architecture of the course right when you need it.
+- 🛡️ **Anti-Pattern Matching**: Strict limitations on Cloze Deletions (Texte à trous). They are banned for complex theorems and limited to a maximum of 3 blanks per card (reserved for syntax and physical constants). Complex concepts use "Free Recall" (Basique).
+- 🏷️ **Bloom Taxonomy Tagging**: Cards are automatically tagged according to their cognitive depth (e.g., `Bloom_Comprendre`, `Bloom_Appliquer`), allowing you to filter your study sessions by difficulty.
 
 ---
 
@@ -38,14 +42,13 @@ It leverages a **multi-agent AI pipeline** powered by **Mistral AI** to:
 | 🤖 **Multi-agent AI pipeline** | 5 specialized AI agents (Splitter, Generator, QA, Supervisor, Combiner) each with strict role-based prompts |
 | 📄 **Mistral OCR** | Native PDF → markdown extraction with image annotation (type, description, key concepts) |
 | 🧮 **LaTeX / MathJax rendering** | All math is wrapped in `\( \begin{aligned} … \end{aligned} \)` for pixel-perfect Anki rendering |
-| 🃏 **3 card types** | Basic (Q&A), Cloze with sibling cards (up to 10 siblings per note), Two-sided (Généralités) |
+| 🃏 **Smart Card Types** | Basic (Q&A with Context), Cloze (Strictly limited), Two-sided (Généralités), Bridge Cards |
 | 🔍 **13-rule QA agent** | Catches blind references, missing `\text{}`, broken braces, MCQ format, truncated content, and more |
-| 🛡️ **LaTeX JSON Shield** | Custom `fix_llm_json_escaping()` protects `\text`, `\frac`, `\nu`, `\rho` from JSON escape collisions |
+| 🛡️ **Advanced JSON Shield** | Custom `fix_llm_json_escaping()` protects `\text`, `\frac`, `\nu`, `\rho` from JSON escape collisions |
 | 🧹 **Post-QA filters** | Rejects image-only fronts, multiple-choice questions, and truncated/incomplete cards |
 | 🔀 **Semantic deduplication** | 2-stage pipeline (Supervisor identifies duplicates by front → Combiner merges with full context) |
 | 🚀 **Multithreading** | Parallelized API calls (`ThreadPoolExecutor`) drastically reduces generation time for large PDFs |
 | 🖼️ **Image injection** | Images extracted by OCR are annotated, enriched with captions, and injected into the most relevant cards |
-| 📊 **Detailed logging** | Full pipeline trace in `pipeline_logs.md` (QA decisions, rewrites, rejections, fusions) |
 
 ---
 
@@ -69,7 +72,7 @@ It leverages a **multi-agent AI pipeline** powered by **Mistral AI** to:
               ┌───────────────────────────────┐
               │  3. Agent Generator           │  mistral-large
               │  (Flashcard generation)       │  json_schema strict
-              │  13 rules + theorem/def/ex    │
+              │  Bloom + Bridge + Scaffolding │
               └───────────────┬───────────────┘
                               ▼
               ┌───────────────────────────────┐
@@ -80,8 +83,7 @@ It leverages a **multi-agent AI pipeline** powered by **Mistral AI** to:
               ┌───────────────────────────────┐
               │  5. Post-QA Filters           │  Pure Python
               │  • Image-only rejection       │
-              │  • MCQ detection              │
-              │  • Truncation detection        │
+              │  • Truncation detection       │
               └───────────────┬───────────────┘
                               ▼
               ┌───────────────────────────────┐
@@ -91,9 +93,8 @@ It leverages a **multi-agent AI pipeline** powered by **Mistral AI** to:
               └───────────────┬───────────────┘
                               ▼
               ┌───────────────────────────────┐
-              │  7. LaTeX Sanitizer + Export   │  genanki
+              │  7. LaTeX Sanitizer + Export  │  genanki
               │  • Brace balancing            │
-              │  • Cloze → sibling cards      │
               │  • MathJax wrapping           │
               │  • .apkg packaging            │
               └───────────────┬───────────────┘
@@ -121,7 +122,7 @@ git clone https://github.com/YOUR_USERNAME/AnkiCardsGenerator.git
 cd AnkiCardsGenerator
 
 # Install dependencies
-pip install mistralai genanki pydantic
+pip install mistralai genanki pydantic json_repair
 
 # Set up your API key
 echo "MISTRAL_API_KEY=your_api_key_here" > .env
@@ -130,13 +131,13 @@ echo "MISTRAL_API_KEY=your_api_key_here" > .env
 ### Usage
 
 ```bash
-python AnkiGeneratorRobustV0.99.py
+python AnkiGeneratorRobustV1.195.py
 ```
 
 A file dialog will appear — select your PDF and let the pipeline run. The output will be saved in a timestamped folder:
 
 ```
-YourPDF_20260428_215749/
+YourPDF_20260521_144200/
 ├── extracted_course_text.md    # Full OCR output in markdown
 ├── image_annotations.json     # Image descriptions (OCR + captions)
 ├── img-0.jpeg, img-1.jpeg...  # Extracted images
@@ -145,75 +146,6 @@ YourPDF_20260428_215749/
 ```
 
 Double-click the `.apkg` file to import it into Anki!
-
----
-
-## 🃏 Card Types & Sub-decks
-
-### Card Types
-
-| Type | Description | Use Case |
-|------|-------------|----------|
-| **Basique** | Standard front/back Q&A | Theorems, proofs, exercises, examples |
-| **Texte à trous** | Cloze deletions with sibling cards | Definitions, key formulas (up to 10 siblings per note) |
-| **Généralités** | Two-sided card (reviewable both ways) | Fundamental vocabulary, high-level definitions |
-
-### Sub-decks
-
-Cards are automatically sorted into two sub-decks:
-
-- **Par Cœur (Définitions)** — Definitions, vocabulary, factual knowledge
-- **À Refaire (Théorèmes et Concepts)** — Theorems, proofs, examples, exercises
-
----
-
-## 🛡️ The LaTeX JSON Shield
-
-One of the most critical components of this project is `fix_llm_json_escaping()`. Here's why:
-
-When an LLM generates LaTeX inside a JSON string, commands like `\text` become `\t` + `ext` — because `\t` is a **valid JSON escape sequence** (tab character). The same happens with:
-
-| LaTeX command | JSON collision | Result without fix |
-|---------------|---------------|-------------------|
-| `\text{}` | `\t` = tab | `TAB` + `ext{}` |
-| `\frac{}` | `\f` = form feed | `FF` + `rac{}` |
-| `\nu` | `\n` = newline | `NEWLINE` + `u` |
-| `\rho` | `\r` = carriage return | `CR` + `ho` |
-| `\beta` | `\b` = backspace | `BS` + `eta` |
-
-> **This function is always required**, even with `json_schema` strict mode. Strict mode guarantees JSON *structure* but not string *content*.
-
----
-
-## 🔍 Quality Assurance Pipeline
-
-The QA system operates at multiple levels:
-
-### AI-Powered QA Agent (13 Rules)
-
-| Rule | Category | Detects |
-|------|----------|---------|
-| A | Context | Blind figure references (e.g., "See Fig 2.3") |
-| B | Autonomy | Non-self-contained cards ("In Example 1…") |
-| C | Formatting | Missing `\text{}` blocks around natural language |
-| D | Formatting | Unbalanced braces `{` / `}` |
-| E | Compatibility | Invalid LaTeX environments (`\begin{itemize}`) and inline math (`$`) |
-| F | Pedagogy | Cards without pedagogical value |
-| G | Content | Image-only fronts (no textual question) |
-| H | Content | "Describe this image" type questions |
-| I | Injection | Over-injection of the same image |
-| J | Format | Multiple-choice questions (MCQ) |
-| K | Formatting | Preservation of alignment markers `& ` |
-| L | Completeness | Fronts ending with ":" without promised content |
-| M | Completeness | Backs announcing lists without providing them |
-
-### Post-QA Filters (Python)
-
-| Filter | Purpose |
-|--------|---------|
-| `filter_image_only_cards()` | Rejects cards whose front contains only images |
-| `filter_mcq_cards()` | Catches MCQ patterns the QA agent missed |
-| `filter_truncated_cards()` | Detects incomplete fronts/backs |
 
 ---
 
@@ -226,84 +158,26 @@ The QA system operates at multiple levels:
 | `MISTRAL_API_KEY` | ✅ | Your Mistral AI API key |
 | `ANKI_DEBUG_SUPERVISOR` | ❌ | Set to `1` to dump raw supervisor responses |
 
-### Models Used
-
-| Pipeline Stage | Model | Response Format |
-|---------------|-------|-----------------|
-| OCR | `mistral-ocr-latest` | Binary |
-| Splitting | `mistral-large-latest` | `json_object` |
-| Generation | `mistral-large-latest` | `json_schema` (strict) |
-| Quality Control | `mistral-small-latest` | `json_schema` (strict) |
-| Deduplication | `mistral-large-latest` | `json_object` |
-
 ---
 
 ## 📋 Version History
 
 | Version | Key Changes |
 |---------|-------------|
-| V0.9 | Strict structured output (`json_schema`) for the Generator |
-| V0.91 | Structured output for the Supervisor (deduplication) |
-| V0.92 | 2-stage deduplication (Supervisor → Combiner) |
-| V0.93 | Enhanced logging for QA rejections and fusions |
-| V0.935 | Mistral OCR integration with image annotations (`ImageAnnotation`) |
-| V0.95 | `LatexSanitizer` overhaul, clozes inside `\text{}`, sibling cards |
-| V0.96 | QA upgrade to Mistral Medium, new anti-MCQ rules |
-| V0.965 | Cloze parsing fixes, improved `fix_llm_json_escaping` |
-| V0.967 | Image injection overhaul, targeted HTML escaping, rule K (alignment), ~50 LaTeX commands |
-| **V0.97** | **Restored `fix_llm_json_escaping`** (critical bug fix), truncation filters, rules 13/L/M |
-| **V0.98** | **Image Coverage Audit**, 120-char math wrapping, `\tag{}` replacement, robust JSON control-char recovery, filtered empty clozes |
-| **V0.99** | **Parallelization (Multithreading)**, math/formatting extraction from `\text{}`, restored 75-char limit, double-ampersand alignment fix |
-
----
-
-## 🧩 Tech Stack
-
-| Component | Technology |
-|-----------|------------|
-| LLM API | [Mistral AI](https://mistral.ai/) (`mistralai` Python SDK) |
-| OCR | Mistral OCR (`mistral-ocr-latest`) |
-| Anki export | [`genanki`](https://github.com/kerrickstaley/genanki) |
-| Data validation | [`pydantic`](https://docs.pydantic.dev/) |
-| Math rendering | MathJax (`\( \begin{aligned} … \end{aligned} \)`) |
-
----
-
-## 📁 Project Structure
-
-```
-AnkiCardsGenerator/
-├── AnkiGeneratorRobustV0.99.py   # 🎯 Main script (~1900 lines)
-├── .env                           # API key configuration
-├── docs/
-│   └── banner.png                 # Repository banner
-├── COMPTE_RENDU_V099.md           # Detailed technical report (FR)
-└── [output folders]/              # Generated per run
-    ├── extracted_course_text.md
-    ├── image_annotations.json
-    ├── img-*.jpeg
-    ├── pipeline_logs.md
-    └── *_Infaillible.apkg
-```
-
----
-
-## ⚠️ Known Limitations
-
-- **Rate Limits**: Heavy use of the Mistral API via parallel processing (`max_workers=5`) may hit rate limits on free tiers.
-- **Language support**: Post-QA regex filters are optimized for English and French
+| V0.95 - V0.99 | Strict structured output, 2-stage deduplication, Mistral OCR integration, MathJax wrapping, Multithreading, image coverage audit. |
+| V1.0 - V1.19 | Various pipeline fixes, JSON robust repair, HTML tag leak fixes, `json_repair` integration, markdown bold & MathJax delimiters fixes. |
+| **V1.195** | **Terminal Release**: Massive Cognitive & Pedagogical Overhaul. Addition of Elaborative Interrogation, Bridge Cards, Mnemonic Context Scaffolding, Cloze restriction, and Bloom Taxonomy tagging. |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how to get started:
+Contributions are welcome! 
 
 1. **Fork** the repository
-2. **Duplicate** the main script before modifying: `cp AnkiGeneratorRobustV0.99.py AnkiGeneratorRobustV0.XX.py`
-3. **Test syntax**: `python -c "import py_compile; py_compile.compile('AnkiGeneratorRobustV0.XX.py', doraise=True)"`
-4. **Run** on a test PDF and inspect `pipeline_logs.md`
-5. **Submit** a pull request with a description of your changes
+2. **Duplicate** the main script before modifying: `cp AnkiGeneratorRobustV1.195.py AnkiGeneratorRobustV1.XX.py`
+3. **Test syntax**: `python -c "import py_compile; py_compile.compile('AnkiGeneratorRobustV1.XX.py', doraise=True)"`
+4. **Submit** a pull request with a description of your changes
 
 ---
 
