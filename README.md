@@ -25,7 +25,7 @@ With the **Terminal Version (V1.195)**, the project has evolved from a simple te
 
 ## 🎓 The "Zero-Reading" Paradigm (New in V1.195)
 
-The V1.195 update represents a **massive pedagogical overhaul**. We redesigned the AI prompts based on cognitive science to shift from "mechanical memorization" (rote learning) to "deep conceptual understanding".
+The V1.195 update represents a **massive pedagogical overhaul**. I redesigned the AI prompts based on cognitive science to shift from "mechanical memorization" (rote learning) to "deep conceptual understanding".
 
 - 🧠 **Elaborative Interrogation**: The AI is forced to generate "Why" and "How" questions, establishing causal logic instead of just extracting facts.
 - 🌉 **Bridge Cards (Cartes de Liaison)**: The AI automatically creates synthesis cards that connect isolated concepts together, building a macroscopic view of the chapter.
