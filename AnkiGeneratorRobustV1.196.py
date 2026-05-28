@@ -322,6 +322,98 @@ def parse_and_repair_json(client, raw_content, model="mistral-small-latest"):
         raise repair_err
 
 
+# ==========================================
+# CONFIGURATION DES MODELES ANKI (genanki)
+# ==========================================
+
+CSS = """
+.card {
+  font-family: arial;
+  font-size: 20px;
+  text-align: justify; /* Modifié pour la V1.11 : alignement justifié */
+  color: black;
+  background-color: white;
+  padding: 20px;
+}
+.cloze {
+  font-weight: bold;
+  color: blue;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+}
+"""
+
+MODEL_BASIC_ID = 1593820471
+model_basic = genanki.Model(
+  MODEL_BASIC_ID,
+  'Basique (Mistral)',
+  fields=[
+    {'name': 'Front'},
+    {'name': 'Back'},
+    {'name': 'Sequence'},
+  ],
+  sort_field_index=2,
+  templates=[
+    {
+      'name': 'Card 1',
+      'qfmt': '{{Front}}',
+      'afmt': '{{Front}}<hr id="answer">{{Back}}',
+    },
+  ],
+  css=CSS
+)
+
+MODEL_GENERALITES_ID = 1593820473
+model_generalites = genanki.Model(
+  MODEL_GENERALITES_ID,
+  'Généralités deux sens (Mistral)',
+  fields=[
+    {'name': 'Front'},
+    {'name': 'Back'},
+    {'name': 'Sequence'},
+  ],
+  sort_field_index=2,
+  templates=[
+    {
+      'name': 'Sens 1',
+      'qfmt': '{{Front}}',
+      'afmt': '{{Front}}<hr id="answer">{{Back}}',
+    },
+    {
+      'name': 'Sens 2',
+      'qfmt': '{{Back}}',
+      'afmt': '{{Back}}<hr id="answer">{{Front}}',
+    },
+  ],
+  css=CSS
+)
+
+MODEL_CLOZE_ID = 1593820474
+model_cloze = genanki.Model(
+  MODEL_CLOZE_ID,
+  'Texte à trous V2 (Mistral)',
+  model_type=genanki.Model.CLOZE,
+  fields=[
+    {'name': 'Text'},
+    {'name': 'Back Extra'},
+    {'name': 'Sequence'},
+  ],
+  sort_field_index=2,
+  templates=[
+    {
+      'name': 'Cloze',
+      'qfmt': '{{cloze:Text}}',
+      'afmt': '{{cloze:Text}}<br><hr><br>{{Back Extra}}',
+    },
+  ],
+  css=CSS
+)
+
+
 def select_file():
     root = tk.Tk()
     root.title("Sélection du cours (PDF)")
@@ -778,7 +870,7 @@ JSON OUTPUT ONLY:
                     
                     normalized_cards.append(c)
                 return normalized_cards
-        else:
+            else:
                 print(f"Format JSON invalide. Tentative {attempt+1}/{retries}...")
         except Exception as e:
             import time
