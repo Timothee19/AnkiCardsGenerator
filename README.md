@@ -20,7 +20,7 @@
 
 **Anki Robot AI** is an end-to-end pipeline that transforms any **university-level PDF** (engineering, mathematics, physics, computer science…) into a **ready-to-import Anki deck** (`.apkg`) with perfectly rendered **LaTeX/MathJax** equations.
 
-With the **Final Application update**, the project has evolved from a terminal script to a **full-fledged Desktop Application** featuring a sleek, responsive React/Vite UI. The backend remains our state-of-the-art **Cognitive AI Tutor** (V1.196), based on advanced pedagogical research (Cognitive Load Theory, Spaced Repetition, Mnemonic Medium), designed to allow a student to learn an entire course *exclusively* through flashcards.
+With the **Final Application update**, the project has evolved from a terminal script to a **full-fledged Desktop Application** featuring a sleek, responsive React/Vite UI. The backend remains our best **Cognitive AI Tutor** (V1.196), based on pedagogical research (Cognitive Load Theory, Spaced Repetition, Mnemonic Medium), designed to allow a student to learn an entire course *exclusively* through flashcards.
 
 ---
 
