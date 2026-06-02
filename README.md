@@ -109,7 +109,7 @@ The easiest way to use Anki Robot AI on Windows is via the standalone installer:
 
 ---
 ## Demo
-[!(https://img.youtube.com/vi/U9dZsJSP47g/0.jpg)](https://www.youtube.com/watch?v=U9dZsJSP47g)
+[![Demo](https://img.youtube.com/vi/U9dZsJSP47g/0.jpg)](https://www.youtube.com/watch?v=U9dZsJSP47g)
 
 ## 🛠️ Build from Source (For Developers)
 
