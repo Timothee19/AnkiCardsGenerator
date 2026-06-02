@@ -108,6 +108,8 @@ The easiest way to use Anki Robot AI on Windows is via the standalone installer:
 *(The application will save your generated decks to `~\Anki_Generated_Decks` on your computer.)*
 
 ---
+## Demo
+[!(https://img.youtube.com/vi/U9dZsJSP47g/0.jpg)](https://www.youtube.com/watch?v=U9dZsJSP47g)
 
 ## 🛠️ Build from Source (For Developers)
 
