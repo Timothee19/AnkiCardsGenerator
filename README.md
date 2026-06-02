@@ -167,5 +167,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ---
 
 <p align="center">
-  Made with 🧠 and ☕ — Powered by <a href="https://mistral.ai/">Mistral AI</a>
+  Made with Gemini, Claude, 🧠 and ☕ — Powered by <a href="https://mistral.ai/">Mistral AI</a>
 </p>
