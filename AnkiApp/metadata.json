@@ -1,0 +1,6 @@
+{
+  "name": "Anki Robot",
+  "description": "An intelligent learning assistant that transforms PDFs into interactive flashcards and study decks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
