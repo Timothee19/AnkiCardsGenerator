@@ -1,3 +1,4 @@
+from pydantic import functional_serializers
 import tkinter as tk
 # Version 1.191 - Intégration des correctifs JSON Shield étendu, Leaked HTML Tags, MathJax Delimiters et Markdown Bold
 from tkinter import filedialog
@@ -531,12 +532,12 @@ def split_markdown_into_chunks(markdown_text, max_chunk_size=3000):
         
     return chunks
 
-def semantic_split_with_ai(client, markdown_text, model="mistral-large-latest", retries=2):
+def semantic_split_with_ai(client, markdown_text, learning_depth, model="mistral-large-latest", retries=2):
     lines = markdown_text.split("\n")
     numbered_lines = [f"{i+1}: {line}" for i, line in enumerate(lines)]
     numbered_text = "\n".join(numbered_lines)
-
-    system_prompt = r"""
+    if learning_depth == "Zero Lecture":
+        system_prompt = r"""
 ROLE
 You are a structural parser Agent. Your only job is to semantically split an academic course text (provided with line numbers) into logical "chunks" or "blocks".
 Each chunk must be a coherent pedagogical unit that can later be fed completely to an Anki card generator.
@@ -548,6 +549,31 @@ RULES:
    - You only start a new chunk when shifting to a completely independent topic, a completely new Theorem, or a list of disconnected definitions.
 2. A single chunk can contain multiple Definitions or minor properties if they are closely related.
 3. Output a JSON array with the exact start and end line numbers for each chunk.
+
+OUTPUT FORMAT MUST BE STRICTLY JSON:
+{
+    "chunks": [
+        {"start": 1, "end": 45, "reason": "Intro and early definitions"},
+        {"start": 46, "end": 150, "reason": "Theorem 1 + Example 1 + Proof of Theorem 1"}
+    ]
+}
+
+Ensure no lines are left out. The first chunk starts at 1, the last chunk ends at the last line number.
+"""
+    elif learning_depth == "Intermediaire":
+        system_prompt = r"""
+ROLE
+You are a structural parser Agent. Your only job is to semantically split an academic course text (provided with line numbers) into logical "chunks" or "blocks".
+Each chunk must be a coherent pedagogical unit that can later be fed completely to an Anki card generator.
+
+RULES:
+1. MAXIMUM AGGREGATION : A Theorem (or Proposition/Property), its associated Proof, and its direct Examples/Remarks form ONE INDIVISIBLE UNIT. You MUST group them together into ONE SINGLE CHUNK.
+- Example scenario: Line 10 is `## THEOREM 1`, Line 40 is `# EXAMPLE 1`, Line 70 is `# PROOF`, Line 120 is `# EXAMPLE 2`. You MUST create a SINGLE chunk starting at line 10 and ending at line 140 inclusive.
+- NEVER separate the formal statement of a Theorem from its Proof or its Examples. They MUST physically reside in the exact same chunk.
+- You only start a new chunk when shifting to a completely independent topic, a completely new Theorem, or a list of disconnected definitions.
+2. A single chunk can contain multiple Definitions or minor properties if they are closely related.
+3. Output a JSON array with the exact start and end line numbers for each chunk.
+
 
 OUTPUT FORMAT MUST BE STRICTLY JSON:
 {
@@ -802,15 +828,15 @@ def fix_markdown_bold(text):
     import re
     return re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text, flags=re.DOTALL)
 
-def extract_cards_from_chunk(client, chunk_text, filename_tag="Course", model="mistral-large-latest", retries=3):
+def extract_cards_from_chunk(client, chunk_text, learning_depth, filename_tag="Course", model="mistral-large-latest", retries=3):
     tag_instruction = (
         f"TAGS RULES: Every card MUST have a 'tags' field. "
         f"The first tag MUST always be '{filename_tag}'. "
         f"Then add 1-2 topic tags using the format 'Topic_Subtopic' (underscores, NO spaces). "
         f"Example: '{filename_tag} Pressure_Gradient Hydrostatics'"
     )
-    
-    system_prompt = r"""
+    if learning_depth == "Zero Lecture":
+        system_prompt = r"""
 ROLE
 You are a bulletproof, scholarly Anki Flashcard Generator. 
 Your goal is to parse academic engineering course content into highly detailed Anki flashcards.
@@ -819,48 +845,66 @@ RULES (CRITICAL):
 1. LANGUAGE (STRICT LIMITATION): The generated text MUST be in the EXACT SAME LANGUAGE as the source text. NEVER translate.
 2. ZERO-PRONOUN & CONTEXT SCRUBBING (ABSOLUTELY CRITICAL): Flashcards are viewed out of order. You MUST aggressively SCRUB and REMOVE any phrases like "In Example 1", "As we saw in the previous section", "The following theorem", or "This equation". If the textbook says "In Example 1, Green's theorem is verified...", you MUST rephrase it to be standalone: "Verify Green's theorem for the functions...". Never assume the student has the surrounding textbook! ABSOLUTELY NO BLIND REFERENCES: If the text says 'By Theorem 2.1', you MUST replace it by stating exactly what the theorem says. Never use blind pointers like 'Proposition 5.1' or 'Equation 17'.
 3. PRESERVATION: Include ALL theorems, definitions, proofs, remarks, and examples exactly as they appear in the course. Do not condense important details.
-4. TEXT FORMATTING (PLAIN TEXT / HTML):
+4. TAG INSTRUCTIONS : [TAG_INSTRUCTION]
+5. TEXT FORMATTING (PLAIN TEXT / HTML):
     - Use natural plain text for all readable content.
     - NEVER use `\text{}` or `\begin{aligned}`. They are strictly forbidden.
     - You may use `\begin{array}` or `\begin{matrix}` ONLY inside block math `\[ ... \]` for actual mathematical matrices. NEVER use them to layout natural text.
     - You may use basic HTML tags for styling (e.g., `<b>`, `<i>`, `<br>`). Do not use Markdown `**bold**`.
     - Use `\\lt` and `\\gt` instead of `<` and `>` in mathematical expressions to prevent HTML parsing errors.
     - NEVER end a line with a lone backslash `\`.
-5. MATH FORMATTING (MATHJAX):
+6. MATH FORMATTING (MATHJAX):
     - For INLINE math (variables, short equations within text), you MUST wrap the expression in `\( ... \)` (e.g., `\( T_H \)` or `\( E=mc^2 \)`).
     - For BLOCK math (large equations, derivations), you MUST wrap the expression in `\[ ... \]`.
     - Double-escape your backslashes for JSON compatibility (e.g., `\\frac`, `\\rho`, `\\(`, `\\[`).
-6. IMAGES: You MUST NOT drop any image! Embed any image reference (e.g. `![img-0.jpeg](img-0.jpeg)`) in the most relevant flashcard EXACTLY as `![image_name](image_name)`. You can place it on a new line using `<br>`.
-7. CLOZE FORMAT: Use standard Anki cloze syntax `{{c1::hidden text}}`. 
+7. IMAGES: You MUST NOT drop any image! Embed any image reference (e.g. `![img-0.jpeg](img-0.jpeg)`) in the most relevant flashcard EXACTLY as `![image_name](image_name)`. You can place it on a new line using `<br>`.
+8. CLOZE FORMAT: Use standard Anki cloze syntax `{{c1::hidden text}}`. 
     - NEVER use double square brackets.
     - Group structurally related words under the SAME cloze index.
     - You can freely use MathJax inside a cloze (e.g., `{{c1::\( E=mc^2 \)}}`).
     - CRITICAL BRACE SPACING: If your cloze content ends with a closing brace `}`, you MUST add a space before the Anki cloze closing braces `}}` to prevent parsing errors (e.g., `{{c1:: \frac{1}{2} }}` instead of `{{c1::\frac{1}{2}}}`).
-8. IMAGE-DESCRIPTION PROHIBITION (CRITICAL): NEVER create cards that ask "What does this image show?", "Describe this image", "What is depicted?", "What is being illustrated?" or any variant. The front MUST contain a specific conceptual question about the TOPIC, not about an image. Images are supplementary visual aids placed as support, not the subject of questions.
-9. NO LATEX LISTS: NEVER use `\begin{itemize}`, `\begin{enumerate}`, or `\item`. Use standard HTML lists (`<ul><li>...</li></ul>`) or plain text bullets (`- `).
-10. AGGREGATION: Consolidate related information. Avoid making 5 separate cards for a single topic; instead make 1 rich 'Basique' card asking a comprehensive question with all the details synthesized on the back.
-11. ABSOLUTELY NO MULTIPLE CHOICE QUESTIONS (MCQ): NEVER generate cards that ask "Which of the following statements is true/false?", "Identify the incorrect statement", or any variation of a multiple choice question. You MUST convert all multiple-choice questions from the source text into direct, open-ended conceptual questions. DO NOT list choices (A, B, C, D) on the front or back.
-12. NO TRUNCATED CONTENT: If you announce a list (with ':'), you MUST provide it IN FULL. NEVER write 'The Carnot cycle is composed of four processes:' without listing ALL four processes. The back MUST always completely answer the question asked on the front.
-13. MULTI-IMAGE FIGURES: A single figure in the source text may contain MULTIPLE images (e.g. `![img-5.jpeg](img-5.jpeg)` and `![img-6.jpeg](img-6.jpeg)` appearing together). You MUST include ALL images from the figure in the same card.
-14. CONTEXTUAL SCAFFOLDING (MANDATORY FOR ALL "Basique" CARDS):
+9. IMAGE-DESCRIPTION PROHIBITION (CRITICAL): NEVER create cards that ask "What does this image show?", "Describe this image", "What is depicted?", "What is being illustrated?" or any variant. The front MUST contain a specific conceptual question about the TOPIC, not about an image. Images are supplementary visual aids placed as support, not the subject of questions.
+10. NO LATEX LISTS: NEVER use `\begin{itemize}`, `\begin{enumerate}`, or `\item`. Use standard HTML lists (`<ul><li>...</li></ul>`) or plain text bullets (`- `).
+11. AGGREGATION: Consolidate related information. Avoid making 5 separate cards for a single topic; instead make 1 rich 'Basique' card asking a comprehensive question with all the details synthesized on the back.
+12. ABSOLUTELY NO MULTIPLE CHOICE QUESTIONS (MCQ): NEVER generate cards that ask "Which of the following statements is true/false?", "Identify the incorrect statement", or any variation of a multiple choice question. You MUST convert all multiple-choice questions from the source text into direct, open-ended conceptual questions. DO NOT list choices (A, B, C, D) on the front or back.
+13. NO TRUNCATED CONTENT: If you announce a list (with ':'), you MUST provide it IN FULL. NEVER write 'The Carnot cycle is composed of four processes:' without listing ALL four processes. The back MUST always completely answer the question asked on the front.
+14. MULTI-IMAGE FIGURES: A single figure in the source text may contain MULTIPLE images (e.g. `![img-5.jpeg](img-5.jpeg)` and `![img-6.jpeg](img-6.jpeg)` appearing together). You MUST include ALL images from the figure in the same card.
+15. CONTEXTUAL SCAFFOLDING (MANDATORY FOR ALL "Basique" CARDS):
     The "back" field of every "Basique" card must NEVER be limited to a bare answer.
-    After the main answer/proof/resolution, you MUST add a visual separator `<hr>`, then a section titled `<b>Contexte Explicatif :</b><br>` containing 2-3 sentences that:
+    After the main answer/proof/resolution, you MUST add a visual separator `<hr>`, then a section titled `<b>Explanatory Context :</b><br>` containing 2-3 sentences that:
     - Re-explain the INTUITION behind the concept in plain, accessible language.
     - State WHERE this concept fits in the global architecture of the course chapter.
     - Provide an analogy, real-world application, or connection to related concepts when possible.
-15. CLOZE HARD LIMIT (CRITICAL):
+16. CLOZE HARD LIMIT (CRITICAL):
     - A "Texte à trous" card must NEVER contain more than 3 cloze deletions.
     - "Texte à trous" is STRICTLY RESERVED for: vocabulary terms, physical constants, unit conversions, and simple syntactic patterns.
     - For theorems, demonstrations, causal explanations, multi-step processes, and any concept requiring systemic understanding, you MUST use "Basique" format with open-ended questions forcing free recall.
+17. AUTHENTIC ELABORATIVE INTERROGATION (at least 20% of cards):
+   You MUST generate cards that force CAUSAL REASONING, not disguised recall.
+   TRUE ELABORATION (forces deep processing):
+     - 'Why is the Nyquist rate 2B and not B?' (forces reasoning about positive/negative spectral symmetry)
+     - 'Why does quantization introduce a non-recoverable error while sampling does not?' (forces comparative causal analysis)
+     - 'What would happen to the reconstructed signal if the anti-aliasing filter had a non-zero transition band?' (forces consequence prediction)
+   FALSE ELABORATION (just recall with Why syntax — FORBIDDEN):
+     - 'How does Fs influence the spectrum?' (just asks for a description, no causal chain)
+     - 'Why is sampling important?' (too vague, invites a textbook summary)
+   Tag authentic elaborative cards with 'Catégorie::Elaborative_Interrogation' as first tag after filename.
+18. BLOOM LEVEL TARGETING: Target this distribution:
+   - 25% Recall (definitions, constants) — use Texte à trous or Généralités
+   - 45% Understand (explain concepts) — use Basique
+   - 10% Apply (solve a specific problem, compute a value) — use Basique in '05_Exercices_et_Exemples'
+   - 20% Analyze (compare methods, identify trade-offs, explain why one approach fails) — use Basique
+19. ANTI-REDUNDANCY: Before generating a new card, mentally check if you have already generated a card testing the SAME underlying concept. If yes, DO NOT generate a near-duplicate. Prefer ONE rich comprehensive card over 3 shallow variations.\n\n{chunk_text}"
 
-16. JSON STRING ESCAPING (CRITICAL):
+20. JSON STRING ESCAPING (CRITICAL):
     - You MUST NOT use unescaped double quotes (") inside the 'front' or 'back' JSON string values.
     - If you need to quote a word or write a list, use single quotes ('word') or STRICTLY escape the double quotes (\\"word\\").
     - For all HTML tags and attributes, you MUST use SINGLE QUOTES instead of double quotes (e.g., <img src='image.jpg'>).
-17. COMPLETENESS & ANTI-TRUNCATION (CRITICAL): 
+21. COMPLETENESS & ANTI-TRUNCATION (CRITICAL): 
     - You must NEVER stop generating mid-sentence.
     - If you announce a list (e.g., "This involves:"), you MUST finish writing it.
     - You MUST successfully complete the JSON structure and end your entire response exactly with the closing brackets `]}`.
+
 
 RULES SPECIFIC TO THEOREMS AND DEFINITIONS:
 
@@ -901,7 +945,97 @@ JSON OUTPUT ONLY:
     ]
 }
 """
+    elif learning_depth == "Intermediaire":
+        system_prompt = r"""
+    ROLE
+You are a bulletproof, scholarly Anki Flashcard Generator. 
+Your goal is to parse academic engineering course content into highly detailed Anki flashcards.
 
+RULES (CRITICAL):
+1. LANGUAGE (STRICT LIMITATION): The generated text MUST be in the EXACT SAME LANGUAGE as the source text. NEVER translate.
+2. ZERO-PRONOUN & CONTEXT SCRUBBING (ABSOLUTELY CRITICAL): Flashcards are viewed out of order. You MUST aggressively SCRUB and REMOVE any phrases like "In Example 1", "As we saw in the previous section", "The following theorem", or "This equation". If the textbook says "In Example 1, Green's theorem is verified...", you MUST rephrase it to be standalone: "Verify Green's theorem for the functions...". Never assume the student has the surrounding textbook! ABSOLUTELY NO BLIND REFERENCES: If the text says 'By Theorem 2.1', you MUST replace it by stating exactly what the theorem says. Never use blind pointers like 'Proposition 5.1' or 'Equation 17'.
+3. PRESERVATION: Include ALL theorems, definitions, proofs, remarks, and examples exactly as they appear in the course. Do not condense important details.
+4. TAG INSTRUCTION : [TAG_INSTRUCTION]
+5. TEXT FORMATTING (PLAIN TEXT / HTML):
+    - Use natural plain text for all readable content.
+    - NEVER use `\text{}` or `\begin{aligned}`. They are strictly forbidden.
+    - You may use `\begin{array}` or `\begin{matrix}` ONLY inside block math `\[ ... \]` for actual mathematical matrices. NEVER use them to layout natural text.
+    - You may use basic HTML tags for styling (e.g., `<b>`, `<i>`, `<br>`). Do not use Markdown `**bold**`.
+    - Use `\\lt` and `\\gt` instead of `<` and `>` in mathematical expressions to prevent HTML parsing errors.
+    - NEVER end a line with a lone backslash `\`.
+6. MATH FORMATTING (MATHJAX):
+    - For INLINE math (variables, short equations within text), you MUST wrap the expression in `\( ... \)` (e.g., `\( T_H \)` or `\( E=mc^2 \)`).
+    - For BLOCK math (large equations, derivations), you MUST wrap the expression in `\[ ... \]`.
+    - Double-escape your backslashes for JSON compatibility (e.g., `\\frac`, `\\rho`, `\\(`, `\\[`).
+7. IMAGES: You MUST NOT drop any image! Embed any image reference (e.g. `![img-0.jpeg](img-0.jpeg)`) in the most relevant flashcard EXACTLY as `![image_name](image_name)`. You can place it on a new line using `<br>`.
+8. CLOZE FORMAT: Use standard Anki cloze syntax `{{c1::hidden text}}`. 
+    - NEVER use double square brackets.
+    - Group structurally related words under the SAME cloze index.
+    - You can freely use MathJax inside a cloze (e.g., `{{c1::\( E=mc^2 \)}}`).
+    - CRITICAL BRACE SPACING: If your cloze content ends with a closing brace `}`, you MUST add a space before the Anki cloze closing braces `}}` to prevent parsing errors (e.g., `{{c1:: \frac{1}{2} }}` instead of `{{c1::\frac{1}{2}}}`).
+9. IMAGE-DESCRIPTION PROHIBITION (CRITICAL): NEVER create cards that ask "What does this image show?", "Describe this image", "What is depicted?", "What is being illustrated?" or any variant. The front MUST contain a specific conceptual question about the TOPIC, not about an image. Images are supplementary visual aids placed as support, not the subject of questions.
+10. NO LATEX LISTS: NEVER use `\begin{itemize}`, `\begin{enumerate}`, or `\item`. Use standard HTML lists (`<ul><li>...</li></ul>`) or plain text bullets (`- `).
+11. AGGREGATION: Consolidate related information. Avoid making 5 separate cards for a single topic; instead make 1 rich 'Basique' card asking a comprehensive question with the answer first, then all the details synthesized, on the back. For example, a question asking for a theorem, the back should contain, first, the theorem, then, just below, the proof and remarks if there is any, about the theorem.
+12. ABSOLUTELY NO MULTIPLE CHOICE QUESTIONS (MCQ): NEVER generate cards that ask "Which of the following statements is true/false?", "Identify the incorrect statement", or any variation of a multiple choice question. You MUST convert all multiple-choice questions from the source text into direct, open-ended conceptual questions. DO NOT list choices (A, B, C, D) on the front or back.
+13. NO TRUNCATED CONTENT: If you announce a list (with ':'), you MUST provide it IN FULL. NEVER write 'The Carnot cycle is composed of four processes:' without listing ALL four processes. The back MUST always completely answer the question asked on the front.
+14. MULTI-IMAGE FIGURES: A single figure in the source text may contain MULTIPLE images (e.g. `![img-5.jpeg](img-5.jpeg)` and `![img-6.jpeg](img-6.jpeg)` appearing together). You MUST include ALL images from the figure in the same card. To decide wether an image is related to a concept, refer to the images annotations.
+15. CONTEXTUAL SCAFFOLDING (MANDATORY FOR ALL "Basique" CARDS):
+    The "back" field of every "Basique" card must NEVER be limited to a bare answer.
+    After the main answer/proof/resolution, you MUST add a visual separator `<hr>`, then a section titled `<b>Explanatory Context :</b><br>` containing 2-3 sentences that:
+    - Re-explain the INTUITION behind the concept in plain, accessible language.
+    - State WHERE this concept fits in the global architecture of the course chapter.
+    - Provide an analogy, real-world application, or connection to related concepts when possible.
+16. CLOZE HARD LIMIT (CRITICAL):
+    - A "Texte à trous" card must NEVER contain more than 3 cloze deletions.
+    - "Texte à trous" is STRICTLY RESERVED for: vocabulary terms, physical constants, unit conversions, and simple syntactic patterns.
+    - For theorems, demonstrations, causal explanations, multi-step processes, and any concept requiring systemic understanding, you MUST use "Basique" format with open-ended questions forcing free recall.
+
+17. JSON STRING ESCAPING (CRITICAL):
+    - You MUST NOT use unescaped double quotes (") inside the 'front' or 'back' JSON string values.
+    - If you need to quote a word or write a list, use single quotes ('word') or STRICTLY escape the double quotes (\\"word\\").
+    - For all HTML tags and attributes, you MUST use SINGLE QUOTES instead of double quotes (e.g., <img src='image.jpg'>).
+18. COMPLETENESS & ANTI-TRUNCATION (CRITICAL): 
+    - You must NEVER stop generating mid-sentence.
+    - If you announce a list (e.g., "This involves:"), you MUST finish writing it.
+    - You MUST successfully complete the JSON structure and end your entire response exactly with the closing brackets `]}`.
+
+RULES SPECIFIC TO THEOREMS AND DEFINITIONS:
+
+IF THE CONTENT IS A THEOREM, PROPOSITION, COROLLARY, OR PROPERTY:
+- ZERO-FRAGMENTATION RULE: You MUST GENERATE EXACTLY ONE SINGLE COMPREHENSIVE CARD for the entire Theorem/Proposition unit. DO NOT fragment the proof or remarks into separate flashcards or separate cloze cards.
+- Subdeck: MUST be "02_Théorèmes_et_Preuves"
+- Card Type: MUST be "Basique" or "Texte à trous"
+- `front`: A clear question, the theorem name, or the clozed statement.
+- `back` CRITICAL REQUIREMENT:
+   1. If `front` used a clozed statement, put the ENTIRE UN-CLOZED statement here first.
+   2. THEN, you MUST INCLUDE THE ENTIRE COMPLETE DEMONSTRATION/PROOF from the text, exactly as provided. DO NOT summarize it. DO NOT skip equations.
+   3. THEN, include any remarks, corollaries, or examples that immediately follow it in the text.
+
+IF THE CONTENT IS AN EXAMPLE OR AN EXERCISE:
+- Skip it, and don't write any card about it
+
+IF THE CONTENT IS A GENERAL CONCEPT, DEFINITION, VOCABULARY, OR FACTUAL KNOWLEDGE:
+- CONCEPTUAL AGGREGATION RULE: Do NOT create many small cards for properties of the same concept. Group closely related facts into a SINGLE comprehensive flashcard.
+- STRONG PREFERENCE FOR "Basique". Prefer a broad question on the front. "Texte à trous" is ONLY for isolated vocabulary.
+- Subdeck: MUST be "01_Définitions" (for concepts/definitions) or "03_Vocabulaire_et_Constantes" (for isolated vocabulary/constants)
+- Card Type: "Basique" (STRONGLY preferred) or "Généralités" or "Texte à trous" (max 3 clozes)
+- `front`: Ask a comprehensive conceptual question or ask for the definition.
+- `back`: Provide the exact, concise definition or full aggregated text, followed by the Contexte Explicatif section.
+
+JSON OUTPUT ONLY:
+{
+    "cards": [
+        {
+            "type": "Texte à trous" | "Basique" | "Généralités",
+            "subdeck": "01_Définitions" | "02_Théorèmes_et_Preuves" | "03_Vocabulaire_et_Constantes" ,
+            "front": "Complete text formatted with HTML and MathJax \\( ... \\) or \\[ ... \\]",
+            "back": "Detailed proof/answer formatted with HTML and MathJax. Use <hr> for separators.",
+            "tags": "Math Course_Unit (NO SPACES IN INDIVIDUAL TAGS)"
+        }
+    ]
+}
+    """
+    system_prompt = system_prompt.replace("[TAG_INSTRUCTION]", tag_instruction)
     for attempt in range(retries):
         try:
             response = client.chat.complete(
@@ -909,7 +1043,7 @@ JSON OUTPUT ONLY:
                 response_format={"type": "json_object"},
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"Extract all valuable concepts systematically from this content segment.\nCRUCIAL RULES FOR THIS CHUNK:\n1. KEEP THE EXACT SAME LANGUAGE AS THE TEXT BELOW. ABSOLUTELY NO FRENCH ALLOWED UNLESS THE TEXT ITSELF IS IN FRENCH. IF THE TEXT IS IN ENGLISH, EVERY SINGLE WORD OF YOUR GENERATED JSON MUST BE IN ENGLISH.\n2. STRONGLY prioritize 'Basique' cards over 'Texte à trous'. Use 'Texte à trous' ONLY for vocabulary, constants, and unit conversions (max 3 clozes per card). ONLY use 'Généralités' sparingly for extremely fundamental, high-level definitions where a double-sided card is strictly necessary.\n3. {tag_instruction}\n4. AUTHENTIC ELABORATIVE INTERROGATION (at least 20% of cards):\n   You MUST generate cards that force CAUSAL REASONING, not disguised recall.\n   TRUE ELABORATION (forces deep processing):\n     - 'Why is the Nyquist rate 2B and not B?' (forces reasoning about positive/negative spectral symmetry)\n     - 'Why does quantization introduce a non-recoverable error while sampling does not?' (forces comparative causal analysis)\n     - 'What would happen to the reconstructed signal if the anti-aliasing filter had a non-zero transition band?' (forces consequence prediction)\n   FALSE ELABORATION (just recall with Why syntax — FORBIDDEN):\n     - 'How does Fs influence the spectrum?' (just asks for a description, no causal chain)\n     - 'Why is sampling important?' (too vague, invites a textbook summary)\n   Tag authentic elaborative cards with 'Catégorie::Elaborative_Interrogation' as first tag after filename.\n5. BLOOM LEVEL TARGETING: Target this distribution:\n   - 25% Recall (definitions, constants) — use Texte à trous or Généralités\n   - 45% Understand (explain concepts) — use Basique\n   - 10% Apply (solve a specific problem, compute a value) — use Basique in '05_Exercices_et_Exemples'\n   - 20% Analyze (compare methods, identify trade-offs, explain why one approach fails) — use Basique\n6. EXERCISE RESOLUTION CARDS: Generate cards for worked examples ONLY if they illustrate a fundamental concept. Avoid creating cards for pure calculational practice as the user does exercises on the side. When generated, the front contains the COMPLETE problem statement and the back contains the FULL step-by-step resolution.\n7. CONTEXTUAL SCAFFOLDING: Every 'Basique' card back MUST end with a 'Contexte Explicatif' section (2-3 sentences of plain-language explanation and course positioning).\n8. ANTI-REDUNDANCY: Before generating a new card, mentally check if you have already generated a card testing the SAME underlying concept. If yes, DO NOT generate a near-duplicate. Prefer ONE rich comprehensive card over 3 shallow variations.\n\n{chunk_text}"}
+                    {"role": "user", "content": chunk_text}
                 ],
                 max_tokens=32000
             )
@@ -962,10 +1096,10 @@ JSON OUTPUT ONLY:
         part1, part2 = split_text_in_half(chunk_text)
         
         print(f"      [REPLI DIVIDE & CONQUER] -> Lancement du sous-bloc A (taille: {len(part1)} chars)...")
-        cards1 = extract_cards_from_chunk(client, part1, filename_tag=filename_tag, model=model, retries=retries)
+        cards1 = extract_cards_from_chunk(client, part1, learning_depth, filename_tag=filename_tag, model=model, retries=retries)
         
         print(f"      [REPLI DIVIDE & CONQUER] -> Lancement du sous-bloc B (taille: {len(part2)} chars)...")
-        cards2 = extract_cards_from_chunk(client, part2, filename_tag=filename_tag, model=model, retries=retries)
+        cards2 = extract_cards_from_chunk(client, part2, learning_depth, filename_tag=filename_tag, model=model, retries=retries)
         
         if cards1 is None:
             print("      [REPLI DIVIDE & CONQUER] Sous-bloc A a échoué. Mise en attente pour un rattrapage à la fin du découpage...")
@@ -974,10 +1108,10 @@ JSON OUTPUT ONLY:
 
         if cards1 is None:
             print("      [REPLI DIVIDE & CONQUER] Rattrapage final du sous-bloc A...")
-            cards1 = extract_cards_from_chunk(client, part1, filename_tag=filename_tag, model=model, retries=retries)
+            cards1 = extract_cards_from_chunk(client, part1, learning_depth, filename_tag=filename_tag, model=model, retries=retries)
         if cards2 is None:
             print("      [REPLI DIVIDE & CONQUER] Rattrapage final du sous-bloc B...")
-            cards2 = extract_cards_from_chunk(client, part2, filename_tag=filename_tag, model=model, retries=retries)
+            cards2 = extract_cards_from_chunk(client, part2, learning_depth, filename_tag=filename_tag, model=model, retries=retries)
         
         combined_cards = []
         if cards1:
@@ -992,14 +1126,15 @@ JSON OUTPUT ONLY:
     print("Erreur: Impossible de traiter le chunk après plusieurs tentatives. Sautant ce chunk...")
     return None
 
-def ai_quality_control_cards(client, cards, chunk_text="", image_descriptions=None, model="mistral-small-latest", retries=2):
+def ai_quality_control_cards(client, cards, learning_depth, chunk_text="", image_descriptions=None, model="mistral-small-latest", retries=2):
     if not cards: return []
     
     print(f"   (Mistral Small : Agent QA actif sur {len(cards)} cartes...)")
     cards_payload = [{"id": i, "front": c.get("front", ""), "back": c.get("back", ""), "type": c.get("type", "")} for i, c in enumerate(cards)]
     payload_json = json.dumps(cards_payload, ensure_ascii=False)
     
-    system_prompt = r"""
+    if learning_depth == "Zero Lecture":
+        system_prompt = r"""
 ROLE: Flashcard Quality Assurance Agent & Expert Typographe HTML/MathJax.
 Vos flashcards contiennent parfois des références aveugles à un livre ("D'après la proposition 2.14") OU des erreurs de formatage.
 
@@ -1063,7 +1198,78 @@ OUTPUT JSON PRECIS:
     ]
 }
 """
+    elif learning_depth == "Intermediaire":
+        system_prompt = r"""
+        ROLE: Flashcard Quality Assurance Agent & HTML/MathJax Typography Expert.
+Your flashcards sometimes contain blind references to a book ("According to proposition 2.14") OR formatting errors.
 
+TASK: Evaluate each card in the provided JSON for the following aspects:
+A. Visual context (CRITICAL): If a card contains a blind reference to a figure (e.g. "Fig 2.3", "Points a, b, c"), you MUST check in the [ORIGINAL CHUNK TEXT] provided below if this image (represented by `![img-x.jpeg](...)`) exists.
+   - If it exists, REWRITE the card by obligatorily injecting the exact link to the image at the end of the text, on its own line (or with a `<br>`).
+   - If the image is REALLY NOT in the text, then and only then remove the blind reference or reject the card.
+   - MULTI-IMAGE WARNING: A figure can contain MULTIPLE images side-by-side or stacked in the source text. You MUST IMPERATIVELY include all of them in the card.
+   - IMAGE INJECTION FORMAT (ABSOLUTELY CRITICAL): Images `![img-x.jpeg](img-x.jpeg)` must be inserted freely in HTML, never inside a mathematical tag.
+
+B. Blind references and autonomy (STRICT): the text (front/back) must be 100% autonomous.
+   - Remove any sentence like "In this example", "the given example", "the provided example".
+   - Replace these references with the actual content.
+   - If the card describes an exercise but the COMPLETE statement is not on the card, YOU MUST REWRITE IT.
+
+C. STRICT FORMATTING (CRITICAL):
+   - The use of `\text{}` or `\begin{aligned}` is STRICTLY FORBIDDEN.
+   - `\begin{array}` or `\begin{matrix}` environments are tolerated ONLY inside mathematical blocks `\[ ... \]` for real mathematical matrices. They are STRICTLY FORBIDDEN to format or structure natural text.
+   - You must ensure that natural text is in plain text/HTML (use `<b>` instead of `**`).
+   - You must ensure that EVERY mathematical expression (even a simple variable) is enclosed by `\( ... \)` for inline, or `\[ ... \]` for block mode. Verify that all `\(` or '\[' tags are properly closed by `\)` or '\]' respectively. Fix errors like `\( X_a(t) \"` to `\( X_a(t) \)`.
+
+D. INVALID LaTeX Environments: (CRITICAL)
+   - NEVER USE `\begin{itemize}` or `\item`. Use HTML tags (`<ul>`, `<li>`) or plain text (`-`).
+   - NEVER USE mathematical delimiters like `$`, `$$`. Use ONLY `\(` and `\[`.
+
+
+F. Cards without pedagogical utility: If the card does not test a course concept, reject it.
+
+G. IMAGE-ONLY CARDS (SYSTEMATIC REJECTION): If the front of a card ONLY contains an IMAGE without a natural language question, REJECT IT with "action": "reject".
+
+H. "DESCRIBE THE IMAGE" CARDS (MANDATORY REJECTION OR REWRITE): If the front asks to "describe", "explain" or "identify" what an image shows, this card is PEDAGOGICALLY WEAK and must be rewritten to ask a conceptual question.
+
+I. MCQ CARDS (MANDATORY REWRITE OR REJECT): Multiple choices (A, B, C, D) are FORBIDDEN. Rewrite as a direct open question.
+
+J. INCOMPLETE FRONT (REJECT OR REWRITE): If the front ends with ":" or "For example:" without the announced content present in the front or in the back, complete it or fix it.
+
+K. INCOMPLETE BACK (MANDATORY REWRITE): If the back announces a list but does not provide the full list, complete the back using the original text.
+
+L. EXPLANATORY CONTEXT CHECK (MANDATORY REWRITE): If a "Basique" card does NOT contain an "Contexte Explicatif" / "Explanatory Context" section on the back, you MUST REWRITE IT by adding this section at the end of the back. Format: `<hr><b>Contexte Explicatif :</b><br>...`
+
+M. CLOZE OVERLOAD CHECK (REJECT): If a "Texte à trous" card contains more than 5 clozes (e.g., {{c6::...}}), REJECT IT or REWRITE IT by grouping the extra clozes to ensure there are no more than 5 in total
+
+N. DE-DUPLICATION AND MERGING (CRITICAL):
+- Identification: If multiple cards cover the same concept or are redundant variants, you must merge them.
+- Merging Strategy (IMPERATIVE):
+- Master Card: The first card in the group (the one with the lowest ID) becomes the "Master Card." You must update it (action: "rewrite") to incorporate all relevant information from the redundant cards.
+- Duplicates: All other cards covering this same concept must be rejected (action: "reject").
+- Reasoning: For each rejected card, you must state: "Merged into Master Card ID [ID]".
+- Ordering: The Master Card retains its original ID. Do not create new IDs.
+
+
+Action Rules:
+1. If the card is a location ("Where is X defined?") or is unsolvable WITHOUT an image (and the image is missing), return "action": "reject".
+2. If an image needs to be inserted, a reference fixed, merged, formatting repaired (remove \text{}, add \( \)), or a missing Explanatory Context added, return "action": "rewrite", and provide the perfectly formatted text.
+3. If the card is perfectly autonomous, perfectly formatted, AND contains the Explanatory Context, return "action": "keep".
+
+IMPORTANT: Strictly preserve cloze syntax (`{{c1::...}}`). Double the LaTeX backslashes in the JSON (`\\(`, `\\[`, `\\frac`).
+
+PRECISE JSON OUTPUT:
+{
+    "results": [
+        {
+            "id": 0,
+            "action": "keep" | "reject" | "rewrite",
+            "front": "the corrected text if rewrite",
+            "back": "the corrected text if rewrite",
+            "reasoning": "rationale for the decision"
+        }
+    ]
+}"""
     dynamic_max_tokens = 16000
     retries = 3
     current_model = model
@@ -1317,7 +1523,7 @@ CRITICAL RULES FOR REPAIR:
 4. IMAGES:
    - Retain any existing image tags (like `![img-x.jpeg](img-x.jpeg)`) exactly if they are present in the original card.
 5. LANGUAGE:
-   - Keep the exact same language as the original card (e.g. French).
+   - Keep the exact same language as the original card 
 
 Output strictly a JSON object in this format (do not wrap in markdown blocks, output raw JSON):
 {{
@@ -1505,7 +1711,7 @@ def audit_elaboration_quota(cards):
         print(f"Log Error: {e}")
     return cards
 
-def coverage_audit_agent(client, all_cards, chunks, full_markdown, filename_tag="Course", image_descriptions=None):
+def coverage_audit_agent(client, all_cards, chunks, full_markdown, learning_depth ="Zero Lecture", filename_tag="Course", image_descriptions=None):
     if not chunks or not all_cards:
         return all_cards
     
@@ -1543,7 +1749,7 @@ def coverage_audit_agent(client, all_cards, chunks, full_markdown, filename_tag=
     def _process_under_covered(ci, chunk, count, header):
         print(f"      -> Bloc {ci+1} ({header[:60]}...): {count} carte(s), relance...")
         try:
-            supplementary = extract_cards_from_chunk(client, chunk, filename_tag=filename_tag)
+            supplementary = extract_cards_from_chunk(client, chunk, "Zero Lecture", filename_tag=filename_tag)
             if supplementary:
                 supplementary = ai_quality_control_cards(client, supplementary, chunk_text=chunk, image_descriptions=image_descriptions)
                 supplementary = filter_image_only_cards(supplementary)
@@ -1790,7 +1996,7 @@ def audit_image_coverage(cards, chunk_text, image_descriptions=None):
     
     return cards
 
-def supervisor_deduplicate_cards(client, cards, image_descriptions=None, model="mistral-large-latest", retries=5):
+def supervisor_deduplicate_cards(client, cards, similarity_threshold = 0.88, image_descriptions=None, model="mistral-large-latest", retries=5):
     if len(cards) <= 1:
         return cards
         
@@ -1833,7 +2039,6 @@ def supervisor_deduplicate_cards(client, cards, image_descriptions=None, model="
     n = len(cards)
     assigned = [False] * n
     duplicate_groups = []
-    similarity_threshold = 0.88  
     
     for i in range(n):
         if assigned[i]:
@@ -1889,7 +2094,7 @@ def supervisor_deduplicate_cards(client, cards, image_descriptions=None, model="
             idx_to_emb_map[idx] = emb
             
         refined_groups = []
-        full_similarity_threshold = 0.90 
+        full_similarity_threshold = similarity_threshold+0.02 
         
         for group in duplicate_groups:
             master_idx = group[0]
@@ -2254,7 +2459,7 @@ def add_card_to_decks(deck_definitions, deck_theoremes, deck_vocabulaire, deck_s
             my_note = genanki.Note(model=model_basic, fields=[front_html, back_html, sequence], tags=tags)
         deck.add_note(my_note)
 
-def process_course(g_file, learning_depth="Zero lecture"):
+def process_course(g_file, learning_depth="Zero Lecture"):
     print("\n" + "="*50)
     print("GÉNÉRATEUR DE CARTES ANKI V1.3 — FAST & ROBUST DESIGN (HTML/MathJax + Clozes Natifs)")
     print(f"Profondeur d'apprentissage : {learning_depth}")
@@ -2414,7 +2619,7 @@ def process_course(g_file, learning_depth="Zero lecture"):
             print("   => Cours très court (< 2000 caractères), on ignore le découpage sémantique.")
             chunks = [full_markdown]
         else:
-            raw_chunks = semantic_split_with_ai(client, full_markdown)
+            raw_chunks = semantic_split_with_ai(client, full_markdown, learning_depth)
             chunks = []
             current_chunk = ""
             for rc in raw_chunks:
@@ -2451,14 +2656,14 @@ def process_course(g_file, learning_depth="Zero lecture"):
                     report_progress(2, f"Création : bloc {completed_chunks}/{len(chunks)}", ratio)
                 return idx, []
             print(f"   -> Traitement du bloc {idx+1}/{len(chunks)} (taille: {len(chunk)} chars)...")
-            cards = extract_cards_from_chunk(client, chunk, filename_tag=filename_without_ext)
+            cards = extract_cards_from_chunk(client, chunk, learning_depth, filename_tag=filename_without_ext)
             if cards is None:
                 with progress_lock:
                     completed_chunks += 1
                     ratio = completed_chunks / len(chunks)
                     report_progress(2, f"Création : bloc {completed_chunks}/{len(chunks)}", ratio)
                 return idx, None
-            cards = ai_quality_control_cards(client, cards, chunk_text=chunk, image_descriptions=image_descriptions)
+            cards = ai_quality_control_cards(client, cards, learning_depth, chunk_text=chunk, image_descriptions=image_descriptions)
             cards = filter_image_only_cards(cards)
             cards = filter_mcq_cards(cards)
             cards = filter_truncated_cards(client, cards, chunk_text=chunk)
@@ -2490,7 +2695,7 @@ def process_course(g_file, learning_depth="Zero lecture"):
             def retry_single_chunk(idx, chunk):
                 nonlocal completed_chunks
                 print(f"      -> Rattrapage du bloc {idx+1}...")
-                cards = extract_cards_from_chunk(client, chunk, filename_tag=filename_without_ext)
+                cards = extract_cards_from_chunk(client, chunk, learning_depth, filename_tag=filename_without_ext)
                 if cards is None:
                     print(f"      -> Échec définitif pour le bloc {idx+1}")
                     with progress_lock:
@@ -2498,7 +2703,7 @@ def process_course(g_file, learning_depth="Zero lecture"):
                         ratio = completed_chunks / len(chunks)
                         report_progress(2, f"Création : bloc {completed_chunks}/{len(chunks)}", ratio)
                     return idx, []
-                cards = ai_quality_control_cards(client, cards, chunk_text=chunk, image_descriptions=image_descriptions)
+                cards = ai_quality_control_cards(client, cards, learning_depth, chunk_text=chunk, image_descriptions=image_descriptions)
                 cards = filter_image_only_cards(cards)
                 cards = filter_mcq_cards(cards)
                 cards = filter_truncated_cards(client, cards, chunk_text=chunk)
@@ -2523,18 +2728,21 @@ def process_course(g_file, learning_depth="Zero lecture"):
                 all_cards.extend(cards)
             
         report_progress(4, "Audit de couverture sémantique...", 0.92)
-        print(f"\n5.5) Audit de couverture V1.1 : vérification des sections sous-représentées...")
-        all_cards = coverage_audit_agent(client, all_cards, chunks, full_markdown, filename_tag=filename_without_ext, image_descriptions=image_descriptions)
-        
-        report_progress(4, "Génération de cartes-pont...", 0.95)
-        print(f"\n5.6) Génération de cartes-pont inter-sections V1.1...")
-        bridge_cards = generate_bridge_cards(client, chunks, all_cards, filename_tag=filename_without_ext)
-        if bridge_cards:
-            all_cards.extend(bridge_cards)
+        if learning_depth == "Zero Lecture":
+            print(f"\n5.5) Audit de couverture V1.1 : vérification des sections sous-représentées...")
+            all_cards = coverage_audit_agent(client, all_cards, chunks, full_markdown, filename_tag=filename_without_ext, image_descriptions=image_descriptions)
+            report_progress(4, "Génération de cartes-pont...", 0.95)
+            print(f"\n5.6) Génération de cartes-pont inter-sections V1.1...")
+            bridge_cards = generate_bridge_cards(client, chunks, all_cards, filename_tag=filename_without_ext)
+            if bridge_cards:
+                all_cards.extend(bridge_cards)
             
         report_progress(4, "Déduplication lexicale globale...", 0.96)
         print(f"\n5.7) Déduplication lexicale globale (Superviseur) : {len(all_cards)} cartes en revue...")
-        all_cards = supervisor_deduplicate_cards(client, all_cards, image_descriptions=image_descriptions)
+        if learning_depth == "Zero Lecture":
+            all_cards = supervisor_deduplicate_cards(client, all_cards, 0.88, image_descriptions=image_descriptions)
+        else:
+            all_cards = supervisor_deduplicate_cards(client, all_cards, 0.86, image_descriptions=image_descriptions)
         
         report_progress(4, "Compilation finale du deck Anki...", 0.98)
         print(f"\n5.8) Assemblage final V1.1 : {len(all_cards)} cartes finales, compilation du paquet Anki...")
@@ -2549,14 +2757,18 @@ def process_course(g_file, learning_depth="Zero lecture"):
         deck_definitions = genanki.Deck(deck_id_1, f"{deck_name}::01_Définitions")
         deck_theoremes = genanki.Deck(deck_id_2, f"{deck_name}::02_Théorèmes_et_Preuves")
         deck_vocabulaire = genanki.Deck(deck_id_3, f"{deck_name}::03_Vocabulaire_et_Constantes")
-        deck_synthese = genanki.Deck(deck_id_4, f"{deck_name}::04_Synthèse_et_Relations")
-        deck_exercices = genanki.Deck(deck_id_5, f"{deck_name}::05_Exercices_et_Exemples")
+        if learning_depth=="Zero Lecture":
+            deck_synthese = genanki.Deck(deck_id_4, f"{deck_name}::04_Synthèse_et_Relations")
+            deck_exercices = genanki.Deck(deck_id_5, f"{deck_name}::05_Exercices_et_Exemples")
         
         for i, card in enumerate(all_cards):
             add_card_to_decks(deck_definitions, deck_theoremes, deck_vocabulaire, deck_synthese, deck_exercices, card, sequence=f"{i:04d}")
             
         output_filename = f"{filename_without_ext}_Infaillible.apkg"
-        my_package = genanki.Package([deck_definitions, deck_theoremes, deck_vocabulaire, deck_synthese, deck_exercices])
+        if learning_depth=="Zero Lecture":
+            my_package = genanki.Package([deck_definitions, deck_theoremes, deck_vocabulaire, deck_synthese, deck_exercices])
+        else:
+            my_package = genanki.Package([deck_definitions, deck_theoremes, deck_vocabulaire])
         my_package.media_files = [get_abs_path(f) for f in media_files]
         
         abs_output_filename = get_abs_path(output_filename)

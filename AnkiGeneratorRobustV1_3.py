@@ -465,7 +465,7 @@ You are a structural parser Agent. Your only job is to semantically split an aca
 Each chunk must be a coherent pedagogical unit that can later be fed completely to an Anki card generator.
 
 RULES:
-1. MAXIMUM AGGREGATION FOR MATHEMATICAL CONCEPTS: A Theorem (or Proposition/Property), its associated Proof, and its direct Examples/Remarks form ONE INDIVISIBLE UNIT. You MUST group them together into ONE SINGLE CHUNK.
+1. MAXIMUM AGGREGATION: A Theorem (or Proposition/Property), its associated Proof, and its direct Examples/Remarks form ONE INDIVISIBLE UNIT. You MUST group them together into ONE SINGLE CHUNK.
    - Example scenario: Line 10 is `## THEOREM 1`, Line 40 is `# EXAMPLE 1`, Line 70 is `# PROOF`, Line 120 is `# EXAMPLE 2`. You MUST create a SINGLE chunk starting at line 10 and ending at line 140 inclusive.
    - NEVER separate the formal statement of a Theorem from its Proof or its Examples. They MUST physically reside in the exact same chunk.
    - You only start a new chunk when shifting to a completely independent topic, a completely new Theorem, or a list of disconnected definitions.
@@ -1230,8 +1230,8 @@ CRITICAL RULES FOR REPAIR:
    - The Front must contain a complete, grammatically sound and pedagogically rich question or statement.
    - The Back must provide a fully complete explanation without leaving anything cut off (never end with ":" or incomplete lists).
 2. CARD TYPE RULES:
-   - If type is "Basique" (Basic): The Back MUST include a "Contexte Explicatif" section at the very end. Format it EXACTLY as:
-     `<hr><b>Contexte Explicatif :</b><br>[1-3 sentences of plain-language intuition and everyday analogies]`
+   - If type is "Basique" (Basic): The Back MUST include a "Explanatory Context" section at the very end. Format it EXACTLY as:
+     `<hr><b>Explanatory Context :</b><br>[1-3 sentences of plain-language intuition and everyday analogies]`
    - If type is "Texte à trous" (Cloze): You MUST preserve and repair any standard Anki cloze deletions (e.g., `{{c1::...}}`). Do not lose them, and do not change the card type.
 3. MATHEMATICAL & LATEX FORMATTING (CRITICAL):
    - Double-escape ALL LaTeX backslashes in the output JSON (e.g., write `\\(`, `\\)`, `\\frac`, `\\[`, `\\]`).

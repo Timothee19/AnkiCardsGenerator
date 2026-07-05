@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { 
-  Bot, 
-  Settings, 
-  Library, 
-  Layers, 
-  BarChart3, 
+import {
+  Bot,
+  Settings,
+  Library,
+  Layers,
+  BarChart3,
   Play,
   Key
 } from 'lucide-react';
@@ -22,7 +22,7 @@ const navItems = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Workspace');
-  const [learningDepth, setLearningDepth] = useState('Zero lecture');
+  const [learningDepth, setLearningDepth] = useState('Zero Lecture');
   const [status, setStatus] = useState<RobotState>('idle');
   const [stageProgress, setStageProgress] = useState(0);
   const [stageStatusText, setStageStatusText] = useState('Système en attente');
@@ -31,7 +31,7 @@ export default function App() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  
+
   // API Key & Refresh state
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
@@ -107,14 +107,14 @@ export default function App() {
       setStageStatusText('Génération terminée ! Rangement du deck...');
       setStageProgress(1);
       setIsSyncing(true);
-      
+
       setTimeout(() => {
         const resetState = () => {
-           setStatus('idle');
-           setIsSyncing(false);
-           setStageStatusText('Système en attente');
-           setStageProgress(0);
-           setCurrentStage(0);
+          setStatus('idle');
+          setIsSyncing(false);
+          setStageStatusText('Système en attente');
+          setStageProgress(0);
+          setCurrentStage(0);
         };
 
         // Refresh books list to get the new deck
@@ -122,8 +122,8 @@ export default function App() {
         if (window.pywebview?.api?.get_library_books) {
           // @ts-ignore
           window.pywebview.api.get_library_books().then((fetchedBooks) => {
-             setBooks(fetchedBooks || []);
-             resetState();
+            setBooks(fetchedBooks || []);
+            resetState();
           }).catch(() => resetState());
         } else {
           resetState();
@@ -172,25 +172,25 @@ export default function App() {
 
   const startProcessing = () => {
     if (isProcessing) return;
-    
+
     // @ts-ignore
     if (window.pywebview) {
       // @ts-ignore
       window.pywebview.api.choose_file().then((filePath: string | null) => {
-         if (filePath) {
-            setIsProcessing(true);
-            setLogs([]);
-            setStatus('idle');
-            setStageStatusText('Initialisation...');
-            setStageProgress(0);
-            setCurrentStage(0);
-            
-            // @ts-ignore
-            window.pywebview.api.start_processing(filePath, learningDepth).catch((err: any) => {
-              setIsProcessing(false);
-              setStageStatusText(`Erreur de lancement : ${err}`);
-            });
-         }
+        if (filePath) {
+          setIsProcessing(true);
+          setLogs([]);
+          setStatus('idle');
+          setStageStatusText('Initialisation...');
+          setStageProgress(0);
+          setCurrentStage(0);
+
+          // @ts-ignore
+          window.pywebview.api.start_processing(filePath, learningDepth).catch((err: any) => {
+            setIsProcessing(false);
+            setStageStatusText(`Erreur de lancement : ${err}`);
+          });
+        }
       });
     } else {
       // Mode Dev/Demo React seul
@@ -198,7 +198,7 @@ export default function App() {
       setStatus('reading');
       setStageStatusText('Simulation : Lecture en cours...');
       let progress = 0;
-      
+
       const interval = setInterval(() => {
         progress += 0.2;
         setStageProgress(progress);
@@ -221,21 +221,20 @@ export default function App() {
       <header className="bg-surface-container-lowest border-b-2 border-surface-container-highest sticky top-0 z-50 h-20 px-6 md:px-10 flex items-center justify-between max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-12">
           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white rotate-6 shadow-lg">
-                <Bot size={24} />
-             </div>
-             <span className="text-2xl font-extrabold text-primary tracking-tighter uppercase">
-               Anki Robot
-             </span>
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white rotate-6 shadow-lg">
+              <Bot size={24} />
+            </div>
+            <span className="text-2xl font-extrabold text-primary tracking-tighter uppercase">
+              Anki Robot
+            </span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => setActiveTab(item.name)}
-                className={`relative py-2 text-sm font-bold transition-colors hover:text-primary ${
-                  activeTab === item.name ? 'text-primary' : 'text-on-surface-variant'
-                }`}
+                className={`relative py-2 text-sm font-bold transition-colors hover:text-primary ${activeTab === item.name ? 'text-primary' : 'text-on-surface-variant'
+                  }`}
               >
                 {item.name}
                 {activeTab === item.name && (
@@ -248,20 +247,20 @@ export default function App() {
             ))}
           </nav>
         </div>
-        
+
         {/* Top-right icons removed as requested */}
       </header>
 
       {/* Main Content */}
       <main className="flex-grow w-full max-w-7xl mx-auto px-6 md:px-10 py-8 flex flex-col gap-8 relative z-10">
-        
+
         {activeTab === 'Decks' ? (
           <DecksView books={books} onRefreshRequested={() => setRefreshKey(k => k + 1)} />
         ) : (
           <>
             {/* Unified Scene: Library in background, Robot in foreground */}
             <div className="w-full h-[550px] bg-surface-container-lowest rounded-3xl shadow-sm border border-surface-container-highest relative overflow-hidden flex flex-col justify-end perspective-[1000px]">
-              
+
               {/* Background: Animated Library */}
               <div className="absolute top-4 right-10 w-96 h-[80%] opacity-90 z-0">
                 <AnimatedLibrary books={books.slice(-15)} isSyncing={isSyncing} onBookClick={(id) => {
@@ -269,41 +268,73 @@ export default function App() {
                   if (window.pywebview?.api?.open_deck_folder) window.pywebview.api.open_deck_folder(id);
                 }} />
               </div>
-              
+
               {/* Foreground: Robot Desk */}
               <div className="w-full h-full relative z-10 pointer-events-none">
-                 {/* the SVG will be absolutely positioned inside RobotDesk */}
-                 <RobotDesk 
-                   state={status} 
-                   stageProgress={stageProgress}
-                   stageStatusText={stageStatusText}
-                 />
+                {/* the SVG will be absolutely positioned inside RobotDesk */}
+                <RobotDesk
+                  state={status}
+                  stageProgress={stageProgress}
+                  stageStatusText={stageStatusText}
+                />
               </div>
 
             </div>
 
             {/* Bottom Controls */}
             <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-1 bg-surface-container-lowest rounded-3xl p-8 flex flex-col justify-center border border-surface-container-highest shadow-sm relative overflow-hidden group">
+              <div className="flex-1 bg-surface-container-lowest rounded-3xl p-8 flex flex-col md:flex-row md:items-center justify-between border border-surface-container-highest shadow-sm relative overflow-hidden group gap-8">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform duration-500" />
-                
-                <h2 className="text-2xl font-black tracking-tight text-on-surface mb-2">
-                  Lancer la <span className="text-primary">Génération</span>
-                </h2>
-                <p className="text-on-surface-variant font-medium mb-6">
-                  Le robot est prêt à transformer vos documents PDF. Un explorateur de fichiers va s'ouvrir.
-                </p>
-                
-                <button
-                  onClick={startProcessing}
-                  disabled={isProcessing}
-                  className="w-full md:w-auto self-start bg-primary hover:bg-primary-dark text-white rounded-2xl px-8 py-4 font-bold text-lg flex items-center gap-3 transition-all active:scale-95 shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Play size={24} fill="currentColor" />
-                  {isProcessing ? 'En cours...' : 'Démarrer le processus'}
-                </button>
+
+                {/* Partie Gauche : Titre, description et bouton de lancement */}
+                <div className="flex flex-col items-start gap-4">
+                  <h2 className="text-2xl font-black tracking-tight text-on-surface">
+                    Lancer la <span className="text-primary">Génération</span>
+                  </h2>
+                  <p className="text-on-surface-variant font-medium max-w-xl">
+                    Le robot est prêt à transformer vos documents PDF. Un explorateur de fichiers va s'ouvrir.
+                  </p>
+
+                  <button
+                    onClick={startProcessing}
+                    disabled={isProcessing}
+                    className="w-full md:w-auto bg-primary hover:bg-primary-dark text-white rounded-2xl px-8 py-4 font-bold text-lg flex items-center gap-3 transition-all active:scale-95 shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Play size={24} fill="currentColor" />
+                    {isProcessing ? 'En cours...' : 'Démarrer le processus'}
+                  </button>
+                </div>
+
+                {/* Partie Droite : Sélection du Mode */}
+                <div className="flex flex-col gap-3 min-w-[220px] w-full md:w-auto">
+                  <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">
+                    Profondeur de lecture
+                  </span>
+
+                  <button
+                    onClick={() => setLearningDepth('Zero Lecture')}
+                    className={`px-4 py-3 rounded-xl font-bold text-sm transition-all text-left flex items-center gap-2 ${learningDepth === 'Zero Lecture'
+                      ? 'bg-primary text-white shadow-md'
+                      : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                      }`}
+                  >
+                    <span>🚀</span> Zero lecture
+                  </button>
+
+                  <button
+                    onClick={() => setLearningDepth('Intermediaire')}
+                    className={`px-4 py-3 rounded-xl font-bold text-sm transition-all text-left flex items-center gap-2 ${learningDepth === 'Intermediaire'
+                      ? 'bg-primary text-white shadow-md'
+                      : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                      }`}
+                  >
+                    <span>📚</span> Intermédiaire
+                  </button>
+                </div>
+
               </div>
             </div>
+
 
             {/* Debug buttons removed as requested */}
           </>
@@ -314,7 +345,7 @@ export default function App() {
       <AnimatePresence>
         {showApiKeyModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -329,7 +360,7 @@ export default function App() {
                   <p className="text-sm text-neutral-500 font-medium">Configuration initiale</p>
                 </div>
               </div>
-              
+
               <div className="text-neutral-600 text-sm leading-relaxed">
                 <p className="mb-4">
                   Pour que le robot puisse générer vos cartes Anki, il a besoin d'accéder au modèle d'intelligence artificielle Mistral.
@@ -340,7 +371,7 @@ export default function App() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <input 
+                <input
                   type="password"
                   placeholder="Votre clé API Mistral..."
                   value={apiKeyInput}
@@ -350,7 +381,7 @@ export default function App() {
                 />
               </div>
 
-              <button 
+              <button
                 onClick={handleSaveApiKey}
                 disabled={!apiKeyInput.trim() || isSavingKey}
                 className="w-full py-3 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
@@ -363,11 +394,11 @@ export default function App() {
       </AnimatePresence>
 
       {/* Terminal Drawer for Logs */}
-      <TerminalDrawer 
-        isOpen={isTerminalOpen} 
-        onClose={() => setIsTerminalOpen(false)} 
-        logs={logs} 
-        currentStage={currentStage} 
+      <TerminalDrawer
+        isOpen={isTerminalOpen}
+        onClose={() => setIsTerminalOpen(false)}
+        logs={logs}
+        currentStage={currentStage}
       />
     </div>
   );
