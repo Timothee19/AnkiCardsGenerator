@@ -158,7 +158,7 @@ def load_env_file():
 load_env_file()
 
 try:
-    from mistralai import Mistral
+    from mistralai.client import Mistral
     from mistralai.extra import response_format_from_pydantic_model
 except ImportError:
     print("Veuillez installer le package mistralai : pip install mistralai")
