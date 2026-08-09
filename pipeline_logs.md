@@ -32833,3 +32833,4417 @@ Thus, all cards should be retained as-is without merging.
 ```
 
 ---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quel est l'objectif principal du tutoriel 'Hello Minikube' dans l'apprentissage de Kubernetes ?<br><br><br><img src='img-0.jpg'>",
+  "back": "L'objectif principal du tutoriel <b>'Hello Minikube'</b> est d'introduire les concepts fondamentaux de Kubernetes en guidant l'utilisateur à travers le déploiement d'une application simple sur un cluster local Minikube.<br><br><br><br>Les étapes clés couvertes incluent :<br><br><ul><br>    <li>La création d'un cluster Kubernetes local avec Minikube.</li><br>    <li>Le déploiement d'une application conteneurisée (par exemple, un serveur web NGINX) sous forme de <i>pod</i>.</li><br>    <li>L'exposition de l'application via un <i>service</i> Kubernetes pour la rendre accessible depuis l'extérieur du cluster.</li><br>    <li>L'interaction avec l'application via la ligne de commande <i>kubectl</i> (ex : afficher les logs, accéder au service).</li><br>    <li>Le nettoyage des ressources après utilisation.</li><br></ul><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ce tutoriel sert de point d'entrée pratique pour comprendre comment Kubernetes gère les applications conteneurisées. Il démontre les bases de l'orchestration, comme la création de pods (les plus petites unités déployables) et de services (qui exposent les pods au réseau). En utilisant Minikube, les utilisateurs peuvent expérimenter sans risque et visualiser concrètement le fonctionnement d'un cluster Kubernetes, même sur une seule machine."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quel est l'objectif principal du tutoriel 'Hello Minikube' dans l'apprentissage de Kubernetes ?",
+  "back": "L'objectif principal du tutoriel <b>'Hello Minikube'</b> est d'introduire les concepts fondamentaux de Kubernetes en guidant l'utilisateur à travers le déploiement d'une application simple sur un cluster local Minikube.<br><br>Les étapes clés couvertes incluent :<br><ul><li>La création d'un cluster Kubernetes local avec Minikube.</li><li>Le déploiement d'une application conteneurisée (par exemple, un serveur web NGINX) sous forme de <i>pod</i>.</li><li>L'exposition de l'application via un <i>service</i> Kubernetes pour la rendre accessible depuis l'extérieur du cluster.</li><li>L'interaction avec l'application via la ligne de commande <i>kubectl</i> (ex : afficher les logs, accéder au service).</li><li>Le nettoyage des ressources après utilisation.</li></ul><br>![img-0.jpeg](img-0.jpeg)<hr><b>Contexte Explicatif :</b><br>Ce tutoriel sert de point d'entrée pratique pour comprendre comment Kubernetes gère les applications conteneurisées. Il démontre les bases de l'orchestration, comme la création de pods (les plus petites unités déployables) et de services (qui exposent les pods au réseau). En utilisant Minikube, les utilisateurs peuvent expérimenter sans risque et visualiser concrètement le fonctionnement d'un cluster Kubernetes, même sur une seule machine."
+}
+```
+
+---
+## [AUDIT IMAGE V1.1] Image manquante injectee
+
+- **Image:** img-0.jpeg
+- **Description:** [diagram] A simple geometric diagram showing a square with a smaller square inside it, aligned concentrically. (Concepts: geometric shapes, concentric squares, symmetry, spatial relationships)
+- **Carte cible (ID 1):** Qu'est-ce que <b>Minikube</b> et dans quel contexte est-il utilisé pour apprendr...
+- **Score de correspondance:** 2
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 4
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Par défaut, un Pod Kubernetes n'est accessible que via son adresse IP {{c1::interne}} au sein du cluster. Pour le rendre accessible depuis l'extérieur, il faut l'exposer en tant que {{c2::Service}} de type {{c3::LoadBalancer}}.",
+  "back": "Par défaut, un Pod Kubernetes n'est accessible que via son adresse IP interne au sein du cluster. Pour le rendre accessible depuis l'extérieur, il faut l'exposer en tant que Service de type LoadBalancer."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Par défaut, un Pod Kubernetes n'est accessible que via son adresse IP {{c1::interne}} au sein du cluster. Pour le rendre accessible depuis l'extérieur, il faut l'exposer en tant que {{c2::Service}} de type {{c3::LoadBalancer}}.",
+  "back": "Par défaut, un Pod Kubernetes n'est accessible que via son adresse IP interne au sein du cluster. Pour le rendre accessible depuis l'extérieur, il faut l'exposer en tant que Service de type LoadBalancer.<br><br><b>Exemple concret :</b><br><code>kubectl expose deployment hello-node --type=LoadBalancer --port=8080</code><br><br><hr><br><b>Contexte Explicatif :</b><br><br>Un Pod est isolé par défaut dans le réseau interne du cluster Kubernetes. Pour le rendre accessible depuis l'extérieur, Kubernetes utilise un <i>Service</i>, qui fournit un point d'entrée stable et gère le routage du trafic. Le type <code>LoadBalancer</code> est particulièrement adapté aux environnements cloud, où il provisionne automatiquement une adresse IP externe. Sur Minikube, cette fonctionnalité est simulée via la commande <code>minikube service</code>, qui ouvre un navigateur vers l'application."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Pour activer l'addon <code>metrics-server</code> dans Minikube, on utilise la commande : <code>minikube addons {{c1::enable}} {{c2::metrics-server}}</code>.",
+  "back": "Pour activer l'addon <code>metrics-server</code> dans Minikube, on utilise la commande : <code>minikube addons enable metrics-server</code>."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Pour activer l'addon <code>metrics-server</code> dans Minikube, on utilise la commande : <code>minikube addons {{c1::enable}} {{c2::metrics-server}}</code>.",
+  "back": "Pour activer l'addon <code>metrics-server</code> dans Minikube, on utilise la commande : <code>minikube addons enable metrics-server</code>.<br><br><hr><br><b>Contexte Explicatif :</b><br><br>Les addons Minikube permettent d'étendre les fonctionnalités du cluster local. Le <code>metrics-server</code> est un addon essentiel pour le monitoring des ressources (CPU, mémoire) des Pods. Son activation se fait via la commande <code>minikube addons enable metrics-server</code>, qui déploie les composants nécessaires dans le namespace <code>kube-system</code>."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 5
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce qu'un cluster Kubernetes et quels sont ses deux types de ressources principaux ?",
+  "back": "<b>Cluster Kubernetes :</b><br>Un cluster Kubernetes est un ensemble de machines (virtuelles ou physiques) connectées qui fonctionnent comme une seule unité pour orchestrer le déploiement, la planification et l'exécution d'applications conteneurisées.<br><br><b>Deux types de ressources :</b><br><ul><li><b>Control Plane :</b> Coordonne le cluster, gère la planification des applications, maintient l'état souhaité des applications, et gère les mises à jour et le scaling.</li><li><b>Nodes :</b> Machines travailleuses (VM ou physiques) qui exécutent les applications. Chaque node contient un <i>Kubelet</i>, un agent qui communique avec le Control Plane, et des outils pour gérer les opérations sur les conteneurs (comme Docker ou containerd).</li></ul><br><img src='img-1.jpg'><hr><b>Explanatory Context :</b><br>Un cluster Kubernetes permet de découpler les applications des machines individuelles, offrant ainsi une haute disponibilité et une résilience face aux pannes. Le <i>Control Plane</i> agit comme le 'cerveau' du cluster, tandis que les <i>nodes</i> sont les 'ouvriers' qui exécutent les charges de travail. Cette architecture est essentielle pour les environnements de production où la redondance et la scalabilité sont critiques. Par exemple, un cluster de production doit avoir au moins trois nodes pour éviter une perte de redondance en cas de panne d'un node."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce qu'un cluster Kubernetes et quels sont ses deux types de ressources principaux ?",
+  "back": "<b>Cluster Kubernetes :</b><br>Un cluster Kubernetes est un ensemble de machines (virtuelles ou physiques) connectées qui fonctionnent comme une seule unité pour orchestrer le déploiement, la planification et l'exécution d'applications conteneurisées.<br><br><b>Deux types de ressources :</b><br><ul><li><b>Control Plane :</b> Coordonne le cluster, gère la planification des applications, maintient l'état souhaité des applications, et gère les mises à jour et le scaling.</li><li><b>Nodes :</b> Machines travailleuses (VM ou physiques) qui exécutent les applications. Chaque node contient un <i>Kubelet</i>, un agent qui communique avec le Control Plane, et des outils pour gérer les opérations sur les conteneurs (comme Docker ou containerd).</li></ul><br><img src='img-1.jpeg'><br>Figure 1: Architecture d'un cluster Kubernetes<hr><b>Explanatory Context :</b><br>Un cluster Kubernetes permet de découpler les applications des machines individuelles, offrant ainsi une haute disponibilité et une résilience face aux pannes. Le <i>Control Plane</i> agit comme le 'cerveau' du cluster, tandis que les <i>nodes</i> sont les 'ouvriers' qui exécutent les charges de travail. Cette architecture est essentielle pour les environnements de production où la redondance et la scalabilité sont critiques. Par exemple, un cluster de production doit avoir au moins trois nodes pour éviter une perte de redondance en cas de panne d'un node."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet de déployer une application sur Kubernetes, et quels sont les paramètres obligatoires à fournir ?<br><br><img src='img-2.jpg'>",
+  "back": "Utilisez la commande :<br><code>kubectl create deployment &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br><b>Paramètres obligatoires :</b><ul><li><code>&lt;nom-du-déploiement&gt;</code> : Le nom que vous souhaitez donner à votre déploiement (exemple : <code>kubernetes-bootcamp</code>).</li><li><code>&lt;url-de-l-image&gt;</code> : L'emplacement de l'image de l'application. Pour les images hébergées en dehors de Docker Hub, incluez l'URL complète du dépôt (exemple : <code>gcr.io/google-samples/kubernetes-bootcamp:v1</code>).</li></ul><br><b>Exemple :</b><br><code>kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1</code><hr><b>Explanatory Context :</b><br>Cette commande crée un <i>Deployment</i>, qui est un objet Kubernetes chargé de gérer le cycle de vie d'une application. Le <i>Deployment</i> garantit que le nombre souhaité d'instances (ou <i>Pods</i>) de votre application est toujours en cours d'exécution. L'image spécifiée est téléchargée depuis un registre de conteneurs (comme Docker Hub ou Google Container Registry) et exécutée dans le cluster. Ce mécanisme est au cœur de l'orchestration des applications dans Kubernetes."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de déployer une application sur Kubernetes, et quels sont les paramètres obligatoires à fournir ?",
+  "back": "Utilisez la commande :<br><code>kubectl create deployment &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br><b>Paramètres obligatoires :</b><ul><li><code>&lt;nom-du-déploiement&gt;</code> : Le nom que vous souhaitez donner à votre déploiement (exemple : <code>kubernetes-bootcamp</code>).</li><li><code>&lt;url-de-l-image&gt;</code> : L'emplacement de l'image de l'application. Pour les images hébergées en dehors de Docker Hub, incluez l'URL complète du dépôt (exemple : <code>gcr.io/google-samples/kubernetes-bootcamp:v1</code>).</li></ul><br><b>Exemple :</b><br><code>kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1</code><br><br>![img-2.jpeg](img-2.jpeg)<hr><b>Explanatory Context :</b><br>Cette commande crée un <i>Deployment</i>, qui est un objet Kubernetes chargé de gérer le cycle de vie d'une application. Le <i>Deployment</i> garantit que le nombre souhaité d'instances (ou <i>Pods</i>) de votre application est toujours en cours d'exécution. L'image spécifiée est téléchargée depuis un registre de conteneurs (comme Docker Hub ou Google Container Registry) et exécutée dans le cluster. Ce mécanisme est au cœur de l'orchestration des applications dans Kubernetes."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les commandes suivantes pour interagir avec Kubernetes :<br><br>1. Pour créer un déploiement :<br><code>kubectl {{c1::create}} {{c1::deployment}} &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br>2. Pour lister les nœuds du cluster :<br><code>kubectl {{c2::get}} {{c2::nodes}}</code><br><br>3. Pour démarrer un proxy vers l'API Kubernetes :<br><code>{{c3::kubectl proxy}}</code>",
+  "back": "1. Pour créer un déploiement :<br><code>kubectl create deployment &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br>2. Pour lister les nœuds du cluster :<br><code>kubectl get nodes</code><br><br>3. Pour démarrer un proxy vers l'API Kubernetes :<br><code>kubectl proxy</code><hr><b>Explanatory Context :</b><br>Ces commandes de base sont essentielles pour interagir avec un cluster Kubernetes. <code>create deployment</code> permet de déployer une application, <code>get nodes</code> vérifie la disponibilité des ressources du cluster, et <code>kubectl proxy</code> facilite l'accès à l'API Kubernetes pour le débogage ou l'administration. Maîtriser ces commandes est la première étape pour orchestrer des applications conteneurisées."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les commandes suivantes pour interagir avec Kubernetes :<br><br>1. Pour créer un déploiement :<br><code>kubectl {{c1::create}} {{c1::deployment}} &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br>2. Pour lister les nœuds du cluster :<br><code>kubectl {{c2::get}} {{c2::nodes}}</code><br><br>3. Pour démarrer un proxy vers l'API Kubernetes :<br><code>{{c3::kubectl proxy}}</code>",
+  "back": "1. Pour créer un déploiement :<br><code>kubectl create deployment &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br>2. Pour lister les nœuds du cluster :<br><code>kubectl get nodes</code><br><br>3. Pour démarrer un proxy vers l'API Kubernetes :<br><code>kubectl proxy</code><hr><b>Explanatory Context :</b><br>Ces commandes de base sont essentielles pour interagir avec un cluster Kubernetes. <code>create deployment</code> permet de déployer une application, <code>get nodes</code> vérifie la disponibilité des ressources du cluster, et <code>kubectl proxy</code> facilite l'accès à l'API Kubernetes pour le débogage ou l'administration. Maîtriser ces commandes est la première étape pour orchestrer des applications conteneurisées."
+}
+```
+
+---
+## [AUDIT IMAGE V1.1] Image manquante injectee
+
+- **Image:** img-2.jpeg
+- **Description:** [diagram] Diagram illustrating a Kubernetes cluster with nodes, a deployment, and control plane node processes. It shows a containerized application running on a node, managed by deployment and control plane components. (Concepts: Kubernetes cluster, Node, Containerized application, Deployment, Control Plane, Node processes)
+- **Carte cible (ID 0):** Quel est le format général d'une commande <code>kubectl</code> et à quoi servent...
+- **Score de correspondance:** 7
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 9
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les commandes suivantes pour scaler un <i>Deployment</i> et vérifier son état :<br><br><br>1. Pour scaler un Deployment nommé <code>kubernetes-bootcamp</code> à 4 réplicas :<br><br><code>kubectl scale deployments/{{c1::kubernetes-bootcamp}} --replicas={{c2::4}}</code><br><br><br>2. Pour lister les <i>Deployments</i> et vérifier le nombre de réplicas :<br><br><code>{{c3::kubectl get deployments}}</code>",
+  "back": "1. Pour scaler un Deployment nommé <code>kubernetes-bootcamp</code> à 4 réplicas :<br><br><code>kubectl scale deployments/kubernetes-bootcamp --replicas=4</code><br><br><br><br>2. Pour lister les <i>Deployments</i> et vérifier le nombre de réplicas :<br><br><code>kubectl get deployments</code>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les commandes suivantes pour scaler un <i>Deployment</i> et vérifier son état :<br><br>1. Pour scaler un Deployment nommé <code>kubernetes-bootcamp</code> à 4 réplicas :<br><br><code>kubectl scale deployments/{{c1::kubernetes-bootcamp}} --replicas={{c2::4}}</code><br><br><br>2. Pour lister les <i>Deployments</i> et vérifier le nombre de réplicas :<br><br><code>{{c3::kubectl get deployments}}</code>",
+  "back": "1. Pour scaler un Deployment nommé <code>kubernetes-bootcamp</code> à 4 réplicas :<br><br><code>kubectl scale deployments/kubernetes-bootcamp --replicas=4</code><br><br><br>2. Pour lister les <i>Deployments</i> et vérifier le nombre de réplicas :<br><br><code>kubectl get deployments</code><br><br><br><b>Contexte Explicatif :</b><br><br>Cette carte teste la compréhension des commandes de base pour le scaling manuel dans Kubernetes. Le scaling est une opération critique pour ajuster les ressources en fonction de la charge, et ces commandes sont parmi les plus utilisées dans la gestion quotidienne d'un cluster."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quel est le rôle d'un <i>ReplicaSet</i> dans Kubernetes, et comment son nom est-il généré ?",
+  "back": "Le <b>ReplicaSet</b> est un objet Kubernetes qui garantit qu'un nombre spécifié de réplicas d'un Pod est toujours en cours d'exécution. Il surveille en permanence l'état des Pods et recrée automatiquement ceux qui sont défaillants ou manquants pour maintenir le nombre désiré de réplicas.<br><br><br><br>Le nom d'un <i>ReplicaSet</i> est généré automatiquement et suit le format :<br><br><pre>[NOM-DU-DEPLOYMENT]-[RANDOM-STRING]</pre><br><br><br>La partie <code>[RANDOM-STRING]</code> est une chaîne aléatoire générée à partir du <code>pod-template-hash</code>, qui sert de graine pour assurer l'unicité du nom.<br><br><br><b>Exemple :</b><br><br>Si le Deployment s'appelle <code>kubernetes-bootcamp</code>, le <i>ReplicaSet</i> pourrait s'appeler :<br><br><pre>kubernetes-bootcamp-5f7b4d6b9c</pre><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Le <i>ReplicaSet</i> est un composant clé pour assurer la haute disponibilité des applications. Il agit comme un"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quel est le rôle d'un <i>ReplicaSet</i> dans Kubernetes, et comment son nom est-il généré ?",
+  "back": "Le <b>ReplicaSet</b> est un objet Kubernetes qui garantit qu'un nombre spécifié de réplicas d'un Pod est toujours en cours d'exécution. Il surveille en permanence l'état des Pods et recrée automatiquement ceux qui sont défaillants ou manquants pour maintenir le nombre désiré de réplicas.<br><br><br>Le nom d'un <i>ReplicaSet</i> est généré automatiquement et suit le format :<br><pre>[NOM-DU-DEPLOYMENT]-[RANDOM-STRING]</pre><br><br>La partie <code>[RANDOM-STRING]</code> est une chaîne aléatoire générée à partir du <code>pod-template-hash</code>, qui sert de graine pour assurer l'unicité du nom.<br><br><b>Exemple :</b><br><br>Si le Deployment s'appelle <code>kubernetes-bootcamp</code>, le <i>ReplicaSet</i> pourrait s'appeler :<br><pre>kubernetes-bootcamp-5f7b4d6b9c</pre><br><br><hr><b>Contexte Explicatif :</b><br><br>Le <i>ReplicaSet</i> est un composant clé pour assurer la haute disponibilité des applications. Il agit comme un mécanisme de réconciliation, garantissant que le nombre de Pods en cours d'exécution correspond toujours au nombre spécifié dans le Deployment. Cela est particulièrement utile pour les applications critiques où la disponibilité doit être maintenue en permanence."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle est la méthode pour mettre à jour la configuration d'un Pod en utilisant un ConfigMap monté en tant que volume ?",
+  "back": "<b>Étapes pour mettre à jour la configuration d'un Pod via un ConfigMap monté en tant que volume :</b><br><br><br><br>1. Créer un ConfigMap à partir de valeurs littérales :<br><br>   <code>kubectl create configmap sport --from-literal=sport=football</code><br><br><br><br>2. Déployer un manifeste (ex. Deployment) où le ConfigMap est monté en tant que volume dans le conteneur du Pod :<br><br>   <code>kubectl apply -f https://k8s.io/examples/deployments/deployment-with-configmap-as-volume.yaml</code><br><br><br><br>3. Vérifier que les Pods du Deployment sont prêts :<br><br>   <code>kubectl get pods --selector=app.kubernetes.io/name=configmap-volume</code><br><br><br><br>4. Consulter les logs du Pod pour confirmer que la configuration initiale est chargée :<br><br>   <code>kubectl logs deployments/configmap-volume</code><br><br><br><br>5. Modifier le ConfigMap pour mettre à jour la configuration :<br><br>   <code>kubectl edit configmap sport</code><br><br>   Changer la valeur de la clé (ex. <code>sport: cricket</code>) et sauvegarder.<br><br><br><br>6. Suivre les logs du Pod pour observer la mise à jour automatique de la configuration :<br><br>   <code>kubectl logs deployments/configmap-volume --follow</code><br><br><br><br><b>Remarque :</b> La mise à jour du ConfigMap est reflétée presque immédiatement dans le Pod, mais l'application doit être conçue pour recharger dynamiquement la configuration (ex. via polling ou surveillance des fichiers).<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Cette méthode permet de découpler la configuration de l'application de son déploiement, facilitant les mises à jour sans redémarrer les Pods. Le ConfigMap agit comme une source centralisée de vérité pour les paramètres, tandis que le volume monté expose ces paramètres sous forme de fichiers accessibles par le conteneur. Cela s'intègre dans l'architecture Kubernetes pour la gestion déclarative des configurations, essentielle pour les environnements dynamiques et scalables."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle est la méthode pour mettre à jour la configuration d'un Pod en utilisant un ConfigMap monté en tant que volume ?",
+  "back": "<b>Étapes pour mettre à jour la configuration d'un Pod via un ConfigMap monté en tant que volume :</b><br><br>1. Créer un ConfigMap à partir de valeurs littérales :<br><br>   <code>kubectl create configmap sport --from-literal=sport=football</code><br><br>2. Déployer un manifeste (ex. Deployment) où le ConfigMap est monté en tant que volume dans le conteneur du Pod :<br><br>   <code>kubectl apply -f https://k8s.io/examples/deployments/deployment-with-configmap-as-volume.yaml</code><br><br>3. Vérifier que les Pods du Deployment sont prêts :<br><br>   <code>kubectl get pods --selector=app.kubernetes.io/name=configmap-volume</code><br><br>4. Consulter les logs du Pod pour confirmer que la configuration initiale est chargée :<br><br>   <code>kubectl logs deployments/configmap-volume</code><br><br>5. Modifier le ConfigMap pour mettre à jour la configuration :<br><br>   <code>kubectl edit configmap sport</code><br>   Changer la valeur de la clé (ex. <code>sport: cricket</code>) et sauvegarder.<br><br>6. Suivre les logs du Pod pour observer la mise à jour automatique de la configuration :<br><br>   <code>kubectl logs deployments/configmap-volume --follow</code><br><br><b>Remarque :</b> La mise à jour du ConfigMap est reflétée presque immédiatement dans le Pod, mais l'application doit être conçue pour recharger dynamiquement la configuration (ex. via polling ou surveillance des fichiers).<br><br><br><img-0.jpeg><br><img-8.jpeg><br><hr><b>Explanatory Context :</b><br><br>Cette méthode permet de découpler la configuration de l'application de son déploiement, facilitant les mises à jour sans redémarrer les Pods. Le ConfigMap agit comme une source centralisée de vérité pour les paramètres, tandis que le volume monté expose ces paramètres sous forme de fichiers accessibles par le conteneur. Cela s'intègre dans l'architecture Kubernetes pour la gestion déclarative des configurations, essentielle pour les environnements dynamiques et scalables."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels sont les prérequis et objectifs de ce tutoriel sur la mise à jour de la configuration via un ConfigMap ?",
+  "back": "<b>Prérequis :</b><br><br>- Disposer de l'outil en ligne de commande <code>curl</code> pour effectuer des requêtes HTTP depuis le terminal. Si absent, l'installer selon la documentation du système d'exploitation.<br><br><br><br><b>Objectifs :</b><br><br><ul><br>    <li>Mettre à jour la configuration d'un Pod via un ConfigMap monté en tant que volume.</li><br>    <li>Mettre à jour les variables d'environnement d'un Pod via un ConfigMap.</li><br>    <li>Mettre à jour la configuration dans un Pod multi-conteneurs via un ConfigMap.</li><br>    <li>Mettre à jour la configuration dans un Pod possédant un conteneur sidecar via un ConfigMap.</li><br></ul><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces objectifs couvrent les cas d'usage fondamentaux pour gérer dynamiquement la configuration des applications dans Kubernetes. La maîtrise de ces techniques est cruciale pour déployer des applications résilientes et adaptables, où les paramètres peuvent évoluer sans interruption de service. Ce tutoriel s'inscrit dans une approche DevOps, où la configuration est externalisée et versionnée, facilitant les déploiements continus et la reproductibilité des environnements."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les prérequis et objectifs de ce tutoriel sur la mise à jour de la configuration via un ConfigMap ?",
+  "back": "<b>Prérequis :</b><br><br>- Disposer de l'outil en ligne de commande <code>curl</code> pour effectuer des requêtes HTTP depuis le terminal. Si absent, l'installer selon la documentation du système d'exploitation.<br><br><b>Objectifs :</b><br><br>- Mettre à jour la configuration d'un Pod via un ConfigMap monté en tant que volume.<br>- Mettre à jour les variables d'environnement d'un Pod via un ConfigMap.<br>- Mettre à jour la configuration dans un Pod multi-conteneurs via un ConfigMap.<br>- Mettre à jour la configuration dans un Pod possédant un conteneur sidecar via un ConfigMap.<br><br><img-1.jpeg><br><img-2.jpeg><br><img-4.jpeg><br><hr><b>Explanatory Context :</b><br><br>Ces objectifs couvrent les cas d'usage fondamentaux pour gérer dynamiquement la configuration des applications dans Kubernetes. La maîtrise de ces techniques est cruciale pour déployer des applications résilientes et adaptables, où les paramètres peuvent évoluer sans interruption de service. Ce tutoriel s'inscrit dans une approche DevOps, où la configuration est externalisée et versionnée, facilitant les déploiements continus et la reproductibilité des environnements."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle est la limitation principale concernant la détection des mises à jour d'un ConfigMap par une application dans un Pod ?",
+  "back": "<b>Limitation principale :</b><br><br>L'application doit être conçue pour détecter dynamiquement les changements de configuration. Si elle charge la configuration une seule fois au démarrage, elle ne verra pas les mises à jour du ConfigMap.<br><br><br><b>Solutions possibles :</b><br><br><ul><br>    <li>Implémenter un mécanisme de <i>polling</i> pour recharger périodiquement la configuration.</li><br>    <li>Utiliser un système de surveillance des fichiers (ex. <i>inotify</i>) pour détecter les modifications en temps réel.</li><br></ul><br><br><b>Remarque :</b> Le délai entre la mise à jour du ConfigMap et sa projection dans le Pod peut atteindre la période de synchronisation du kubelet.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Cette limitation souligne l'importance de concevoir des applications cloud-native, capables de s'adapter aux changements dynamiques de leur environnement. Dans Kubernetes, la configuration est souvent externalisée et mutable, ce qui nécessite des applications réactives. Cette approche s'aligne avec les principes des <i>12-factor apps</i>, où la configuration est strictement séparée du code et injectée via l'environnement."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle est la limitation principale concernant la détection des mises à jour d'un ConfigMap par une application dans un Pod ?",
+  "back": "<b>Limitation principale :</b><br><br>L'application doit être conçue pour détecter dynamiquement les changements de configuration. Si elle charge la configuration une seule fois au démarrage, elle ne verra pas les mises à jour du ConfigMap.<br><br><b>Solutions possibles :</b><br><br>- Implémenter un mécanisme de <i>polling</i> pour recharger périodiquement la configuration.<br>- Utiliser un système de surveillance des fichiers (ex. <i>inotify</i>) pour détecter les modifications en temps réel.<br><br><b>Remarque :</b> Le délai entre la mise à jour du ConfigMap et sa projection dans le Pod peut atteindre la période de synchronisation du kubelet.<br><br><img-2.jpeg><br><hr><b>Explanatory Context :</b><br><br>Cette limitation souligne l'importance de concevoir des applications cloud-native, capables de s'adapter aux changements dynamiques de leur environnement. Dans Kubernetes, la configuration est souvent externalisée et mutable, ce qui nécessite des applications réactives. Cette approche s'aligne avec les principes des <i>12-factor apps</i>, où la configuration est strictement séparée du code et injectée via l'environnement."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment vérifier que la mise à jour d'un ConfigMap est bien reflétée dans les logs d'un Pod ?",
+  "back": "<b>Étapes pour vérifier la mise à jour :</b><br><br><br>1. Suivre les logs du Pod en temps réel pour observer les changements :<br><br>   <code>kubectl logs deployments/configmap-volume --follow</code><br><br><br><br>2. Attendre quelques secondes après la modification du ConfigMap. Les logs devraient afficher la nouvelle valeur de configuration, par exemple :<br><br>   <pre>Thu Jan 4 14:12:06 UTC 2024 My preferred sport is cricket</pre><br><br><br><b>Explication :</b><br><br>Le kubelet met à jour automatiquement les fichiers du volume monté lorsque le ConfigMap change. Si l'application surveille ces fichiers, elle détectera la modification et affichera la nouvelle valeur dans les logs.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Cette vérification est essentielle pour valider le bon fonctionnement du couplage entre ConfigMap et Pod. Elle illustre le mécanisme de synchronisation automatique de Kubernetes, où les modifications de configuration sont propagées sans intervention manuelle. Cela permet aux équipes DevOps de gérer les configurations de manière centralisée et cohérente, réduisant les risques d'erreurs lors des déploiements."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment vérifier que la mise à jour d'un ConfigMap est bien reflétée dans les logs d'un Pod ?",
+  "back": "<b>Étapes pour vérifier la mise à jour :</b><br><br>1. Suivre les logs du Pod en temps réel pour observer les changements :<br><br>   <code>kubectl logs deployments/configmap-volume --follow</code><br><br>2. Attendre quelques secondes après la modification du ConfigMap. Les logs devraient afficher la nouvelle valeur de configuration, par exemple :<br><br>   <pre>Thu Jan 4 14:12:06 UTC 2024 My preferred sport is cricket</pre><br><br><b>Explication :</b><br><br>Le kubelet met à jour automatiquement les fichiers du volume monté lorsque le ConfigMap change. Si l'application surveille ces fichiers, elle détectera la modification et affichera la nouvelle valeur dans les logs.<br><br><img-3.jpeg><br><hr><b>Explanatory Context :</b><br><br>Cette vérification est essentielle pour valider le bon fonctionnement du couplage entre ConfigMap et Pod. Elle illustre le mécanisme de synchronisation automatique de Kubernetes, où les modifications de configuration sont propagées sans intervention manuelle. Cela permet aux équipes DevOps de gérer les configurations de manière centralisée et cohérente, réduisant les risques d'erreurs lors des déploiements."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet de modifier un ConfigMap existant, et comment se présente le manifeste après modification ?",
+  "back": "<b>Commande pour modifier un ConfigMap :</b><br><br><code>kubectl edit configmap sport</code><br><br><br><br><b>Exemple de manifeste après modification :</b><br><br><pre><br>apiVersion: v1<br>data:<br>  sport: cricket<br>kind: ConfigMap<br>metadata:<br>  creationTimestamp: '2024-01-04T14:05:06Z'<br>  name: sport<br>  namespace: default<br>  resourceVersion: '1743935'<br>  uid: 024ee001-fe72-487e-872e-34d6464a8a23<br></pre><br><br><b>Remarque :</b><br><br>- La clé <code>sport</code> est mise à jour avec la nouvelle valeur <code>cricket</code>.<br>- Les métadonnées (ex. <code>resourceVersion</code>, <code>uid</code>) sont gérées automatiquement par Kubernetes et peuvent différer.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>La commande <code>kubectl edit</code> permet de modifier directement les ressources Kubernetes via un éditeur interactif, simplifiant les mises à jour sans avoir à recréer le manifeste. Cela s'inscrit dans une approche déclarative, où l'état souhaité de la configuration est défini et appliqué dynamiquement. Le ConfigMap agit comme une source de vérité pour les paramètres, facilitant la gestion des environnements multiples (dev, staging, prod)."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de modifier un ConfigMap existant, et comment se présente le manifeste après modification ?",
+  "back": "<b>Commande pour modifier un ConfigMap :</b><br><br><code>kubectl edit configmap sport</code><br><br><b>Exemple de manifeste après modification :</b><br><br><pre>apiVersion: v1<br>data:<br>  sport: cricket<br>kind: ConfigMap<br>metadata:<br>  creationTimestamp: '2024-01-04T14:05:06Z'<br>  name: sport<br>  namespace: default<br>  resourceVersion: '1743935'<br>  uid: 024ee001-fe72-487e-872e-34d6464a8a23</pre><br><b>Remarque :</b><br>- La clé <code>sport</code> est mise à jour avec la nouvelle valeur <code>cricket</code>.<br>- Les métadonnées (ex. <code>resourceVersion</code>, <code>uid</code>) sont gérées automatiquement par Kubernetes et peuvent différer.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>La commande <code>kubectl edit</code> permet de modifier directement les ressources Kubernetes via un éditeur interactif, simplifiant les mises à jour sans avoir à recréer le manifeste. Cela s'inscrit dans une approche déclarative, où l'état souhaité de la configuration est défini et appliqué dynamiquement. Le ConfigMap agit comme une source de vérité pour les paramètres, facilitant la gestion des environnements multiples (dev, staging, prod)."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 5
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels sont les prérequis et bonnes pratiques pour exécuter les commandes <code>kubectl</code> dans ce tutoriel ?",
+  "back": "<b>Prérequis :</b><br><br><ul><br><li><b>Shell compatible POSIX :</b> Les commandes utilisent une syntaxe POSIX (ex : <code>export</code>, <code>$()</code>). Cela inclut les shells par défaut sur Linux/macOS (bash, zsh, sh) et des alternatives comme WSL ou Git Bash sur Windows. PowerShell et l'Invite de commandes Windows ne sont pas compatibles.</li><br><li><b>Accès à un cluster Kubernetes :</b> Un cluster fonctionnel (ex : Minikube, Kind, ou un cluster distant) avec <code>kubectl</code> configuré pour y accéder.</li><br><li><b>Droits suffisants :</b> Permissions pour créer/modifier des Deployments, Services, et Pods.</li><br></ul><br><br><b>Bonnes pratiques :</b><br><br><ol><br><li><b>Vérification systématique :</b><br><ul><br><li>Utiliser <code>kubectl get</code> pour lister les ressources (ex : <code>kubectl get deployments</code>, <code>kubectl get pods</code>).</li><br><li>Utiliser <code>kubectl describe</code> pour obtenir des détails (ex : <code>kubectl describe pods</code>).</li><br></ul><br></li><br><li><b>Gestion des variables d'environnement :</b><br><ul><br><li>Stocker les valeurs dynamiques (ex : ports) dans des variables pour éviter les erreurs de saisie :<br><br><code>export NODE_PORT='$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')'</code></li><br></ul><br></li><br><li><b>Tests de connectivité :</b><br><ul><br><li>Vérifier l'accès au Service avec <code>curl</code> ou un navigateur après chaque modification :<br><br><code>curl http://$(minikube ip):$NODE_PORT</code></li><br></ul><br></li><br><li><b>Rollback proactif :</b><br><ul><br><li>En cas d'erreur (ex : <code>ImagePullBackOff</code>), utiliser <code>kubectl rollout undo</code> pour revenir à un état stable.</li><br></ul><br></li><br><li><b>Nettoyage :</b><br><ul><br><li>Supprimer les ressources créées après les tests pour éviter les conflits :<br><br><code>kubectl delete deployments/kubernetes-bootcamp services/kubernetes-bootcamp</code></li><br></ul><br></li><br></ol><br><br><b>Note pour Minikube :</b><br><br>Si Minikube utilise Docker Desktop comme driver, exécuter <code>minikube tunnel</code> dans un terminal séparé pour accéder aux Services depuis l'hôte.<br><br><hr><br><b>Explanatory Context :</b><br><br>Ces prérequis et bonnes pratiques garantissent une expérience fluide avec Kubernetes, en évitant les erreurs courantes liées à l'environnement ou aux permissions. La vérification systématique des ressources est cruciale dans un système déclaratif comme Kubernetes, où l'état souhaité peut différer de l'état réel. Par exemple, une commande <code>kubectl apply</code> peut réussir sans que les Pods ne soient effectivement créés, d'où la nécessité de vérifier avec <code>kubectl get pods</code>. Ces pratiques s'intègrent dans une approche DevOps visant à automatiser et sécuriser les déploiements."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les prérequis et bonnes pratiques pour exécuter les commandes <code>kubectl</code> dans ce tutoriel ?",
+  "back": "<b>Prérequis :</b><br><br><ul><li><b>Shell compatible POSIX :</b> Les commandes utilisent une syntaxe POSIX (ex : <code>export</code>, <code>$()</code>). Cela inclut les shells par défaut sur Linux/macOS (bash, zsh, sh) et des alternatives comme WSL ou Git Bash sur Windows. PowerShell et l'Invite de commandes Windows ne sont pas compatibles.</li><li><b>Accès à un cluster Kubernetes :</b> Un cluster fonctionnel (ex : Minikube, Kind, ou un cluster distant) avec <code>kubectl</code> configuré pour y accéder.</li><li><b>Droits suffisants :</b> Permissions pour créer/modifier des Deployments, Services, et Pods.</li></ul><br><br><b>Bonnes pratiques :</b><br><br><ol><li><b>Vérification systématique :</b><ul><li>Utiliser <code>kubectl get</code> pour lister les ressources (ex : <code>kubectl get deployments</code>, <code>kubectl get pods</code>).</li><li>Utiliser <code>kubectl describe</code> pour obtenir des détails (ex : <code>kubectl describe pods</code>).</li></ul></li><li><b>Gestion des variables d'environnement :</b><ul><li>Stocker les valeurs dynamiques (ex : ports) dans des variables pour éviter les erreurs de saisie :<br><code>export NODE_PORT='$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')'</code></li></ul></li><li><b>Tests de connectivité :</b><ul><li>Vérifier l'accès au Service avec <code>curl</code> ou un navigateur après chaque modification :<br><code>curl http://$(minikube ip):$NODE_PORT</code></li></ul></li><li><b>Rollback proactif :</b><ul><li>En cas d'erreur (ex : <code>ImagePullBackOff</code>), utiliser <code>kubectl rollout undo</code> pour revenir à un état stable.</li></ul></li><li><b>Nettoyage :</b><ul><li>Supprimer les ressources créées après les tests pour éviter les conflits :<br><code>kubectl delete deployments/kubernetes-bootcamp services/kubernetes-bootcamp</code></li></ul></li></ol><br><b>Note pour Minikube :</b><br>Si Minikube utilise Docker Desktop comme driver, exécuter <code>minikube tunnel</code> dans un terminal séparé pour accéder aux Services depuis l'hôte.<br><hr><b>Explanatory Context :</b><br><br>Ces prérequis et bonnes pratiques garantissent une expérience fluide avec Kubernetes, en évitant les erreurs courantes liées à l'environnement ou aux permissions. La vérification systématique des ressources est cruciale dans un système déclaratif comme Kubernetes, où l'état souhaité peut différer de l'état réel. Par exemple, une commande <code>kubectl apply</code> peut réussir sans que les Pods ne soient effectivement créés, d'où la nécessité de vérifier avec <code>kubectl get pods</code>. Ces pratiques s'intègrent dans une approche DevOps visant à automatiser et sécuriser les déploiements."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 6
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment consulter les logs d'un Pod appartenant à un Deployment dans Kubernetes ?",
+  "back": "<b>Commande pour consulter les logs d'un Pod d'un Deployment :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de consulter les logs d'un Pod appartenant à un Deployment dans Kubernetes ?",
+  "back": "<b>Commande pour consulter les logs d'un Pod d'un Deployment :</b><br><br><code>kubectl logs deployment/&lt;nom-du-deployment&gt;</code><br><br><b>Exemple d'utilisation :</b><br><code>kubectl logs deployment/configmap-env-var</code><br><br>Cette commande affiche les logs de l'un des Pods gérés par le Deployment spécifié. Pour voir les logs d'un Pod spécifique, utilisez :<br><code>kubectl logs &lt;nom-du-pod&gt;</code><hr><b>Contexte Explicatif :</b><br>Les logs permettent de déboguer et de surveiller le comportement des applications conteneurisées. Dans un environnement Kubernetes, chaque Pod génère des logs qui peuvent être consultés via la commande <code>kubectl logs</code>. Les logs sont particulièrement utiles pour vérifier le statut d'une application ou identifier des erreurs."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment créer un ConfigMap à partir de valeurs littérales dans Kubernetes ? Donnez la commande et expliquez son utilité.",
+  "back": "<b>Commande pour créer un ConfigMap à partir de valeurs littérales :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de créer un ConfigMap à partir de valeurs littérales dans Kubernetes, et à quoi sert cette commande ?",
+  "back": "<b>Commande pour créer un ConfigMap à partir de valeurs littérales :</b><br><br><code>kubectl create configmap &lt;nom-du-configmap&gt; --from-literal=&lt;clé&gt;=&lt;valeur&gt;</code><br><br><b>Exemple :</b><br><code>kubectl create configmap color --from-literal=color=red</code><br><br><b>Utilité :</b><br>Cette commande crée un ConfigMap qui stocke des paires clé-valeur. Les ConfigMaps sont utilisés pour externaliser la configuration des applications conteneurisées, permettant de modifier la configuration sans reconstruire les images des conteneurs. Les applications peuvent accéder à ces valeurs via des variables d'environnement ou des fichiers montés dans leurs conteneurs.<hr><b>Contexte Explicatif :</b><br>Les ConfigMaps sont essentiels dans Kubernetes pour séparer la configuration de l'application elle-même. Ils permettent de gérer dynamiquement les paramètres de configuration, comme les chaînes de connexion à une base de données ou les chemins de fichiers, sans modifier le code de l'application. Les changements apportés à un ConfigMap sont automatiquement reflétés dans les Pods qui l'utilisent, à condition que ces Pods soient redémarrés ou que le Deployment soit mis à jour."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Décrivez le fonctionnement d'un Deployment Kubernetes utilisant un ConfigMap dans un Pod multi-conteneurs. Comment les conteneurs communiquent-ils et comment le ConfigMap est-il utilisé ?",
+  "back": "<b>Architecture du Deployment multi-conteneurs avec ConfigMap :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Décrivez le fonctionnement d'un Deployment Kubernetes utilisant un ConfigMap dans un Pod multi-conteneurs. Comment les conteneurs communiquent-ils, et comment le ConfigMap est-il utilisé ?",
+  "back": "<b>Fonctionnement d'un Deployment multi-conteneurs avec ConfigMap :</b><br><br>Un Deployment Kubernetes gère un ensemble de Pods identiques. Dans un Pod multi-conteneurs, les conteneurs partagent souvent un volume <code>emptyDir</code> pour communiquer. Par exemple :<br><ul><li>Un conteneur exécute un serveur web (comme <code>nginx</code>), monté à <code>/usr/share/nginx/html</code>.</li><li>Un autre conteneur (basé sur <code>alpine</code>) écrit un fichier HTML dans le volume partagé, basé sur les valeurs d'un ConfigMap.</li></ul><br><b>Utilisation du ConfigMap :</b><br>Le ConfigMap fournit des valeurs de configuration (comme <code>color=red</code>). Le conteneur helper lit ces valeurs et génère un fichier HTML dynamique. Le serveur web sert ce fichier via HTTP. Si le ConfigMap est mis à jour, les changements sont appliqués lors du prochain redémarrage du Pod ou du Deployment.<br><br><b>Exemple de manifest :</b><br>Le fichier <code>deployment-with-configmap-two-containers.yaml</code> (disponible à l'URL fournie) définit un Deployment avec deux conteneurs partageant un volume <code>emptyDir</code>. Le conteneur helper écrit un fichier HTML basé sur le ConfigMap, et le serveur web le sert.<br><br><b>Impact des mises à jour :</b><br>Si vous modifiez le ConfigMap (par exemple, en changeant <code>color=red</code> en <code>color=blue</code>), les nouveaux Pods créés (par exemple, lors d'un scaling) utiliseront la nouvelle configuration. Les Pods existants ne seront mis à jour que lors d'un redémarrage ou d'un rollout.<hr><b>Contexte Explicatif :</b><br>Les Pods multi-conteneurs sont utiles pour des architectures où plusieurs processus doivent collaborer étroitement, comme un serveur web et un outil de génération de contenu. Les ConfigMaps permettent de centraliser la configuration et de la partager entre les conteneurs. Cette approche améliore la maintenabilité et la flexibilité des applications Kubernetes."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment exposer un Deployment Kubernetes via un Service et accéder à son contenu depuis votre machine locale ? Détaillez les commandes nécessaires.",
+  "back": "<b>Étapes pour exposer un Deployment et y accéder localement :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles commandes permettent d'exposer un Deployment Kubernetes via un Service, puis d'y accéder depuis votre machine locale ? Détaillez les étapes.",
+  "back": "<b>Étapes pour exposer un Deployment et y accéder localement :</b><br><br><b>1. Exposer le Deployment via un Service :</b><br><code>kubectl expose deployment &lt;nom-du-deployment&gt; --name=&lt;nom-du-service&gt; --port=&lt;port-exposé&gt; --target-port=&lt;port-cible&gt;</code><br><br><b>Exemple :</b><br><code>kubectl expose deployment configmap-two-containers --name=configmap-service --port=8080 --target-port=80</code><br><br><b>2. Vérifier la création du Service :</b><br><code>kubectl get services</code><br><br><b>3. Rediriger le port localement :</b><br><code>kubectl port-forward service/&lt;nom-du-service&gt; &lt;port-local&gt;:&lt;port-du-service&gt; &</code><br><br><b>Exemple :</b><br><code>kubectl port-forward service/configmap-service 8080:8080 &</code><br><br><b>4. Accéder au service :</b><br>Ouvrez un navigateur ou utilisez <code>curl</code> pour accéder à l'URL :<br><code>http://localhost:&lt;port-local&gt;</code><br><br><b>Exemple de sortie attendue :</b><br><code>Fri Jan  5 08:08:22 UTC 2024 My preferred color is red</code><br><br><b>5. Arrêter le port-forwarding :</b><br>Appuyez sur <code>Ctrl+C</code> pour arrêter le processus en arrière-plan.<hr><b>Contexte Explicatif :</b><br>Exposer un Deployment via un Service permet de rendre une application accessible depuis l'extérieur du cluster Kubernetes. Le <code>port-forward</code> est utile pour le développement et le débogage local, car il permet de tester une application sans exposer le Service sur le réseau. Les Services Kubernetes fournissent une abstraction pour accéder aux Pods, même si ces derniers sont redémarrés ou déplacés."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment mettre à jour un ConfigMap existant dans Kubernetes ? Décrivez la procédure et expliquez l'impact sur les Pods utilisant ce ConfigMap.",
+  "back": "<b>Procédure pour mettre à jour un ConfigMap :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle procédure permet de mettre à jour un ConfigMap existant dans Kubernetes, et quel est l'impact sur les Pods utilisant ce ConfigMap ?",
+  "back": "<b>Procédure pour mettre à jour un ConfigMap :</b><br><br><b>1. Éditer le ConfigMap :</b><br><code>kubectl edit configmap &lt;nom-du-configmap&gt;</code><br><br>Cela ouvre l'éditeur par défaut pour modifier le ConfigMap. Par exemple :<br><br><code>kubectl edit configmap color</code><br><br><b>2. Modifier les valeurs :</b><br>Changez les valeurs des clés dans le fichier YAML qui s'ouvre. Par exemple, modifiez <code>color: red</code> en <code>color: blue</code>.<br><br><b>3. Sauvegarder les modifications :</b><br>Enregistrez et quittez l'éditeur. Kubernetes met à jour le ConfigMap automatiquement.<br><br><b>Impact sur les Pods :</b><br>Les Pods existants ne sont <b>pas mis à jour automatiquement</b>. Pour appliquer les changements :<br><ul><li>Redémarrez les Pods existants : <code>kubectl delete pod &lt;nom-du-pod&gt;</code>.</li><li>Ou déclenchez un rollout : <code>kubectl rollout restart deployment/&lt;nom-du-deployment&gt;</code>.</li><li>Les nouveaux Pods créés (par exemple, lors d'un scaling) utiliseront automatiquement la nouvelle configuration.</li></ul><br><b>Exemple de sortie après mise à jour :</b><br><code>Fri Jan  5 08:14:00 UTC 2024 My preferred color is blue</code><br><br>Les logs montrent que l'application utilise désormais la nouvelle valeur du ConfigMap.<hr><b>Contexte Explicatif :</b><br>Les ConfigMaps sont conçus pour externaliser la configuration des applications. Cependant, Kubernetes ne propage pas automatiquement les mises à jour des ConfigMaps aux Pods en cours d'exécution. Cela permet de contrôler précisément quand les changements sont appliqués. Cette approche garantit la stabilité des applications en production, tout en permettant une gestion flexible de la configuration."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 5
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Pourquoi un Service Kubernetes peut-il être créé sans <b>selector</b> ? Quels sont les cas d'usage pour cette configuration ?",
+  "back": "<b>Raisons pour créer un Service sans selector :</b><br><br>Un Service Kubernetes peut être créé sans selector dans les cas suivants :<br><br><br><br>1. <b>Mapping manuel vers des endpoints spécifiques</b> :<br><br>   - Permet de mapper manuellement un Service à des endpoints qui ne sont pas gérés par Kubernetes (ex : une base de données externe, un service hébergé en dehors du cluster).<br><br>   - Dans ce cas, l'utilisateur doit créer manuellement un objet <b>Endpoints</b> pour définir les adresses IP et ports ciblés par le Service.<br><br>   <br><br>2. <b>Utilisation d'un Service de type ExternalName</b> :<br><br>   - Un Service de type <b>ExternalName</b> mappe le Service à un nom DNS externe (ex : <code>foo.bar.example.com</code>) en retournant un enregistrement CNAME.<br><br>   - Aucun proxy ou routage n'est configuré ; le Service agit simplement comme un alias DNS.<br><br>   - Ce type de Service ne nécessite pas de selector car il ne cible pas de Pods dans le cluster.<br><br><br><br><b>Cas d'usage concrets :</b><br><br><ul><br>    <li><b>Intégration avec des services externes</b> :<br><br>        Par exemple, un Service sans selector peut être utilisé pour accéder à une base de données hébergée en dehors du cluster Kubernetes. L'objet <b>Endpoints</b> associé contiendra l'adresse IP et le port de la base de données externe.</li><br>    <li><b>Migration progressive vers Kubernetes</b> :<br><br>        Pendant une migration, certaines parties d'une application peuvent encore être hébergées en dehors du cluster. Un Service sans selector permet de maintenir une interface cohérente pour les autres composants du cluster.</li><br>    <li><b>Alias DNS pour des services externes</b> :<br><br>        Un Service de type <b>ExternalName</b> peut être utilisé pour masquer la complexité des noms DNS externes (ex : <code>my-database.example.com</code>) derrière un nom simple et cohérent dans le cluster (ex : <code>my-database</code>).</li><br></ul><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Les Services sans selector offrent une flexibilité cruciale pour intégrer Kubernetes avec des infrastructures existantes ou des services externes. Ils permettent de :<br><br>- <b>Abstraire</b> les détails des endpoints externes, rendant le code des applications plus portable et moins dépendant de l'infrastructure sous-jacente.<br><br>- <b>Simplifier</b> les migrations en permettant une transition progressive vers Kubernetes sans perturber les autres composants de l'application.<br><br>- <b>Centraliser</b> la gestion des accès aux services externes via les mécanismes natifs de Kubernetes (ex : politiques réseau, monitoring).<br><br><br><br>Cependant, cette approche nécessite une gestion manuelle des objets <b>Endpoints</b>, ce qui peut ajouter de la complexité. Elle est donc généralement réservée à des cas spécifiques où les avantages l'emportent sur les inconvénients."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Pourquoi un Service Kubernetes peut-il être créé sans <b>selector</b> ? Quels sont les cas d'usage pour cette configuration ?",
+  "back": "<b>Raisons pour créer un Service sans selector :</b><br><br>Un Service Kubernetes peut être créé sans selector dans les cas suivants :<br><br><br><br>1. <b>Mapping manuel vers des endpoints spécifiques</b> :<br><br>   - Permet de mapper manuellement un Service à des endpoints qui ne sont pas gérés par Kubernetes (ex : une base de données externe, un service hébergé en dehors du cluster).<br><br>   - Dans ce cas, l'utilisateur doit créer manuellement un objet <b>Endpoints</b> pour définir les adresses IP et ports ciblés par le Service.<br><br>   <br><br>2. <b>Utilisation d'un Service de type ExternalName</b> :<br><br>   - Un Service de type <b>ExternalName</b> mappe le Service à un nom DNS externe (ex : <code>foo.bar.example.com</code>) en retournant un enregistrement CNAME.<br><br>   - Aucun proxy ou routage n'est configuré ; le Service agit simplement comme un alias DNS.<br><br>   - Ce type de Service ne nécessite pas de selector car il ne cible pas de Pods dans le cluster.<br><br><br><br><b>Cas d'usage concrets :</b><br><br><ul><br>    <li><b>Intégration avec des services externes</b> :<br><br>        Par exemple, un Service sans selector peut être utilisé pour accéder à une base de données hébergée en dehors du cluster Kubernetes. L'objet <b>Endpoints</b> associé contiendra l'adresse IP et le port de la base de données externe.</li><br>    <li><b>Migration progressive vers Kubernetes</b> :<br><br>        Pendant une migration, certaines parties d'une application peuvent encore être hébergées en dehors du cluster. Un Service sans selector permet de maintenir une interface cohérente pour les autres composants du cluster.</li><br>    <li><b>Alias DNS pour des services externes</b> :<br><br>        Un Service de type <b>ExternalName</b> peut être utilisé pour masquer la complexité des noms DNS externes (ex : <code>my-database.example.com</code>) derrière un nom simple et cohérent dans le cluster (ex : <code>my-database</code>).</li><br></ul><br><br><br><hr><b>Explanatory Context :</b><br><br>Les Services sans selector offrent une flexibilité cruciale pour intégrer Kubernetes avec des infrastructures existantes ou des services externes. Ils permettent de :<br><br>- <b>Abstraire</b> les détails des endpoints externes, rendant le code des applications plus portable et moins dépendant de l'infrastructure sous-jacente.<br><br>- <b>Simplifier</b> les migrations en permettant une transition progressive vers Kubernetes sans perturber les autres composants de l'application.<br><br>- <b>Centraliser</b> la gestion des accès aux services externes via les mécanismes natifs de Kubernetes (ex : politiques réseau, monitoring).<br><br><br><br>Cependant, cette approche nécessite une gestion manuelle des objets <b>Endpoints</b>, ce qui peut ajouter de la complexité. Elle est donc généralement réservée à des cas spécifiques où les avantages l'emportent sur les inconvénients.<br><br><br><img-5.jpeg>"
+}
+```
+
+---
+## [AUDIT IMAGE V1.1] Image manquante injectee
+
+- **Image:** img-5.jpeg
+- **Description:** [diagram] Diagrama que muestra la relación entre un Servicio, un ReplicaSet y Pods en Kubernetes, incluyendo etiquetas, selectores y direcciones IP. (Concepts: Kubernetes, Servicio, ReplicaSet, Pod, Label, Selector, Deployment, IP addresses, app:A, app:B)
+- **Carte cible (ID 4):** Comment supprimer un <b>Service</b> Kubernetes et vérifier que l'application n'e...
+- **Score de correspondance:** 10
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment injecter une valeur d'un ConfigMap comme variable d'environnement dans un conteneur d'un Pod ? Illustrez avec un exemple de manifest Deployment.",
+  "back": "<b>Méthode :</b><br>On utilise le champ `env` ou `envFrom` dans la spécification du conteneur du Deployment pour référencer le ConfigMap.<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment injecter une valeur d'un ConfigMap comme variable d'environnement dans un conteneur d'un Pod ? Illustrez avec un exemple de manifest Deployment complet.",
+  "back": "<b>Méthode :</b><br>Pour injecter une valeur d'un ConfigMap comme variable d'environnement dans un conteneur, utilisez le champ <code>env</code> dans la spécification du conteneur du Deployment. Voici un exemple complet de manifest :<br><br><pre><code>apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: configmap-env-var\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: configmap-env-var\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: configmap-env-var\n    spec:\n      containers:\n      - name: my-container\n        image: busybox\n        command: ['sh', '-c', 'echo The basket is full of $(FRUITS) && sleep 3600']\n        env:\n        - name: FRUITS\n          valueFrom:\n            configMapKeyRef:\n              name: fruits\n              key: fruits\n</code></pre><br><b>Explication :</b><br>Le champ <code>env</code> référence le ConfigMap <code>fruits</code> et extrait la valeur associée à la clé <code>fruits</code> pour l'injecter comme variable d'environnement <code>FRUITS</code> dans le conteneur.<br><br><hr><b>Contexte Explicatif :</b><br>Les variables d'environnement sont une méthode courante pour injecter des configurations dans les applications conteneurisées. Elles permettent aux applications de lire dynamiquement des valeurs de configuration sans nécessiter de redémarrage ou de reconstruction de l'image du conteneur."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment consulter les logs d'un Pod pour vérifier la valeur d'une variable d'environnement injectée depuis un ConfigMap ? Donnez un exemple de commande et de sortie attendue.",
+  "back": "<b>Commande :</b><br>`kubectl logs deployment/configmap-env-var`<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment consulter les logs d'un Pod pour vérifier la valeur d'une variable d'environnement injectée depuis un ConfigMap ? Donnez un exemple de commande et de sortie attendue.",
+  "back": "<b>Commande :</b><br>`kubectl logs deployment/configmap-env-var`<br><br><b>Sortie attendue :</b><br><pre><code>Found 3 pods, using pod/configmap-env-var-7c994f7769-l74nq\nThu Jan  4 16:07:06 UTC 2024 The basket is full of apples\nThu Jan  4 16:07:16 UTC 2024 The basket is full of apples\nThu Jan  4 16:07:26 UTC 2024 The basket is full of apples\n</code></pre><br><b>Explication :</b><br>Cette commande permet de consulter les logs des Pods associés au Deployment <code>configmap-env-var</code>. Les logs montrent la valeur de la variable d'environnement <code>FRUITS</code> (ici, <code>apples</code>), injectée depuis le ConfigMap <code>fruits</code>.<br><br><hr><b>Contexte Explicatif :</b><br>Les logs sont un outil essentiel pour le débogage et la vérification du comportement des applications dans Kubernetes. Ils permettent de confirmer que les variables d'environnement sont correctement injectées et utilisées par les conteneurs."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet de modifier un ConfigMap existant ? Donnez un exemple de modification et expliquez les étapes.",
+  "back": "<b>Commande :</b><br>`kubectl edit configmap fruits`<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de modifier un ConfigMap existant ? Donnez un exemple de modification et expliquez les étapes à suivre.",
+  "back": "<b>Commande :</b><br>`kubectl edit configmap fruits`<br><br><b>Étapes à suivre :</b><br>1. Exécutez la commande <code>kubectl edit configmap fruits</code> pour ouvrir l'éditeur par défaut (par exemple, <code>vim</code> ou <code>nano</code>).<br>2. Modifiez la valeur de la clé <code>fruits</code> (par exemple, de <code>apples</code> à <code>mangoes</code>).<br>3. Sauvegardez et fermez l'éditeur. Kubernetes mettra à jour le ConfigMap.<br><br><b>Exemple de manifest après modification :</b><br><pre><code>apiVersion: v1\nkind: ConfigMap\ndata:\n  fruits: mangoes\n</code></pre><br><hr><b>Contexte Explicatif :</b><br>La commande <code>kubectl edit</code> permet de modifier directement un objet Kubernetes via un éditeur de texte. Cette méthode est utile pour des modifications rapides, mais elle n'est pas recommandée pour des configurations complexes ou versionnées. Pour des modifications plus robustes, il est préférable d'utiliser un fichier manifest et la commande <code>kubectl apply</code>."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet de déclencher un rollout pour un Deployment afin de forcer le redémarrage des Pods ? Donnez un exemple et expliquez son utilité.",
+  "back": "<b>Commande :</b><br>`kubectl rollout restart deployment configmap-env-var`<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de déclencher un rollout pour un Deployment afin de forcer le redémarrage des Pods ? Donnez un exemple et expliquez son utilité.",
+  "back": "<b>Commande :</b><br>`kubectl rollout restart deployment configmap-env-var`<br><br><b>Utilité :</b><br>Cette commande déclenche un redémarrage des Pods associés au Deployment <code>configmap-env-var</code>. Elle est utile pour appliquer des modifications de configuration (par exemple, après un changement dans un ConfigMap) sans avoir à supprimer manuellement les Pods existants.<br><br><b>Étapes suivantes :</b><br>1. Vérifiez l'état du rollout avec :<br><code>kubectl rollout status deployment configmap-env-var --watch=true</code><br>2. Vérifiez les nouveaux Pods :<br><code>kubectl get pods --selector=app.kubernetes.io/name=configmap-env-var</code><br><br><hr><b>Contexte Explicatif :</b><br>Le redémarrage des Pods est nécessaire pour appliquer des modifications de configuration qui ne peuvent pas être dynamiquement mises à jour (comme les variables d'environnement injectées depuis un ConfigMap). Cette commande est une méthode simple et efficace pour forcer Kubernetes à recréer les Pods avec les nouvelles configurations."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les informations manquantes concernant la configuration de Redis avec une ConfigMap :<br><br><br>Pour configurer Redis avec une ConfigMap, on crée d'abord un objet {{c1::ConfigMap}} contenant les paramètres de configuration. Ensuite, on définit un {{c2::Pod}} qui monte cette ConfigMap en tant que {{c3::volume}}. Le fichier de configuration généré est alors accessible dans le conteneur Redis à l'emplacement `/redis-master/redis.conf`.",
+  "back": "Pour configurer Redis avec une ConfigMap, on crée d'abord un objet ConfigMap contenant les paramètres de configuration. Ensuite, on définit un Pod qui monte cette ConfigMap en tant que volume. Le fichier de configuration généré est alors accessible dans le conteneur Redis à l'emplacement `/redis-master/redis.conf`.<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Cette approche permet de séparer la configuration de l'application de son déploiement, ce qui est une bonne pratique en DevOps. La ConfigMap agit comme un référentiel centralisé pour les paramètres, tandis que le Pod utilise ces paramètres via un montage de volume. Cela facilite la gestion des configurations dans des environnements dynamiques comme Kubernetes."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les informations manquantes concernant la configuration de Redis avec une ConfigMap :<br><br>Pour configurer Redis avec une ConfigMap, on crée d'abord un objet {{c1::ConfigMap}} contenant les paramètres de configuration. Ensuite, on définit un {{c2::Pod}} qui monte cette ConfigMap en tant que {{c3::volume}}. Le fichier de configuration généré est alors accessible dans le conteneur Redis à l'emplacement `/redis-master/redis.conf`.",
+  "back": "Pour configurer Redis avec une ConfigMap, on crée d'abord un objet ConfigMap contenant les paramètres de configuration. Ensuite, on définit un Pod qui monte cette ConfigMap en tant que volume. Le fichier de configuration généré est alors accessible dans le conteneur Redis à l'emplacement `/redis-master/redis.conf`.<br><br><br><hr><b>Explanatory Context :</b><br><br>Cette approche permet de séparer la configuration de l'application de son déploiement, ce qui est une bonne pratique en DevOps. La ConfigMap agit comme un référentiel centralisé pour les paramètres, tandis que le Pod utilise ces paramètres via un montage de volume. Cela facilite la gestion des configurations dans des environnements dynamiques comme Kubernetes."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 6
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [AUDIT IMAGE V1.1] Image manquante injectee
+
+- **Image:** img-4.jpeg
+- **Description:** [diagram] A diagram illustrating the structure of a Kubernetes node, showing pods, containers, and node processes with IP addresses and labels. (Concepts: Kubernetes, Node, Pod, Container, IP Addressing, Containerized Applications, Node Processes, kubelet)
+- **Carte cible (ID 2):** Qu'est-ce qu'un Node dans Kubernetes et quels composants essentiels y sont exécu...
+- **Score de correspondance:** 8
+
+---
+## [AUDIT IMAGE V1.1] Image manquante injectee
+
+- **Image:** img-3.jpeg
+- **Description:** [diagram] Diagrama que muestra la evolución de pods en un entorno de contenedores, desde un pod con una sola aplicación hasta un pod con múltiples aplicaciones contenerizadas y volúmenes compartidos, cada uno etiquetado con una dirección IP única. (Concepts: Kubernetes, pods, contenedores, direcciones IP, volúmenes, aplicaciones contenerizadas, orquestación de contenedores)
+- **Carte cible (ID 0):** Qu'est-ce qu'un Pod dans Kubernetes et quelles ressources partagées inclut-il ?...
+- **Score de correspondance:** 6
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 8
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les étapes pour configurer un Pod afin qu'il utilise un PersistentVolume pour le stockage dans Kubernetes ?",
+  "back": "<b>Étapes pour configurer un Pod avec un PersistentVolume (PV) :</b><br><ol><li><b>Création du PersistentVolume (par l'administrateur du cluster) :</b><br>L'administrateur crée un PV, qui est une ressource de stockage dans le cluster, sans l'associer à un Pod spécifique. Le PV est soutenu par un stockage physique (ex : disque réseau, stockage local).<br><br><b>Exemple de définition d'un PV :</b><pre>&lt;code&gt;apiVersion: v1<br>kind: PersistentVolume<br>metadata:<br>  name: pv-example<br>spec:<br>  capacity:<br>    storage: 10Gi<br>  accessModes:<br>    - ReadWriteOnce<br>  persistentVolumeReclaimPolicy: Retain<br>  hostPath:<br>    path: /mnt/data&lt;/code&gt;</pre></li><br><li><b>Création d'une PersistentVolumeClaim (par le développeur) :</b><br>Le développeur crée une PersistentVolumeClaim (PVC), qui est une demande de stockage. La PVC est automatiquement liée à un PV approprié en fonction de la capacité et des modes d'accès demandés.<br><br><b>Exemple de définition d'une PVC :</b><pre>&lt;code&gt;apiVersion: v1<br>kind: PersistentVolumeClaim<br>metadata:<br>  name: pvc-example<br>spec:<br>  accessModes:<br>    - ReadWriteOnce<br>  resources:<br>    requests:<br>      storage: 5Gi&lt;/code&gt;</pre></li><br><li><b>Utilisation de la PVC dans un Pod :</b><br>Le développeur crée un Pod qui utilise la PVC comme volume de stockage. Le Pod peut alors lire et écrire des données sur le stockage persistant.<br><br><b>Exemple de définition d'un Pod utilisant une PVC :</b><pre>&lt;code&gt;apiVersion: v1<br>kind: Pod<br>metadata:<br>  name: pod-using-pvc<br>spec:<br>  containers:<br>  - name: nginx<br>    image: nginx<br>    volumeMounts:<br>    - name: storage<br>      mountPath: /usr/share/nginx/html<br>  volumes:<br>  - name: storage<br>    persistentVolumeClaim:<br>      claimName: pvc-example&lt;/code&gt;</pre></li></ol><br><hr><b>Explanatory Context :</b><br>Cette approche découple la gestion du stockage (par l'administrateur) de son utilisation (par le développeur), ce qui est essentiel dans les environnements multi-utilisateurs. Par exemple, un développeur peut demander 5 Go de stockage sans se soucier de l'emplacement physique du stockage, tandis que l'administrateur peut gérer les ressources de stockage de manière centralisée. Cela facilite également la portabilité des applications, car les PVC peuvent être liées à différents types de PV selon l'environnement (ex : stockage local en développement, stockage réseau en production)."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les étapes pour configurer un Pod afin qu'il utilise un PersistentVolume pour le stockage dans Kubernetes ?",
+  "back": "<b>Étapes pour configurer un Pod avec un PersistentVolume (PV) :</b><br><ol><li><b>Création du PersistentVolume (par l'administrateur du cluster) :</b><br>L'administrateur crée un PV, qui est une ressource de stockage dans le cluster, sans l'associer à un Pod spécifique. Le PV est soutenu par un stockage physique (ex : disque réseau, stockage local).<br><br><b>Exemple de définition d'un PV :</b><pre>&lt;code&gt;apiVersion: v1<br>kind: PersistentVolume<br>metadata:<br>  name: pv-example<br>spec:<br>  capacity:<br>    storage: 10Gi<br>  accessModes:<br>    - ReadWriteOnce<br>  persistentVolumeReclaimPolicy: Retain<br>  hostPath:<br>    path: /mnt/data&lt;/code&gt;</pre></li><br><li><b>Création d'une PersistentVolumeClaim (par le développeur) :</b><br>Le développeur crée une PersistentVolumeClaim (PVC), qui est une demande de stockage. La PVC est automatiquement liée à un PV approprié en fonction de la capacité et des modes d'accès demandés.<br><br><b>Exemple de définition d'une PVC :</b><pre>&lt;code&gt;apiVersion: v1<br>kind: PersistentVolumeClaim<br>metadata:<br>  name: pvc-example<br>spec:<br>  accessModes:<br>    - ReadWriteOnce<br>  resources:<br>    requests:<br>      storage: 5Gi&lt;/code&gt;</pre></li><br><li><b>Utilisation de la PVC dans un Pod :</b><br>Le développeur crée un Pod qui utilise la PVC comme volume de stockage. Le Pod peut alors lire et écrire des données sur le stockage persistant.<br><br><b>Exemple de définition d'un Pod utilisant une PVC :</b><pre>&lt;code&gt;apiVersion: v1<br>kind: Pod<br>metadata:<br>  name: pod-using-pvc<br>spec:<br>  containers:<br>  - name: nginx<br>    image: nginx<br>    volumeMounts:<br>    - name: storage<br>      mountPath: /usr/share/nginx/html<br>  volumes:<br>  - name: storage<br>    persistentVolumeClaim:<br>      claimName: pvc-example&lt;/code&gt;</pre></li></ol><br><hr><b>Explanatory Context :</b><br>Cette approche découple la gestion du stockage (par l'administrateur) de son utilisation (par le développeur), ce qui est essentiel dans les environnements multi-utilisateurs. Par exemple, un développeur peut demander 5 Go de stockage sans se soucier de l'emplacement physique du stockage, tandis que l'administrateur peut gérer les ressources de stockage de manière centralisée. Cela facilite également la portabilité des applications, car les PVC peuvent être liées à différents types de PV selon l'environnement (ex : stockage local en développement, stockage réseau en production).<br><br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les prérequis pour configurer un Pod afin qu'il utilise un PersistentVolume pour le stockage dans Kubernetes ?",
+  "back": "<b>Prérequis pour configurer un Pod avec un PersistentVolume :</b><br><ul><li><b>Cluster Kubernetes fonctionnel :</b><br>Vous devez disposer d'un cluster Kubernetes avec au moins un nœud. Le cluster peut être local (ex : Minikube) ou distant.<br><br><i>Exemple avec Minikube :</i><br><code>minikube start</code></li><br><li><b>Outil en ligne de commande configuré :</b><br>L'outil <code>kubectl</code> doit être configuré pour communiquer avec votre cluster. Vous pouvez vérifier la configuration avec :<br><code>kubectl cluster-info</code></li><br><li><b>Connaissances de base sur les PersistentVolumes :</b><br>Familiarisez-vous avec les concepts de PersistentVolume (PV) et PersistentVolumeClaim (PVC). Un PV est une ressource de stockage dans le cluster, tandis qu'une PVC est une demande de stockage par un utilisateur.<br><br><b>Concepts clés :</b><ul><li><b>Access Modes :</b> Définissent comment le volume peut être monté (ex : <code>ReadWriteOnce</code>, <code>ReadOnlyMany</code>, <code>ReadWriteMany</code>).</li><li><b>Reclaim Policy :</b> Détermine ce qui arrive au PV une fois la PVC supprimée (ex : <code>Retain</code>, <code>Delete</code>, <code>Recycle</code>).</li><li><b>Storage Class :</b> Permet de définir des classes de stockage dynamiques (ex : stockage rapide vs. lent).</li></ul></li><br><li><b>Accès au nœud pour la configuration initiale (si nécessaire) :</b><br>Pour certains types de PV (ex : <code>hostPath</code>), vous devrez peut-être créer un répertoire sur le nœud. Par exemple, avec Minikube :<br><code>minikube ssh</code><br><code>sudo mkdir -p /mnt/data</code><br><code>sudo chmod -R 777 /mnt/data</code><br><i>Note :</i> Cette étape dépend du type de PV utilisé. Pour des solutions de stockage réseau (ex : NFS, AWS EBS), cette étape n'est généralement pas nécessaire.</li></ul><br><hr><b>Explanatory Context :</b><br>Ces prérequis garantissent que vous disposez des outils et des connaissances nécessaires pour configurer correctement un Pod avec un stockage persistant. Par exemple, comprendre les <i>Access Modes</i> est crucial pour éviter des erreurs de montage, comme essayer d'utiliser un volume <code>ReadWriteOnce</code> sur plusieurs Pods simultanément. De même, la configuration initiale du nœud est souvent nécessaire pour les environnements de développement ou de test, mais rarement en production où des solutions de stockage réseau sont utilisées."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les prérequis pour configurer un Pod afin qu'il utilise un PersistentVolume pour le stockage dans Kubernetes ?",
+  "back": "<b>Prérequis pour configurer un Pod avec un PersistentVolume :</b><br><ul><li><b>Cluster Kubernetes fonctionnel :</b><br>Vous devez disposer d'un cluster Kubernetes avec au moins un nœud. Le cluster peut être local (ex : Minikube) ou distant.<br><br><i>Exemple avec Minikube :</i><br><code>minikube start</code></li><br><li><b>Outil en ligne de commande configuré :</b><br>L'outil <code>kubectl</code> doit être configuré pour communiquer avec votre cluster. Vous pouvez vérifier la configuration avec :<br><code>kubectl cluster-info</code></li><br><li><b>Connaissances de base sur les PersistentVolumes :</b><br>Familiarisez-vous avec les concepts de PersistentVolume (PV) et PersistentVolumeClaim (PVC). Un PV est une ressource de stockage dans le cluster, tandis qu'une PVC est une demande de stockage par un utilisateur.<br><br><b>Concepts clés :</b><ul><li><b>Access Modes :</b> Définissent comment le volume peut être monté (ex : <code>ReadWriteOnce</code>, <code>ReadOnlyMany</code>, <code>ReadWriteMany</code>).</li><li><b>Reclaim Policy :</b> Détermine ce qui arrive au PV une fois la PVC supprimée (ex : <code>Retain</code>, <code>Delete</code>, <code>Recycle</code>).</li><li><b>Storage Class :</b> Permet de définir des classes de stockage dynamiques (ex : stockage rapide vs. lent).</li></ul></li><br><li><b>Accès au nœud pour la configuration initiale (si nécessaire) :</b><br>Pour certains types de PV (ex : <code>hostPath</code>), vous devrez peut-être créer un répertoire sur le nœud. Par exemple, avec Minikube :<br><code>minikube ssh</code><br><code>sudo mkdir -p /mnt/data</code><br><code>sudo chmod -R 777 /mnt/data</code><br><i>Note :</i> Cette étape dépend du type de PV utilisé. Pour des solutions de stockage réseau (ex : NFS, AWS EBS), cette étape n'est généralement pas nécessaire.</li></ul><br><hr><b>Explanatory Context :</b><br>Ces prérequis garantissent que vous disposez des outils et des connaissances nécessaires pour configurer correctement un Pod avec un stockage persistant. Par exemple, comprendre les <i>Access Modes</i> est crucial pour éviter des erreurs de montage, comme essayer d'utiliser un volume <code>ReadWriteOnce</code> sur plusieurs Pods simultanément. De même, la configuration initiale du nœud est souvent nécessaire pour les environnements de développement ou de test, mais rarement en production où des solutions de stockage réseau sont utilisées.<br><br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 6
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce qu'un Sidecar Container dans Kubernetes et quel est son rôle dans le contexte de la mise à jour de configuration via un ConfigMap ?",
+  "back": "<b>Définition et rôle du Sidecar Container :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce qu'un Sidecar Container dans Kubernetes et quel est son rôle dans le contexte de la mise à jour de configuration via un ConfigMap ?",
+  "back": "<b>Définition et rôle du Sidecar Container :</b><br>\nUn Sidecar Container dans Kubernetes est un conteneur secondaire qui s'exécute aux côtés du conteneur principal dans un Pod. Il est utilisé pour étendre les fonctionnalités du conteneur principal, comme dans le cas d'un conteneur auxiliaire qui écrit un fichier HTML basé sur un ConfigMap. Le Sidecar Container est conceptuellement similaire à un Init Container, car il est garanti de démarrer avant le conteneur principal. Cela garantit que le fichier HTML est toujours disponible lorsque le serveur web est prêt à le servir.\n\n<br><b>Exemple d'utilisation :</b><br>\nDans le contexte de la mise à jour de configuration via un ConfigMap, un Sidecar Container peut être utilisé pour écrire dynamiquement un fichier HTML basé sur les données du ConfigMap. Ce fichier est ensuite servi par le conteneur principal (par exemple, un serveur web comme NGINX).\n\n<hr><b>Contexte Explicatif :</b><br>\nUn Sidecar Container est particulièrement utile pour des tâches auxiliaires qui nécessitent une exécution parallèle ou séquentielle avec le conteneur principal. Dans cet exemple, le Sidecar Container écrit un fichier HTML dans un volume partagé (`emptyDir`), qui est ensuite servi par le conteneur principal. Cela permet de séparer les responsabilités et de faciliter la maintenance des configurations."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment créer un ConfigMap à partir de valeurs littérales dans Kubernetes, et comment l'utiliser dans un Pod avec un Sidecar Container ?",
+  "back": "<b>Création d'un ConfigMap à partir de valeurs littérales :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment créer un ConfigMap à partir de valeurs littérales dans Kubernetes, et comment l'utiliser dans un Pod avec un Sidecar Container ?",
+  "back": "<b>Création d'un ConfigMap à partir de valeurs littérales :</b><br>\nPour créer un ConfigMap à partir de valeurs littérales dans Kubernetes, utilisez la commande suivante :\n\n```bash\nkubectl create configmap <nom-du-configmap> --from-literal=<clé>=<valeur>\n```\n\nPar exemple, pour créer un ConfigMap nommé `color` avec une clé `color` et une valeur `blue` :\n\n```bash\nkubectl create configmap color --from-literal=color=blue\n```\n\n<br><b>Utilisation dans un Pod avec un Sidecar Container :</b><br>\n1. **Créer un volume partagé (`emptyDir`) :** Les deux conteneurs (principal et Sidecar) partagent un volume `emptyDir` pour communiquer.\n2. **Monter le volume dans les conteneurs :**\n   - Le conteneur principal (par exemple, NGINX) monte le volume à `/usr/share/nginx/html`.\n   - Le Sidecar Container monte le volume à `/pod-data`.\n3. **Écrire le fichier HTML dans le Sidecar Container :** Le Sidecar Container écrit un fichier HTML basé sur les données du ConfigMap dans le volume partagé.\n4. **Servir le fichier HTML :** Le conteneur principal sert le fichier HTML via HTTP.\n\n<br><b>Exemple de manifeste pour un Deployment :</b><br>\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: configmap-sidecar-container\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: configmap-sidecar-container\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: configmap-sidecar-container\n    spec:\n      containers:\n      - name: nginx\n        image: nginx\n        ports:\n        - containerPort: 80\n        volumeMounts:\n        - name: shared-data\n          mountPath: /usr/share/nginx/html\n      - name: sidecar\n        image: alpine\n        command: [\"/bin/sh\", \"-c\"]\n        args: [\"echo '<html><body><h1>{{ $COLOR }}</h1></body></html>' > /pod-data/index.html && tail -f /dev/null\"]\n        env:\n        - name: COLOR\n          valueFrom:\n            configMapKeyRef:\n              name: color\n              key: color\n        volumeMounts:\n        - name: shared-data\n          mountPath: /pod-data\n      volumes:\n      - name: shared-data\n        emptyDir: {}\n```\n\n<br><b>Vérification et accès :</b><br>\n- Vérifiez que les Pods sont prêts :\n  ```bash\n  kubectl get pods --selector=app.kubernetes.io/name=configmap-sidecar-container\n  ```\n- Exposez le Deployment pour accéder au service :\n  ```bash\n  kubectl expose deployment configmap-sidecar-container --name=configmap-sidecar-service --port=8081 --target-port=80\n  kubectl port-forward service/configmap-sidecar-service 8081:8081 &\n  ```\n- Accédez au service :\n  ```bash\n  curl http://localhost:8081\n  ```\n\n<hr><b>Contexte Explicatif :</b><br>\nLa création d'un ConfigMap à partir de valeurs littérales est une méthode simple pour injecter des configurations dans un Pod. L'utilisation d'un Sidecar Container permet de dynamiser la configuration sans redéployer le Pod principal. Cela est particulièrement utile pour des applications web où la configuration peut changer fréquemment."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment modifier un ConfigMap existant dans Kubernetes, et quel est l'impact sur les Pods qui l'utilisent ?",
+  "back": "<b>Modification d'un ConfigMap :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment modifier un ConfigMap existant dans Kubernetes, et quel est l'impact sur les Pods qui l'utilisent ?",
+  "back": "<b>Modification d'un ConfigMap existant :</b><br>\nPour modifier un ConfigMap existant dans Kubernetes, utilisez la commande suivante :\n\n```bash\nkubectl edit configmap <nom-du-configmap>\n```\n\nPar exemple, pour modifier le ConfigMap `color` :\n\n```bash\nkubectl edit configmap color\n```\n\nDans l'éditeur qui s'ouvre, changez la valeur de la clé `color` de `blue` à `green` et enregistrez les modifications. Kubernetes mettra à jour le ConfigMap en conséquence.\n\n<br><b>Impact sur les Pods :</b><br>\n- **ConfigMap monté comme volume :** Les modifications sont disponibles immédiatement après la synchronisation suivante du kubelet. Les Pods existants ne verront pas les changements tant qu'ils ne sont pas redémarrés ou recréés.\n- **ConfigMap utilisé pour des variables d'environnement :** Les modifications ne sont disponibles qu'après un redéploiement du Pod (par exemple, via un `kubectl rollout restart`).\n\n<br><b>Exemple de sortie après modification :</b><br>\n```\nSat Feb 17 13:13:15 UTC 2024 My preferred color is blue\nSat Feb 17 13:13:25 UTC 2024 My preferred color is blue\nSat Feb 17 13:13:35 UTC 2024 My preferred color is green\n```\n\n<br><b>Vérification des logs :</b><br>\nPour vérifier que les modifications sont appliquées, vous pouvez surveiller les logs des Pods :\n\n```bash\nwhile true; do curl --connect-timeout 7.5 http://localhost:8081; sleep 10; done\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLa modification d'un ConfigMap est une opération courante pour mettre à jour la configuration d'une application sans redéployer le code. Cependant, l'impact sur les Pods dépend de la méthode d'utilisation du ConfigMap (volume ou variables d'environnement). Pour les volumes, les changements sont détectés automatiquement, tandis que pour les variables d'environnement, un redéploiement est nécessaire."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce qu'un ConfigMap immutable dans Kubernetes, et quels sont ses avantages et inconvénients ?",
+  "back": "<b>Définition d'un ConfigMap immutable :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce qu'un ConfigMap immutable dans Kubernetes, et quels sont ses avantages et inconvénients ?",
+  "back": "<b>Définition d'un ConfigMap immutable :</b><br>\nUn ConfigMap immutable dans Kubernetes est un ConfigMap marqué comme non modifiable après sa création. Cela signifie que ni les données (`data`) ni les données binaires (`binaryData`) ne peuvent être modifiées une fois le ConfigMap créé. Cette fonctionnalité est particulièrement utile pour les configurations qui ne doivent pas changer au fil du temps.\n\n<br><b>Avantages :</b>\br>\n- **Amélioration des performances :** Le kubelet ne surveille pas les changements, ce qui réduit la charge sur le cluster.\n- **Sécurité :** Empêche les modifications accidentelles ou malveillantes de la configuration.\n- **Stabilité :** Garantit que la configuration reste constante pendant l'exécution des Pods.\n\n<br><b>Inconvénients :</b>\br>\n- **Flexibilité réduite :** Une fois marqué comme immutable, il n'est pas possible de revenir en arrière ou de modifier le ConfigMap. Pour appliquer une modification, il faut créer un nouveau ConfigMap et mettre à jour les références dans les Pods.\n- **Complexité de mise à jour :** La mise à jour nécessite de recréer les Pods ou de redémarrer le kubelet sur les nœuds concernés.\n\n<br><b>Exemple de création d'un ConfigMap immutable :</b>\br>\n```yaml\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: company-name-20240312\nimmutable: true\ndata:\n  company: Fiktivesunternehmen GmbH\n```\n\n<br><b>Commande pour créer un ConfigMap immutable :</b>\br>\n```bash\nkubectl apply -f https://k8s.io/examples/configmap/immutable-configmap.yaml\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLes ConfigMaps immutables sont idéaux pour les configurations statiques qui ne nécessitent pas de mises à jour fréquentes. Ils offrent une meilleure performance et sécurité, mais leur utilisation doit être planifiée en conséquence, car les mises à jour nécessitent une approche plus complexe."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment mettre à jour un Deployment pour utiliser un nouveau ConfigMap immutable dans Kubernetes ?",
+  "back": "<b>Étapes pour mettre à jour un Deployment avec un nouveau ConfigMap immutable :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment mettre à jour un Deployment pour utiliser un nouveau ConfigMap immutable dans Kubernetes ?",
+  "back": "<b>Étapes pour mettre à jour un Deployment avec un nouveau ConfigMap immutable :</b><br>\nPour mettre à jour un Deployment afin d'utiliser un nouveau ConfigMap immutable, suivez ces étapes :\n\n1. **Créer un nouveau ConfigMap immutable :**\n   ```bash\n   kubectl apply -f https://k8s.io/examples/configmap/new-immutable-configmap.yaml\n   ```\n   Vérifiez que le nouveau ConfigMap a été créé :\n   ```bash\n   kubectl get configmap\n   ```\n\n2. **Modifier le Deployment pour référencer le nouveau ConfigMap :**\n   ```bash\n   kubectl edit deployment <nom-du-deployment>\n   ```\n   Dans l'éditeur, mettez à jour la définition du volume pour utiliser le nouveau ConfigMap :\n   ```yaml\n   volumes:\n   - configMap:\n       defaultMode: 420\n       name: <nom-du-nouveau-configmap>  # Mettez à jour ce champ\n     name: config-volume\n   ```\n\n3. **Déclencher un redéploiement :**\n   La modification du Deployment déclenchera un redéploiement. Attendez que tous les anciens Pods soient terminés et que les nouveaux Pods soient prêts :\n   ```bash\n   kubectl get pods --selector=app.kubernetes.io/name=<nom-du-deployment>\n   ```\n\n4. **Vérifier les logs des nouveaux Pods :**\n   ```bash\n   kubectl logs deployment/<nom-du-deployment>\n   ```\n   Vous devriez voir la nouvelle configuration appliquée.\n\n<br><b>Exemple de sortie après mise à jour :</b>\br>\n```\nWed Mar 20 04:24:17 UTC 2024 The name of the company is Fiktivesunternehmen GmbH\n```\n\n<br><b>Nettoyage des anciens ConfigMaps :</b>\br>\nUne fois que tous les Deployments ont migré vers le nouveau ConfigMap, il est conseillé de supprimer l'ancien :\n\n```bash\nkubectl delete configmap <nom-du-ancien-configmap>\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLa mise à jour d'un Deployment pour utiliser un nouveau ConfigMap immutable est une opération délicate qui nécessite une planification. Les ConfigMaps immutables ne peuvent pas être modifiés directement, donc la solution consiste à créer un nouveau ConfigMap et à mettre à jour les références dans les Deployments. Cela garantit que la configuration reste stable et sécurisée pendant la transition."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les informations manquantes sur les ConfigMaps dans Kubernetes :<br><br>",
+  "back": "Un ConfigMap est un objet Kubernetes utilisé pour stocker des données de configuration sous forme de paires clé-valeur. Il permet de séparer la configuration de l'application du code, facilitant ainsi les mises à jour sans redéploiement. Un ConfigMap peut être monté comme un volume dans un Pod ou utilisé pour définir des variables d'environnement.<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les informations manquantes sur les ConfigMaps dans Kubernetes :<br><br>",
+  "back": "Un ConfigMap est un objet Kubernetes utilisé pour stocker des données de configuration sous forme de paires clé-valeur. Il permet de séparer la configuration de l'application du code, facilitant ainsi les mises à jour sans redéploiement. Un ConfigMap peut être monté comme un {{c1::volume}} dans un Pod ou utilisé pour définir des {{c2::variables d'environnement}}.\n\n<br>Les ConfigMaps sont particulièrement utiles pour :\n<ul>\n<li>Stocker des fichiers de configuration (par exemple, des fichiers de propriétés ou des fichiers de configuration NGINX).</li>\n<li>Définir des variables d'environnement dynamiques pour les conteneurs.</li>\n<li>Centraliser la configuration pour plusieurs applications ou services.</li>\n</ul>\n\n<br>Pour créer un ConfigMap à partir de valeurs littérales, utilisez la commande :\n```bash\nkubectl create configmap <nom-du-configmap> --from-literal=<clé>=<valeur>\n```\n\n<br>Pour monter un ConfigMap comme volume dans un Pod, ajoutez la section suivante au manifeste du Pod :\n```yaml\nvolumes:\n- name: config-volume\n  configMap:\n    name: <nom-du-configmap>\ncontainers:\n- name: <nom-du-conteneur>\n  volumeMounts:\n  - name: config-volume\n    mountPath: <chemin-de-montage>\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLes ConfigMaps sont un outil essentiel pour gérer la configuration des applications dans Kubernetes. Ils permettent de découpler la configuration du code, ce qui facilite les mises à jour et la maintenance. Les ConfigMaps peuvent être utilisés de plusieurs manières, notamment comme volumes ou comme variables d'environnement, selon les besoins de l'application."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les informations manquantes sur les ConfigMaps immutables :<br><br>",
+  "back": "Un ConfigMap immutable est marqué comme non modifiable après sa création. Cela permet d'améliorer les performances du cluster en évitant que le kubelet ne surveille les changements. Pour appliquer une modification, il faut créer un nouveau ConfigMap et mettre à jour les références dans les Pods.<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les informations manquantes sur les ConfigMaps immutables :<br><br>",
+  "back": "Un ConfigMap immutable est un ConfigMap marqué comme {{c1::non modifiable}} après sa création. Cela signifie que ni les données (`data`) ni les données binaires (`binaryData`) ne peuvent être modifiées une fois le ConfigMap créé.\n\n<br>Les ConfigMaps immutables offrent plusieurs avantages :\n<ul>\n<li>Amélioration des performances, car le kubelet ne surveille pas les changements.</li>\n<li>Sécurité accrue, car ils empêchent les modifications accidentelles ou malveillantes.</li>\n<li>Stabilité, car la configuration reste constante pendant l'exécution des Pods.</li>\n</ul>\n\n<br>Pour créer un ConfigMap immutable, ajoutez le champ `immutable: true` dans le manifeste :\n```yaml\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: <nom-du-configmap>\nimmutable: true\ndata:\n  <clé>: <valeur>\n```\n\n<br>Pour mettre à jour un ConfigMap immutable, il faut :\n<ol>\n<li>Créer un nouveau ConfigMap immutable avec les nouvelles valeurs.</li>\n<li>Mettre à jour les références dans les Pods ou Deployments pour utiliser le nouveau ConfigMap.</li>\n<li>Supprimer l'ancien ConfigMap une fois la migration terminée.</li>\n</ol>\n\n<br>Exemple de commande pour créer un ConfigMap immutable :\n```bash\nkubectl apply -f https://k8s.io/examples/configmap/immutable-configmap.yaml\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLes ConfigMaps immutables sont idéaux pour les configurations statiques qui ne nécessitent pas de mises à jour fréquentes. Leur utilisation garantit une meilleure performance et sécurité, mais leur mise à jour nécessite une approche plus complexe, car ils ne peuvent pas être modifiés directement. Cela doit être pris en compte lors de la conception des applications et des stratégies de déploiement."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les différences entre un ConfigMap monté comme volume et un ConfigMap utilisé pour configurer des variables d'environnement dans un Pod ?",
+  "back": "<b>ConfigMap monté comme volume :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les différences entre un ConfigMap monté comme volume et un ConfigMap utilisé pour configurer des variables d'environnement dans un Pod ?",
+  "back": "<b>Différences entre ConfigMap monté comme volume et ConfigMap pour variables d'environnement :</b><br>\n\n1. **Méthode de consommation :**\n   - **Volume :** Le ConfigMap est monté comme un système de fichiers dans le conteneur. Les fichiers sont créés à partir des paires clé-valeur du ConfigMap.\n   - **Variables d'environnement :** Les valeurs du ConfigMap sont injectées directement comme variables d'environnement dans le conteneur.\n\n2. **Mise à jour des données :**\n   - **Volume :** Les modifications du ConfigMap sont détectées par le kubelet et propagées aux Pods. Les fichiers sont mis à jour automatiquement.\n   - **Variables d'environnement :** Les modifications du ConfigMap ne sont pas propagées aux variables d'environnement existantes. Un redéploiement du Pod est nécessaire pour que les nouvelles valeurs soient prises en compte.\n\n3. **Cas d'utilisation :**\n   - **Volume :** Idéal pour les fichiers de configuration (par exemple, fichiers de configuration NGINX, fichiers de propriétés Java).\n   - **Variables d'environnement :** Idéal pour les configurations dynamiques qui doivent être accessibles via des variables d'environnement (par exemple, `DATABASE_URL`, `API_KEY`).\n\n4. **Performance :**\n   - **Volume :** Peut avoir un léger impact sur les performances, car le kubelet doit surveiller les changements et mettre à jour les fichiers.\n   - **Variables d'environnement :** Aucune surcharge de performance, car les variables sont injectées une fois au démarrage du conteneur.\n\n<br><b>Exemple de montage comme volume :</b>\n```yaml\nvolumes:\n- name: config-volume\n  configMap:\n    name: app-config\ncontainers:\n- name: nginx\n  image: nginx\n  volumeMounts:\n  - name: config-volume\n    mountPath: /etc/nginx/nginx.conf\n    subPath: nginx.conf\n```\n\n<br><b>Exemple d'utilisation pour variables d'environnement :</b>\n```yaml\nenv:\n- name: DATABASE_URL\n  valueFrom:\n    configMapKeyRef:\n      name: db-config\n      key: database-url\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLe choix entre monter un ConfigMap comme volume ou l'utiliser pour des variables d'environnement dépend des besoins spécifiques de l'application. Les volumes sont plus adaptés pour les fichiers de configuration complexes, tandis que les variables d'environnement sont idéales pour les configurations simples et dynamiques. Il est important de comprendre les différences pour optimiser l'utilisation des ConfigMaps dans Kubernetes."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les étapes pour nettoyer les ressources créées lors des tutoriels sur les ConfigMaps dans Kubernetes ?",
+  "back": "<b>Étapes pour nettoyer les ressources :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les étapes pour nettoyer les ressources créées lors des tutoriels sur les ConfigMaps dans Kubernetes ?",
+  "back": "<b>Étapes pour nettoyer les ressources créées lors des tutoriels sur les ConfigMaps :</b><br>\n\nPour nettoyer les ressources créées lors des tutoriels sur les ConfigMaps dans Kubernetes, suivez ces étapes :\n\n1. **Terminer les commandes `kubectl port-forward` en arrière-plan :**\n   ```bash\n   pkill -f \"kubectl port-forward\"\n   ```\n\n2. **Supprimer les Deployments créés :**\n   ```bash\n   kubectl delete deployment configmap-volume configmap-env-var configmap-two-containers configmap-sidecar-container immutable-configmap-volume\n   ```\n\n3. **Supprimer les Services créés :**\n   ```bash\n   kubectl delete service configmap-service configmap-sidecar-service\n   ```\n\n4. **Supprimer les ConfigMaps créés :**\n   ```bash\n   kubectl delete configmap sport fruits color company-name-20240312 company-name-20150801\n   ```\n\n<br><b>Vérification de la suppression :</b>\nPour vérifier que toutes les ressources ont été supprimées, utilisez les commandes suivantes :\n\n```bash\nkubectl get all\nkubectl get configmap\n```\n\n<br>Assurez-vous qu'aucune ressource liée aux tutoriels n'est restante.\n\n<hr><b>Contexte Explicatif :</b><br>\nLe nettoyage des ressources est une étape importante après avoir terminé les tutoriels ou les tests dans Kubernetes. Cela permet de libérer les ressources du cluster et d'éviter les conflits ou les coûts inutiles. Il est recommandé de toujours vérifier que toutes les ressources ont été supprimées correctement."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment configurer le <b>Pod Security Admission</b> au niveau du cluster pour appliquer les <b>Pod Security Standards</b> ?",
+  "back": "Pour configurer le <b>Pod Security Admission</b> au niveau du cluster, il faut :<br><br><ol><br><li>Créer un fichier YAML de configuration pour le PSA (par exemple, <code>cluster-level-pss.yaml</code>) définissant les politiques à appliquer.</li><br><li>Modifier la configuration de l'API server pour qu'il consomme ce fichier lors de la création du cluster. Cela se fait via des <code>kubeadmConfigPatches</code> dans la configuration du cluster (par exemple, avec <code>kind</code>).</li><br><li>Monter le fichier de configuration dans le conteneur de l'API server en utilisant <code>extraVolumes</code> et <code>extraMounts</code>.</li><br><li>Créer le cluster avec la configuration modifiée, par exemple :<br><br><code>kind create cluster --name psa-with-cluster-pss --config /tmp/pss/cluster-config.yaml</code>.</li><br></ol><br><br>Exemple de configuration pour l'API server :<br><br><pre><br>kind: ClusterConfiguration<br>apiServer:<br>  extraArgs:<br>    admission-control-config-file: /etc/config/cluster-level-pss.yaml<br>  extraVolumes:<br>    - name: accf<br>      hostPath: /etc/config<br>      mountPath: /etc/config<br>      readOnly: false<br>      pathType: 'DirectoryOrCreate'<br></pre><br><br><b>Explanatory Context :</b><br><br>Cette configuration permet d'appliquer les <b>Pod Security Standards</b> de manière globale à tous les namespaces du cluster. Cela garantit une sécurité cohérente dès la création des pods, sans nécessiter de configuration manuelle pour chaque namespace. Cette approche est idéale pour les clusters où la sécurité doit être uniformément appliquée, comme dans les environnements de production ou les clusters partagés par plusieurs équipes."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment configurer le <b>Pod Security Admission</b> au niveau du cluster pour appliquer les <b>Pod Security Standards</b> ?",
+  "back": "Pour configurer le <b>Pod Security Admission</b> au niveau du cluster, il faut :<br><br><ol><li>Créer un fichier YAML de configuration pour le PSA (par exemple, <code>cluster-level-pss.yaml</code>) définissant les politiques à appliquer.</li><li>Modifier la configuration de l'API server pour qu'il consomme ce fichier lors de la création du cluster. Cela se fait via des <code>kubeadmConfigPatches</code> dans la configuration du cluster (par exemple, avec <code>kind</code>).</li><li>Monter le fichier de configuration dans le conteneur de l'API server en utilisant <code>extraVolumes</code> et <code>extraMounts</code>.</li><li>Créer le cluster avec la configuration modifiée, par exemple :<br><br><code>kind create cluster --name psa-with-cluster-pss --config /tmp/pss/cluster-config.yaml</code>.</li></ol><br><br>Exemple de configuration pour l'API server :<br><br><pre>kind: ClusterConfiguration<br>apiServer:<br>  extraArgs:<br>    admission-control-config-file: /etc/config/cluster-level-pss.yaml<br>  extraVolumes:<br>    - name: accf<br>      hostPath: /etc/config<br>      mountPath: /etc/config<br>      readOnly: false<br>      pathType: 'DirectoryOrCreate'</pre><br><br><hr><b>Contexte Explicatif :</b><br><br>Cette configuration permet d'appliquer les <b>Pod Security Standards</b> de manière globale à tous les namespaces du cluster. Cela garantit une sécurité cohérente dès la création des pods, sans nécessiter de configuration manuelle pour chaque namespace. Cette approche est idéale pour les clusters où la sécurité doit être uniformément appliquée, comme dans les environnements de production ou les clusters partagés par plusieurs équipes.<br><br>![img-1.jpeg](img-1.jpeg)<br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les étapes pour appliquer les <b>Pod Security Standards</b> au niveau d'un namespace spécifique dans Kubernetes ?",
+  "back": "Pour appliquer les <b>Pod Security Standards</b> au niveau d'un namespace, suivez ces étapes :<br><br><ol><br><li>Créer un namespace (par exemple, <code>example</code>) :<br><br><code>kubectl create ns example</code>.</li><br><li>Appliquer des labels au namespace pour activer les vérifications PSA. Par exemple, pour appliquer le niveau <code>baseline</code> en mode <code>enforce</code> et le niveau <code>restricted</code> en modes <code>warn</code> et <code>audit</code> :<br><br><pre><br>kubectl label --overwrite ns example \\\\<br>  pod-security.kubernetes.io/enforce=baseline \\\\<br>  pod-security.kubernetes.io/enforce-version=latest \\\\<br>  pod-security.kubernetes.io/warn=restricted \\\\<br>  pod-security.kubernetes.io/warn-version=latest \\\\<br>  pod-security.kubernetes.io/audit=restricted \\\\<br>  pod-security.kubernetes.io/audit-version=latest<br></pre></li><br><li>Vérifier l'application des politiques en créant un pod dans le namespace. Par exemple :<br><br><code>kubectl apply -n example -f https://k8s.io/examples/security/example-baseline-pod.yaml</code>.<br><br>Un pod conforme au niveau <code>baseline</code> sera créé, tandis qu'un pod non conforme générera un avertissement ou sera rejeté selon le mode configuré.</li><br></ol><br><br><b>Explanatory Context :</b><br><br>Appliquer les <b>Pod Security Standards</b> au niveau d'un namespace permet une granularité fine, idéale pour les clusters multi-utilisateurs ou les environnements où différentes équipes ont des besoins de sécurité variés. Par exemple, un namespace dédié aux applications critiques peut utiliser le niveau <code>restricted</code>, tandis qu'un namespace pour les tests peut se contenter du niveau <code>baseline</code>. Cette approche évite d'imposer des restrictions trop strictes à l'ensemble du cluster."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les étapes pour appliquer les <b>Pod Security Standards</b> au niveau d'un namespace spécifique dans Kubernetes ?",
+  "back": "Pour appliquer les <b>Pod Security Standards</b> au niveau d'un namespace, suivez ces étapes :<br><br><ol><li>Créer un namespace (par exemple, <code>example</code>) :<br><br><code>kubectl create ns example</code>.</li><li>Appliquer des labels au namespace pour activer les vérifications PSA. Par exemple, pour appliquer le niveau <code>baseline</code> en mode <code>enforce</code> et le niveau <code>restricted</code> en modes <code>warn</code> et <code>audit</code> :<br><br><pre>kubectl label --overwrite ns example \\<br>  pod-security.kubernetes.io/enforce=baseline \\<br>  pod-security.kubernetes.io/enforce-version=latest \\<br>  pod-security.kubernetes.io/warn=restricted \\<br>  pod-security.kubernetes.io/warn-version=latest \\<br>  pod-security.kubernetes.io/audit=restricted \\<br>  pod-security.kubernetes.io/audit-version=latest</pre></li><li>Vérifier l'application des politiques en créant un pod dans le namespace. Par exemple :<br><br><code>kubectl apply -n example -f https://k8s.io/examples/security/example-baseline-pod.yaml</code>.<br><br>Un pod conforme au niveau <code>baseline</code> sera créé, tandis qu'un pod non conforme générera un avertissement ou sera rejeté selon le mode configuré.</li></ol><br><hr><b>Contexte Explicatif :</b><br><br>Appliquer les <b>Pod Security Standards</b> au niveau d'un namespace permet une granularité fine, idéale pour les clusters multi-utilisateurs ou les environnements où différentes équipes ont des besoins de sécurité variés. Par exemple, un namespace dédié aux applications critiques peut utiliser le niveau <code>restricted</code>, tandis qu'un namespace pour les tests peut se contenter du niveau <code>baseline</code>. Cette approche évite d'imposer des restrictions trop strictes à l'ensemble du cluster."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle est la commande pour créer un cluster <code>kind</code> avec une configuration PSA au niveau du cluster ?",
+  "back": "La commande pour créer un cluster <code>kind</code> avec une configuration <b>Pod Security Admission (PSA)</b> au niveau du cluster est :<br><br><pre>kind create cluster --name psa-with-cluster-pss --config /tmp/pss/cluster-config.yaml</pre><br><br>Cette commande utilise un fichier de configuration (<code>cluster-config.yaml</code>) qui inclut :<br><br><ul><br><li>Des <code>kubeadmConfigPatches</code> pour modifier la configuration de l'API server et lui indiquer où trouver le fichier de configuration PSA.</li><br><li>Des <code>extraMounts</code> pour monter le répertoire contenant le fichier de configuration PSA dans le conteneur de l'API server.</li><br></ul><br><br>Exemple de contenu du fichier <code>cluster-config.yaml</code> :<br><br><pre><br>kind: Cluster<br>apiVersion: kind.x-k8s.io/v1alpha4<br>nodes:<br>- role: control-plane<br>  kubeadmConfigPatches:<br>  - |<br>    kind: ClusterConfiguration<br>    apiServer:<br>      extraArgs:<br>        admission-control-config-file: /etc/config/cluster-level-pss.yaml<br>      extraVolumes:<br>        - name: accf<br>          hostPath: /etc/config<br>          mountPath: /etc/config<br>          readOnly: false<br>          pathType: 'DirectoryOrCreate'<br>extraMounts:<br>- hostPath: /tmp/pss<br>  containerPath: /etc/config<br>  readOnly: false<br></pre><br><br><b>Explanatory Context :</b><br><br>Cette commande est essentielle pour créer un cluster avec des politiques de sécurité appliquées dès sa création. Le fichier <code>cluster-config.yaml</code> permet de personnaliser la configuration du cluster, notamment en intégrant le PSA dans le flux d'admission des pods. Cela garantit que tous les pods créés dans le cluster respectent les <b>Pod Security Standards</b> définis, ce qui est particulièrement utile pour les environnements de production ou les clusters partagés."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle est la commande pour créer un cluster <code>kind</code> avec une configuration PSA au niveau du cluster ?",
+  "back": "La commande pour créer un cluster <code>kind</code> avec une configuration <b>Pod Security Admission (PSA)</b> au niveau du cluster est :<br><br><pre>kind create cluster --name psa-with-cluster-pss --config /tmp/pss/cluster-config.yaml</pre><br><br>Cette commande utilise un fichier de configuration (<code>cluster-config.yaml</code>) qui inclut :<br><br><ul><li>Des <code>kubeadmConfigPatches</code> pour modifier la configuration de l'API server et lui indiquer où trouver le fichier de configuration PSA.</li><li>Des <code>extraMounts</code> pour monter le répertoire contenant le fichier de configuration PSA dans le conteneur de l'API server.</li></ul><br><br>Exemple de contenu du fichier <code>cluster-config.yaml</code> :<br><br><pre>kind: Cluster<br>apiVersion: kind.x-k8s.io/v1alpha4<br>nodes:<br>- role: control-plane<br>  kubeadmConfigPatches:<br>  - |<br>    kind: ClusterConfiguration<br>    apiServer:<br>      extraArgs:<br>        admission-control-config-file: /etc/config/cluster-level-pss.yaml<br>      extraVolumes:<br>        - name: accf<br>          hostPath: /etc/config<br>          mountPath: /etc/config<br>          readOnly: false<br>          pathType: 'DirectoryOrCreate'<br>extraMounts:<br>- hostPath: /tmp/pss<br>  containerPath: /etc/config<br>  readOnly: false</pre><br><br><hr><b>Contexte Explicatif :</b><br><br>Cette commande est essentielle pour créer un cluster avec des politiques de sécurité appliquées dès sa création. Le fichier <code>cluster-config.yaml</code> permet de personnaliser la configuration du cluster, notamment en intégrant le PSA dans le flux d'admission des pods. Cela garantit que tous les pods créés dans le cluster respectent les <b>Pod Security Standards</b> définis, ce qui est particulièrement utile pour les environnements de production ou les clusters partagés.<br><br>![img-1.jpeg](img-1.jpeg)<br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment vérifier que les <b>Pod Security Standards</b> sont correctement appliqués à un namespace ?",
+  "back": "Pour vérifier que les <b>Pod Security Standards</b> sont correctement appliqués à un namespace, suivez ces étapes :<br><br><ol><br><li>Créer un pod dans le namespace ciblé (par exemple, <code>example</code>) en utilisant un manifeste YAML. Par exemple :<br><br><code>kubectl apply -n example -f https://k8s.io/examples/security/example-baseline-pod.yaml</code>.</li><br><li>Observer le comportement du cluster :<br><br><ul><br><li>Si le pod est conforme aux politiques appliquées (par exemple, niveau <code>baseline</code>), il sera créé sans avertissement.</li><br><li>Si le pod n'est pas conforme, le comportement dépend du mode configuré :<br><br>- En mode <code>enforce</code>, le pod sera rejeté et ne sera pas créé.<br><br>- En mode <code>warn</code>, le pod sera créé, mais un avertissement sera affiché (par exemple : <code>Warning: would violate PodSecurity 'restricted:latest': allowPrivilegeEscalation ≠ false</code>).<br><br>- En mode <code>audit</code>, le pod sera créé, et un événement d'audit sera enregistré sans avertissement visible.</li><br></ul><br></li><br><li>Vérifier les labels du namespace pour confirmer les politiques appliquées :<br><br><code>kubectl get ns example --show-labels</code>.<br><br>Les labels doivent inclure les modes et niveaux configurés (par exemple, <code>pod-security.kubernetes.io/enforce=baseline</code>).</li><br></ol><br><br><b>Explanatory Context :</b><br><br>Cette vérification est cruciale pour s'assurer que les politiques de sécurité sont effectivement appliquées et que les pods non conformes sont correctement gérés. Par exemple, un pod avec <code>allowPrivilegeEscalation: true</code> sera rejeté dans un namespace où le niveau <code>restricted</code> est appliqué en mode <code>enforce</code>. Cela permet de prévenir les configurations dangereuses et de renforcer la sécurité du cluster. La vérification des labels du namespace permet également de s'assurer que les politiques sont correctement configurées et appliquées."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment vérifier que les <b>Pod Security Standards</b> sont correctement appliqués à un namespace ?",
+  "back": "Pour vérifier que les <b>Pod Security Standards</b> sont correctement appliqués à un namespace, suivez ces étapes :<br><br><ol><li>Créer un pod dans le namespace ciblé (par exemple, <code>example</code>) en utilisant un manifeste YAML. Par exemple :<br><br><code>kubectl apply -n example -f https://k8s.io/examples/security/example-baseline-pod.yaml</code>.</li><li>Observer le comportement du cluster :<br><br><ul><li>Si le pod est conforme aux politiques appliquées (par exemple, niveau <code>baseline</code>), il sera créé sans avertissement.</li><li>Si le pod n'est pas conforme, le comportement dépend du mode configuré :<br><br>- En mode <code>enforce</code>, le pod sera rejeté et ne sera pas créé.<br><br>- En mode <code>warn</code>, le pod sera créé, mais un avertissement sera affiché (par exemple : <code>Warning: would violate PodSecurity 'restricted:latest': allowPrivilegeEscalation ≠ false</code>).<br><br>- En mode <code>audit</code>, le pod sera créé, et un événement d'audit sera enregistré sans avertissement visible.</li></ul></li><li>Vérifier les labels du namespace pour confirmer les politiques appliquées :<br><br><code>kubectl get ns example --show-labels</code>.<br><br>Les labels doivent inclure les modes et niveaux configurés (par exemple, <code>pod-security.kubernetes.io/enforce=baseline</code>).</li></ol><br><hr><b>Contexte Explicatif :</b><br><br>Cette vérification est cruciale pour s'assurer que les politiques de sécurité sont effectivement appliquées et que les pods non conformes sont correctement gérés. Par exemple, un pod avec <code>allowPrivilegeEscalation: true</code> sera rejeté dans un namespace où le niveau <code>restricted</code> est appliqué en mode <code>enforce</code>. Cela permet de prévenir les configurations dangereuses et de renforcer la sécurité du cluster. La vérification des labels du namespace permet également de s'assurer que les politiques sont correctement configurées et appliquées."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 10
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 22
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 9
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les informations manquantes :<br>Le kubelet en mode standalone utilise un fichier de configuration de type <code>{{c1::KubeletConfiguration}}</code> avec l'API version <code>{{c2::kubelet.config.k8s.io/v1beta1}}</code>. Pour désactiver l'authentification, on définit <code>{{c3::webhook.enabled: false}}</code>.",
+  "back": "Le kubelet en mode standalone utilise un fichier de configuration de type <code>KubeletConfiguration</code> avec l'API version <code>kubelet.config.k8s.io/v1beta1</code>. Pour désactiver l'authentification, on définit <code>webhook.enabled: false</code>."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les informations manquantes :<br>Le kubelet en mode standalone utilise un fichier de configuration de type <code>{{c1::KubeletConfiguration}}</code> avec l'API version <code>{{c2::kubelet.config.k8s.io/v1beta1}}</code>. Pour désactiver l'authentification, on définit <code>{{c3::webhook.enabled: false}}</code>.",
+  "back": "Le kubelet en mode standalone utilise un fichier de configuration de type <code>KubeletConfiguration</code> avec l'API version <code>kubelet.config.k8s.io/v1beta1</code>. Pour désactiver l'authentification, on définit <code>webhook.enabled: false</code>.<hr><b>Explanatory Context :</b><br>Cette configuration simplifiée est utilisée pour des raisons pédagogiques et ne doit pas être employée en production. Elle illustre comment le kubelet peut être configuré pour fonctionner en mode autonome, sans dépendre d'un plan de contrôle Kubernetes. Le champ <code>webhook.enabled: false</code> désactive l'authentification via webhook, ce qui est acceptable pour un environnement de test mais inacceptable en production."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les informations manquantes :<br>Pour activer le forwarding IPv4, on crée un fichier <code>{{c1::/etc/sysctl.d/k8s.conf}}</code> contenant la ligne <code>{{c2::net.ipv4.ip_forward = 1}}</code>. Les changements sont appliqués avec la commande <code>{{c3::sudo sysctl --system}}</code>.",
+  "back": "Pour activer le forwarding IPv4, on crée un fichier <code>/etc/sysctl.d/k8s.conf</code> contenant la ligne <code>net.ipv4.ip_forward = 1</code>. Les changements sont appliqués avec la commande <code>sudo sysctl --system</code>."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les informations manquantes :<br>Pour activer le forwarding IPv4, on crée un fichier <code>{{c1::/etc/sysctl.d/k8s.conf}}</code> contenant la ligne <code>{{c2::net.ipv4.ip_forward = 1}}</code>. Les changements sont appliqués avec la commande <code>{{c3::sudo sysctl --system}}</code>.",
+  "back": "Pour activer le forwarding IPv4, on crée un fichier <code>/etc/sysctl.d/k8s.conf</code> contenant la ligne <code>net.ipv4.ip_forward = 1</code>. Les changements sont appliqués avec la commande <code>sudo sysctl --system</code>.<hr><b>Explanatory Context :</b><br>Le forwarding IPv4 est une configuration système essentielle pour permettre la communication entre les Pods et les services dans Kubernetes. Cette étape est souvent négligée dans les tutoriels, mais elle est cruciale pour assurer le bon fonctionnement des plugins réseau (CNI) qui gèrent la connectivité des conteneurs. Sans cette configuration, les paquets réseau ne pourraient pas être routés correctement entre les interfaces réseau du nœud."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 10
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Que se passe-t-il lorsque l'on supprime un Pod qui a une <b>ResourceClaim</b> associée via le <b>Dynamic Resource Allocation (DRA)</b>, et comment le vérifier ?",
+  "back": "Lorsque l'on supprime un Pod qui a une <b>ResourceClaim</b> associée via le <b>Dynamic Resource Allocation (DRA)</b>, les étapes suivantes se produisent :<br><br><br><br>1. <b>Suppression du Pod</b> :<br><br>   - Le Pod est supprimé du cluster :<br><br>     <code>kubectl delete pod pod0 -n dra-tutorial</code><br><br>   - <i>Résultat attendu</i> : <code>pod 'pod0' deleted</code><br><br><br><br>2. <b>Libération des ressources par le DRA driver</b> :<br><br>   - Le DRA driver déalloue la ressource associée à la <code>ResourceClaim</code> et met à jour l'objet <code>ResourceClaim</code> dans l'API Kubernetes pour refléter que la ressource est à nouveau disponible.<br><br>   - La <code>ResourceClaim</code> passe à l'état <code>pending</code> jusqu'à ce qu'elle soit référencée par un nouveau Pod.<br><br><br><br>3. <b>Vérification de l'état du DRA</b> :<br><br>   - Vérifier l'état de la <code>ResourceClaim</code> :<br><br>     <code>kubectl get resourceclaims -n dra-tutorial</code><br><br>     <i>Résultat attendu</i> : Le champ <code>STATE</code> doit indiquer <code>pending</code>.<br><br><br>   - Vérifier les logs du DRA driver pour confirmer que le dispositif a été"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Que se passe-t-il lorsque l'on supprime un Pod qui a une <b>ResourceClaim</b> associée via le <b>Dynamic Resource Allocation (DRA)</b>, et comment le vérifier ?",
+  "back": "Lorsque l'on supprime un Pod qui a une <b>ResourceClaim</b> associée via le <b>Dynamic Resource Allocation (DRA)</b>, les étapes suivantes se produisent :<br><br>1. <b>Suppression du Pod</b> :<br><br>Le Pod est supprimé du cluster :<br><code>kubectl delete pod pod0 -n dra-tutorial</code><br><i>Résultat attendu</i> : <code>pod 'pod0' deleted</code><br><br>2. <b>Libération des ressources par le DRA driver</b> :<br><br>Le DRA driver déalloue la ressource associée à la <code>ResourceClaim</code> et met à jour l'objet <code>ResourceClaim</code> dans l'API Kubernetes pour refléter que la ressource est à nouveau disponible.<br><br>La <code>ResourceClaim</code> passe à l'état <code>pending</code> jusqu'à ce qu'elle soit référencée par un nouveau Pod.<br><br>3. <b>Vérification de l'état du DRA</b> :<br><br>- Vérifier l'état de la <code>ResourceClaim</code> :<br><code>kubectl get resourceclaims -n dra-tutorial</code><br><i>Résultat attendu</i> : Le champ <code>STATE</code> doit indiquer <code>pending</code>.<br><br>- Vérifier les logs du DRA driver pour confirmer que le dispositif a été libéré :<br><code>kubectl logs -l app.kubernetes.io/name=dra-example-driver -n dra-tutorial</code><br><i>Résultat attendu</i> : Des messages comme <code>UnprepareResourceClaims is called: number of claims: 1</code>.<hr><b>Explanatory Context :</b><br><br>Cette suppression illustre le cycle de vie des ressources gérées par le DRA. Lorsque un Pod est supprimé, le driver libère les ressources associées, permettant leur réutilisation par d'autres Pods. Cela garantit une gestion efficace des ressources matérielles rares ou coûteuses, en évitant les fuites de ressources et en assurant leur disponibilité pour d'autres workloads."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les étapes pour provisionner et configurer de la mémoire swap non chiffrée sur un nœud Kubernetes en utilisant <code>kubeadm</code> ?",
+  "back": "<b>Étapes pour configurer une mémoire swap non chiffrée :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les étapes pour provisionner et configurer de la mémoire swap **non chiffrée** sur un nœud Kubernetes en utilisant <code>kubeadm</code> ?",
+  "back": "<b>Étapes pour configurer une mémoire swap non chiffrée :</b><br><br>1. **Allouer l'espace swap** :<br>`fallocate --length 4GiB /swapfile`<br>2. **Restreindre les permissions** :<br>`chmod 600 /swapfile`<br>3. **Formater le fichier en espace d'échange** :<br>`mkswap /swapfile`<br>4. **Activer l'espace d'échange** :<br>`swapon /swapfile`<br>5. **Configurer le démarrage automatique** :<br>Ajoutez la ligne suivante dans `/etc/fstab` :<br><pre>/swapfile swap swap defaults 0 0</pre>6. **Configurer kubelet** :<br>Modifiez le fichier de configuration de kubelet pour inclure :<br><pre>failSwapOn: false<br>memorySwap:<br>  swapBehavior: LimitedSwap</pre>7. **Redémarrer kubelet** :<br>`systemctl restart kubelet.service`<br><br>Pour vérifier que le swap est activé, utilisez :<br>`swapon -s` ou `free -h`<br><br><hr><b>Contexte Explicatif :</b><br>La configuration d'une mémoire swap non chiffrée est utile pour des environnements où la sécurité des données n'est pas une priorité absolue. Dans Kubernetes, cette configuration permet d'améliorer les performances des nœuds en utilisant la mémoire virtuelle lorsque la RAM physique est insuffisante. Cependant, elle doit être utilisée avec prudence, car les données échangées ne sont pas protégées contre les accès non autorisés."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les étapes pour provisionner et configurer de la mémoire swap <b>chiffrée</b> sur un nœud Kubernetes en utilisant <code>kubeadm</code> ?",
+  "back": "<b>Étapes pour configurer une mémoire swap chiffrée :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les étapes pour provisionner et configurer de la mémoire swap **chiffrée** sur un nœud Kubernetes en utilisant <code>kubeadm</code> ?",
+  "back": "<b>Étapes pour configurer une mémoire swap chiffrée :</b><br><br>1. **Allouer l'espace swap** :<br>`fallocate --length 4GiB /swapfile`<br>2. **Restreindre les permissions** :<br>`chmod 600 /swapfile`<br>3. **Créer un périphérique chiffré** :<br>`cryptsetup --type plain --cipher aes-xts-plain64 --key-size 256 -d /dev/urandom open /swapfile cryptswap`<br>4. **Formater le périphérique en espace d'échange** :<br>`mkswap /dev/mapper/cryptswap`<br>5. **Activer l'espace d'échange** :<br>`swapon /dev/mapper/cryptswap`<br>6. **Configurer le démarrage automatique** :<br>Créez une unité systemd pour activer le swap au démarrage (exemple ci-dessous).<br><br><b>Exemple de configuration systemd (à adapter) :</b><br><pre>[Unit]<br>Description=Activate encrypted swap<br>After=network.target<br><br>[Service]<br>Type=oneshot<br>ExecStart=/sbin/swapon /dev/mapper/cryptswap<br>ExecStop=/sbin/swapoff /dev/mapper/cryptswap<br><br>[Install]<br>WantedBy=multi-user.target</pre>7. **Configurer kubelet** :<br>Modifiez le fichier de configuration de kubelet pour inclure :<br><pre>failSwapOn: false<br>memorySwap:<br>  swapBehavior: LimitedSwap</pre>8. **Redémarrer kubelet** :<br>`systemctl restart kubelet.service`<br><br>Pour vérifier que le swap est activé, utilisez :<br>`swapon -s` ou `free -h`<br><br><hr><b>Contexte Explicatif :</b><br>La configuration d'une mémoire swap chiffrée est recommandée dans les environnements où la sécurité des données est une priorité. Dans Kubernetes, cette configuration permet de protéger les données sensibles échangées entre la RAM et le disque, tout en améliorant les performances des nœuds. Cependant, elle nécessite des ressources supplémentaires pour le chiffrement/déchiffrement, ce qui peut impacter légèrement les performances."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les commandes suivantes pour configurer une mémoire swap chiffrée :<br><br>",
+  "back": "1. Allouer 4GiB d'espace swap :<br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les commandes suivantes pour configurer une mémoire swap chiffrée :",
+  "back": "1. Allouer 4GiB d'espace swap :<br>`fallocate --length 4GiB /swapfile`<br><br>2. Restreindre les permissions :<br>`chmod 600 /swapfile`<br><br>3. Créer un périphérique chiffré :<br>`cryptsetup --type plain --cipher aes-xts-plain64 --key-size 256 -d /dev/urandom open /swapfile cryptswap`<br><br>4. Formater le périphérique en espace d'échange :<br>`mkswap /dev/mapper/cryptswap`<br><br>5. Activer l'espace d'échange :<br>`swapon /dev/mapper/cryptswap`<br><br><hr><b>Contexte Explicatif :</b><br>Ces commandes permettent de configurer une mémoire swap chiffrée, essentielle pour sécuriser les données échangées entre la RAM et le disque dans un environnement Kubernetes. Le chiffrement est particulièrement utile pour les nœuds manipulant des données sensibles, comme dans les environnements de production ou réglementés."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels sont les prérequis logiciels pour configurer la mémoire swap sur un nœud Kubernetes ?",
+  "back": "<b>Prérequis logiciels pour configurer la mémoire swap :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les prérequis logiciels pour configurer la mémoire swap sur un nœud Kubernetes ?",
+  "back": "<b>Prérequis logiciels pour configurer la mémoire swap :</b><br><br>1. **Outils de base** :<br>`fallocate`, `mkswap`, `swapon` (nécessaires pour créer et gérer l'espace swap).<br><br>2. **Pour une mémoire swap chiffrée (recommandée)** :<br>`cryptsetup` (pour créer et gérer les périphériques chiffrés).<br><br>3. **Environnement** :<br>- Un nœud worker dans le cluster Kubernetes.<br>- Un système d'exploitation Linux sur le nœud worker.<br>- `kubeadm` installé et configuré sur le nœud.<br><br><hr><b>Contexte Explicatif :</b><br>Ces prérequis sont essentiels pour provisionner et configurer la mémoire swap sur un nœud Kubernetes. Les outils comme `fallocate` et `mkswap` permettent de créer et formater l'espace swap, tandis que `cryptsetup` est nécessaire pour sécuriser les données échangées. Dans Kubernetes, la gestion du swap est cruciale pour optimiser les performances des nœuds, surtout lorsque les charges de travail nécessitent plus de mémoire que disponible en RAM."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Pourquoi est-il recommandé d'utiliser une mémoire swap chiffrée plutôt qu'une mémoire swap non chiffrée dans un environnement Kubernetes ?",
+  "back": "<b>Raisons pour lesquelles une mémoire swap chiffrée est recommandée :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Pourquoi est-il recommandé d'utiliser une mémoire swap chiffrée plutôt qu'une mémoire swap non chiffrée dans un environnement Kubernetes ?",
+  "back": "<b>Raisons pour lesquelles une mémoire swap chiffrée est recommandée :</b><br><br>1. **Sécurité des données** :<br>Les données échangées entre la RAM et le disque peuvent contenir des informations sensibles (mots de passe, clés, données utilisateur). Le chiffrement protège ces données contre les accès non autorisés en cas de compromission du disque ou de vol physique.<br><br>2. **Conformité réglementaire** :<br>Dans certains environnements (santé, finance, gouvernement), les réglementations imposent l'utilisation de chiffrement pour protéger les données sensibles. Une mémoire swap chiffrée permet de se conformer à ces exigences.<br><br>3. **Protection contre les attaques** :<br>Les attaques par accès mémoire (comme les attaques par canaux auxiliaires) peuvent exploiter les données non chiffrées dans le swap. Le chiffrement atténue ce risque.<br><br>4. **Meilleures pratiques en sécurité** :<br>Le chiffrement du swap est une recommandation standard pour les systèmes exposés à des risques de sécurité, comme les nœuds Kubernetes dans des environnements multi-locataires ou cloud.<br><br><hr><b>Contexte Explicatif :</b><br>Dans Kubernetes, où les nœuds peuvent manipuler des données sensibles (comme dans les environnements de production ou réglementés), l'utilisation d'une mémoire swap chiffrée est une meilleure pratique. Elle permet de concilier performance et sécurité, tout en respectant les exigences de conformité. Cependant, elle nécessite des ressources supplémentaires pour le chiffrement/déchiffrement, ce qui peut impacter légèrement les performances."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles commandes permettent de vérifier que l'espace d'échange (swap) est activé sur un nœud Linux ? Donnez les deux méthodes principales.",
+  "back": "<b>Méthodes :</b><br><br>1. Utilisation de `swapon -s` :<br>Affiche un résumé des espaces d'échange actifs, incluant le fichier ou la partition utilisée, la taille et la priorité.<br><br>2. Utilisation de `free -h` :<br>Affiche l'utilisation de la mémoire et du swap dans un format lisible, incluant la quantité totale, utilisée et libre de swap.<br><br><b>Exemple de sortie pour `free -h` :</b><br><pre>              total        used        free      shared  buff/cache   available<br>Mem:           7.7G        2.1G        3.2G        200M        2.4G        5.1G<br>Swap:          2.0G        0B          2.0G</pre><hr><b>Explanatory Context :</b><br>Vérifier l'état du swap est crucial pour s'assurer que le système peut gérer les charges de travail gourmandes en mémoire. Dans Kubernetes, cette vérification permet de confirmer que les configurations de swap (comme `LimitedSwap`) sont correctement appliquées et que les nœuds peuvent utiliser la mémoire virtuelle si nécessaire."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles commandes permettent de vérifier que l'espace d'échange (swap) est activé sur un nœud Linux ? Donnez les deux méthodes principales.",
+  "back": "<b>Méthodes :</b><br><br>1. Utilisation de `swapon -s` :<br>Affiche un résumé des espaces d'échange actifs, incluant le fichier ou la partition utilisée, la taille et la priorité.<br><br>2. Utilisation de `free -h` :<br>Affiche l'utilisation de la mémoire et du swap dans un format lisible, incluant la quantité totale, utilisée et libre de swap.<br><br><b>Exemple de sortie pour `free -h` :</b><br><pre>              total        used        free      shared  buff/cache   available<br>Mem:           7.7G        2.1G        3.2G        200M        2.4G        5.1G<br>Swap:          2.0G        0B          2.0G</pre><br><b>Remarque :</b><br>Les tableaux suivants montrent des exemples de sorties pour ces commandes :<br><br>![tbl-92.md](tbl-92.md)<br><br>![tbl-93.md](tbl-93.md)<br><br><hr><b>Contexte Explicatif :</b><br>Vérifier l'état du swap est crucial pour s'assurer que le système peut gérer les charges de travail gourmandes en mémoire. Dans Kubernetes, cette vérification permet de confirmer que les configurations de swap (comme `LimitedSwap`) sont correctement appliquées et que les nœuds peuvent utiliser la mémoire virtuelle si nécessaire."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment configurer un système Linux pour activer automatiquement l'espace d'échange (swap) au démarrage ? Décrivez les deux méthodes principales.",
+  "back": "<b>Méthodes :</b><br><br>1. Utilisation de `/etc/fstab` :<br>Ajoutez la ligne suivante dans le fichier `/etc/fstab` pour monter automatiquement le fichier de swap au démarrage :<br><pre>/swapfile swap swap defaults 0 0</pre><br><br>2. Utilisation de systemd :<br>Créez une unité systemd pour activer le swap. Cette méthode permet de contrôler l'ordre de démarrage, par exemple pour retarder le démarrage de kubelet jusqu'à ce que le swap soit disponible.<br><br><b>Avantages de systemd :</b><ul><li>Permet de synchroniser l'activation du swap avec le démarrage de kubelet et du runtime de conteneurs.</li><li>Assure que le swap reste actif jusqu'à l'arrêt de kubelet et du runtime.</li></ul><hr><b>Explanatory Context :</b><br>Configurer le swap pour qu'il s'active au démarrage est essentiel pour garantir la disponibilité de la mémoire virtuelle dès le lancement du système. Dans Kubernetes, cela permet d'éviter les échecs de démarrage des pods en cas de mémoire insuffisante, tout en maintenant une gestion contrôlée du swap pour préserver la stabilité du cluster."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment configurer un système Linux pour activer automatiquement l'espace d'échange (swap) au démarrage ? Décrivez les deux méthodes principales.",
+  "back": "<b>Méthodes :</b><br><br>1. **Utilisation de `/etc/fstab`** :<br>Ajoutez la ligne suivante dans le fichier `/etc/fstab` pour monter automatiquement le fichier de swap au démarrage :<br><pre>/swapfile swap swap defaults 0 0</pre><br><br>2. **Utilisation de systemd** :<br>Créez une unité systemd pour activer le swap. Cette méthode permet de contrôler l'ordre de démarrage, par exemple pour retarder le démarrage de kubelet jusqu'à ce que le swap soit disponible.<br><br><b>Avantages de systemd :</b><br><ul><li>Permet de synchroniser l'activation du swap avec le démarrage de kubelet et du runtime de conteneurs.</li><li>Assure que le swap reste actif jusqu'à l'arrêt de kubelet et du runtime.</li></ul><br><b>Exemple de configuration systemd (à adapter) :</b><pre>[Unit]<br>Description=Activate swap at boot<br>After=network.target<br><br>[Service]<br>Type=oneshot<br>ExecStart=/sbin/swapon /swapfile<br>ExecStop=/sbin/swapoff /swapfile<br><br>[Install]<br>WantedBy=multi-user.target</pre><br><hr><b>Contexte Explicatif :</b><br>Configurer le swap pour qu'il s'active au démarrage est essentiel pour garantir la disponibilité de la mémoire virtuelle dès le lancement du système. Dans Kubernetes, cela permet d'éviter les échecs de démarrage des pods en cas de mémoire insuffisante, tout en maintenant une gestion contrôlée du swap pour préserver la stabilité du cluster."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les commandes suivantes pour la gestion du swap sous Linux :<br><br>1. Formater un fichier en tant qu'espace d'échange : `{{c1::mkswap}} /swapfile`<br>2. Activer l'espace d'échange : `{{c1::swapon}} /swapfile`<br>3. Vérifier l'état du swap : `{{c2::swapon}} -s` ou `{{c3::free}} -h`",
+  "back": "1. Formater un fichier en tant qu'espace d'échange : `mkswap /swapfile`<br>2. Activer l'espace d'échange : `swapon /swapfile`<br>3. Vérifier l'état du swap : `swapon -s` ou `free -h`<hr><b>Explanatory Context :</b><br>Ces commandes sont fondamentales pour la gestion du swap sous Linux. Elles permettent de préparer, activer et vérifier l'espace d'échange, une ressource cruciale pour les systèmes où la RAM physique est limitée. Dans Kubernetes, leur maîtrise est essentielle pour configurer correctement les nœuds et optimiser l'utilisation de la mémoire."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les commandes suivantes pour la gestion du swap sous Linux :",
+  "back": "1. Formater un fichier en tant qu'espace d'échange : `mkswap /swapfile`<br>2. Activer l'espace d'échange : `swapon /swapfile`<br>3. Vérifier l'état du swap : `swapon -s` ou `free -h`<br><br><hr><b>Contexte Explicatif :</b><br>Ces commandes sont fondamentales pour la gestion du swap sous Linux. Elles permettent de préparer, activer et vérifier l'espace d'échange, une ressource cruciale pour les systèmes où la RAM physique est limitée. Dans Kubernetes, leur maîtrise est essentielle pour configurer correctement les nœuds et optimiser l'utilisation de la mémoire."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 9
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les informations suivantes sur les StatefulSets :<br><br><br>Un StatefulSet est utilisé pour gérer des applications {{c1::stateful}} dans Kubernetes. Il crée des Pods avec un {{c2::index ordinal}} unique et une {{c3::identité réseau stable}}.",
+  "back": "Un StatefulSet est utilisé pour gérer des applications {{c1::stateful}} dans Kubernetes. Il crée des Pods avec un {{c2::index ordinal}} unique et une {{c3::identité réseau stable}}.<br><br><hr><br><b>Explanatory Context :</b><br><br>Les termes complétés sont des concepts clés des StatefulSets. Une application <i>stateful</i> nécessite de conserver son état entre les redémarrages, ce qui est assuré par l'<i>index ordinal</i> (ex: <code>web-0</code>) et l'<i>identité réseau stable</i> (ex: adresse DNS fixe). Ces propriétés permettent aux Pods de retrouver leur rôle et leurs données même après une panne ou une mise à jour."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les informations suivantes sur les StatefulSets :<br><br>Un StatefulSet est utilisé pour gérer des applications {{c1::stateful}} dans Kubernetes. Il crée des Pods avec un {{c2::index ordinal}} unique et une {{c3::identité réseau stable}}.",
+  "back": "Un StatefulSet est utilisé pour gérer des applications {{c1::stateful}} dans Kubernetes. Il crée des Pods avec un {{c2::index ordinal}} unique et une {{c3::identité réseau stable}}.<br><br><hr><b>Contexte Explicatif :</b><br><br>Les termes complétés sont des concepts clés des StatefulSets. Une application <i>stateful</i> nécessite de conserver son état entre les redémarrages, ce qui est assuré par l'<i>index ordinal</i> (ex: <code>web-0</code>) et l'<i>identité réseau stable</i> (ex: adresse DNS fixe). Ces propriétés permettent aux Pods de retrouver leur rôle et leurs données même après une panne ou une mise à jour."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les termes manquants concernant la découverte DNS dans un StatefulSet :<br><br><br>Le CNAME d'un {{c1::headless service}} pointe vers des {{c1::SRV records}}, qui eux-mêmes pointent vers des {{c2::A records}} contenant les adresses IP des Pods. Les noms DNS des Pods suivent le format : <code>\\&lt;pod-name\\&gt;.\\&lt;service-name\\&gt;.\\&lt;namespace\\&gt;.svc.cluster.local</code>.",
+  "back": "Le CNAME d'un <b>headless service</b> pointe vers des <b>SRV records</b>, qui eux-mêmes pointent vers des <b>A records</b> contenant les adresses IP des Pods. Les noms DNS des Pods suivent le format : <code>\\&lt;pod-name\\&gt;.\\&lt;service-name\\&gt;.\\&lt;namespace\\&gt;.svc.cluster.local</code>.<br><br><hr><br><b>Explanatory Context :</b><br><br><br>Ce mécanisme de découverte DNS est au cœur de la gestion des applications stateful dans Kubernetes. Un headless service permet de contourner le load-balancing par défaut des services ClusterIP pour exposer chaque Pod individuellement via son propre nom DNS. Cela est essentiel pour les StatefulSets, où chaque Pod a une identité stable et doit être accessible directement (ex: pour les bases de données avec réplication). Les SRV records ajoutent une couche supplémentaire en fournissant des métadonnées sur les services (comme le port), tandis que les A records résolvent le nom en adresse IP."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les termes manquants concernant la découverte DNS dans un StatefulSet :<br><br><br>Le CNAME d'un {{c1::headless service}} pointe vers des {{c1::SRV records}}, qui eux-mêmes pointent vers des {{c2::A records}} contenant les adresses IP des Pods. Les noms DNS des Pods suivent le format : <code>\\&lt;pod-name\\&gt;.\\&lt;service-name\\&gt;.\\&lt;namespace\\&gt;.svc.cluster.local</code>.",
+  "back": "Le CNAME d'un <b>headless service</b> pointe vers des <b>SRV records</b>, qui eux-mêmes pointent vers des <b>A records</b> contenant les adresses IP des Pods. Les noms DNS des Pods suivent le format : <code>&lt;pod-name&gt;.&lt;service-name&gt;.&lt;namespace&gt;.svc.cluster.local</code>.<br><br><hr><b>Contexte Explicatif :</b><br><br>Ce mécanisme de découverte DNS est au cœur de la gestion des applications stateful dans Kubernetes. Un headless service permet de contourner le load-balancing par défaut des services ClusterIP pour exposer chaque Pod individuellement via son propre nom DNS. Cela est essentiel pour les StatefulSets, où chaque Pod a une identité stable et doit être accessible directement (ex: pour les bases de données avec réplication). Les SRV records ajoutent une couche supplémentaire en fournissant des métadonnées sur les services (comme le port), tandis que les A records résolvent le nom en adresse IP."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les termes manquants concernant le stockage dans un StatefulSet :<br><br><br>Le contrôleur StatefulSet crée automatiquement un {{c1::PersistentVolumeClaim (PVC)}} pour chaque Pod, qui est lié à un {{c2::PersistentVolume (PV)}}. Le champ {{c3::volumeMounts}} dans la spécification du StatefulSet définit où le volume est monté dans le conteneur.",
+  "back": "Le contrôleur StatefulSet crée automatiquement un <b>PersistentVolumeClaim (PVC)</b> pour chaque Pod, qui est lié à un <b>PersistentVolume (PV)</b>. Le champ <b>volumeMounts</b> dans la spécification du StatefulSet définit où le volume est monté dans le conteneur.<br><br><hr><br><b>Explanatory Context :</b><br><br><br>Les PVC et PV sont les piliers du stockage persistant dans Kubernetes. Dans un StatefulSet, chaque Pod a son propre PVC, garantissant que ses données sont isolées et persistent même après un redémarrage. Le champ <code>volumeMounts</code> permet de mapper le stockage persistant à un chemin spécifique dans le conteneur, assurant que les données critiques (comme les bases de données) sont toujours accessibles, quel que soit le nœud où le Pod est schedulé."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les termes manquants concernant le stockage dans un StatefulSet :<br><br><br>Le contrôleur StatefulSet crée automatiquement un {{c1::PersistentVolumeClaim (PVC)}} pour chaque Pod, qui est lié à un {{c2::PersistentVolume (PV)}}. Le champ {{c3::volumeMounts}} dans la spécification du StatefulSet définit où le volume est monté dans le conteneur.",
+  "back": "Le contrôleur StatefulSet crée automatiquement un <b>PersistentVolumeClaim (PVC)</b> pour chaque Pod, qui est lié à un <b>PersistentVolume (PV)</b>. Le champ <b>volumeMounts</b> dans la spécification du StatefulSet définit où le volume est monté dans le conteneur.<br><br><hr><b>Contexte Explicatif :</b><br><br>Les PVC et PV sont les piliers du stockage persistant dans Kubernetes. Dans un StatefulSet, chaque Pod a son propre PVC, garantissant que ses données sont isolées et persistent même après un redémarrage. Le champ <code>volumeMounts</code> permet de mapper le stockage persistant à un chemin spécifique dans le conteneur, assurant que les données critiques (comme les bases de données) sont toujours accessibles, quel que soit le nœud où le Pod est schedulé."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 13
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 5
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment appliquer le Pod Security Standard <code>baseline</code> en mode <code>enforce</code> à l'échelle d'un cluster Kubernetes, tout en exemptant le namespace <code>kube-system</code> ? Décrivez la procédure étape par étape.",
+  "back": "Pour appliquer le standard <code>baseline</code> en mode <code>enforce</code> au niveau du cluster tout en exemptant <code>kube-system</code>, suivez ces étapes :<br><br><ol><li><b>Créer un fichier de configuration pour le Pod Security Admission Controller</b> :<br><pre><code>mkdir -p /tmp/pss<br>cat &lt;&lt;EOF &gt; /tmp/pss/cluster-level-pss.yaml<br>apiVersion: apiserver.config.k8s.io/v1<br>kind: AdmissionConfiguration<br>plugins:<br>- name: PodSecurity<br>  configuration:<br>    apiVersion: pod-security.admission.config.k8s.io/v1<br>    kind: PodSecurityConfiguration<br>    defaults:<br>      enforce: 'baseline'<br>      enforce-version: 'latest'<br>      audit: 'restricted'<br>      audit-version: 'latest'<br>      warn: 'restricted'<br>      warn-version: 'latest'<br>    exemptions:<br>      namespaces: ['kube-system']<br>EOF</code></pre></li><br><li><b>Configurer le kube-apiserver pour utiliser ce fichier</b> :<br>- Ajouter l'argument suivant à la configuration du kube-apiserver :<br><pre><code>--admission-control-config-file=/tmp/pss/cluster-level-pss.yaml</code></pre></li><br><li><b>Redémarrer le kube-apiserver</b> pour appliquer les changements.<br>- Pour un cluster <code>kind</code>, recréer le cluster avec la configuration appropriée :<br><pre><code>kind create cluster --name psa-cluster --config &lt;&lt;EOF<br>kind: Cluster<br>apiVersion: kind.x-k8s.io/v1alpha4<br>nodes:<br>- role: control-plane<br>  kubeadmConfigPatches:<br>  - |<br>    kind: ClusterConfiguration<br>    apiServer:<br>      extraArgs:<br>        admission-control-config-file: /etc/kubernetes/policies/pss.yaml<br>      extraVolumes:<br>      - name: pss-config<br>        hostPath: /tmp/pss<br>        mountPath: /etc/kubernetes/policies<br>        readOnly: true<br>EOF</code></pre></li></ol><br><b>Explanatory Context :</b><br>Cette procédure configure le PSA pour bloquer (<code>enforce</code>) les pods non conformes au standard <code>baseline</code> dans tous les namespaces sauf <code>kube-system</code>, tout en générant des avertissements et des logs d'audit pour les violations du standard <code>restricted</code>. L'exemption de <code>kube-system</code> est nécessaire car ce namespace contient des composants système critiques (ex : <code>kube-proxy</code>, <code>etcd</code>) qui nécessitent souvent des privilèges élevés. Cette approche permet de sécuriser les workloads utilisateur tout en maintenant la stabilité du cluster."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment appliquer le Pod Security Standard <code>baseline</code> en mode <code>enforce</code> à l'échelle d'un cluster Kubernetes, tout en exemptant le namespace <code>kube-system</code> ? Décrivez la procédure étape par étape.",
+  "back": "Pour appliquer le standard <code>baseline</code> en mode <code>enforce</code> au niveau du cluster tout en exemptant <code>kube-system</code>, suivez ces étapes :<br><br><ol><li><b>Créer un fichier de configuration pour le Pod Security Admission Controller</b> :<br><pre><code>mkdir -p /tmp/pss<br>cat &lt;&lt;EOF &gt; /tmp/pss/cluster-level-pss.yaml<br>apiVersion: apiserver.config.k8s.io/v1<br>kind: AdmissionConfiguration<br>plugins:<br>- name: PodSecurity<br>  configuration:<br>    apiVersion: pod-security.admission.config.k8s.io/v1<br>    kind: PodSecurityConfiguration<br>    defaults:<br>      enforce: 'baseline'<br>      enforce-version: 'latest'<br>      audit: 'restricted'<br>      audit-version: 'latest'<br>      warn: 'restricted'<br>      warn-version: 'latest'<br>    exemptions:<br>      namespaces: ['kube-system']<br>EOF</code></pre></li><br><li><b>Configurer le kube-apiserver pour utiliser ce fichier</b> :<br>- Ajouter l'argument suivant à la configuration du kube-apiserver :<br><pre><code>--admission-control-config-file=/tmp/pss/cluster-level-pss.yaml</code></pre></li><br><li><b>Redémarrer le kube-apiserver</b> pour appliquer les changements.<br>- Pour un cluster <code>kind</code>, recréer le cluster avec la configuration appropriée :<br><pre><code>kind create cluster --name psa-cluster --config &lt;&lt;EOF<br>kind: Cluster<br>apiVersion: kind.x-k8s.io/v1alpha4<br>nodes:<br>- role: control-plane<br>  kubeadmConfigPatches:<br>  - |<br>    kind: ClusterConfiguration<br>    apiServer:<br>      extraArgs:<br>        admission-control-config-file: /etc/kubernetes/policies/pss.yaml<br>      extraVolumes:<br>      - name: pss-config<br>        hostPath: /tmp/pss<br>        mountPath: /etc/kubernetes/policies<br>        readOnly: true<br>EOF</code></pre></li></ol><br><b>Explanatory Context :</b><br>Cette procédure configure le PSA pour bloquer (<code>enforce</code>) les pods non conformes au standard <code>baseline</code> dans tous les namespaces sauf <code>kube-system</code>, tout en générant des avertissements et des logs d'audit pour les violations du standard <code>restricted</code>. L'exemption de <code>kube-system</code> est nécessaire car ce namespace contient des composants système critiques (ex : <code>kube-proxy</code>, <code>etcd</code>) qui nécessitent souvent des privilèges élevés. Cette approche permet de sécuriser les workloads utilisateur tout en maintenant la stabilité du cluster.<br><br>![img-1.jpeg](img-1.jpeg)<br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Pourquoi le namespace <code>kube-system</code> est-il généralement exempté lors de l'application des Pod Security Standards, et quelles précautions doivent être prises en conséquence ?",
+  "back": "Le namespace <code>kube-system</code> est exempté car il héberge des composants système critiques de Kubernetes qui nécessitent souvent des privilèges élevés pour fonctionner correctement, tels que :<br><br><ul><li><code>kube-proxy</code> : Nécessite un accès aux namespaces de l'hôte (<code>hostNetwork: true</code>) et des volumes <code>hostPath</code> pour gérer le réseau.</li><li><code>etcd</code> : Utilise des volumes <code>hostPath</code> pour stocker les données du cluster.</li><li><code>kube-apiserver</code>, <code>kube-controller-manager</code>, <code>kube-scheduler</code> : Peuvent nécessiter des capacités Linux étendues ou des accès privilégiés.</li></ul><br><b>Précautions à prendre :</b><br><ul><li><b>RBAC strict</b> : Limiter l'accès au namespace <code>kube-system</code> via des politiques RBAC granulaires, en appliquant le principe du moindre privilège.</li><li><b>Surveillance renforcée</b> : Utiliser des outils comme <code>kube-bench</code> ou <code>Falco</code> pour détecter les comportements anormaux dans ce namespace.</li><li><b>Isolation réseau</b> : Appliquer des <i>Network Policies</i> pour restreindre les communications entrantes/sortantes vers <code>kube-system</code>.</li><li><b>Audit régulier</b> : Vérifier périodiquement les pods déployés dans <code>kube-system</code> pour détecter les anomalies ou les ressources non autorisées.</li></ul><br><b>Explanatory Context :</b><br>L'exemption de <code>kube-system</code> crée un compromis entre sécurité et fonctionnalité : sans elle, les composants système pourraient échouer, rendant le cluster inutilisable. Cependant, cette exemption introduit un risque potentiel, car un attaquant qui parvient à déployer un pod dans <code>kube-system</code> pourrait obtenir un contrôle total sur le cluster. C'est pourquoi des mesures compensatoires (RBAC, surveillance) sont essentielles. Cette approche reflète le principe de défense en profondeur, où plusieurs couches de sécurité (PSA, RBAC, Network Policies) se complètent pour atténuer les risques."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Pourquoi le namespace <code>kube-system</code> est-il généralement exempté lors de l'application des Pod Security Standards, et quelles précautions doivent être prises en conséquence ?",
+  "back": "Le namespace <code>kube-system</code> est exempté car il héberge des composants système critiques de Kubernetes qui nécessitent souvent des privilèges élevés pour fonctionner correctement, tels que :<br><br><ul><li><code>kube-proxy</code> : Nécessite un accès aux namespaces de l'hôte (<code>hostNetwork: true</code>) et des volumes <code>hostPath</code> pour gérer le réseau.</li><li><code>etcd</code> : Utilise des volumes <code>hostPath</code> pour stocker les données du cluster.</li><li><code>kube-apiserver</code>, <code>kube-controller-manager</code>, <code>kube-scheduler</code> : Peuvent nécessiter des capacités Linux étendues ou des accès privilégiés.</li></ul><br><b>Précautions à prendre :</b><br><ul><li><b>RBAC strict</b> : Limiter l'accès au namespace <code>kube-system</code> via des politiques RBAC granulaires, en appliquant le principe du moindre privilège.</li><li><b>Surveillance renforcée</b> : Utiliser des outils comme <code>kube-bench</code> ou <code>Falco</code> pour détecter les comportements anormaux dans ce namespace.</li><li><b>Isolation réseau</b> : Appliquer des <i>Network Policies</i> pour restreindre les communications entrantes/sortantes vers <code>kube-system</code>.</li><li><b>Audit régulier</b> : Vérifier périodiquement les pods déployés dans <code>kube-system</code> pour détecter les anomalies ou les ressources non autorisées.</li></ul><br><b>Explanatory Context :</b><br>L'exemption de <code>kube-system</code> crée un compromis entre sécurité et fonctionnalité : sans elle, les composants système pourraient échouer, rendant le cluster inutilisable. Cependant, cette exemption introduit un risque potentiel, car un attaquant qui parvient à déployer un pod dans <code>kube-system</code> pourrait obtenir un contrôle total sur le cluster. C'est pourquoi des mesures compensatoires (RBAC, surveillance) sont essentielles. Cette approche reflète le principe de défense en profondeur, où plusieurs couches de sécurité (PSA, RBAC, Network Policies) se complètent pour atténuer les risques.<br><br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet d'évaluer l'impact de l'application du Pod Security Standard <code>baseline</code> sur un cluster sans modifier sa configuration ? Décrivez son fonctionnement et interprétez un exemple de sortie.",
+  "back": "La commande suivante permet d'évaluer l'impact du standard <code>baseline</code> en mode <code>dry-run</code> :<br><br><pre><code>kubectl label --dry-run=server --overwrite ns --all \\<br>  pod-security.kubernetes.io/enforce=baseline</code></pre><br><b>Fonctionnement :</b><br><ul><li>Le flag <code>--dry-run=server</code> simule l'opération sans appliquer réellement les changements.</li><li><code>--overwrite</code> permet de remplacer les labels existants.</li><li><code>ns --all</code> cible tous les namespaces du cluster.</li><li><code>pod-security.kubernetes.io/enforce=baseline</code> applique le standard <code>baseline</code> en mode <code>enforce</code>.</li></ul><br><b>Exemple de sortie et interprétation :</b><br><pre><code>namespace/default labeled<br>namespace/kube-node-lease labeled<br>namespace/kube-public labeled<br>Warning: existing pods in namespace 'kube-system' violate the new PodSecurity enforce level 'baseline'<br>Warning: etcd-psa-wo-cluster-pss-control-plane (and 3 other pods): host namespaces, hostPath volumes<br>Warning: kindnet-vzj42: non-default capabilities, host namespaces, hostPath volumes<br>Warning: kube-proxy-m6hwf: host namespaces, hostPath volumes, privileged<br>namespace/kube-system labeled<br>namespace/local-path-storage labeled</code></pre><br><b>Interprétation :</b><br><ul><li>Les namespaces <code>default</code>, <code>kube-node-lease</code>, et <code>kube-public</code> n'ont pas de pods violant le standard <code>baseline</code>.</li><li>Le namespace <code>kube-system</code> contient des pods violant le standard, notamment :<br>- <code>etcd</code> et <code>kube-proxy</code> utilisent des <code>hostPath volumes</code> et des <code>host namespaces</code>.<br>- <code>kindnet</code> a des capacités Linux non par défaut et utilise des <code>host namespaces</code>.<br>- <code>kube-proxy</code> est en mode <code>privileged</code>.</li><li>Ces violations indiquent que ces pods nécessiteraient des ajustements pour être conformes au standard <code>baseline</code>.</li></ul><br><b>Explanatory Context :</b><br>Cette commande est essentielle pour planifier une migration vers le PSA, car elle permet d'identifier les workloads problématiques avant d'appliquer les standards. Elle révèle les compromis nécessaires entre sécurité et fonctionnalité : par exemple, les composants système comme <code>kube-proxy</code> ont souvent besoin de privilèges élevés pour fonctionner, ce qui peut justifier leur exemption. Cette approche s'inscrit dans une démarche de <i>security by design</i>, où les risques sont évalués et atténués avant le déploiement."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet d'évaluer l'impact de l'application du Pod Security Standard <code>baseline</code> sur un cluster sans modifier sa configuration ? Décrivez son fonctionnement et interprétez un exemple de sortie.",
+  "back": "La commande suivante permet d'évaluer l'impact du standard <code>baseline</code> en mode <code>dry-run</code> :<br><br><pre><code>kubectl label --dry-run=server --overwrite ns --all \\<br>  pod-security.kubernetes.io/enforce=baseline</code></pre><br><b>Fonctionnement :</b><br><ul><li>Le flag <code>--dry-run=server</code> simule l'opération sans appliquer réellement les changements.</li><li><code>--overwrite</code> permet de remplacer les labels existants.</li><li><code>ns --all</code> cible tous les namespaces du cluster.</li><li><code>pod-security.kubernetes.io/enforce=baseline</code> applique le standard <code>baseline</code> en mode <code>enforce</code>.</li></ul><br><b>Exemple de sortie et interprétation :</b><br><pre><code>namespace/default labeled<br>namespace/kube-node-lease labeled<br>namespace/kube-public labeled<br>Warning: existing pods in namespace 'kube-system' violate the new PodSecurity enforce level 'baseline'<br>Warning: etcd-psa-wo-cluster-pss-control-plane (and 3 other pods): host namespaces, hostPath volumes<br>Warning: kindnet-vzj42: non-default capabilities, host namespaces, hostPath volumes<br>Warning: kube-proxy-m6hwf: host namespaces, hostPath volumes, privileged<br>namespace/kube-system labeled<br>namespace/local-path-storage labeled</code></pre><br><b>Interprétation :</b><br><ul><li>Les namespaces <code>default</code>, <code>kube-node-lease</code>, et <code>kube-public</code> n'ont pas de pods violant le standard <code>baseline</code>.</li><li>Le namespace <code>kube-system</code> contient des pods violant le standard, notamment :<br>- <code>etcd</code> et <code>kube-proxy</code> utilisent des <code>hostPath volumes</code> et des <code>host namespaces</code>.<br>- <code>kindnet</code> a des capacités Linux non par défaut et utilise des <code>host namespaces</code>.<br>- <code>kube-proxy</code> est en mode <code>privileged</code>.</li><li>Ces violations indiquent que ces pods nécessiteraient des ajustements pour être conformes au standard <code>baseline</code>.</li></ul><br><b>Explanatory Context :</b><br>Cette commande est essentielle pour planifier une migration vers le PSA, car elle permet d'identifier les workloads problématiques avant d'appliquer les standards. Elle révèle les compromis nécessaires entre sécurité et fonctionnalité : par exemple, les composants système comme <code>kube-proxy</code> ont souvent besoin de privilèges élevés pour fonctionner, ce qui peut justifier leur exemption. Cette approche s'inscrit dans une démarche de <i>security by design</i>, où les risques sont évalués et atténués avant le déploiement.<br><br>![img-2.jpeg](img-2.jpeg)"
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 6
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les termes manquants :<br>Les politiques d'admission déclaratives dans Kubernetes utilisent le langage {{c1::CEL}} pour définir des règles. Une {{c2::ValidatingAdmissionPolicy}} sert à {{c3::enforcer des contraintes}}, tandis qu'une {{c4::MutatingAdmissionPolicy}} permet de {{c5::modifier les ressources}} pendant l'admission.",
+  "back": "Les politiques d'admission déclaratives dans Kubernetes utilisent le langage <b>CEL</b> pour définir des règles. Une <b>ValidatingAdmissionPolicy</b> sert à <b>enforcer des contraintes</b>, tandis qu'une <b>MutatingAdmissionPolicy</b> permet de <b>modifier les ressources</b> pendant l'admission.<hr><b>Explanatory Context :</b><br>CEL (Common Expression Language) est un langage d'expressions intégré à Kubernetes pour permettre une validation et une mutation déclaratives des ressources. Les politiques de validation bloquent ou avertissent sur des configurations non conformes, tandis que les politiques de mutation appliquent des transformations automatiques, comme l'ajout de labels ou de valeurs par défaut."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les termes manquants :<br>Les politiques d'admission déclaratives dans Kubernetes utilisent le langage {{c1::CEL}} pour définir des règles. Une {{c2::ValidatingAdmissionPolicy}} sert à {{c3::enforcer des contraintes}}, tandis qu'une {{c4::MutatingAdmissionPolicy}} permet de {{c5::modifier les ressources}} pendant l'admission.",
+  "back": "Les politiques d'admission déclaratives dans Kubernetes utilisent le langage <b>CEL</b> pour définir des règles. Une <b>ValidatingAdmissionPolicy</b> sert à <b>enforcer des contraintes</b>, tandis qu'une <b>MutatingAdmissionPolicy</b> permet de <b>modifier les ressources</b> pendant l'admission.<hr><b>Explanatory Context :</b><br>CEL (Common Expression Language) est un langage d'expressions intégré à Kubernetes pour permettre une validation et une mutation déclaratives des ressources. Les politiques de validation bloquent ou avertissent sur des configurations non conformes, tandis que les politiques de mutation appliquent des transformations automatiques, comme l'ajout de labels ou de valeurs par défaut."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les termes manquants :<br>Pour appliquer une politique d'admission, il faut un objet {{c1::Policy}} (ex: <code>ValidatingAdmissionPolicy</code>) et un objet {{c2::Binding}} (ex: <code>ValidatingAdmissionPolicyBinding</code>). Les paramètres sont {{c3::optionnels}} et peuvent être définis via une ressource comme un {{c4::ConfigMap}}.",
+  "back": "Pour appliquer une politique d'admission, il faut un objet <b>Policy</b> (ex: <code>ValidatingAdmissionPolicy</code>) et un objet <b>Binding</b> (ex: <code>ValidatingAdmissionPolicyBinding</code>). Les paramètres sont <b>optionnels</b> et peuvent être définis via une ressource comme un <b>ConfigMap</b>.<hr><b>Explanatory Context :</b><br>Cette structure modulaire permet de séparer la logique de la politique (définie dans le Policy) de son application (définie dans le Binding). Les paramètres ajoutent une couche de flexibilité, permettant de configurer dynamiquement le comportement des politiques sans les redéployer."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les termes manquants :<br>Pour appliquer une politique d'admission, il faut un objet {{c1::Policy}} (ex: <code>ValidatingAdmissionPolicy</code>) et un objet {{c2::Binding}} (ex: <code>ValidatingAdmissionPolicyBinding</code>). Les paramètres sont {{c3::optionnels}} et peuvent être définis via une ressource comme un {{c4::ConfigMap}}.",
+  "back": "Pour appliquer une politique d'admission, il faut un objet <b>Policy</b> (ex: <code>ValidatingAdmissionPolicy</code>) et un objet <b>Binding</b> (ex: <code>ValidatingAdmissionPolicyBinding</code>). Les paramètres sont <b>optionnels</b> et peuvent être définis via une ressource comme un <b>ConfigMap</b>.<hr><b>Explanatory Context :</b><br>Cette structure modulaire permet de séparer la logique de la politique (définie dans le Policy) de son application (définie dans le Binding). Les paramètres ajoutent une couche de flexibilité, permettant de configurer dynamiquement le comportement des politiques sans les redéployer."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les termes manquants :<br>Dans une <code>ValidatingAdmissionPolicyBinding</code>, les actions de validation possibles sont {{c1::Audit}}, {{c2::Warn}} et {{c3::Deny}}. Il est interdit d'utiliser {{c2::Warn}} et {{c3::Deny}} ensemble pour éviter la {{c4::duplication}} de l'échec de validation.",
+  "back": "Dans une <code>ValidatingAdmissionPolicyBinding</code>, les actions de validation possibles sont <b>Audit</b>, <b>Warn</b> et <b>Deny</b>. Il est interdit d'utiliser <b>Warn</b> et <b>Deny</b> ensemble pour éviter la <b>duplication</b> de l'échec de validation.<hr><b>Explanatory Context :</b><br>Ces actions permettent de graduer la sévérité des politiques de validation. <code>Audit</code> trace les violations sans impacter les utilisateurs, <code>Warn</code> informe sans bloquer, et <code>Deny</code> bloque les requêtes non conformes. Cette flexibilité est essentielle pour adapter les politiques aux besoins spécifiques du cluster."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les termes manquants :<br>Dans une <code>ValidatingAdmissionPolicyBinding</code>, les actions de validation possibles sont {{c1::Audit}}, {{c2::Warn}} et {{c3::Deny}}. Il est interdit d'utiliser {{c2::Warn}} et {{c3::Deny}} ensemble pour éviter la {{c4::duplication}} de l'échec de validation.",
+  "back": "Dans une <code>ValidatingAdmissionPolicyBinding</code>, les actions de validation possibles sont <b>Audit</b>, <b>Warn</b> et <b>Deny</b>. Il est interdit d'utiliser <b>Warn</b> et <b>Deny</b> ensemble pour éviter la <b>duplication</b> de l'échec de validation.<hr><b>Explanatory Context :</b><br>Ces actions permettent de graduer la sévérité des politiques de validation. <code>Audit</code> trace les violations sans impacter les utilisateurs, <code>Warn</code> informe sans bloquer, et <code>Deny</code> bloque les requêtes non conformes. Cette flexibilité est essentielle pour adapter les politiques aux besoins spécifiques du cluster."
+}
+```
+
+---
+## [FILTRE CLOZE OVERLOAD V1.1] Carte Marquée
+
+### Raison:
+Trop de cloze deletions (5 > 3 max). Marquée avec le tag 'Catégorie::Cloze_Overload'.
+
+### Front:
+```
+Complétez les termes manquants :<br>Les politiques d'admission déclaratives dans Kubernetes utilisent le langage {{c1::CEL}} pour définir des règles. Une {{c2::ValidatingAdmissionPolicy}} sert à {{c3:
+```
+
+---
+## [FILTRE CLOZE OVERLOAD V1.1] Carte Marquée
+
+### Raison:
+Trop de cloze deletions (4 > 3 max). Marquée avec le tag 'Catégorie::Cloze_Overload'.
+
+### Front:
+```
+Complétez les termes manquants :<br>Pour appliquer une politique d'admission, il faut un objet {{c1::Policy}} (ex: <code>ValidatingAdmissionPolicy</code>) et un objet {{c2::Binding}} (ex: <code>Valida
+```
+
+---
+## [FILTRE CLOZE OVERLOAD V1.1] Carte Marquée
+
+### Raison:
+Trop de cloze deletions (4 > 3 max). Marquée avec le tag 'Catégorie::Cloze_Overload'.
+
+### Front:
+```
+Complétez les termes manquants :<br>Dans une <code>ValidatingAdmissionPolicyBinding</code>, les actions de validation possibles sont {{c1::Audit}}, {{c2::Warn}} et {{c3::Deny}}. Il est interdit d'util
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 11
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 14
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quel est le processus de terminaison d'un Pod Kubernetes et comment les endpoints associés évoluent-ils durant cette phase ?",
+  "back": "<b>Processus de terminaison d'un Pod et évolution des endpoints :</b><br><br><br><br>1. Lorsqu'un Pod est supprimé (par exemple via `kubectl delete pod`), Kubernetes initie une séquence de terminaison respectant la période de <i>graceful termination</i> configurée.<br><br><br>2. Le Pod passe en état <i>Terminating</i>, et son endpoint associé dans l'<i>EndpointSlice</i> voit ses conditions mises à jour :<br><br>   - `ready` passe à `false` (pour compatibilité ascendante avec les load balancers existants).<br><br>   - `serving` reste à `true` (indiquant que le Pod peut encore traiter des requêtes).<br><br>   - `terminating` passe à `true` (signalant que le Pod est en cours de suppression).<br><br><br>3. Un nouveau Pod est généralement recréé (si géré par un <i>Deployment</i> ou un <i>ReplicaSet</i>), et un nouvel endpoint est ajouté à l'<i>EndpointSlice</i> avec `ready: true` et `terminating: false`.<br><br><br>4. Pendant cette phase transitoire, l'<i>EndpointSlice</i> contient à la fois :<br><br>   - L'endpoint de l'ancien Pod (en `terminating: true`).<br><br>   - L'endpoint du nouveau Pod (en `ready: true`).<br><br><br>5. Les clients (comme les load balancers) peuvent détecter les endpoints en `terminating` et implémenter un <i>connection draining</i> pour éviter d'envoyer du trafic vers le Pod en cours de suppression.<br><br><br>6. Une fois la période de <i>graceful termination</i> écoulée, le Pod et son endpoint sont définitivement supprimés de l'<i>EndpointSlice</i>.<br><br><br><br><b>Exemple de sortie d'<i>EndpointSlice</i> pendant la terminaison :</b><br><br><pre><br>{<br>  'endpoints': [<br>    {<br>      'addresses': ['10.12.1.201'],<br>      'conditions': {<br>        'ready': false,<br>        'serving': true,<br>        'terminating': true<br>      },<br>      'targetRef': {<br>        'kind': 'Pod',<br>        'name': 'nginx-deployment-7768647bf9-b4b9s'<br>      }<br>    },<br>    {<br>      'addresses': ['10.12.1.202'],<br>      'conditions': {<br>        'ready': true,<br>        'serving': true,<br>        'terminating': false<br>      }<br>    }<br>  ]<br>}<br></pre><hr><br><br><b>Explanatory Context :</b><br><br>Ce mécanisme permet d'assurer une haute disponibilité des applications en évitant les interruptions brutales de service. Lors d'une mise à jour ou d'un scale-down, Kubernetes maintient temporairement l'ancien Pod actif pour permettre aux connexions existantes de se terminer proprement (<i>graceful termination</i>). Les load balancers ou services peuvent exploiter les champs `serving` et `terminating` pour rediriger le trafic uniquement vers les Pods prêts à le recevoir. Ce processus est crucial pour les applications critiques où la continuité de service est primordiale, comme les API ou les bases de données."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quel est le processus de terminaison d'un Pod Kubernetes et comment les endpoints associés évoluent-ils durant cette phase ?",
+  "back": "<b>Processus de terminaison d'un Pod et évolution des endpoints :</b><br><br>1. Lorsqu'un Pod est supprimé (par exemple via `kubectl delete pod`), Kubernetes initie une séquence de terminaison respectant la période de <i>graceful termination</i> configurée.<br><br>2. Le Pod passe en état <i>Terminating</i>, et son endpoint associé dans l'<i>EndpointSlice</i> voit ses conditions mises à jour :<br><br>   - `ready` passe à `false` (pour compatibilité ascendante avec les load balancers existants).<br><br>   - `serving` reste à `true` (indiquant que le Pod peut encore traiter des requêtes).<br><br>   - `terminating` passe à `true` (signalant que le Pod est en cours de suppression).<br><br>3. Un nouveau Pod est généralement recréé (si géré par un <i>Deployment</i> ou un <i>ReplicaSet</i>), et un nouvel endpoint est ajouté à l'<i>EndpointSlice</i> avec `ready: true` et `terminating: false`.<br><br>4. Pendant cette phase transitoire, l'<i>EndpointSlice</i> contient à la fois :<br><br>   - L'endpoint de l'ancien Pod (en `terminating: true`).<br><br>   - L'endpoint du nouveau Pod (en `ready: true`).<br><br>5. Les clients (comme les load balancers) peuvent détecter les endpoints en `terminating` et implémenter un <i>connection draining</i> pour éviter d'envoyer du trafic vers le Pod en cours de suppression.<br><br>6. Une fois la période de <i>graceful termination</i> écoulée, le Pod et son endpoint sont définitivement supprimés de l'<i>EndpointSlice</i>.<br><br><br><b>Exemple de sortie d'<i>EndpointSlice</i> pendant la terminaison :</b><br><br><pre>{<br>  'endpoints': [<br>    {<br>      'addresses': ['10.12.1.201'],<br>      'conditions': {<br>        'ready': false,<br>        'serving': true,<br>        'terminating': true<br>      },<br>      'targetRef': {<br>        'kind': 'Pod',<br>        'name': 'nginx-deployment-7768647bf9-b4b9s'<br>      }<br>    },<br>    {<br>      'addresses': ['10.12.1.202'],<br>      'conditions': {<br>        'ready': true,<br>        'serving': true,<br>        'terminating': false<br>      }<br>    }<br>  ]<br>}<br></pre><br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>Ce mécanisme permet d'assurer une haute disponibilité des applications en évitant les interruptions brutales de service. Lors d'une mise à jour ou d'un scale-down, Kubernetes maintient temporairement l'ancien Pod actif pour permettre aux connexions existantes de se terminer proprement (<i>graceful termination</i>). Les load balancers ou services peuvent exploiter les champs `serving` et `terminating` pour rediriger le trafic uniquement vers les Pods prêts à le recevoir. Ce processus est crucial pour les applications critiques où la continuité de service est primordiale, comme les API ou les bases de données."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels sont les états possibles des conditions d'un endpoint dans un <i>EndpointSlice</i> Kubernetes, et que signifient-ils ?",
+  "back": "<b>États des conditions d'un endpoint dans un <i>EndpointSlice</i> :</b><br><br><br><br>1. <b>`ready`</b> :<br><br>   - `true` : L'endpoint est prêt à recevoir du trafic. Utilisé par les load balancers pour diriger le trafic vers ce Pod.<br><br>   - `false` : L'endpoint n'est pas prêt (par exemple, pendant la terminaison ou si le Pod est en échec).<br><br><br><br>2. <b>`serving`</b> :<br><br>   - `true` : Le Pod peut encore traiter des requêtes, même s'il est en cours de terminaison.<br><br>   - `false` : Le Pod ne peut plus traiter de requêtes (par exemple, si le conteneur a crashé).<br><br><br><br>3. <b>`terminating`</b> :<br><br>   - `true` : Le Pod associé est en cours de suppression (état <i>Terminating</i>).<br><br>   - `false` : Le Pod n'est pas en cours de suppression.<br><br><br><br><b>Comportement combiné :</b><br><br>- Pendant la terminaison d'un Pod, `ready` passe à `false` (pour éviter que les load balancers existants n'envoient du trafic), mais `serving` reste à `true` (pour permettre le <i>connection draining</i>).<br><br>- Un endpoint avec `terminating: true` est en cours de suppression et sera retiré de l'<i>EndpointSlice</i> une fois la période de <i>graceful termination</i> écoulée.<br><br><br><b>Exemple :</b><br><br><pre><br>'conditions': {<br>  'ready': false,<br>  'serving': true,<br>  'terminating': true<br>}<br></pre><br>Indique un Pod en cours de suppression, mais encore capable de traiter des requêtes existantes.<hr><br><br><b>Explanatory Context :</b><br><br>Ces conditions permettent aux composants Kubernetes (comme les <i>kube-proxy</i> ou les load balancers externes) de prendre des décisions dynamiques sur la répartition du trafic. Par exemple, un load balancer peut utiliser `serving: true` pour continuer à envoyer des requêtes à un Pod en `terminating`, tout en évitant d'en envoyer de nouvelles grâce à `ready: false`. Cela garantit une transition fluide lors des mises à jour ou des scale-down, sans perte de requêtes en cours."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les états possibles des conditions d'un endpoint dans un <i>EndpointSlice</i> Kubernetes, et que signifient-ils ?",
+  "back": "<b>États des conditions d'un endpoint dans un <i>EndpointSlice</i> :</b><br><br>1. <b>`ready`</b> :<br><br>   - `true` : L'endpoint est prêt à recevoir du trafic. Utilisé par les load balancers pour diriger le trafic vers ce Pod.<br><br>   - `false` : L'endpoint n'est pas prêt (par exemple, pendant la terminaison ou si le Pod est en échec).<br><br>2. <b>`serving`</b> :<br><br>   - `true` : Le Pod peut encore traiter des requêtes, même s'il est en cours de terminaison.<br><br>   - `false` : Le Pod ne peut plus traiter de requêtes (par exemple, si le conteneur a crashé).<br><br>3. <b>`terminating`</b> :<br><br>   - `true` : Le Pod associé est en cours de suppression (état <i>Terminating</i>).<br><br>   - `false` : Le Pod n'est pas en cours de suppression.<br><br><br><b>Comportement combiné :</b><br><br>- Pendant la terminaison d'un Pod, `ready` passe à `false` (pour éviter que les load balancers existants n'envoient du trafic), mais `serving` reste à `true` (pour permettre le <i>connection draining</i>).<br><br>- Un endpoint avec `terminating: true` est en cours de suppression et sera retiré de l'<i>EndpointSlice</i> une fois la période de <i>graceful termination</i> écoulée.<br><br><br><b>Exemple :</b><br><br><pre>'conditions': {<br>  'ready': false,<br>  'serving': true,<br>  'terminating': true<br>}<br></pre><br>Indique un Pod en cours de suppression, mais encore capable de traiter des requêtes existantes.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>Ces conditions permettent aux composants Kubernetes (comme les <i>kube-proxy</i> ou les load balancers externes) de prendre des décisions dynamiques sur la répartition du trafic. Par exemple, un load balancer peut utiliser `serving: true` pour continuer à envoyer des requêtes à un Pod en `terminating`, tout en évitant d'en envoyer de nouvelles grâce à `ready: false`. Cela garantit une transition fluide lors des mises à jour ou des scale-down, sans perte de requêtes en cours."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce que le <i>connection draining</i> dans le contexte des Pods Kubernetes, et pourquoi est-il important ?",
+  "back": "<b>Définition du <i>connection draining</i> :</b><br><br>Le <i>connection draining</i> est un mécanisme permettant de terminer proprement les connexions actives d'un Pod en cours de suppression, sans interrompre brutalement les requêtes en cours. Il s'agit de laisser le Pod finir de traiter les requêtes existantes tout en évitant d'en accepter de nouvelles.<br><br><br><br><b>Mise en œuvre dans Kubernetes :</b><br><br>1. Lorsqu'un Pod est supprimé, son endpoint dans l'<i>EndpointSlice</i> passe en état `terminating: true`.<br><br>2. La condition `ready` est mise à `false` pour signaler aux load balancers de ne plus envoyer de <b>nouveau</b> trafic vers ce Pod.<br><br>3. La condition `serving` reste à `true`, indiquant que le Pod peut encore traiter les requêtes <b>existantes</b>.<br><br>4. Les clients (comme les load balancers) détectent les endpoints en `terminating` et redirigent dynamiquement le trafic vers d'autres Pods prêts (`ready: true`).<br><br>5. Une fois toutes les connexions terminées ou la période de <i>graceful termination</i> écoulée, le Pod et son endpoint sont définitivement supprimés.<br><br><br><b>Importance :</b><br><br>- <b>Haute disponibilité</b> : Évite les interruptions de service lors des mises à jour, scale-down, ou redémarrages de Pods.<br><br>- <b>Expérience utilisateur</b> : Garantit que les requêtes en cours ne sont pas interrompues brutalement.<br><br>- <b>Fiabilité des applications</b> : Critique pour les applications stateful (bases de données, files d'attente) ou les API où la perte de requêtes est inacceptable.<br><br><br><b>Exemple d'utilisation :</b><br><br>Un load balancer peut implémenter une logique de <i>connection draining</i> en surveillant les champs `serving` et `terminating` des endpoints. Si un endpoint est en `terminating: true`, le load balancer cesse d'envoyer de nouvelles requêtes vers ce Pod, mais attend que les requêtes existantes se terminent avant de le retirer de la rotation.<hr><br><br><b>Explanatory Context :</b><br><br>Le <i>connection draining</i> est un pilier de la résilience des applications déployées sur Kubernetes. Il s'intègre dans une stratégie plus large de gestion des cycles de vie des Pods, où chaque étape (création, mise à jour, suppression) est conçue pour minimiser l'impact sur les utilisateurs finaux. Ce mécanisme est particulièrement crucial dans les environnements cloud natifs, où les mises à jour fréquentes et les pannes sont gérées de manière automatisée et transparente."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce que le <i>connection draining</i> dans le contexte des Pods Kubernetes, et pourquoi est-il important ?",
+  "back": "<b>Définition du <i>connection draining</i> :</b><br><br>Le <i>connection draining</i> est un mécanisme permettant de terminer proprement les connexions actives d'un Pod en cours de suppression, sans interrompre brutalement les requêtes en cours. Il s'agit de laisser le Pod finir de traiter les requêtes existantes tout en évitant d'en accepter de nouvelles.<br><br><br><b>Mise en œuvre dans Kubernetes :</b><br><br>1. Lorsqu'un Pod est supprimé, son endpoint dans l'<i>EndpointSlice</i> passe en état `terminating: true`.<br><br>2. La condition `ready` est mise à `false` pour signaler aux load balancers de ne plus envoyer de <b>nouveau</b> trafic vers ce Pod.<br><br>3. La condition `serving` reste à `true`, indiquant que le Pod peut encore traiter les requêtes <b>existantes</b>.<br><br>4. Les clients (comme les load balancers) détectent les endpoints en `terminating` et redirigent dynamiquement le trafic vers d'autres Pods prêts (`ready: true`).<br><br>5. Une fois toutes les connexions terminées ou la période de <i>graceful termination</i> écoulée, le Pod et son endpoint sont définitivement supprimés.<br><br><br><b>Importance :</b><br><br>- <b>Haute disponibilité</b> : Évite les interruptions de service lors des mises à jour, scale-down, ou redémarrages de Pods.<br><br>- <b>Expérience utilisateur</b> : Garantit que les requêtes en cours ne sont pas interrompues brutalement.<br><br>- <b>Fiabilité des applications</b> : Critique pour les applications stateful (bases de données, files d'attente) ou les API où la perte de requêtes est inacceptable.<br><br><br><b>Exemple d'utilisation :</b><br><br>Un load balancer peut implémenter une logique de <i>connection draining</i> en surveillant les champs `serving` et `terminating` des endpoints. Si un endpoint est en `terminating: true`, le load balancer cesse d'envoyer de nouvelles requêtes vers ce Pod, mais attend que les requêtes existantes se terminent avant de le retirer de la rotation.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>Le <i>connection draining</i> est un pilier de la résilience des applications déployées sur Kubernetes. Il s'intègre dans une stratégie plus large de gestion des cycles de vie des Pods, où chaque étape (création, mise à jour, suppression) est conçue pour minimiser l'impact sur les utilisateurs finaux. Ce mécanisme est particulièrement crucial dans les environnements cloud natifs, où les mises à jour fréquentes et les pannes sont gérées de manière automatisée et transparente."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment vérifier l'état des endpoints d'un Service Kubernetes et interpréter leur statut ?",
+  "back": "<b>Commandes pour vérifier les endpoints d'un Service :</b><br><br><br><br>1. <b>Lister les <i>EndpointSlices</i> associés à un Service :</b><br><br>   ```bash<br>   kubectl get endpointslice<br>   ```<br><br>   <i>Exemple de sortie :</i><br><br>   <pre><br>   NAME                     ADDRESSTYPE   PORTS   ENDPOINTS   AGE<br>   nginx-service-6tjbr      IPv4          80      1           5m<br>   </pre><br><br><br>2. <b>Obtenir les détails d'un <i>EndpointSlice</i> spécifique (format JSON) :</b><br><br>   ```bash<br>   kubectl get endpointslice -o json -l kubernetes.io/service-name=<NOM_DU_SERVICE><br>   ```<br><br>   <i>Exemple avec `nginx-service` :</i><br><br>   ```bash<br>   kubectl get endpointslice -o json -l kubernetes.io/service-name=nginx-service<br>   ```<br><br><br><br>3. <b>Interprétation des champs clés dans la sortie JSON :</b><br><br>   - <b>`addressType`</b> : Type d'adresse (ex: `IPv4`).<br><br>   - <b>`endpoints`</b> : Liste des endpoints associés au Service.<br><br>     - <b>`addresses`</b> : Adresses IP des Pods.<br><br>     - <b>`conditions`</b> : Statuts de l'endpoint (voir détails ci-dessous).<br><br>     - <b>`targetRef`</b> : Référence vers le Pod associé (nom, namespace, UID).<br><br>     - <b>`nodeName`</b> : Nom du nœud hébergeant le Pod.<br><br><br><br><b>Interprétation des conditions d'un endpoint :</b><br><br><pre><br>'conditions': {<br>  'ready': &lt;bool&gt;,      // true si l'endpoint est prêt à recevoir du trafic<br>  'serving': &lt;bool&gt;,    // true si le Pod peut traiter des requêtes (même en terminaison)<br>  'terminating': &lt;bool&gt; // true si le Pod est en cours de suppression<br>}<br></pre><br><br><b>Exemple d'analyse :</b><br><br>- Un endpoint avec `ready: true`, `serving: true`, `terminating: false` est pleinement opérationnel.<br><br>- Un endpoint avec `ready: false`, `serving: true`, `terminating: true` est en cours de suppression mais peut encore traiter des requêtes existantes (utile pour le <i>connection draining</i>).<br><br>- Un endpoint sans champ `targetRef` ou avec `ready: false` et `serving: false` est probablement en échec ou en cours de création.<hr><br><br><b>Explanatory Context :</b><br><br>Vérifier l'état des endpoints est une compétence essentielle pour diagnostiquer les problèmes de connectivité dans Kubernetes. Par exemple, si un Service ne route pas correctement le trafic, inspecter les <i>EndpointSlices</i> permet de vérifier si les Pods sont prêts (`ready: true`) ou s'ils sont en cours de terminaison (`terminating: true`). Cette vérification est souvent la première étape pour résoudre des problèmes de disponibilité ou de performance dans un cluster."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment vérifier l'état des endpoints d'un Service Kubernetes et interpréter leur statut ?",
+  "back": "<b>Commandes pour vérifier les endpoints d'un Service :</b><br><br>1. <b>Lister les <i>EndpointSlices</i> associés à un Service :</b><br><br>   ```bash<br>   kubectl get endpointslice<br>   ```<br><br>   <i>Exemple de sortie :</i><br><br>   <pre>NAME                     ADDRESSTYPE   PORTS   ENDPOINTS   AGE<br>   nginx-service-6tjbr      IPv4          80      1           5m<br></pre><br><br>2. <b>Obtenir les détails d'un <i>EndpointSlice</i> spécifique (format JSON) :</b><br><br>   ```bash<br>   kubectl get endpointslice -o json -l kubernetes.io/service-name=<NOM_DU_SERVICE><br>   ```<br><br>   <i>Exemple avec `nginx-service` :</i><br><br>   ```bash<br>   kubectl get endpointslice -o json -l kubernetes.io/service-name=nginx-service<br>   ```<br><br><br><b>Interprétation des champs clés dans la sortie JSON :</b><br><br>- <b>`addressType`</b> : Type d'adresse (ex: `IPv4`).<br><br>- <b>`endpoints`</b> : Liste des endpoints associés au Service.<br><br>  - <b>`addresses`</b> : Adresses IP des Pods.<br><br>  - <b>`conditions`</b> : Statuts de l'endpoint (voir détails ci-dessous).<br><br>  - <b>`targetRef`</b> : Référence vers le Pod associé (nom, namespace, UID).<br><br>  - <b>`nodeName`</b> : Nom du nœud hébergeant le Pod.<br><br><br><b>Interprétation des conditions d'un endpoint :</b><br><br><pre>'conditions': {<br>  'ready': &lt;bool&gt;,      // true si l'endpoint est prêt à recevoir du trafic<br>  'serving': &lt;bool&gt;,    // true si le Pod peut traiter des requêtes (même en terminaison)<br>  'terminating': &lt;bool&gt; // true si le Pod est en cours de suppression<br>}<br></pre><br><br><b>Exemple d'analyse :</b><br><br>- Un endpoint avec `ready: true`, `serving: true`, `terminating: false` est pleinement opérationnel.<br><br>- Un endpoint avec `ready: false`, `serving: true`, `terminating: true` est en cours de suppression mais peut encore traiter des requêtes existantes (utile pour le <i>connection draining</i>).<br><br>- Un endpoint sans champ `targetRef` ou avec `ready: false` et `serving: false` est probablement en échec ou en cours de création.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>Vérifier l'état des endpoints est une compétence essentielle pour diagnostiquer les problèmes de connectivité dans Kubernetes. Par exemple, si un Service ne route pas correctement le trafic, inspecter les <i>EndpointSlices</i> permet de vérifier si les Pods sont prêts (`ready: true`) ou s'ils sont en cours de terminaison (`terminating: true`). Cette vérification est souvent la première étape pour résoudre des problèmes de disponibilité ou de performance dans un cluster."
+}
+```
+
+---
+## [FILTRE CLOZE OVERLOAD V1.1] Carte Marquée
+
+### Raison:
+Trop de cloze deletions (4 > 3 max). Marquée avec le tag 'Catégorie::Cloze_Overload'.
+
+### Front:
+```
+Complétez les champs manquants concernant la terminaison des Pods Kubernetes :<br><br><br>Lorsqu'un Pod est supprimé, son endpoint dans l'<i>EndpointSlice</i> passe en état `{{c1::terminating}}: true`
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 4
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les commandes suivantes pour gérer un cluster minikube :<br><br><br>- Pour démarrer un cluster minikube : {{c1::minikube start}}<br><br>- Pour vérifier le statut du cluster : {{c1::minikube status}}<br><br>- Pour accéder à un service déployé : {{c2::minikube service &lt;nom-du-service&gt; --url}}",
+  "back": "<b>Commandes pour gérer un cluster minikube :</b><br><br><br>- Pour démarrer un cluster minikube : minikube start<br><br>- Pour vérifier le statut du cluster : minikube status<br><br>- Pour accéder à un service déployé : minikube service <nom-du-service> --url<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces commandes sont fondamentales pour interagir avec minikube. <code>minikube start</code> initialise un cluster Kubernetes local, <code>minikube status</code> permet de vérifier que tout fonctionne correctement, et <code>minikube service</code> facilite l'accès aux applications déployées en fournissant une URL locale."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les commandes suivantes pour gérer un cluster minikube :<br><br>- Pour démarrer un cluster minikube : {{c1::minikube start}}<br><br>- Pour vérifier le statut du cluster : {{c1::minikube status}}<br><br>- Pour accéder à un service déployé : {{c2::minikube service &lt;nom-du-service&gt; --url}}",
+  "back": "<b>Commandes pour gérer un cluster minikube :</b><br><br>- Pour démarrer un cluster minikube : <code>minikube start</code><br><br>- Pour vérifier le statut du cluster : <code>minikube status</code><br><br>- Pour accéder à un service déployé : <code>minikube service <nom-du-service> --url</code><br><br><hr><b>Contexte Explicatif :</b><br>Ces commandes sont fondamentales pour interagir avec minikube. <code>minikube start</code> initialise un cluster Kubernetes local, <code>minikube status</code> permet de vérifier que tout fonctionne correctement, et <code>minikube service</code> facilite l'accès aux applications déployées en fournissant une URL locale."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez la commande Minikube pour ouvrir le tableau de bord sans lancer automatiquement le navigateur :<br><br><br>minikube dashboard {{c1::--url}}",
+  "back": "minikube dashboard --url<br><br><br>Cette commande affiche une URL que vous pouvez copier-coller dans le navigateur de votre choix pour accéder au tableau de bord Kubernetes."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez la commande Minikube pour ouvrir le tableau de bord sans lancer automatiquement le navigateur :<br><br>minikube dashboard {{c1::--url}}",
+  "back": "La commande pour ouvrir le tableau de bord Minikube sans lancer automatiquement le navigateur est :<br><br><code>minikube dashboard --url</code><br><br>Cette commande affiche une URL que vous pouvez copier-coller dans le navigateur de votre choix pour accéder au tableau de bord Kubernetes.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est utile pour éviter l'ouverture automatique du navigateur par défaut, ce qui est pratique si vous préférez utiliser un navigateur spécifique ou si vous travaillez dans un environnement sans interface graphique par défaut."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels types de ressources Kubernetes peut-on créer directement depuis le tableau de bord Minikube ?",
+  "back": "<b>Ressources Kubernetes créables depuis le tableau de bord Minikube :</b><br><br><br>Depuis le tableau de bord Kubernetes de Minikube, il est possible de créer plusieurs types de ressources, notamment :<br><br><ul><br>    <li><b>Deployments</b> : Permettent de déployer et gérer des applications conteneurisées.</li><br>    <li><b>Services</b> : Exposent les applications déployées pour les rendre accessibles (via <i>ClusterIP</i>, <i>NodePort</i>, ou <i>LoadBalancer</i>).</li><br></ul><br><br>Le tableau de bord offre une interface graphique intuitive pour visualiser, créer et modifier ces ressources sans avoir à utiliser la ligne de commande.<br><br><hr><br><b>Explanatory Context :</b><br><br>Les <i>Deployments</i> et <i>Services</i> sont deux des ressources les plus fondamentales dans Kubernetes. Un <i>Deployment</i> gère le cycle de vie des <i>pods</i> (instances de conteneurs), tandis qu'un <i>Service</i> permet d'exposer ces <i>pods</i> de manière stable, même si les <i>pods</i> sous-jacents sont recréés. Le tableau de bord simplifie ces opérations pour les utilisateurs moins familiers avec la CLI Kubernetes."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels types de ressources Kubernetes peut-on créer directement depuis le tableau de bord Minikube ?",
+  "back": "<b>Ressources Kubernetes créables depuis le tableau de bord Minikube :</b><br><br>Depuis le tableau de bord Kubernetes de Minikube, il est possible de créer plusieurs types de ressources, notamment :<br><br><ul><li><b>Deployments</b> : Permettent de déployer et gérer des applications conteneurisées.</li><li><b>Services</b> : Exposent les applications déployées pour les rendre accessibles (via <i>ClusterIP</i>, <i>NodePort</i>, ou <i>LoadBalancer</i>).</li></ul><br><br>Le tableau de bord offre une interface graphique intuitive pour visualiser, créer et modifier ces ressources sans avoir à utiliser la ligne de commande.<br><hr><b>Contexte Explicatif :</b><br>Les <i>Deployments</i> et <i>Services</i> sont deux des ressources les plus fondamentales dans Kubernetes. Un <i>Deployment</i> gère le cycle de vie des <i>pods</i> (instances de conteneurs), tandis qu'un <i>Service</i> permet d'exposer ces <i>pods</i> de manière stable, même si les <i>pods</i> sous-jacents sont recréés. Le tableau de bord simplifie ces opérations pour les utilisateurs moins familiers avec la CLI Kubernetes."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez la commande pour vérifier l'état des composants du plan de contrôle dans Minikube :<br><br><br>minikube {{c1::status}}",
+  "back": "minikube status<br><br><br>Cette commande affiche l'état des composants clés du plan de contrôle Minikube, tels que <code>host</code>, <code>kubelet</code>, <code>apiserver</code>, et <code>kubeconfig</code>."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez la commande pour vérifier l'état des composants du plan de contrôle dans Minikube :<br><br>minikube {{c1::status}}",
+  "back": "La commande pour vérifier l'état des composants du plan de contrôle dans Minikube est :<br><br><code>minikube status</code><br><br>Cette commande affiche l'état des composants clés du plan de contrôle Minikube, tels que <code>host</code>, <code>kubelet</code>, <code>apiserver</code>, et <code>kubeconfig</code>.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est essentielle pour vérifier que tous les composants du plan de contrôle de Minikube fonctionnent correctement. Un statut <code>Running</code> ou <code>Configured</code> indique que le cluster est prêt à être utilisé."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet de lancer le tableau de bord Minikube et d'obtenir son URL d'accès ?",
+  "back": "La commande pour lancer le tableau de bord Minikube et obtenir son URL est :<br><br><code>minikube dashboard --url</code><br><br>Cette commande démarre le tableau de bord et affiche une URL que vous pouvez utiliser dans un navigateur pour accéder à l'interface graphique de gestion de Kubernetes.<hr><b>Explanatory Context :</b><br>Cette commande est essentielle pour visualiser et gérer les ressources Kubernetes de manière intuitive. Le tableau de bord offre une vue d'ensemble des déploiements, pods, services et autres objets, ce qui facilite le débogage et la surveillance. Il est particulièrement utile pour les débutants qui souhaitent explorer l'état de leur cluster sans utiliser uniquement l'interface en ligne de commande (CLI)."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de lancer le tableau de bord Minikube et d'obtenir son URL d'accès ?",
+  "back": "La commande pour lancer le tableau de bord Minikube et obtenir son URL d'accès est :<br><br><code>minikube dashboard --url</code><br><br>Cette commande démarre le tableau de bord et affiche une URL que vous pouvez utiliser dans un navigateur pour accéder à l'interface graphique de gestion de Kubernetes.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est essentielle pour visualiser et gérer les ressources Kubernetes de manière intuitive. Le tableau de bord offre une vue d'ensemble des déploiements, pods, services et autres objets, ce qui facilite le débogage et la surveillance. Il est particulièrement utile pour les débutants qui souhaitent explorer l'état de leur cluster sans utiliser uniquement l'interface en ligne de commande (CLI)."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez la commande suivante pour créer un <i>Deployment</i> nommé <code>hello-node</code> utilisant une image Docker spécifique :<br><br><code>kubectl create deployment {{c1::hello-node}} --image={{c2::registry.k8s.io/e2e-test-images/agnhost:2.53}} -- /agnhost netexec --http-port={{c3::8080}}</code>",
+  "back": "La commande complète est :<br><br><code>kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.53 -- /agnhost netexec --http-port=8080</code><br><br>Cette commande crée un Deployment qui gère un Pod exécutant un conteneur basé sur l'image <code>agnhost:2.53</code>, configuré pour écouter sur le port 8080.<hr><b>Explanatory Context :</b><br>Cette commande est typique pour déployer une application simple dans Kubernetes. L'image <code>agnhost</code> est souvent utilisée pour des tests et des démonstrations, car elle inclut un serveur web léger qui peut être configuré pour écouter sur un port spécifique. Le Deployment garantit que le Pod reste actif et redémarre en cas de défaillance."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez la commande suivante pour créer un <i>Deployment</i> nommé <code>hello-node</code> utilisant une image Docker spécifique :<br><br><code>kubectl create deployment {{c1::hello-node}} --image={{c2::registry.k8s.io/e2e-test-images/agnhost:2.53}} -- /agnhost netexec --http-port={{c3::8080}}</code>",
+  "back": "La commande complète pour créer un <i>Deployment</i> nommé <code>hello-node</code> est :<br><br><code>kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.53 -- /agnhost netexec --http-port=8080</code><br><br>Cette commande crée un Deployment qui gère un Pod exécutant un conteneur basé sur l'image <code>agnhost:2.53</code>, configuré pour écouter sur le port 8080.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est typique pour déployer une application simple dans Kubernetes. L'image <code>agnhost</code> est souvent utilisée pour des tests et des démonstrations, car elle inclut un serveur web léger qui peut être configuré pour écouter sur un port spécifique. Le Deployment garantit que le Pod reste actif et redémarre en cas de défaillance."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 15
+- **Elaboratives:** 1 (6.7%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment vérifier le mode de fonctionnement de <b>kube-proxy</b> sur un nœud Kubernetes ?",
+  "back": "Pour vérifier le mode de <b>kube-proxy</b> sur un nœud, exécutez la commande suivante sur le nœud concerné :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment vérifier le mode de fonctionnement de <b>kube-proxy</b> sur un nœud Kubernetes ?",
+  "back": "Pour vérifier le mode de <b>kube-proxy</b> sur un nœud, exécutez la commande suivante sur le nœud concerné :<br><br><pre>curl http://localhost:10249/proxyMode</pre><br>Le résultat attendu est généralement <b>iptables</b> (mode par défaut) ou <b>ipvs</b>.<br><br><hr><b>Contexte Explicatif :</b><br>Cette commande interroge l'API de <b>kube-proxy</b> pour connaître le mode de fonctionnement actuel. Le port 10249 est utilisé par <b>kube-proxy</b> pour exposer des métriques et des informations de diagnostic. Le mode iptables est le plus courant, mais certains clusters utilisent IPVS pour des performances améliorées."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment tester la préservation de l'adresse IP source pour un Service de type <b>ClusterIP</b> ?",
+  "back": "Pour tester la préservation de l'adresse IP source avec un Service <b>ClusterIP</b>, suivez ces étapes :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment tester la préservation de l'adresse IP source pour un Service de type <b>ClusterIP</b> ?",
+  "back": "Pour tester la préservation de l'adresse IP source avec un Service <b>ClusterIP</b>, suivez ces étapes :<br><br>1. Créez un déploiement et un Service de type ClusterIP pour une application qui affiche l'adresse IP source des requêtes (par exemple, <b>echoserver</b>) :<br><pre>kubectl create deployment source-ip-app --image=registry.k8s.io/echoserver:1.10<br>kubectl expose deployment source-ip-app --name=clusterip --port=80 --target-port=8080</pre><br>2. Créez un pod temporaire pour envoyer une requête au Service :<br><pre>kubectl run busybox -it --image=busybox:1.28 --restart=Never --rm</pre><br>3. Dans le pod, exécutez :<br><pre>wget -qO - 10.0.170.92</pre><br>4. Vérifiez que le champ <b>client_address</b> dans la réponse correspond à l'adresse IP du pod client.<br><br><hr><b>Contexte Explicatif :</b><br>Cette procédure permet de valider que l'adresse IP source est préservée lorsque le trafic circule entre pods dans le même cluster. L'application <b>echoserver</b> affiche les détails de la requête, y compris l'adresse IP du client."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle est la commande pour modifier la politique de trafic externe d'un Service <b>NodePort</b> afin de préserver l'adresse IP source ?",
+  "back": "Pour modifier la politique de trafic externe et préserver l'adresse IP source, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle est la commande pour modifier la politique de trafic externe d'un Service <b>NodePort</b> afin de préserver l'adresse IP source ?",
+  "back": "Pour modifier la politique de trafic externe et préserver l'adresse IP source, utilisez la commande suivante :<br><br><pre>kubectl patch svc <nom-du-service> -p '{\"spec\":{\"externalTrafficPolicy\":\"Local\"}}'</pre><br>Remplacez <b>&lt;nom-du-service&gt;</b> par le nom de votre Service NodePort.<br><br><hr><b>Contexte Explicatif :</b><br>Cette commande utilise <b>kubectl patch</b> pour mettre à jour le champ <b>externalTrafficPolicy</b> du Service. La politique <b>Local</b> garantit que seul le trafic destiné aux endpoints locaux est routé, préservant ainsi l'adresse IP source originale."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels sont les deux types de support cross-platform pour la préservation de l'adresse IP source avec un Service <b>LoadBalancer</b> ?",
+  "back": "Il existe deux types de support cross-platform pour la préservation de l'adresse IP source avec un Service <b>LoadBalancer</b> :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les deux types de support cross-platform pour la préservation de l'adresse IP source avec un Service <b>LoadBalancer</b> ?",
+  "back": "Il existe deux types de support cross-platform pour la préservation de l'adresse IP source avec un Service <b>LoadBalancer</b> :<br><br>1. **Load balancers avec proxy** : Ces load balancers terminent la connexion client et ouvrent une nouvelle connexion vers les nœuds/endpoints. L'adresse IP source est toujours celle du load balancer, sauf si des en-têtes spécifiques (comme <b>X-Forwarded-For</b>) sont utilisés pour transmettre l'adresse IP réelle du client.<br><br>2. **Load balancers avec forwarder de paquets** : Ces load balancers acheminent les paquets directement vers les nœuds avec endpoints, en conservant l'adresse IP source originale du client. Ils peuvent utiliser le champ <b>service.spec.healthCheckNodePort</b> pour effectuer des health checks et exclure les nœuds sans endpoints.<br><br><hr><b>Contexte Explicatif :</b><br>Le choix entre ces deux types dépend du fournisseur cloud et de la configuration du cluster. Les load balancers avec proxy sont plus courants mais masquent l'adresse IP réelle du client, tandis que les forwarders de paquets préservent cette information mais nécessitent une configuration spécifique."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez : <br><br>Le processus de remplacement de l'adresse IP source d'un paquet est appelé {{c1::Source NAT (SNAT)}}. Dans Kubernetes, cela signifie généralement remplacer l'adresse IP source par celle d'un {{c2::nœud}}.",
+  "back": "Le processus de remplacement de l'adresse IP source d'un paquet est appelé <b>Source NAT (SNAT)</b>. Dans Kubernetes, cela signifie généralement remplacer l'adresse IP source par celle d'un <b>nœud</b>.<br><br><b>Explanatory Context :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez : <br><br>Le processus de remplacement de l'adresse IP source d'un paquet est appelé {{c1::Source NAT (SNAT)}}. Dans Kubernetes, cela signifie généralement remplacer l'adresse IP source par celle d'un {{c2::nœud}}.",
+  "back": "Le processus de remplacement de l'adresse IP source d'un paquet est appelé <b>Source NAT (SNAT)</b>. Dans Kubernetes, cela signifie généralement remplacer l'adresse IP source par celle d'un <b>nœud</b>.<br><br><hr><b>Contexte Explicatif :</b><br>Le SNAT est une technique essentielle dans les réseaux pour uniformiser les adresses sources, facilitant ainsi le routage et la gestion du trafic. Dans Kubernetes, il est utilisé pour masquer les adresses IP dynamiques des pods et pour garantir que le retour du trafic est correctement acheminé."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez : <br><br>Un {{c1::VIP (Virtual IP)}} est une adresse IP virtuelle attribuée à chaque {{c2::Service}} dans Kubernetes, permettant une abstraction stable pour la communication entre applications.",
+  "back": "Un <b>VIP (Virtual IP)</b> est une adresse IP virtuelle attribuée à chaque <b>Service</b> dans Kubernetes, permettant une abstraction stable pour la communication entre applications.<br><br><b>Explanatory Context :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez : <br><br>Un {{c1::VIP (Virtual IP)}} est une adresse IP virtuelle attribuée à chaque {{c2::Service}} dans Kubernetes, permettant une abstraction stable pour la communication entre applications.",
+  "back": "Un <b>VIP (Virtual IP)</b> est une adresse IP virtuelle attribuée à chaque <b>Service</b> dans Kubernetes, permettant une abstraction stable pour la communication entre applications.<br><br><hr><b>Contexte Explicatif :</b><br>Les VIP sont gérées par <b>kube-proxy</b> et permettent une communication transparente entre les services, indépendamment des adresses IP réelles des pods. Elles sont essentielles pour la scalabilité et la résilience des applications dans Kubernetes, car elles fournissent une adresse stable et unique pour chaque Service."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez : <br><br>{{c1::kube-proxy}} est un démon réseau qui gère les règles de routage pour les {{c2::Services}} Kubernetes sur chaque nœud du cluster.",
+  "back": "<b>kube-proxy</b> est un démon réseau qui gère les règles de routage pour les <b>Services</b> Kubernetes sur chaque nœud du cluster.<br><br><b>Explanatory Context :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez : <br><br>{{c1::kube-proxy}} est un démon réseau qui gère les règles de routage pour les {{c2::Services}} Kubernetes sur chaque nœud du cluster.",
+  "back": "<b>kube-proxy</b> est un démon réseau qui gère les règles de routage pour les <b>Services</b> Kubernetes sur chaque nœud du cluster.<br><br><hr><b>Contexte Explicatif :</b><br><b>kube-proxy</b> est un composant critique de Kubernetes qui maintient les règles de routage à jour pour acheminer le trafic vers les pods appropriés. Il fonctionne en mode iptables (par défaut) ou IPVS, selon la configuration du cluster. Sans <b>kube-proxy</b>, les Services Kubernetes ne pourraient pas fonctionner correctement, car le routage du trafic serait impossible."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle est la différence entre les modes de préservation de l'adresse IP source pour les Services <b>ClusterIP</b>, <b>NodePort</b>, et <b>LoadBalancer</b> ? Synthétisez les comportements par défaut et les options de configuration.",
+  "back": "<b>Synthèse des comportements de préservation de l'adresse IP source :</b><br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle est la différence entre les modes de préservation de l'adresse IP source pour les Services <b>ClusterIP</b>, <b>NodePort</b>, et <b>LoadBalancer</b> ? Synthétisez les comportements par défaut et les options de configuration.",
+  "back": "<b>Synthèse des comportements de préservation de l'adresse IP source :</b><br><br><b>1. ClusterIP :</b><br>- **Comportement par défaut** : L'adresse IP source est <b>toujours préservée</b> si <b>kube-proxy</b> est en mode iptables.<br>- **Configuration** : Aucune configuration supplémentaire n'est nécessaire.<br><br><b>2. NodePort :</b><br>- **Comportement par défaut** : L'adresse IP source est remplacée par celle du nœud (SNAT).<br>- **Préservation** : Définir <b>service.spec.externalTrafficPolicy: Local</b> pour éviter le SNAT.<br><br><b>3. LoadBalancer :</b><br>- **Comportement par défaut** : L'adresse IP source est remplacée par celle du nœud intermédiaire (SNAT).<br>- **Préservation** : Définir <b>service.spec.externalTrafficPolicy: Local</b> (supporté sur certains fournisseurs cloud comme GKE).<br><br><hr><b>Contexte Explicatif :</b><br>Le choix du type de Service et de la politique de trafic dépend des besoins de l'application. Les Services <b>ClusterIP</b> sont idéaux pour le trafic interne, tandis que les Services <b>NodePort</b> et <b>LoadBalancer</b> sont utilisés pour exposer des applications à l'extérieur du cluster. La préservation de l'adresse IP source est cruciale pour les applications qui en dépendent, comme les systèmes de sécurité ou de journalisation."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment créer un déploiement nommé <b>source-ip-app</b> utilisant l'image <b>echoserver</b> pour tester la préservation de l'adresse IP source ?",
+  "back": "Pour créer un déploiement nommé <b>source-ip-app</b> utilisant l'image <b>echoserver</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment créer un déploiement nommé <b>source-ip-app</b> utilisant l'image <b>echoserver</b> pour tester la préservation de l'adresse IP source ?",
+  "back": "Pour créer un déploiement nommé <b>source-ip-app</b> utilisant l'image <b>echoserver</b>, utilisez la commande suivante :<br><br><pre>kubectl create deployment source-ip-app --image=registry.k8s.io/echoserver:1.10</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande crée un déploiement Kubernetes avec un pod contenant l'application <b>echoserver</b>, qui affiche les détails des requêtes HTTP, y compris l'adresse IP source du client. Cette application est couramment utilisée pour tester la préservation de l'adresse IP source dans les Services Kubernetes."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet d'exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>ClusterIP</b> ?",
+  "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>ClusterIP</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet d'exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>ClusterIP</b> ?",
+  "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>ClusterIP</b>, utilisez la commande suivante :<br><br><pre>kubectl expose deployment source-ip-app --name=clusterip --port=80 --target-port=8080</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande crée un Service Kubernetes de type <b>ClusterIP</b> pour le déploiement <b>source-ip-app</b>. Le Service sera accessible via l'adresse IP virtuelle (VIP) <b>clusterip</b> sur le port 80, et le trafic sera acheminé vers le port 8080 du pod. Ce type de Service est idéal pour le trafic interne au cluster."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment créer un pod temporaire <b>busybox</b> pour tester la connectivité à un Service <b>ClusterIP</b> ?",
+  "back": "Pour créer un pod temporaire <b>busybox</b> et tester la connectivité à un Service <b>ClusterIP</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment créer un pod temporaire <b>busybox</b> pour tester la connectivité à un Service <b>ClusterIP</b> ?",
+  "back": "Pour créer un pod temporaire <b>busybox</b> et tester la connectivité à un Service <b>ClusterIP</b>, utilisez la commande suivante :<br><br><pre>kubectl run busybox -it --image=busybox:1.28 --restart=Never --rm</pre><br><br>Une fois le pod démarré, exécutez la commande suivante pour envoyer une requête au Service <b>ClusterIP</b> :<br><pre>wget -qO - <IP_DU_SERVICE></pre><br>Remplacez <b>&lt;IP_DU_SERVICE&gt;</b> par l'adresse IP virtuelle du Service (par exemple, <b>10.0.170.92</b>).<br><br><hr><b>Contexte Explicatif :</b><br>Le pod <b>busybox</b> est utilisé pour envoyer une requête HTTP au Service <b>ClusterIP</b>. L'application <b>echoserver</b> répondra en affichant les détails de la requête, y compris l'adresse IP source du client. Cela permet de valider que l'adresse IP source est préservée."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet d'exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>NodePort</b> ?",
+  "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>NodePort</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet d'exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>NodePort</b> ?",
+  "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>NodePort</b>, utilisez la commande suivante :<br><br><pre>kubectl expose deployment source-ip-app --name=nodeport --port=80 --target-port=8080 --type=NodePort</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande crée un Service Kubernetes de type <b>NodePort</b> pour le déploiement <b>source-ip-app</b>. Le Service sera accessible via un port aléatoire sur chaque nœud du cluster (par exemple, <b>30000-32767</b>). Le trafic sera acheminé vers le port 8080 du pod. Ce type de Service est utilisé pour exposer des applications à l'extérieur du cluster."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>LoadBalancer</b> ?",
+  "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>LoadBalancer</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>LoadBalancer</b> ?",
+  "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>LoadBalancer</b>, utilisez la commande suivante :<br><blink><pre>kubectl expose deployment source-ip-app --name=loadbalancer --port=80 --target-port=8080 --type=LoadBalancer</pre></blink><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande crée un Service Kubernetes de type <b>LoadBalancer</b> pour le déploiement <b>source-ip-app</b>. Le fournisseur cloud allouera une adresse IP externe pour le Service, et le trafic sera réparti entre les nœuds du cluster. Ce type de Service est utilisé pour exposer des applications à Internet. Notez que l'adresse IP source sera remplacée par défaut (SNAT), sauf si la politique <b>externalTrafficPolicy: Local</b> est configurée."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelle commande permet de supprimer tous les Services associés à l'application <b>source-ip-app</b> ?",
+  "back": "Pour supprimer tous les Services associés à l'application <b>source-ip-app</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelle commande permet de supprimer tous les Services associés à l'application <b>source-ip-app</b> ?",
+  "back": "Pour supprimer tous les Services associés à l'application <b>source-ip-app</b>, utilisez la commande suivante :<br><br><pre>kubectl delete svc -l app=source-ip-app</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande utilise un sélecteur de labels pour supprimer tous les Services Kubernetes associés au déploiement <b>source-ip-app</b>. Les labels <b>app=source-ip-app</b> sont automatiquement appliqués lors de la création du déploiement et des Services."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment supprimer le déploiement, le ReplicaSet, et le Pod associés à <b>source-ip-app</b> ?",
+  "back": "Pour supprimer le déploiement, le ReplicaSet, et le Pod associés à <b>source-ip-app</b>, utilisez la commande suivante :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment supprimer le déploiement, le ReplicaSet, et le Pod associés à <b>source-ip-app</b> ?",
+  "back": "Pour supprimer le déploiement, le ReplicaSet, et le Pod associés à <b>source-ip-app</b>, utilisez la commande suivante :<br><br><pre>kubectl delete deployment source-ip-app</pre><br><br>Cette commande supprimera automatiquement le déploiement, le ReplicaSet, et les Pods associés.<br><br><hr><b>Contexte Explicatif :</b><br>La commande <b>kubectl delete deployment</b> est suffisante pour supprimer toutes les ressources associées au déploiement <b>source-ip-app</b>, y compris les ReplicaSets et les Pods. Kubernetes gère automatiquement la suppression des ressources dépendantes."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce que le champ <b>service.spec.healthCheckNodePort</b> et à quoi sert-il dans le contexte de la préservation de l'adresse IP source pour un Service <b>LoadBalancer</b> ?",
+  "back": "Le champ <b>service.spec.healthCheckNodePort</b> est un port alloué par Kubernetes sur chaque nœud pour servir des health checks HTTP à l'endpoint <b>/healthz</b>. Dans le contexte de la préservation de l'adresse IP source pour un Service <b>LoadBalancer</b>, ce champ est utilisé pour :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce que le champ <b>service.spec.healthCheckNodePort</b> et à quoi sert-il dans le contexte de la préservation de l'adresse IP source pour un Service <b>LoadBalancer</b> ?",
+  "back": "Le champ <b>service.spec.healthCheckNodePort</b> est un port alloué par Kubernetes sur chaque nœud pour servir des health checks HTTP à l'endpoint <b>/healthz</b>. Dans le contexte de la préservation de l'adresse IP source pour un Service <b>LoadBalancer</b>, ce champ est utilisé pour :<br><br>1. **Exclure les nœuds sans endpoints** : Les nœuds sans endpoints échouent délibérément les health checks, les retirant ainsi de la liste des nœuds éligibles pour le trafic load-balancé.<br>2. **Préserver l'adresse IP source** : En configurant <b>service.spec.externalTrafficPolicy: Local</b>, seuls les nœuds avec endpoints locaux reçoivent le trafic, préservant ainsi l'adresse IP source originale du client.<br><br>Pour vérifier le port alloué, utilisez la commande :<br><pre>kubectl get svc <nom-du-service> -o yaml | grep -i healthCheckNodePort</pre><br><br><hr><b>Contexte Explicatif :</b><br>Ce mécanisme est spécifique à certains fournisseurs cloud, comme Google Kubernetes Engine (GKE). Il permet de combiner préservation de l'adresse IP source et équilibrage de charge efficace, en s'assurant que seul le trafic destiné aux endpoints locaux est routé."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Décrivez le mécanisme visuel de préservation de l'adresse IP source pour un Service <b>NodePort</b> avec <b>externalTrafficPolicy: Local</b>.<br><br><img src='img-6.jpg'>",
+  "back": "Avec <b>externalTrafficPolicy: Local</b> pour un Service <b>NodePort</b>, le mécanisme de préservation de l'adresse IP source fonctionne comme suit :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Décrivez le mécanisme visuel de préservation de l'adresse IP source pour un Service <b>NodePort</b> avec <b>externalTrafficPolicy: Local</b>.<br><br><img src='img-6.jpg'>",
+  "back": "Avec <b>externalTrafficPolicy: Local</b> pour un Service <b>NodePort</b>, le mécanisme de préservation de l'adresse IP source fonctionne comme suit :<br><br>1. Le client envoie un paquet au nœud cible via le port NodePort.<br>2. Si le nœud cible n'a pas d'endpoint local, le paquet est abandonné.<br>3. Si le nœud cible a un endpoint local, le paquet est routé directement vers le pod avec l'adresse IP source originale du client préservée.<br><br>Visuellement :<br><img src='img-6.jpeg'><br><br><hr><b>Contexte Explicatif :</b><br>Cette configuration garantit que seul le trafic destiné aux endpoints locaux est routé, évitant ainsi le SNAT et préservant l'adresse IP source réelle du client. Cela est particulièrement utile pour les applications qui dépendent de l'adresse IP du client, comme les systèmes de sécurité ou de journalisation."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Décrivez le mécanisme visuel de préservation de l'adresse IP source pour un Service <b>LoadBalancer</b> avec <b>externalTrafficPolicy: Local</b>.<br><br><img src='img-8.jpg'>",
+  "back": "Avec <b>externalTrafficPolicy: Local</b> pour un Service <b>LoadBalancer</b>, le mécanisme de préservation de l'adresse IP source fonctionne comme suit :<br><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Décrivez le mécanisme visuel de préservation de l'adresse IP source pour un Service <b>LoadBalancer</b> avec <b>externalTrafficPolicy: Local</b>.<br><br><img src='img-8.jpg'>",
+  "back": "Avec <b>externalTrafficPolicy: Local</b> pour un Service <b>LoadBalancer</b>, le mécanisme de préservation de l'adresse IP source fonctionne comme suit :<br><br>1. Le client envoie un paquet au load balancer via l'adresse IP externe du Service.<br>2. Le load balancer interroge les nœuds via le port <b>healthCheckNodePort</b> pour vérifier leur statut (health check).<br>3. Les nœuds sans endpoints échouent les health checks et sont exclus de la liste des nœuds éligibles.<br>4. Le trafic est uniquement envoyé aux nœuds avec endpoints locaux, préservant ainsi l'adresse IP source originale du client.<br><br>Visuellement :<br><img src='img-8.jpeg'><br><br><hr><b>Contexte Explicatif :</b><br>Ce mécanisme est spécifique à certains fournisseurs cloud, comme Google Kubernetes Engine (GKE). Il permet de combiner préservation de l'adresse IP source et équilibrage de charge efficace, en s'assurant que seul le trafic destiné aux endpoints locaux est routé. Les health checks garantissent que seuls les nœuds avec endpoints actifs reçoivent le trafic."
+}
+```
+
+---
+## [AUDIT IMAGE V1.1] Image manquante injectee
+
+- **Image:** img-7.jpeg
+- **Description:** [diagram] Diagrama que muestra un proceso de división y combinación de flujos, posiblemente representando un sistema de producción o distribución con dos entradas que se unen en un solo proceso. (Concepts: procesos de producción, diagramas de flujo, sistemas de distribución, gestión de operaciones, flujo de trabajo)
+- **Carte cible (ID 2):** Quel est le rôle de <b>kube-proxy</b> dans la gestion des Services Kubernetes ?...
+- **Score de correspondance:** 3
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 23
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce que le modèle Kubernetes pour la connexion des conteneurs et comment les pods communiquent-ils entre eux dans un cluster ?",
+  "back": "<b>Modèle Kubernetes pour la connexion des conteneurs :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce que le modèle Kubernetes pour la connexion des conteneurs et comment les pods communiquent-ils entre eux dans un cluster ?",
+  "back": "<b>Modèle Kubernetes pour la connexion des conteneurs :</b><br>\nKubernetes suppose que les pods peuvent communiquer entre eux, indépendamment de l'hôte sur lequel ils s'exécutent. Chaque pod reçoit sa propre adresse IP privée au sein du cluster, ce qui élimine la nécessité de créer explicitement des liens entre pods ou de mapper les ports des conteneurs vers les ports de l'hôte. Ainsi :<br>\n<ul>\n<li>Les conteneurs au sein d'un même pod peuvent accéder aux ports des autres conteneurs via <code>localhost</code>.</li>\n<li>Tous les pods du cluster peuvent se voir mutuellement sans utiliser de NAT.</li>\n</ul>\n<br>\nCette architecture permet une communication directe et transparente entre les pods, simplifiant la conception des applications distribuées.<br>\n<hr><b>Contexte Explicatif :</b><br>\nCe modèle de communication est illustré par le diagramme suivant :<br>\n![img-1.jpeg](img-1.jpeg)<br>\nCe schéma montre l'architecture d'un cluster Kubernetes avec des nœuds connectés à un plan de contrôle central et les processus internes des nœuds."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce qu'un <i>Service</i> Kubernetes et quel problème résout-il dans un cluster ?",
+  "back": "<b>Définition d'un Service Kubernetes :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce qu'un <i>Service</i> Kubernetes et quel problème résout-il dans un cluster ?",
+  "back": "<b>Définition d'un Service Kubernetes :</b><br>\nUn Service Kubernetes est une abstraction qui définit un ensemble logique de pods fournissant la même fonctionnalité. Il résout le problème suivant :<br>\n<ul>\n<li>Lorsque des pods meurent (par exemple, en cas de défaillance d'un nœud), de nouveaux pods sont recréés avec de nouvelles adresses IP par le ReplicaSet.</li>\n<li>Les pods existants ne peuvent pas être mis à jour dynamiquement pour suivre ces changements d'adresses IP.</li>\n</ul>\nLe Service attribue une adresse IP stable (<b>clusterIP</b>) et un mécanisme de <b>load balancing</b> pour diriger le trafic vers les pods actifs membres du Service. Cela garantit une communication fiable et continue avec l'application, indépendamment des changements sous-jacents des pods.<br>\n<hr><b>Contexte Explicatif :</b><br>\nCe concept est illustré par le diagramme suivant, montrant la relation entre un Service, un ReplicaSet et les pods :<br>\n![img-5.jpeg](img-5.jpeg)<br>\nCe schéma montre comment les étiquettes (<i>labels</i>) et les sélecteurs (<i>selectors</i>) permettent de lier un Service à un ensemble de pods, avec des adresses IP stables pour le Service."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quels sont les deux modes principaux de découverte d'un Service Kubernetes, et comment fonctionnent-ils ?",
+  "back": "<b>Modes de découverte d'un Service Kubernetes :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quels sont les deux modes principaux de découverte d'un Service Kubernetes, et comment fonctionnent-ils ?",
+  "back": "<b>Modes de découverte d'un Service Kubernetes :</b><br>\nKubernetes propose deux modes principaux pour découvrir un Service :<br>\n\n1. <b>Variables d'environnement :</b><br>\n   - Lorsque un pod s'exécute sur un nœud, le <i>kubelet</i> ajoute un ensemble de variables d'environnement pour chaque Service actif.\n   - Ces variables permettent aux pods de localiser les Services via des noms comme <code>MY_NGINX_SERVICE_HOST</code> et <code>MY_NGINX_SERVICE_PORT</code>.\n   - <b>Problème d'ordre :</b> Si les pods sont créés avant le Service, les variables d'environnement ne sont pas disponibles. Il faut recréer les pods après la création du Service pour garantir leur disponibilité.\n\n2. <b>DNS :</b><br>\n   - Kubernetes propose un addon DNS (comme CoreDNS) qui attribue automatiquement des noms DNS aux Services.\n   - Les pods peuvent utiliser ces noms DNS pour accéder aux Services, par exemple <code>my-nginx.default.svc.cluster.local</code>.\n   - Cette méthode est plus flexible et évite les problèmes d'ordre liés aux variables d'environnement.\n\n<br>\n<b>Note :</b> Les variables d'environnement peuvent être désactivées en définissant <code>enableServiceLinks: false</code> dans la spécification du pod.\n<hr><b>Contexte Explicatif :</b><br>\nCes modes de découverte sont illustrés par les diagrammes suivants :\n- Variables d'environnement : ![img-4.jpeg](img-4.jpeg) (montre la structure d'un nœud Kubernetes avec pods et processus).\n- DNS : ![img-1.jpeg](img-1.jpeg) (montre l'architecture globale du cluster avec le plan de contrôle)."
+}
+```
+
+---
+## [MISTRAL QA] Carte Rejetée
+
+### Raison:
+1. The front of the card is incomplete (ends with ':' without providing the missing content).
+2. The cloze syntax is not preserved in the back (missing {{cX::...}} placeholders).
+3. The card does not test a specific concept but rather provides a generic explanation, which lacks pedagogical utility.
+4. The back does not contain an explanatory context section, which is mandatory for 'Texte à trous' type cards.
+5. Action: reject due to incompleteness and lack of pedagogical focus.
+
+### Carte Originale:
+```json
+{
+  "front": "Complétez les informations manquantes sur les Services Kubernetes :<br><br>",
+  "back": "Un Service Kubernetes est une abstraction qui définit un ensemble logique de <b>pods</b> fournissant la même fonctionnalité. Chaque Service se voit attribuer une adresse IP unique appelée <b>clusterIP</b>, qui reste stable tant que le Service existe. Les pods peuvent communiquer avec le Service, qui redirige automatiquement le trafic vers un pod membre grâce à un mécanisme de <b>load balancing</b> intégré.<br><br>"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Comment sécuriser un Service Kubernetes pour exposer une application HTTPS ?",
+  "back": "<b>Étapes pour sécuriser un Service Kubernetes (HTTPS) :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Comment sécuriser un Service Kubernetes pour exposer une application HTTPS ?",
+  "back": "<b>Étapes pour sécuriser un Service Kubernetes (HTTPS) :</b><br>\nPour exposer une application HTTPS via un Service Kubernetes, suivez ces étapes :\n\n1. <b>Créer des certificats auto-signés :</b><br>\n   - Générez une paire de clés publique/privée pour HTTPS :\n     <code>openssl req -x509 -noenc -days 365 -newkey rsa:2048 -keyout /tmp/nginx.key -out /tmp/nginx.crt -subj \"/CN=my-nginx/O=my-nginx\"</code>\n   - Convertissez les clés en base64 :\n     <code>cat /tmp/nginx.crt | base64 | tr -d '\\n'</code>\n     <code>cat /tmp/nginx.key | base64 | tr -d '\\n'</code>\n\n2. <b>Créer un Secret pour stocker les certificats :</b><br>\n   - Créez un fichier YAML pour le Secret (ex: <code>nginxsecrets.yaml</code>) :\n     ```yaml\n     apiVersion: \"v1\"\n     kind: \"Secret\"\n     metadata:\n       name: \"nginxsecret\"\n       namespace: \"default\"\n     type: kubernetes.io/tls\n     data:\n       tls.crt: \"REPLACE_WITH_BASE64_CERT\"\n       tls.key: \"REPLACE_WITH_BASE64_KEY\"\n     ```\n   - Appliquez le Secret :\n     <code>kubectl apply -f nginxsecrets.yaml</code>\n\n3. <b>Configurer l'application pour utiliser HTTPS :</b>\n   - Créez un ConfigMap pour la configuration NGINX (ex: <code>default.conf</code>) :\n     ```\n     server {\n         listen 80 default_server;\n         listen [::]:80 default_server ipv6only=on;\n         listen 443 ssl;\n         root /usr/share/nginx/html;\n         index index.html;\n         server_name localhost;\n         ssl_certificate /etc/nginx/ssl/tls.crt;\n         ssl_certificate_key /etc/nginx/ssl/tls.key;\n         location / {\n             try_files $uri $uri/ =404;\n         }\n     }\n     ```\n   - Montez le Secret et le ConfigMap dans le pod via des volumes.\n\n4. <b>Mettre à jour le Service pour exposer le port HTTPS :</b><br>\n   - Modifiez le Service pour inclure le port 443 (ex: via <code>kubectl edit svc my-nginx</code>).\n   - Déployez l'application sécurisée :\n     <code>kubectl delete deployments,svc my-nginx; kubectl create -f ./nginx-secure-app.yaml</code>\n\n5. <b>Tester l'accès HTTPS :</b><br>\n   - Depuis un pod :\n     <code>kubectl exec curl-deployment-1515033274-1410r -- curl https://my-nginx --cacert /etc/nginx/ssl/tls.crt</code>\n   - Depuis un nœud externe :\n     <code>curl https://<external-ip>:<node-port> -k</code>\n\n<br>\n<b>Note :</b> L'option <code>-k</code> de <code>curl</code> est utilisée pour ignorer les erreurs de certificat (CName mismatch) dans cet exemple.\n<hr><b>Contexte Explicatif :</b><br>\nCe processus est illustré par le diagramme suivant, montrant la structure d'un nœud Kubernetes avec les volumes montés pour les certificats :\n![img-4.jpeg](img-4.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Quelles sont les deux méthodes pour exposer un Service Kubernetes sur une adresse IP externe, et comment fonctionnent-elles ?",
+  "back": "<b>Méthodes pour exposer un Service Kubernetes sur une IP externe :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Quelles sont les deux méthodes pour exposer un Service Kubernetes sur une adresse IP externe, et comment fonctionnent-elles ?",
+  "back": "<b>Méthodes pour exposer un Service Kubernetes sur une IP externe :</b><br>\nKubernetes propose deux méthodes principales pour exposer un Service sur une adresse IP externe :\n\n1. <b>NodePort :</b><br>\n   - Le Service est exposé sur un port spécifique de chaque nœud du cluster (plage par défaut : 30000-32767).\n   - Le trafic est dirigé vers le port cible du pod via le mécanisme de <b>load balancing</b> intégré.\n   - Exemple : Un Service avec <code>nodePort: 31704</code> sera accessible via <code>&lt;IP-du-nœud&gt;:31704</code>.\n   - <b>Avantages :</b> Simple à configurer, fonctionne sans dépendance externe.\n   - <b>Inconvénients :</b> Nécessite de gérer manuellement les ports et peut ne pas être adapté aux environnements cloud.\n\n2. <b>LoadBalancer :</b>\n   - Le Service est exposé via un équilibreur de charge externe (ex: ELB sur AWS, GCLB sur GCP).\n   - Kubernetes interagit avec l'infrastructure cloud pour créer un équilibreur de charge dédié.\n   - Le Service reçoit une adresse IP publique ou un nom DNS (ex: <code>a320587ffd19711e5a37606cf4a74574-1142138393.us-east-1.elb.amazonaws.com</code>).\n   - <b>Avantages :</b> Intégration native avec les environnements cloud, gestion automatique des requêtes entrantes.\n   - <b>Inconvénients :</b> Coût supplémentaire, dépendance à l'infrastructure cloud.\n\n<br>\n<b>Exemple de configuration :</b>\nPour passer d'un Service <code>NodePort</code> à <code>LoadBalancer</code> :\n<code>kubectl edit svc my-nginx</code>\nPuis vérifier la nouvelle configuration :\n<code>kubectl get svc my-nginx</code>\n<code>kubectl describe service my-nginx</code>\n<hr><b>Contexte Explicatif :</b><br>\nCes méthodes sont illustrées par le diagramme suivant, montrant un équilibreur de charge distribuant le trafic entre deux nœuds :\n![img-8.jpeg](img-8.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Rejetée
+
+### Raison:
+1. The front of the card is incomplete (ends with ':' without providing the missing content).
+2. The back does not provide the full list of methods (only mentions 'two main methods' without details).
+3. The card does not test a specific concept but rather provides a generic explanation, which lacks pedagogical utility.
+4. The back does not contain an explanatory context section, which is mandatory for 'Texte à trous' type cards.
+5. Action: reject due to incompleteness and lack of pedagogical focus.
+
+### Carte Originale:
+```json
+{
+  "front": "Complétez les informations manquantes sur les méthodes d'exposition des Services Kubernetes :<br><br>",
+  "back": "Pour exposer un Service Kubernetes sur une adresse IP externe, on peut utiliser deux méthodes principales :<br>"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Qu'est-ce qu'un <code>EndpointSlice</code> dans Kubernetes et quel est son rôle dans le fonctionnement d'un Service ?",
+  "back": "<b>Définition et rôle d'un <code>EndpointSlice</code> :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Qu'est-ce qu'un <code>EndpointSlice</code> dans Kubernetes et quel est son rôle dans le fonctionnement d'un Service ?",
+  "back": "<b>Définition et rôle d'un <code>EndpointSlice</code> :</b><br>\nUn <code>EndpointSlice</code> est une ressource Kubernetes qui stocke dynamiquement les adresses IP des pods membres d'un Service. Son rôle est le suivant :\n\n1. <b>Stockage des endpoints :</b>\n   - Chaque <code>EndpointSlice</code> contient un sous-ensemble d'adresses IP des pods éligibles pour un Service (basé sur le sélecteur du Service).\n   - Exemple : Pour un Service <code>my-nginx</code>, un <code>EndpointSlice</code> peut contenir les adresses <code>10.244.2.5:80</code> et <code>10.244.3.4:80</code>.\n\n2. <b>Mise à jour dynamique :</b>\n   - Lorsque des pods sont ajoutés ou supprimés (par exemple, en cas de défaillance ou de mise à l'échelle), les <code>EndpointSlice</code> sont automatiquement mis à jour.\n   - Les pods morts sont retirés des <code>EndpointSlice</code>, et les nouveaux pods sont ajoutés.\n\n3. <b>Load balancing :</b>\n   - Le Service utilise les informations des <code>EndpointSlice</code> pour diriger le trafic vers les pods actifs. Le mécanisme de <b>load balancing</b> intégré au Service redistribue les requêtes entre les endpoints disponibles.\n\n4. <b>Performance et scalabilité :</b>\n   - Les <code>EndpointSlice</code> permettent de diviser les endpoints en groupes plus petits, améliorant ainsi les performances du cluster, surtout dans les grands environnements.\n\n<br>\n<b>Exemple de commande pour vérifier les <code>EndpointSlice</code> :</b>\n<code>kubectl get endpointslices -l kubernetes.io/service-name=my-nginx</code>\n<code>kubectl describe svc my-nginx</code>\n<hr><b>Contexte Explicatif :</b><br>\nCe concept est illustré par le diagramme suivant, montrant la relation entre un Service, un ReplicaSet et les pods :\n![img-5.jpeg](img-5.jpeg)"
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Pourquoi les variables d'environnement pour la découverte de Services Kubernetes posent-elles un problème d'ordre, et comment le résoudre ?",
+  "back": "<b>Problème d'ordre avec les variables d'environnement :</b><br>"
+}
+```
+
+### Après:
+```json
+{
+  "front": "Pourquoi les variables d'environnement pour la découverte de Services Kubernetes posent-elles un problème d'ordre, et comment le résoudre ?",
+  "back": "<b>Problème d'ordre avec les variables d'environnement :</b><br>\nLes variables d'environnement pour la découverte de Services Kubernetes posent un problème d'ordre car :\n\n1. <b>Création séquentielle :</b>\n   - Si les pods sont créés <b>avant</b> le Service, les variables d'environnement (comme <code>MY_NGINX_SERVICE_HOST</code>) ne sont pas disponibles dans les pods.\n   - Exemple : Après avoir créé des pods <code>my-nginx</code> puis le Service, les pods n'ont pas les variables d'environnement du Service.\n\n2. <b>Conséquences :</b>\n   - Les applications dans les pods ne peuvent pas localiser le Service via les variables d'environnement.\n   - Le <i>scheduler</i> peut placer plusieurs pods sur le même nœud, ce qui réduit la résilience du Service.\n\n3. <b>Solution :</b>\n   - <b>Ordre correct :</b> Créer le Service <b>avant</b> les pods. Cela garantit que les variables d'environnement sont disponibles dès la création des pods.\n   - <b>Re-création des pods :</b> Si les pods existent déjà, supprimez-les et laissez le ReplicaSet les recréer après la création du Service :\n     <code>kubectl scale deployment my-nginx --replicas=0; kubectl scale deployment my-nginx --replicas=2;</code>\n   - <b>Désactivation des variables d'environnement :</b> Définir <code>enableServiceLinks: false</code> dans la spécification du pod pour éviter les conflits.\n\n<br>\n<b>Exemple de vérification :</b>\n<code>kubectl exec my-nginx-3800858182-e9ihh -- printenv | grep SERVICE</code>\n<br>\nRésultat attendu :\n<code>MY_NGINX_SERVICE_HOST=10.0.162.149</code>\n<code>MY_NGINX_SERVICE_PORT=80</code>\n<hr><b>Contexte Explicatif :</b><br>\nCe problème est lié à la structure d'un nœud Kubernetes, où les processus du nœud (comme le <i>kubelet</i>) gèrent la création des variables d'environnement. Le diagramme suivant illustre cette structure :\n![img-4.jpeg](img-4.jpeg)"
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 7
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les champs manquants concernant AppArmor dans Kubernetes :<br><br><br>AppArmor est un {{c1::module de sécurité du noyau Linux}} qui permet de restreindre les capacités des conteneurs. Dans Kubernetes, il est appliqué via le champ <code>{{c2::appArmorProfile}}</code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur. Les trois types de profils possibles sont : <code>{{c3::RuntimeDefault}}</code>, <code>{{c3::Localhost}}</code>, et <code>{{c3::Unconfined}}</code>.",
+  "back": "AppArmor est un <b>module de sécurité du noyau Linux</b> qui permet de restreindre les capacités des conteneurs. Dans Kubernetes, il est appliqué via le champ <code><b>appArmorProfile</b></code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur. Les trois types de profils possibles sont : <code><b>RuntimeDefault</b></code>, <code><b>Localhost</b></code>, et <code><b>Unconfined</b></code>.<br><br><br><br><hr><br><br><b>Explanatory Context :</b><br><br>AppArmor est un outil essentiel pour renforcer la sécurité des conteneurs en limitant leurs actions au niveau du noyau. Dans Kubernetes, il s'intègre avec le <code>securityContext</code> pour appliquer des politiques de sécurité granulaires. Par exemple, un profil <code>Localhost</code> peut bloquer l'écriture dans certains répertoires, tandis que <code>RuntimeDefault</code> applique les règles par défaut du runtime de conteneurs. Cela complète d'autres mécanismes comme seccomp pour une défense en profondeur."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les champs manquants concernant AppArmor dans Kubernetes :<br><br>\nAppArmor est un {{c1::module de sécurité du noyau Linux}} qui permet de restreindre les capacités des conteneurs. Dans Kubernetes, il est appliqué via le champ <code>{{c2::appArmorProfile}}</code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur. Les trois types de profils possibles sont : <code>{{c3::RuntimeDefault}}</code>, <code>{{c3::Localhost}}</code>, et <code>{{c3::Unconfined}}</code>.<br><br>\n![img-1.jpeg](img-1.jpeg)",
+  "back": "AppArmor est un <b>module de sécurité du noyau Linux</b> qui permet de restreindre les capacités des conteneurs. Dans Kubernetes, il est appliqué via le champ <code><b>appArmorProfile</b></code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur. Les trois types de profils possibles sont : <code><b>RuntimeDefault</b></code>, <code><b>Localhost</b></code>, et <code><b>Unconfined</b></code>.<br><br>\n\n<hr><br>\n<b>Contexte Explicatif :</b><br>\n\nAppArmor est un outil essentiel pour renforcer la sécurité des conteneurs en limitant leurs actions au niveau du noyau. Dans Kubernetes, il s'intègre avec le <code>securityContext</n> pour appliquer des politiques de sécurité granulaires. Par exemple, un profil <code>Localhost</code> peut bloquer l'écriture dans certains répertoires, tandis que <code>RuntimeDefault</code> applique les règles par défaut du runtime de conteneurs. Cela complète d'autres mécanismes comme seccomp pour une défense en profondeur."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les champs manquants concernant seccomp dans Kubernetes :<br><br><br>seccomp est une fonctionnalité du noyau Linux qui permet de {{c1::restreindre les appels système}} d'un processus. Dans Kubernetes, il est configuré via le champ <code>{{c2::seccompProfile}}</code> dans le <code>securityContext</code>. Les trois types de profils possibles sont : <code>{{c3::RuntimeDefault}}</code>, <code>{{c3::Localhost}}</code>, et <code>{{c3::Unconfined}}</code>.",
+  "back": "seccomp est une fonctionnalité du noyau Linux qui permet de <b>restreindre les appels système</b> d'un processus. Dans Kubernetes, il est configuré via le champ <code><b>seccompProfile</b></code> dans le <code>securityContext</code>. Les trois types de profils possibles sont : <code><b>RuntimeDefault</b></code>, <code><b>Localhost</b></code>, et <code><b>Unconfined</b></code>.<br><br><br><br><hr><br><br><b>Explanatory Context :</b><br><br>seccomp est un mécanisme de sécurité crucial pour les environnements conteneurisés, car il limite les actions qu'un conteneur peut effectuer au niveau du noyau. Par exemple, un profil seccomp peut bloquer des appels système dangereux comme <code>execve</code> pour empêcher des attaques par escalade de privilèges. Dans Kubernetes, seccomp s'intègre avec le <code>securityContext</code> pour appliquer des politiques de sécurité granulaires, souvent en complément d'autres outils comme AppArmor."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les champs manquants concernant seccomp dans Kubernetes :<br><br>\nseccomp est une fonctionnalité du noyau Linux qui permet de {{c1::restreindre les appels système}} d'un processus. Dans Kubernetes, il est configuré via le champ <code>{{c2::seccompProfile}}</code> dans le <code>securityContext</code>. Les trois types de profils possibles sont : <code>{{c3::RuntimeDefault}}</code>, <code>{{c3::Localhost}}</code>, et <code>{{c3::Unconfined}}</code>.<br><br>\n![img-1.jpeg](img-1.jpeg)",
+  "back": "seccomp est une fonctionnalité du noyau Linux qui permet de <b>restreindre les appels système</b> d'un processus. Dans Kubernetes, il est configuré via le champ <code><b>seccompProfile</b></code> dans le <code>securityContext</code>. Les trois types de profils possibles sont : <code><b>RuntimeDefault</b></code>, <code><b>Localhost</b></code>, et <code><b>Unconfined</b></code>.<br><br>\n\n<hr><br>\n<b>Contexte Explicatif :</b><br>\n\nseccomp est un mécanisme de sécurité crucial pour les environnements conteneurisés, car il limite les actions qu'un conteneur peut effectuer au niveau du noyau. Par exemple, un profil seccomp peut bloquer des appels système dangereux comme <code>execve</code> pour empêcher des attaques par escalade de privilèges. Dans Kubernetes, seccomp s'intègre avec le <code>securityContext</code> pour appliquer des politiques de sécurité granulaires, souvent en complément d'autres outils comme AppArmor."
+}
+```
+
+---
+## [MISTRAL QA] Carte Corrigée
+
+### Avant:
+```json
+{
+  "front": "Complétez les champs manquants concernant les Services Kubernetes :<br><br><br>Un Service de type <code>{{c1::LoadBalancer}}</code> expose une application à l'extérieur du cluster en créant un {{c2::équilibreur de charge}} externe. Pour exposer un Deployment nommé <code>hello-world</code>, utilisez la commande :<br><br><pre>kubectl expose deployment hello-world --type={{c1::LoadBalancer}} --name=my-service</pre>",
+  "back": "Un Service de type <code><b>LoadBalancer</b></code> expose une application à l'extérieur du cluster en créant un <b>équilibreur de charge</b> externe. Pour exposer un Deployment nommé <code>hello-world</code>, utilisez la commande :<br><br><pre>kubectl expose deployment hello-world --type=<b>LoadBalancer</b> --name=my-service</pre><br><br><br><br><hr><br><br><b>Explanatory Context :</b><br><br>Les Services de type <code>LoadBalancer</code> sont essentiels pour exposer des applications Kubernetes dans les environnements cloud. Ils automatisent la création d'équilibreurs de charge externes, ce qui simplifie l'accès aux applications depuis Internet. Cependant, ils ne sont disponibles que dans les environnements cloud qui prennent en charge cette fonctionnalité. Pour les clusters locaux, des alternatives comme <code>NodePort</code> ou <code>Ingress</code> sont souvent utilisées."
+}
+```
+
+### Après:
+```json
+{
+  "front": "Complétez les champs manquants concernant les Services Kubernetes :<br><br>\nUn Service de type <code>{{c1::LoadBalancer}}</code> expose une application à l'extérieur du cluster en créant un {{c2::équilibreur de charge}} externe. Pour exposer un Deployment nommé <code>hello-world</code>, utilisez la commande :<br><br><pre>kubectl expose deployment hello-world --type={{c1::LoadBalancer}} --name=my-service</pre><br><br>\n![img-1.jpeg](img-1.jpeg)",
+  "back": "Un Service de type <code><b>LoadBalancer</b></code> expose une application à l'extérieur du cluster en créant un <b>équilibreur de charge</b> externe. Pour exposer un Deployment nommé <code>hello-world</code>, utilisez la commande :<br><br><pre>kubectl expose deployment hello-world --type=<b>LoadBalancer</b> --name=my-service</pre><br><br>\n\n<hr><br>\n<b>Contexte Explicatif :</b><br>\n\nLes Services de type <code>LoadBalancer</code> sont essentiels pour exposer des applications Kubernetes dans les environnements cloud. Ils automatisent la création d'équilibreurs de charge externes, ce qui simplifie l'accès aux applications depuis Internet. Cependant, ils ne sont disponibles que dans les environnements cloud qui prennent en charge cette fonctionnalité. Pour les clusters locaux, des alternatives comme <code>NodePort</code> ou <code>Ingress</code> sont souvent utilisées."
+}
+```
+
+---
+## [AUDIT ELABORATION V1.1]
+
+- **Basique totales:** 15
+- **Elaboratives:** 0 (0.0%)
+- **Statut:** SOUS LE SEUIL
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 48
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards cover distinct concepts related to Kubernetes but are not redundant. Card 48 explains how to access the Kubernetes API via `kubectl proxy` and the types of information available, while Card 301 focuses on checking the operational mode of `kube-proxy` on a node. These topics are related but structurally different, so they should not be merged. Both cards are retained as-is.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 48,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment accéder à l'API Kubernetes via le proxy créé par <code>kubectl proxy</code>, et quelles informations peut-on obtenir ?",
+    "back": "<b>Accès à l'API :</b><br>Une fois le proxy démarré avec <code>kubectl proxy</code>, vous pouvez accéder à l'API Kubernetes via l'endpoint local :<br><code>http://localhost:8001</code><br><br><b>Exemple d'utilisation :</b><ul><li>Pour obtenir la version de l'API Kubernetes :<br><code>curl http://localhost:8001/version</code></li><br><li><b>Note :</b> Si le port 8001 n'est pas accessible, vérifiez que le proxy <code>kubectl proxy</code> est bien en cours d'exécution dans un second terminal.</li></ul><br><b>Informations disponibles :</b><ul><li>L'API expose des endpoints pour tous les objets Kubernetes (par exemple, <i>Pods</i>, <i>Deployments</i>, <i>Nodes</i>).</li><li>Pour chaque <i>Pod</i>, l'API crée automatiquement un endpoint basé sur le nom du <i>Pod</i>, accessible via le proxy.</li></ul><hr><b>Explanatory Context :</b><br>Le proxy <code>kubectl</code> est un outil puissant pour interagir directement avec l'API Kubernetes, ce qui est utile pour le débogage ou l'automatisation. Il permet d'accéder à des informations détaillées sur l'état du cluster et des applications, sans exposer ces données sur un réseau public. Cela facilite le développement et l'administration tout en maintenant un niveau élevé de sécurité.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_API Proxy_Access"
+  },
+  {
+    "id": 301,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier le mode de fonctionnement de <b>kube-proxy</b> sur un nœud Kubernetes ?",
+    "back": "Pour vérifier le mode de <b>kube-proxy</b> sur un nœud, exécutez la commande suivante sur le nœud concerné :<br><br><pre>curl http://localhost:10249/proxyMode</pre><br>Le résultat attendu est généralement <b>iptables</b> (mode par défaut) ou <b>ipvs</b>.<br><br><hr><b>Contexte Explicatif :</b><br>Cette commande interroge l'API de <b>kube-proxy</b> pour connaître le mode de fonctionnement actuel. Le port 10249 est utilisé par <b>kube-proxy</b> pour exposer des métriques et des informations de diagnostic. Le mode iptables est le plus courant, mais certains clusters utilisent IPVS pour des performances améliorées.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services kube-proxy"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 19
+
+**Décision:** CONSERVÉES SÉPARÉMENT (4 → 4 carte(s))
+
+**Rationnel du Combiner:**
+> 1. Cards 19 and 68 are both 'Texte à trous' (cloze) type but cover different commands and concepts (creating a Deployment vs. exposing a Deployment). They cannot be merged as they are structurally distinct.
+
+2. Cards 20 and 45 are both 'Basique' type and belong to the same subdeck ('01_Définitions'). However, they cover different aspects of Kubernetes Deployments:
+   - Card 20 focuses on listing Deployments and interpreting the output.
+   - Card 45 explains the automated actions Kubernetes performs when a Deployment is created.
+   These are related but not redundant; merging them would violate the 'exact same structural concept' rule. They should remain separate.
+
+3. No cards share the exact same structural concept or can be merged without violating the rules (e.g., preserving proofs, contextual reconstruction, or cloze hard limit). All cards are retained as-is.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 19,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez la commande suivante pour créer un <i>Deployment</i> nommé <code>hello-node</code> utilisant une image Docker spécifique :<br><br><code>kubectl create deployment {{c1::hello-node}} --image={{c2::registry.k8s.io/e2e-test-images/agnhost:2.53}} -- /agnhost netexec --http-port={{c3::8080}}</code>",
+    "back": "La commande complète pour créer un <i>Deployment</i> nommé <code>hello-node</code> est :<br><br><code>kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.53 -- /agnhost netexec --http-port=8080</code><br><br>Cette commande crée un Deployment qui gère un Pod exécutant un conteneur basé sur l'image <code>agnhost:2.53</code>, configuré pour écouter sur le port 8080.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est typique pour déployer une application simple dans Kubernetes. L'image <code>agnhost</code> est souvent utilisée pour des tests et des démonstrations, car elle inclut un serveur web léger qui peut être configuré pour écouter sur un port spécifique. Le Deployment garantit que le Pod reste actif et redémarre en cas de défaillance.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands"
+  },
+  {
+    "id": 20,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de lister tous les <i>Deployments</i> dans un cluster Kubernetes et à quoi ressemble la sortie typique ?",
+    "back": "La commande pour lister tous les <i>Deployments</i> est :<br><br><code>kubectl get deployments</code><br><br>La sortie typique ressemble à ceci :<br><br><pre>NAME         READY   UP-TO-DATE   AVAILABLE   AGE<br>hello-node   1/1     1            1           5s</pre><br><ul><li><code>NAME</code> : Nom du Deployment.</li><li><code>READY</code> : Nombre de Pods prêts sur le nombre total de Pods souhaités (ex: 1/1).</li><li><code>UP-TO-DATE</code> : Nombre de Pods mis à jour vers la version souhaitée.</li><li><code>AVAILABLE</code> : Nombre de Pods disponibles pour servir le trafic.</li><li><code>AGE</code> : Temps écoulé depuis la création du Deployment.</li></ul><hr><b>Explanatory Context :</b><br>Cette commande est essentielle pour surveiller l'état de vos Deployments. Si vous voyez <code>0/1</code> dans la colonne <code>READY</code>, cela signifie que le Pod n'est pas encore prêt, probablement parce que le conteneur est encore en cours de démarrage. Dans ce cas, il est recommandé de réessayer après quelques secondes ou d'utiliser <code>kubectl describe deployment &lt;nom&gt;</code> pour obtenir plus de détails.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands"
+  },
+  {
+    "id": 45,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles actions Kubernetes effectue-t-il automatiquement lorsqu'un <i>Deployment</i> est créé avec la commande <code>kubectl create deployment</code> ?",
+    "back": "Lors de la création d'un <i>Deployment</i>, Kubernetes effectue les actions suivantes :<ul><li>Recherche un nœud approprié où une instance de l'application peut être exécutée (en fonction des ressources disponibles).</li><li>Planifie l'exécution de l'application sur ce nœud.</li><li>Configure le cluster pour replanifier automatiquement l'instance sur un nouveau nœud si nécessaire (par exemple, en cas de défaillance du nœud d'origine).</li></ul><hr><b>Explanatory Context :</b><br>Ces actions illustrent la puissance de Kubernetes en matière d'orchestration et de résilience. Le <i>Deployment</i> ne se contente pas de démarrer une application : il surveille en permanence son état et prend des mesures pour garantir sa disponibilité. Cela permet aux développeurs de se concentrer sur le code de l'application, tandis que Kubernetes gère les aspects opérationnels comme la tolérance aux pannes et l'équilibrage des charges.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Deployments Orchestration"
+  },
+  {
+    "id": 68,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez la commande pour exposer un Deployment avec un Service de type NodePort :<br><br><br><code>kubectl {{c1::expose}} deployment/{{c2::kubernetes-bootcamp}} --type='{{c3::NodePort}}' --port 8080</code>",
+    "back": "<code>kubectl expose deployment/kubernetes-bootcamp --type='NodePort' --port 8080</code><br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Cette commande est essentielle pour rendre une application accessible depuis l'extérieur du cluster Kubernetes. Elle crée un Service qui mappe un port interne (8080) à un port externe (NodePort) attribué dynamiquement. Cela permet aux utilisateurs ou aux autres services d'accéder à l'application via l'IP d'un nœud et le port NodePort, sans avoir à connaître les adresses IP individuelles des Pods.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands Kubernetes_Exposition"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 12
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards (ID 12 and ID 47) discuss related but distinct concepts in Kubernetes networking and access control. 
+
+- Card 12 focuses on the necessity of the `minikube dashboard` command to access the Kubernetes dashboard from outside the virtual network, emphasizing the role of a temporary proxy for the dashboard.
+- Card 47 explains why Pods are invisible outside the cluster by default and how `kubectl proxy` enables interaction with them, covering broader networking principles and security isolation.
+
+These cards do not cover the exact same structural concept. Card 12 is specific to Minikube and the dashboard, while Card 47 addresses general Pod visibility and interaction via `kubectl proxy`. Merging them would violate the "exact same structural concept" rule and dilute the clarity of each topic. Both cards are self-contained and adhere to the zero-context rule, so they should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 12,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi la commande <code>minikube dashboard</code> est-elle nécessaire pour accéder au tableau de bord Kubernetes depuis l'extérieur du réseau virtuel interne ?",
+    "back": "<b>Raison pour laquelle un proxy est nécessaire :</b><br><br><br>Par défaut, le tableau de bord Kubernetes n'est accessible que depuis le réseau virtuel interne de Kubernetes. Cela signifie qu'il n'est pas exposé publiquement pour des raisons de sécurité. La commande <code>minikube dashboard</code> crée un <b>proxy temporaire</b> qui permet d'accéder au tableau de bord depuis l'extérieur de ce réseau virtuel, par exemple depuis votre machine locale.<br><br><br>Ce proxy agit comme un pont entre votre machine et le cluster Kubernetes, rendant le tableau de bord accessible via une URL locale.<br><br><hr><br><b>Explanatory Context :</b><br><br>Cette approche est typique des environnements de développement comme Minikube, où la sécurité est moins stricte que dans un cluster de production. Le proxy temporaire simplifie l'accès tout en maintenant une isolation de base. Dans un cluster de production, des mécanismes plus robustes (comme des <i>Ingress Controllers</i> ou des <i>Load Balancers</i>) seraient utilisés pour exposer des services de manière sécurisée.",
+    "tags": "kubernetes-tutorials-manuel (3) Minikube_Sécurité Kubernetes_Networking"
+  },
+  {
+    "id": 47,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi les <i>Pods</i> dans Kubernetes sont-ils par défaut invisibles depuis l'extérieur du cluster, et comment peut-on interagir avec eux ?",
+    "back": "<b>Visibilité des <i>Pods</i> :</b><ul><li>Les <i>Pods</i> s'exécutent sur un réseau privé et isolé, visible uniquement depuis d'autres <i>Pods</i> et services au sein du même cluster Kubernetes.</li><li>Par défaut, ils ne sont pas accessibles depuis l'extérieur de ce réseau.</li></ul><br><b>Interaction avec les <i>Pods</i> :</b><ul><li>L'outil <code>kubectl</code> interagit avec les <i>Pods</i> via un point de terminaison API Kubernetes.</li><li>Pour accéder directement à un <i>Pod</i> depuis l'extérieur, on utilise la commande <code>kubectl proxy</code>, qui crée un proxy pour acheminer les communications vers le réseau privé du cluster.</li><li>Ce proxy peut être arrêté en appuyant sur <code>Ctrl+C</code> et ne produit aucune sortie pendant son exécution.</li></ul><br><b>Exemple d'utilisation :</b><br><code>kubectl proxy</code><hr><b>Explanatory Context :</b><br>Cette isolation réseau est une mesure de sécurité fondamentale dans Kubernetes. Elle empêche les accès non autorisés aux applications en cours d'exécution. Le proxy <code>kubectl</code> est une solution temporaire pour le débogage ou le développement, mais pour une exposition permanente, il est nécessaire de configurer un <i>Service</i> (abordé dans les modules ultérieurs). Cela reflète la philosophie de Kubernetes : fournir des mécanismes sécurisés par défaut, tout en permettant des configurations flexibles pour des cas d'usage spécifiques.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pods Networking"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 7
+
+**Décision:** CONSERVÉES SÉPARÉMENT (7 → 7 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct Minikube and Kubernetes commands or concepts, with no true redundancy. While some cards share the same subdeck and tags, they address different specific commands or aspects of Minikube/Kubernetes:
+
+1. Card 7: Covers basic Minikube commands (`start`, `status`, `service`).
+2. Card 11: Focuses on the `minikube dashboard --url` command.
+3. Card 15: Reiterates the `minikube status` command but with additional context about control plane components.
+4. Card 28: Explains how to enable the `metrics-server` addon.
+5. Card 38: Defines Minikube's purpose and architecture (single-node VM for development).
+6. Card 50: Covers basic `kubectl` commands (`create deployment`, `get nodes`, `proxy`).
+7. Card 146: Explains how to access the Minikube node via SSH.
+
+No two cards cover the exact same structural concept or command. Merging any of these would violate the "zero-context rule" or dilute the specificity of the information. All cards are kept separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 7,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les commandes suivantes pour gérer un cluster minikube :<br><br>- Pour démarrer un cluster minikube : {{c1::minikube start}}<br><br>- Pour vérifier le statut du cluster : {{c1::minikube status}}<br><br>- Pour accéder à un service déployé : {{c2::minikube service <nom-du-service> --url}}",
+    "back": "<b>Commandes pour gérer un cluster minikube :</b><br><br>- Pour démarrer un cluster minikube : <code>minikube start</code><br><br>- Pour vérifier le statut du cluster : <code>minikube status</code><br><br>- Pour accéder à un service déployé : <code>minikube service <nom-du-service> --url</code><br><br><hr><b>Contexte Explicatif :</b><br>Ces commandes sont fondamentales pour interagir avec minikube. <code>minikube start</code> initialise un cluster Kubernetes local, <code>minikube status</code> permet de vérifier que tout fonctionne correctement, et <code>minikube service</code> facilite l'accès aux applications déployées en fournissant une URL locale.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands Minikube_Basics"
+  },
+  {
+    "id": 11,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez la commande Minikube pour ouvrir le tableau de bord sans lancer automatiquement le navigateur :<br><br>minikube dashboard {{c1::--url}}",
+    "back": "La commande pour ouvrir le tableau de bord Minikube sans lancer automatiquement le navigateur est :<br><br><code>minikube dashboard --url</code><br><br>Cette commande affiche une URL que vous pouvez copier-coller dans le navigateur de votre choix pour accéder au tableau de bord Kubernetes.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est utile pour éviter l'ouverture automatique du navigateur par défaut, ce qui est pratique si vous préférez utiliser un navigateur spécifique ou si vous travaillez dans un environnement sans interface graphique par défaut.",
+    "tags": "kubernetes-tutorials-manuel (3) Minikube_Commandes Kubernetes_Dashboard"
+  },
+  {
+    "id": 15,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez la commande pour vérifier l'état des composants du plan de contrôle dans Minikube :<br><br>minikube {{c1::status}}",
+    "back": "La commande pour vérifier l'état des composants du plan de contrôle dans Minikube est :<br><br><code>minikube status</code><br><br>Cette commande affiche l'état des composants clés du plan de contrôle Minikube, tels que <code>host</code>, <code>kubelet</code>, <code>apiserver</code>, et <code>kubeconfig</code>.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est essentielle pour vérifier que tous les composants du plan de contrôle de Minikube fonctionnent correctement. Un statut <code>Running</code> ou <code>Configured</code> indique que le cluster est prêt à être utilisé.",
+    "tags": "kubernetes-tutorials-manuel (3) Minikube_Commandes Kubernetes_Status"
+  },
+  {
+    "id": 28,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Pour activer l'addon <code>metrics-server</code> dans Minikube, on utilise la commande : <code>minikube addons {{c1::enable}} {{c2::metrics-server}}</code>.",
+    "back": "Pour activer l'addon <code>metrics-server</code> dans Minikube, on utilise la commande : <code>minikube addons enable metrics-server</code>.<br><br><hr><br><b>Contexte Explicatif :</b><br><br>Les addons Minikube permettent d'étendre les fonctionnalités du cluster local. Le <code>metrics-server</code> est un addon essentiel pour le monitoring des ressources (CPU, mémoire) des Pods. Son activation se fait via la commande <code>minikube addons enable metrics-server</code>, qui déploie les composants nécessaires dans le namespace <code>kube-system</code>.",
+    "tags": "kubernetes-tutorials-manuel (3) Minikube_Addons"
+  },
+  {
+    "id": 38,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les termes manquants :<br><br>Minikube est une implémentation légère de Kubernetes qui crée une {{c1::machine virtuelle}} sur votre machine locale et déploie un cluster contenant un seul {{c2::node}}. Il est utilisé pour le {{c3::développement}} et les tests locaux.",
+    "back": "Minikube est une implémentation légère de Kubernetes qui crée une <b>machine virtuelle</b> sur votre machine locale et déploie un cluster contenant un seul <b>node</b>. Il est utilisé pour le <b>développement</b> et les tests locaux.<hr><b>Explanatory Context :</b><br>Minikube est un outil pratique pour les développeurs qui souhaitent expérimenter avec Kubernetes sans avoir besoin d'un cluster complet. Il simule un environnement Kubernetes minimal, ce qui permet de tester des concepts comme les <i>Deployments</i> ou les <i>Services</i> avant de les déployer en production.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Minikube Vocabulary"
+  },
+  {
+    "id": 50,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les commandes suivantes pour interagir avec Kubernetes :<br><br>1. Pour créer un déploiement :<br><code>kubectl {{c1::create}} {{c1::deployment}} &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br>2. Pour lister les nœuds du cluster :<br><code>kubectl {{c2::get}} {{c2::nodes}}</code><br><br>3. Pour démarrer un proxy vers l'API Kubernetes :<br><code>{{c3::kubectl proxy}}</code>",
+    "back": "1. Pour créer un déploiement :<br><code>kubectl create deployment &lt;nom-du-déploiement&gt; --image=&lt;url-de-l-image&gt;</code><br><br>2. Pour lister les nœuds du cluster :<br><code>kubectl get nodes</code><br><br>3. Pour démarrer un proxy vers l'API Kubernetes :<br><code>kubectl proxy</code><hr><b>Explanatory Context :</b><br>Ces commandes de base sont essentielles pour interagir avec un cluster Kubernetes. <code>create deployment</code> permet de déployer une application, <code>get nodes</code> vérifie la disponibilité des ressources du cluster, et <code>kubectl proxy</code> facilite l'accès à l'API Kubernetes pour le débogage ou l'administration. Maîtriser ces commandes est la première étape pour orchestrer des applications conteneurisées.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_CLI Command_Basics"
+  },
+  {
+    "id": 146,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment ouvrir un shell sur le nœud unique d'un cluster Kubernetes, notamment lorsque celui-ci est géré avec Minikube ?",
+    "back": "Pour ouvrir un shell sur le nœud unique d'un cluster Kubernetes géré avec Minikube, utilisez la commande suivante :<br><br><code>minikube ssh</code><br><br>Cette commande établit une session SSH directe vers le nœud du cluster.<hr><b>Explanatory Context :</b><br>Cette opération est essentielle pour effectuer des configurations bas niveau sur le nœud, comme la création de répertoires ou la manipulation de fichiers nécessaires pour des volumes persistants (PersistentVolumes). Minikube simplifie ce processus en fournissant une commande intégrée, évitant ainsi la nécessité de configurer manuellement un accès SSH.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Cluster_Access Minikube"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 74
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> All three cards (74, 78, 318) discuss the creation and exposure of a Kubernetes Deployment via a LoadBalancer Service. While they cover similar concepts, they provide distinct perspectives and examples:
+
+1. **Card 74**: Focuses on creating a Deployment with multiple replicas upfront and exposing it as a LoadBalancer Service. It includes a complete example with step-by-step commands and explanatory context about redundancy and cloud environments.
+
+2. **Card 78**: Explains the necessity and functionality of a LoadBalancer Service in scaling applications, detailing traffic distribution, high availability, and external access. It also includes an example command and contextual explanation about cloud providers.
+
+3. **Card 318**: Provides a concise command to expose a specific Deployment as a LoadBalancer Service, with additional context about source IP handling and external traffic policies.
+
+These cards are not redundant because:
+- Card 74 emphasizes the initial setup of a Deployment with replicas and the exposure process.
+- Card 78 delves into the theoretical and practical reasons for using a LoadBalancer Service.
+- Card 318 offers a targeted example with specific context about source IP policies.
+
+Merging them would violate the **Examples Zero-Context Rule** and **Theorem/Proof Preservation** rules, as each card provides unique, self-contained information. Thus, they should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 74,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment créer un <i>Deployment</i> avec plusieurs instances dès le départ, et comment exposer ce Deployment via un <i>Service</i> de type <code>LoadBalancer</code> ?",
+    "back": "Pour créer un <i>Deployment</i> avec plusieurs instances dès le départ, utilisez le paramètre <code>-replicas</code> avec la commande <code>kubectl create deployment</code> :<br><br><pre>kubectl create deployment [nom-du-deployment] --image=[image-docker] --replicas=[nombre-désiré]</pre><br><br><br>Pour exposer ce Deployment via un <i>Service</i> de type <code>LoadBalancer</code>, utilisez la commande suivante :<br><br><pre>kubectl expose deployment/[nom-du-deployment] --type='LoadBalancer' --port [port]</pre><br><br><br><b>Exemple complet :</b><br><br>1. Créer un Deployment avec 3 réplicas :<br><br><pre>kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1 --replicas=3</pre><br><br><br>2. Exposer le Deployment via un Service <code>LoadBalancer</code> sur le port 8080 :<br><br><pre>kubectl expose deployment/kubernetes-bootcamp --type='LoadBalancer' --port 8080</pre><br><br><br>Le <i>Service</i> distribuera automatiquement le trafic entre les 3 Pods du Deployment.<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Créer un Deployment avec plusieurs réplicas dès le départ est une bonne pratique pour assurer la redondance et la disponibilité de l'application. Le <i>Service</i> de type <code>LoadBalancer</code> est particulièrement utile dans les environnements cloud, car il provisionne automatiquement une adresse IP externe pour accéder à l'application. Cela simplifie la gestion du trafic entrant et permet une montée en charge immédiate.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Deployment Service_Management"
+  },
+  {
+    "id": 78,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi est-il nécessaire d'utiliser un <i>Service</i> de type <code>LoadBalancer</code> lors du scaling d'une application dans Kubernetes, et comment fonctionne-t-il ?",
+    "back": "Un <i>Service</i> de type <code>LoadBalancer</code> est nécessaire lors du scaling d'une application dans Kubernetes pour les raisons suivantes :<br><br><br>1. <b>Distribution du trafic</b> : Il agit comme un répartiteur de charge, distribuant automatiquement le trafic entrant entre tous les Pods disponibles du <i>Deployment</i>. Cela évite qu'un seul Pod ne soit surchargé.<br><br><br>2. <b>Haute disponibilité</b> : Le <i>Service</i> surveille en permanence l'état des Pods via des <i>endpoints</i>. Si un Pod devient indisponible, le trafic est redirigé vers les Pods restants, assurant ainsi une continuité de service.<br><br><br>3. <b>Accès externe</b> : Dans les environnements cloud, un <code>LoadBalancer</code> provisionne automatiquement une adresse IP externe, permettant aux utilisateurs d'accéder à l'application depuis l'extérieur du cluster.<br><br><br><b>Fonctionnement :</b><br><br>- Lorsqu'un <i>Service</i> de type <code>LoadBalancer</code> est créé, Kubernetes communique avec le fournisseur cloud (par exemple, AWS, GCP, Azure) pour provisionner un équilibreur de charge externe.<br><br>- Cet équilibreur de charge est configuré pour diriger le trafic vers les nœuds du cluster qui hébergent les Pods du <i>Deployment</i>.<br><br>- Les <i>kube-proxy</i> sur chaque nœud redirigent ensuite le trafic vers les Pods appropriés.<br><br><br><b>Exemple de création :</b><br><br><pre>kubectl expose deployment/kubernetes-bootcamp --type='LoadBalancer' --port 8080</pre><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Le <i>Service</i> de type <code>LoadBalancer</code> est particulièrement utile pour les applications exposées à Internet. Il simplifie la gestion du trafic en masquant la complexité du cluster (par exemple, les adresses IP des Pods, qui peuvent changer). Cela permet aux développeurs de se concentrer sur le scaling de l'application sans se soucier de la manière dont le trafic est acheminé.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Service LoadBalancer_Concept"
+  },
+  {
+    "id": 318,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>LoadBalancer</b> ?",
+    "back": "Pour exposer un déploiement nommé <b>source-ip-app</b> en tant que Service de type <b>LoadBalancer</b>, utilisez la commande suivante :<br><pre>kubectl expose deployment source-ip-app --name=loadbalancer --port=80 --target-port=8080 --type=LoadBalancer</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande crée un Service Kubernetes de type <b>LoadBalancer</b> pour le déploiement <b>source-ip-app</b>. Le fournisseur cloud allouera une adresse IP externe pour le Service, et le trafic sera réparti entre les nœuds du cluster. Ce type de Service est utilisé pour exposer des applications à Internet. Notez que l'adresse IP source sera remplacée par défaut (SNAT), sauf si la politique <b>externalTrafficPolicy: Local</b> est configurée.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services LoadBalancer"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 83
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards (ID 83 and ID 84) cover distinct but related Kubernetes concepts: one focuses on verifying the status of a rolling update and confirming the deployed image version, while the other explains how to perform a rollback after a failed update. They do not cover the exact same structural concept, as one is about verification and the other about recovery. Merging them would violate the 'exact same structural concept' rule and exceed the cloze deletion limit (Rule 6). Both cards are already well-structured, self-contained, and adhere to the formatting rules. Thus, they should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 83,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier le statut d'une <b>rolling update</b> et confirmer la version de l'image déployée sur les Pods ?",
+    "back": "Pour vérifier le statut d'une rolling update et confirmer la version de l'image déployée, utilisez les commandes suivantes :<br><br><br><br><b>1. Vérifier le statut de la rolling update :</b><br><br><pre>kubectl rollout status deployments/&lt;nom-du-deployment&gt;</pre><br><b>Exemple :</b><br><br><pre>kubectl rollout status deployments/kubernetes-bootcamp</pre><br><br><b>2. Lister les Pods pour observer leur statut :</b><br><br><pre>kubectl get pods</pre><br><br><b>3. Vérifier la version de l'image déployée :</b><br><br><pre>kubectl describe pods</pre><br>Cherchez le champ <code>Image</code> dans la sortie pour confirmer la version (ex : <code>v2</code>).<br><br><br><br><b>4. Tester l'accès au Service pour confirmer la version :</b><br><br><pre>curl http://$(minikube ip):$NODE_PORT</pre><br>Observez la version indiquée dans la réponse (ex : <code>v=2</code>).<br><br><hr><br><b>Explanatory Context :</b><br><br>Ces vérifications sont essentielles pour s'assurer que la mise à jour s'est déroulée comme prévu et que les utilisateurs accèdent bien à la nouvelle version de l'application. Dans un pipeline CI/CD, ces étapes peuvent être automatisées pour valider la réussite d'un déploiement. Le champ <code>Image</code> dans <code>kubectl describe pods</code> est particulièrement utile pour auditer la version effectivement déployée, évitant ainsi les écarts entre l'état souhaité et l'état réel. Ce processus s'inscrit dans les bonnes pratiques de DevOps pour garantir la traçabilité et la reproductibilité des déploiements.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_RollingUpdate Kubernetes_Verification"
+  },
+  {
+    "id": 84,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment effectuer un <b>rollback</b> d'un Deployment dans Kubernetes après une mise à jour échouée ?",
+    "back": "Pour effectuer un rollback d'un Deployment dans Kubernetes après une mise à jour échouée, utilisez la commande suivante :<br><br><pre>kubectl rollout undo deployments/&lt;nom-du-deployment&gt;</pre><br><br><b>Étapes détaillées :</b><br><br><ol><br><li>Identifier le problème :<br><br><ul><br><li>Lister les Deployments pour vérifier le nombre de Pods disponibles :<br><br><code>kubectl get deployments</code></li><br><li>Lister les Pods pour observer les statuts d'erreur (ex : <code>ImagePullBackOff</code>) :<br><br><code>kubectl get pods</code></li><br><li>Obtenir plus de détails sur les Pods en erreur :<br><br><code>kubectl describe pods</code><br><br>Cherchez la section <code>Events</code> pour identifier la cause (ex : image introuvable).</li><br></ul><br></li><br><li>Effectuer le rollback :<br><br><pre>kubectl rollout undo deployments/kubernetes-bootcamp</pre><br>Cette commande rétablit le Deployment à la version précédente stable (ex : <code>v2</code> au lieu de <code>v10</code>).</li><br><li>Vérifier le rollback :<br><br><ul><br><li>Lister les Pods pour confirmer leur statut :<br><br><code>kubectl get pods</code></li><br><li>Vérifier la version de l'image déployée :<br><br><code>kubectl describe pods</code><br><br>Confirmez que le champ <code>Image</code> correspond à la version stable précédente.</li><br></ul><br></li><br></ol><br><br><b>Note :</b> Les mises à jour dans Kubernetes sont versionnées, ce qui permet de revenir à n'importe quelle version précédente connue.<br><br><hr><br><b>Explanatory Context :</b><br><br>Le rollback est une fonctionnalité critique pour la résilience des applications en production. Il permet de revenir rapidement à un état stable en cas de défaillance, minimisant ainsi l'impact sur les utilisateurs. Dans un workflow DevOps, le rollback peut être déclenché automatiquement par des outils de monitoring en cas de détection d'anomalies (ex : taux d'erreur élevé). Ce mécanisme s'intègre dans la philosophie de Kubernetes de gestion déclarative des infrastructures, où l'état souhaité est toujours réversible. Une analogie est celle d'un système de versioning comme Git, où il est possible de revenir à un commit précédent en cas de problème.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Rollback Kubernetes_Deployment"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 21
+
+**Décision:** FUSION (9 → 8 carte(s))
+
+**Rationnel du Combiner:**
+> The provided flashcards cover distinct Kubernetes commands and concepts, each with unique structural content. Here's the analysis:
+
+1. **Card 21**: Focuses on `kubectl get pods` command, its output, and interpretation of fields like STATUS, READY, etc. Unique.
+2. **Card 22**: Covers `kubectl get events` command, its utility for debugging, and example output. Unique.
+3. **Card 24**: Explains `kubectl logs` command for container logs, including options like `-f` and `-c`. Unique.
+4. **Card 43**: Describes `kubectl get nodes` command and its role in cluster management. Unique.
+5. **Card 46**: Details `kubectl get deployments` command, focusing on Deployment status and instances. Unique but related to Card 73.
+6. **Card 61**: Explains `kubectl describe pods` command, providing a comprehensive breakdown of Pod metadata, status, containers, etc. Unique.
+7. **Card 73**: Also covers `kubectl get deployments` but focuses on columns like READY, UP-TO-DATE, and AVAILABLE, and includes ReplicaSet details. Overlaps partially with Card 46 but provides additional context. These two can be merged.
+8. **Card 97**: Shows `kubectl get pods` with a selector for Deployment Pods. Unique but narrow in scope.
+9. **Card 101**: Explains `kubectl logs deployment/<name>` for Deployment logs. Unique and complements Card 24.
+
+**Decision**: Merge Cards 46 and 73 as they both cover `kubectl get deployments` but with complementary details. All other cards are kept separate due to unique content or focus.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 21,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de lister tous les <i>Pods</i> dans un cluster Kubernetes et à quoi ressemble la sortie typique ?",
+    "back": "La commande pour lister tous les <i>Pods</i> est :<br><br><code>kubectl get pods</code><br><br>La sortie typique ressemble à ceci :<br><br><pre>NAME                          READY   STATUS    RESTARTS   AGE<br>hello-node-5f76cf6ccf-br9b5   1/1     Running   0          30s</pre><br><ul><li><code>NAME</code> : Nom du Pod (généré automatiquement par le Deployment).</li><li><code>READY</code> : Nombre de conteneurs prêts sur le nombre total de conteneurs dans le Pod.</li><li><code>STATUS</code> : État actuel du Pod (ex: <code>Running</code>, <code>Pending</code>, <code>CrashLoopBackOff</code>).</li><li><code>RESTARTS</code> : Nombre de redémarrages du conteneur.</li><li><code>AGE</code> : Temps écoulé depuis la création du Pod.</li></ul><hr><b>Explanatory Context :</b><br>Cette commande est cruciale pour vérifier l'état de vos Pods. Un statut <code>Running</code> indique que le Pod est opérationnel, tandis qu'un statut <code>Pending</code> peut signifier que le Pod attend des ressources ou que le conteneur est en cours de téléchargement. Si un Pod est en <code>CrashLoopBackOff</code>, cela indique un problème avec le conteneur (par exemple, une erreur de configuration ou une dépendance manquante).",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands"
+  },
+  {
+    "id": 22,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de consulter les événements récents d'un cluster Kubernetes et pourquoi est-ce utile ?",
+    "back": "La commande pour consulter les événements récents d'un cluster Kubernetes est :<br><br><code>kubectl get events</code><br><br>Cette commande affiche une liste des événements récents dans le cluster, tels que :<br><ul><li>La création ou la suppression de ressources (Pods, Deployments, etc.).</li><li>Les erreurs de planification (ex: manque de ressources).</li><li>Les échecs de démarrage des conteneurs.</li><li>Les mises à jour de statut des ressources.</li></ul><br>Exemple de sortie :<br><pre>LAST SEEN   TYPE     REASON              OBJECT                             MESSAGE<br>2m         Normal   Scheduled           pod/hello-node-5f76cf6ccf-br9b5   Successfully assigned default/hello-node-5f76cf6ccf-br9b5 to minikube<br>2m         Normal   Pulled              pod/hello-node-5f76cf6ccf-br9b5   Container image 'registry.k8s.io/e2e-test-images/agnhost:2.53' already present on machine<br>2m         Normal   Created             pod/hello-node-5f76cf6ccf-br9b5   Created container agnhost<br>2m         Normal   Started             pod/hello-node-5f76cf6ccf-br9b5   Started container agnhost</pre><hr><b>Explanatory Context :</b><br>Les événements sont une source précieuse d'informations pour le débogage. Ils permettent de comprendre ce qui s'est passé dans le cluster, notamment en cas de problèmes (par exemple, pourquoi un Pod ne démarre pas). Les événements sont triés par ordre chronologique, ce qui facilite le suivi des actions récentes. Cette commande est souvent utilisée en complément de <code>kubectl describe</code> pour obtenir des détails sur une ressource spécifique.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands Catégorie::Elaborative_Interrogation"
+  },
+  {
+    "id": 24,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment consulter les logs d'un conteneur spécifique dans un Pod Kubernetes ? Donnez un exemple de commande et décrivez la sortie typique.",
+    "back": "Pour consulter les logs d'un conteneur spécifique dans un Pod Kubernetes, utilisez la commande suivante :<br><br><code>kubectl logs &lt;nom-du-pod&gt;</code><br><br>Exemple (remplacez <code>hello-node-5f76cf6ccf-br9b5</code> par le nom de votre Pod) :<br><code>kubectl logs hello-node-5f76cf6ccf-br9b5</code><br><br>La sortie typique ressemble à ceci :<br><pre>I0911 09:19:26.677397   1 log.go:195] Started HTTP server on port 8080<br>I0911 09:19:26.677586   1 log.go:195] Started UDP server on port 8081</pre><br>Cette sortie montre les logs générés par le conteneur, y compris les messages de démarrage et les erreurs éventuelles.<hr><b>Explanatory Context :</b><br>Les logs sont essentiels pour le débogage et la surveillance des applications. Ils permettent de comprendre ce qui se passe à l'intérieur d'un conteneur, notamment en cas d'erreurs ou de comportements inattendus. Si un Pod contient plusieurs conteneurs, vous pouvez spécifier le conteneur avec l'option <code>-c &lt;nom-du-conteneur&gt;</code>. Pour suivre les logs en temps réel (comme <code>tail -f</code>), utilisez l'option <code>-f</code>.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands"
+  },
+  {
+    "id": 43,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de lister les nœuds disponibles dans un cluster Kubernetes, et que révèle cette liste ?",
+    "back": "Utilisez la commande :<br><code>kubectl get nodes</code><br><br>Cette commande affiche :<ul><li>La liste des nœuds disponibles dans le cluster.</li><li>Leur statut (par exemple, <i>Ready</i> ou <i>NotReady</i>).</li></ul><br>Plus tard, Kubernetes utilisera ces informations pour décider où déployer une application, en fonction des ressources disponibles sur chaque nœud.<hr><b>Explanatory Context :</b><br>Les nœuds sont les machines (physiques ou virtuelles) qui exécutent les applications dans un cluster Kubernetes. Cette commande est essentielle pour surveiller la santé du cluster et comprendre où vos charges de travail sont ou seront exécutées. Elle permet aussi de diagnostiquer des problèmes si un nœud est indisponible ou surchargé.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Nodes Cluster_Management"
+  },
+  {
+    "id": 46,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment lister les <i>Deployments</i> en cours d'exécution dans un cluster Kubernetes, et que révèlent les informations affichées ?",
+    "back": "Utilisez la commande :<br><code>kubectl get deployments</code><br><br>Cette commande affiche les informations suivantes pour chaque Deployment :<br><br><ul><li><b>NAME</b> : Nom du Deployment dans le cluster.</li><li><b>READY</b> : Ratio des réplicas <b>CURRENT/DESIRED</b> (nombre actuel de Pods prêts / nombre de Pods désirés).</li><li><b>UP-TO-DATE</b> : Nombre de réplicas mis à jour pour atteindre l'état désiré.</li><li><b>AVAILABLE</b> : Nombre de réplicas disponibles pour les utilisateurs.</li><li><b>AGE</b> : Durée depuis laquelle l'application est en cours d'exécution.</li></ul><br><br>Pour les <i>ReplicaSets</i> (affichés via <code>kubectl get rs</code>), les colonnes clés sont :<br><br><ul><li><b>DESIRED</b> : Nombre de réplicas souhaités, défini lors de la création du Deployment.</li><li><b>CURRENT</b> : Nombre de réplicas actuellement en cours d'exécution.</li></ul><br><br>Le nom du <i>ReplicaSet</i> suit le format : <code>[NOM-DU-DEPLOYMENT]-[RANDOM-STRING]</code>, où la chaîne aléatoire est générée à partir du <code>pod-template-hash</code>.<br><br><hr><b>Explanatory Context :</b><br>Cette commande est essentielle pour surveiller l'état d'un Deployment. Le ratio <b>READY</b> permet de vérifier si l'application est pleinement opérationnelle, tandis que <b>UP-TO-DATE</b> indique si les mises à jour ont été correctement appliquées. Les instances de l'application s'exécutent à l'intérieur de conteneurs sur les nœuds du cluster. Le <i>ReplicaSet</i> agit comme un garant de la cohérence entre l'état désiré et l'état réel du cluster, en recréant automatiquement les Pods défaillants ou manquants.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Deployments Cluster_Monitoring Deployment_Monitoring"
+  },
+  {
+    "id": 61,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande <code>kubectl</code> permet d'obtenir des informations détaillées sur un Pod, et quels types d'informations peut-on en attendre ?",
+    "back": "La commande <code>kubectl describe pods &lt;nom_du_pod&gt;</code> permet d'obtenir des informations détaillées sur un Pod.<br><br><br><b>Types d'informations fournies :</b><br><br><ul><br>    <li><b>Métadonnées</b> : Nom, namespace, identifiant unique (UID), labels, annotations.</li><br>    <li><b>Statut</b> : État actuel du Pod (ex. : <code>Running</code>, <code>Pending</code>, <code>CrashLoopBackOff</code>).</li><br>    <li><b>Conteneurs</b> :<br><br>        <ul><br>            <li>Nom et image des conteneurs dans le Pod.</li><br>            <li>Variables d'environnement configurées.</li><br>            <li>Commandes et arguments exécutés au démarrage.</li><br>            <li>Limites et requêtes de ressources (CPU, mémoire).</li><br>        </ul><br>    </li><br>    <li><b>Réseau</b> :<br><br>        <ul><br>            <li>Adresse IP du Pod.</li><br>            <li>Ports exposés par les conteneurs.</li><br>        </ul><br>    </li><br>    <li><b>Volumes</b> : Liste des volumes montés dans le Pod et leur type (ex. : <code>emptyDir</code>, <code>hostPath</code>).</li><br>    <li><b>Événements</b> : Liste chronologique des événements liés au cycle de vie du Pod (ex. : planification, démarrage des conteneurs, erreurs).</li><br>    <li><b>Node</b> : Nom du Node sur lequel le Pod est planifié.</li><br></ul><br><br><br><b>Remarque :</b> La sortie de <code>kubectl describe</code> est conçue pour être lisible par un humain et non pour être utilisée dans des scripts.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>La commande <code>kubectl describe</code> est un outil essentiel pour le dépannage et l'inspection des ressources Kubernetes. Elle fournit une vue d'ensemble complète d'un Pod, incluant des détails techniques qui ne sont pas visibles avec <code>kubectl get</code>. Par exemple, les événements listés peuvent révéler des problèmes de planification (ex. : ressources insuffisantes sur le Node) ou des erreurs de démarrage des conteneurs (ex. : image introuvable).<br><br>Cette commande s'intègre dans le flux de travail de dépannage en permettant une analyse approfondie des problèmes, souvent en complément de <code>kubectl logs</code> ou <code>kubectl exec</code> pour obtenir des informations plus spécifiques sur les conteneurs.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Troubleshooting"
+  },
+  {
+    "id": 97,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de vérifier que les Pods d'un Deployment sont prêts et disponibles ? Donnez un exemple avec un sélecteur spécifique.",
+    "back": "<b>Commande :</b><br>`kubectl get pods --selector=app.kubernetes.io/name=configmap-env-var`<br><br>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pod Kubernetes_Commandes"
+  },
+  {
+    "id": 101,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de consulter les logs d'un Pod appartenant à un Deployment dans Kubernetes ?",
+    "back": "<b>Commande pour consulter les logs d'un Pod d'un Deployment :</b><br><br><code>kubectl logs deployment/&lt;nom-du-deployment&gt;</code><br><br><b>Exemple d'utilisation :</b><br><code>kubectl logs deployment/configmap-env-var</code><br><br>Cette commande affiche les logs de l'un des Pods gérés par le Deployment spécifié. Pour voir les logs d'un Pod spécifique, utilisez :<br><code>kubectl logs &lt;nom-du-pod&gt;</code><hr><b>Contexte Explicatif :</b><br>Les logs permettent de déboguer et de surveiller le comportement des applications conteneurisées. Dans un environnement Kubernetes, chaque Pod génère des logs qui peuvent être consultés via la commande <code>kubectl logs</code>. Les logs sont particulièrement utiles pour vérifier le statut d'une application ou identifier des erreurs.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Logs ConfigMap"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 6
+
+**Décision:** CONSERVÉES SÉPARÉMENT (9 → 9 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct topics related to Kubernetes and Minikube, with no true structural redundancy. Each card addresses a unique question or concept:
+
+1. Card 6: Prerequisites for a Minikube tutorial (installation of Minikube and kubectl).
+2. Card 9: Objectives of a Minikube tutorial (deploying, running, and logging an application).
+3. Card 10: Methods to open the Kubernetes dashboard in Minikube.
+4. Card 14: Types of Kubernetes resources creatable via the Minikube dashboard.
+5. Card 16: Command to launch the Minikube dashboard and retrieve its URL.
+6. Card 34: Commands to start a Minikube cluster and check its status.
+7. Card 86: Prerequisites and best practices for using kubectl commands.
+8. Card 195: Prerequisites for using a StatefulSet in Kubernetes.
+9. Card 239: System and software prerequisites for running a kubelet in standalone mode.
+
+No two cards cover the exact same structural concept, so merging is not applicable. All cards are retained as-is.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 6,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les prérequis pour suivre ce tutoriel de déploiement d'une application sur minikube ?",
+    "back": "<b>Prérequis pour le tutoriel :</b><br><br><br><br>- <b>Installation de minikube :</b><br><br>  Suivre uniquement l'étape 1 (<i>Installation</i>) de la documentation <i>minikube start</i>. Les autres étapes sont couvertes dans ce tutoriel.<br><br><br><br>- <b>Installation de kubectl :</b><br><br>  Suivre les instructions de la page <i>Install tools</i> pour installer kubectl, l'outil en ligne de commande pour interagir avec Kubernetes.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Minikube et kubectl sont les outils essentiels pour travailler avec Kubernetes en local. Minikube crée un cluster Kubernetes simplifié sur une machine locale, tandis que kubectl permet de gérer ce cluster (déploiements, services, pods, etc.). Ces prérequis sont nécessaires pour reproduire les étapes du tutoriel et comprendre le fonctionnement de base de Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Minikube Prerequisites"
+  },
+  {
+    "id": 9,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les objectifs de ce tutoriel sur minikube ?",
+    "back": "<b>Objectifs du tutoriel :</b><br><br><br>1. <b>Déployer une application exemple sur minikube :</b><br><br>   Apprendre à déployer une application conteneurisée sur un cluster Kubernetes local.<br><br><br><br>2. <b>Exécuter l'application :</b><br><br>   Vérifier que l'application fonctionne correctement après son déploiement.<br><br><br><br>3. <b>Consulter les logs de l'application :</b><br><br>   Apprendre à accéder aux logs pour diagnostiquer le comportement de l'application ou déboguer d'éventuels problèmes.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces objectifs couvrent les bases du déploiement d'applications sur Kubernetes. Déployer une application, la faire fonctionner et consulter ses logs sont des compétences essentielles pour tout développeur ou administrateur travaillant avec Kubernetes. Ce tutoriel permet de se familiariser avec ces concepts dans un environnement local et contrôlé.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Minikube Tutorial_Objectives"
+  },
+  {
+    "id": 10,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les deux méthodes pour ouvrir le tableau de bord Kubernetes (dashboard) dans Minikube ?",
+    "back": "<b>Méthodes pour ouvrir le tableau de bord Kubernetes dans Minikube :</b><br><br><br><br>1. Exécuter la commande suivante dans un nouveau terminal et laisser le processus s'exécuter :<br><br><pre>minikube dashboard</pre><br><br>Cette commande active l'add-on du tableau de bord et ouvre automatiquement un proxy dans le navigateur web par défaut.<br><br><br><br>2. Utiliser l'option <code>--url</code> pour obtenir une URL à copier-coller dans le navigateur de votre choix :<br><br><pre>minikube dashboard --url</pre><br><br>Cette méthode évite l'ouverture automatique du navigateur et affiche simplement l'URL du tableau de bord.<br><br><br><br><b>Remarques :</b><br><br>- Le tableau de bord n'est accessible que depuis le réseau virtuel interne de Kubernetes par défaut. La commande <code>dashboard</code> crée un proxy temporaire pour y accéder depuis l'extérieur.<br><br>- Pour arrêter le proxy, utilisez <code>Ctrl+C</code>. Le tableau de bord reste actif dans le cluster Kubernetes et peut être réaccessible en relançant la commande.<br><br>- Depuis le tableau de bord, il est possible de créer des ressources Kubernetes comme des <i>Deployments</i> et des <i>Services</i>.<br><br><hr><br><b>Explanatory Context :</b><br><br>Le tableau de bord Kubernetes est une interface graphique qui permet de visualiser et gérer les ressources du cluster. Dans Minikube, il est particulièrement utile pour les débutants car il offre une vue d'ensemble intuitive des <i>pods</i>, <i>deployments</i>, et autres objets Kubernetes. L'accès via un proxy est nécessaire car le tableau de bord n'est pas exposé publiquement par défaut pour des raisons de sécurité. Cette approche est courante dans les environnements de développement locaux comme Minikube.",
+    "tags": "kubernetes-tutorials-manuel (3) Minikube_Dashboard Kubernetes_Interface"
+  },
+  {
+    "id": 14,
+    "type": "Généralités",
+    "subdeck": "01_Définitions",
+    "front": "Quels types de ressources Kubernetes peut-on créer directement depuis le tableau de bord Minikube ?",
+    "back": "<b>Ressources Kubernetes créables depuis le tableau de bord Minikube :</b><br><br>Depuis le tableau de bord Kubernetes de Minikube, il est possible de créer plusieurs types de ressources, notamment :<br><br><ul><li><b>Deployments</b> : Permettent de déployer et gérer des applications conteneurisées.</li><li><b>Services</b> : Exposent les applications déployées pour les rendre accessibles (via <i>ClusterIP</i>, <i>NodePort</i>, ou <i>LoadBalancer</i>).</li></ul><br><br>Le tableau de bord offre une interface graphique intuitive pour visualiser, créer et modifier ces ressources sans avoir à utiliser la ligne de commande.<br><hr><b>Contexte Explicatif :</b><br>Les <i>Deployments</i> et <i>Services</i> sont deux des ressources les plus fondamentales dans Kubernetes. Un <i>Deployment</i> gère le cycle de vie des <i>pods</i> (instances de conteneurs), tandis qu'un <i>Service</i> permet d'exposer ces <i>pods</i> de manière stable, même si les <i>pods</i> sous-jacents sont recréés. Le tableau de bord simplifie ces opérations pour les utilisateurs moins familiers avec la CLI Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Ressources Minikube_Dashboard"
+  },
+  {
+    "id": 16,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de lancer le tableau de bord Minikube et d'obtenir son URL d'accès ?",
+    "back": "La commande pour lancer le tableau de bord Minikube et obtenir son URL d'accès est :<br><br><code>minikube dashboard --url</code><br><br>Cette commande démarre le tableau de bord et affiche une URL que vous pouvez utiliser dans un navigateur pour accéder à l'interface graphique de gestion de Kubernetes.<br><hr><b>Contexte Explicatif :</b><br>Cette commande est essentielle pour visualiser et gérer les ressources Kubernetes de manière intuitive. Le tableau de bord offre une vue d'ensemble des déploiements, pods, services et autres objets, ce qui facilite le débogage et la surveillance. Il est particulièrement utile pour les débutants qui souhaitent explorer l'état de leur cluster sans utiliser uniquement l'interface en ligne de commande (CLI).",
+    "tags": "kubernetes-tutorials-manuel (3) Minikube_Dashboard"
+  },
+  {
+    "id": 34,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande utilise-t-on pour démarrer un cluster Minikube et comment vérifier son statut ?",
+    "back": "<b>Commandes pour Minikube :</b><br><ul><li><b>Démarrer un cluster Minikube :</b><br><code>minikube start</code></li><li><b>Vérifier le statut du cluster :</b><br><code>minikube status</code></li></ul><hr><b>Explanatory Context :</b><br>La commande <code>minikube start</code> initialise une machine virtuelle locale et configure un cluster Kubernetes minimal avec un seul node. La commande <code>minikube status</code> permet de vérifier que le cluster est opérationnel et affiche des informations comme l'état du Control Plane, du node, et du Kubelet. Ces commandes sont les premières étapes pour interagir avec un cluster Kubernetes local et sont essentielles pour tout développeur souhaitant tester des applications dans un environnement Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Minikube Commands"
+  },
+  {
+    "id": 86,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les prérequis et bonnes pratiques pour exécuter les commandes <code>kubectl</code> dans ce tutoriel ?",
+    "back": "<b>Prérequis :</b><br><br><ul><li><b>Shell compatible POSIX :</b> Les commandes utilisent une syntaxe POSIX (ex : <code>export</code>, <code>$()</code>). Cela inclut les shells par défaut sur Linux/macOS (bash, zsh, sh) et des alternatives comme WSL ou Git Bash sur Windows. PowerShell et l'Invite de commandes Windows ne sont pas compatibles.</li><li><b>Accès à un cluster Kubernetes :</b> Un cluster fonctionnel (ex : Minikube, Kind, ou un cluster distant) avec <code>kubectl</code> configuré pour y accéder.</li><li><b>Droits suffisants :</b> Permissions pour créer/modifier des Deployments, Services, et Pods.</li></ul><br><br><b>Bonnes pratiques :</b><br><br><ol><li><b>Vérification systématique :</b><ul><li>Utiliser <code>kubectl get</code> pour lister les ressources (ex : <code>kubectl get deployments</code>, <code>kubectl get pods</code>).</li><li>Utiliser <code>kubectl describe</code> pour obtenir des détails (ex : <code>kubectl describe pods</code>).</li></ul></li><li><b>Gestion des variables d'environnement :</b><ul><li>Stocker les valeurs dynamiques (ex : ports) dans des variables pour éviter les erreurs de saisie :<br><code>export NODE_PORT='$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')'</code></li></ul></li><li><b>Tests de connectivité :</b><ul><li>Vérifier l'accès au Service avec <code>curl</code> ou un navigateur après chaque modification :<br><code>curl http://$(minikube ip):$NODE_PORT</code></li></ul></li><li><b>Rollback proactif :</b><ul><li>En cas d'erreur (ex : <code>ImagePullBackOff</code>), utiliser <code>kubectl rollout undo</code> pour revenir à un état stable.</li></ul></li><li><b>Nettoyage :</b><ul><li>Supprimer les ressources créées après les tests pour éviter les conflits :<br><code>kubectl delete deployments/kubernetes-bootcamp services/kubernetes-bootcamp</code></li></ul></li></ol><br><b>Note pour Minikube :</b><br>Si Minikube utilise Docker Desktop comme driver, exécuter <code>minikube tunnel</code> dans un terminal séparé pour accéder aux Services depuis l'hôte.<br><hr><b>Explanatory Context :</b><br><br>Ces prérequis et bonnes pratiques garantissent une expérience fluide avec Kubernetes, en évitant les erreurs courantes liées à l'environnement ou aux permissions. La vérification systématique des ressources est cruciale dans un système déclaratif comme Kubernetes, où l'état souhaité peut différer de l'état réel. Par exemple, une commande <code>kubectl apply</code> peut réussir sans que les Pods ne soient effectivement créés, d'où la nécessité de vérifier avec <code>kubectl get pods</code>. Ces pratiques s'intègrent dans une approche DevOps visant à automatiser et sécuriser les déploiements.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_BestPractices Kubernetes_CLI"
+  },
+  {
+    "id": 195,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les prérequis pour utiliser un StatefulSet dans Kubernetes ?",
+    "back": "Pour utiliser un StatefulSet, les prérequis suivants doivent être satisfaits :<br><br><ul><br>    <li><b>Connaissances de base :</b><br><br>        - Comprendre les concepts Kubernetes suivants :<br><br>          <ul><br>              <li>Pods</li><br>              <li>Cluster DNS</li><br>              <li>Headless Services</li><br>              <li>PersistentVolumes et PersistentVolume Provisioning</li><br>          </ul><br>    </li><br>    <li><b>Outils :</b><br><br>        - Maîtriser l'outil en ligne de commande <code>kubectl</code>.</li><br>    <li><b>Configuration du cluster :</b><br><br>        - Configurer <code>kubectl</code> pour utiliser un contexte avec l'espace de noms par défaut.<br><br>        - S'assurer que le cluster est configuré pour provisionner dynamiquement des PersistentVolumes (via une StorageClass par défaut).<br><br>        - Si le provisionnement dynamique n'est pas activé, provisionner manuellement des volumes de 1 GiB et les mapper aux PersistentVolumeClaim templates définis par le StatefulSet.</li><br>    <li><b>Environnement de pratique :</b><br><br>        - Utiliser un cluster qui n'exécute pas de charges de travail réelles (idéalement un cluster de test).</li><br></ul><br><hr><br><b>Explanatory Context :</b><br><br>Ces prérequis sont nécessaires car un StatefulSet repose sur des mécanismes avancés de Kubernetes, comme les Headless Services pour les identités réseau stables et les PersistentVolumes pour le stockage persistant. Sans une compréhension de ces concepts, il serait difficile de configurer ou de dépanner un StatefulSet. Par exemple, un Headless Service permet de résoudre directement les adresses DNS des Pods individuels, ce qui est crucial pour les applications stateful comme les bases de données.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Prérequis"
+  },
+  {
+    "id": 239,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les prérequis système et logiciels nécessaires pour exécuter un kubelet en mode standalone ?",
+    "back": "<b>Prérequis :</b><br><ul><li><b>Accès administrateur (root)</b> sur un système Linux utilisant <code>systemd</code> et <code>iptables</code> (ou <code>nftables</code> avec émulation <code>iptables</code>).</li><li><b>Accès à Internet</b> pour télécharger les composants nécessaires :<ul><li>Un runtime de conteneurs compatible avec Kubernetes (ex: <code>cri-o</code>).</li><li>Des plugins réseau (souvent appelés CNI).</li><li>Les outils CLI : <code>curl</code>, <code>tar</code>, <code>jq</code>.</li></ul></li></ul><hr><b>Explanatory Context :</b><br>Ces prérequis garantissent que le système peut gérer les conteneurs et le réseau de manière isolée. Le runtime de conteneurs (comme CRI-O) est essentiel pour exécuter les Pods, tandis que les plugins réseau permettent la communication entre les conteneurs. Les outils CLI facilitent le téléchargement et la configuration des composants. Ce setup minimaliste reflète l'architecture de base d'un nœud Kubernetes, sans la complexité d'un cluster multi-nœuds.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Prerequisites"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 63
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct concepts and cannot be merged into a single card without violating the self-contained rule or diluting their specific focus:
+
+1. Card 63 explains the mechanism of **labels and selectors** in Kubernetes Services, including their dynamic routing behavior and use cases like rolling updates. It is tightly coupled with the diagram `img-5.jpeg` (Service-ReplicaSet-Pod relationship).
+
+2. Card 69 describes **Services without selectors**, their use cases (e.g., external endpoints, ExternalName), and manual endpoint management. This is a separate architectural concept from label-based routing.
+
+3. Card 174 details **Pod Security Standards (PSS) labels** for namespaces, including `enforce`, `warn`, and `audit` modes. This is unrelated to Services or selectors and focuses on security policies.
+
+No redundancy exists between these cards. Each addresses a unique Kubernetes feature with no overlap in structural concepts or proofs. All cards are retained as-is.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 63,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment les <b>labels</b> et les <b>selectors</b> sont-ils utilisés par un Service Kubernetes pour cibler des Pods spécifiques ?",
+    "back": "<b>Mécanisme des labels et selectors :</b><br><br>Un Service Kubernetes utilise des <b>labels</b> et des <b>selectors</b> pour déterminer quels Pods font partie de son ensemble logique. Voici comment cela fonctionne :<br><br><br><br><ul><br>    <li><b>Labels</b> : Ce sont des paires clé/valeur attachées aux objets Kubernetes (comme les Pods). Elles permettent de catégoriser et d'identifier les objets de manière flexible. Exemples d'utilisation :<br><br>        <ul><br>            <li>Désigner des objets pour le développement, les tests ou la production.</li><br>            <li>Taguer des versions d'application (ex : <code>version=v1</code>).</li><br>            <li>Classer des objets avec des tags personnalisés.</li><br>        </ul><br>    </li><br>    <li><b>Selectors</b> : Un Service utilise un <b>selector</b> pour filtrer les Pods qui correspondent à un ensemble spécifique de labels. Par exemple, un Service avec le selector <code>app=kubernetes-bootcamp</code> ciblera tous les Pods portant ce label.</li><br></ul><br><br><br><b>Exemple concret :</b><br><br>1. Un Pod est créé avec le label <code>app=kubernetes-bootcamp</code>.<br><br>2. Un Service est défini avec le selector <code>app=kubernetes-bootcamp</code>.<br><br>3. Le Service route automatiquement le trafic vers tous les Pods portant ce label, même si de nouveaux Pods sont ajoutés ou supprimés.<br><br><br><br><b>Cas particuliers :</b><br><br>- Un Service peut être créé <b>sans selector</b>, ce qui permet de mapper manuellement le Service à des endpoints spécifiques (ex : des endpoints externes au cluster).<br><br>- Si un Service est créé sans selector, aucun objet <b>Endpoints</b> correspondant n'est créé automatiquement.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Les labels et selectors sont au cœur du fonctionnement dynamique de Kubernetes. Ils permettent une gestion déclarative et flexible des ressources, où les Services peuvent s'adapter automatiquement aux changements dans le cluster (ex : ajout/suppression de Pods). Par exemple, si un Deployment met à jour ses Pods avec un nouveau label <code>version=v2</code>, un Service utilisant ce label comme selector basculera automatiquement le trafic vers les nouveaux Pods, sans interruption de service.<br><br>Cette approche est particulièrement utile pour les mises à jour progressives (rolling updates) ou les tests A/B, où différentes versions d'une application coexistent dans le cluster. Les labels permettent également de segmenter le trafic (ex : router 10% du trafic vers une nouvelle version pour des tests).<br><br><br><img src=\"img-5.jpeg\">",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Labels Kubernetes_Selectors"
+  },
+  {
+    "id": 69,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi un Service Kubernetes peut-il être créé sans <b>selector</b> ? Quels sont les cas d'usage pour cette configuration ?",
+    "back": "<b>Raisons pour créer un Service sans selector :</b><br><br>Un Service Kubernetes peut être créé sans selector dans les cas suivants :<br><br><br><br>1. <b>Mapping manuel vers des endpoints spécifiques</b> :<br><br>   - Permet de mapper manuellement un Service à des endpoints qui ne sont pas gérés par Kubernetes (ex : une base de données externe, un service hébergé en dehors du cluster).<br><br>   - Dans ce cas, l'utilisateur doit créer manuellement un objet <b>Endpoints</b> pour définir les adresses IP et ports ciblés par le Service.<br><br>   <br><br>2. <b>Utilisation d'un Service de type ExternalName</b> :<br><br>   - Un Service de type <b>ExternalName</b> mappe le Service à un nom DNS externe (ex : <code>foo.bar.example.com</code>) en retournant un enregistrement CNAME.<br><br>   - Aucun proxy ou routage n'est configuré ; le Service agit simplement comme un alias DNS.<br><br>   - Ce type de Service ne nécessite pas de selector car il ne cible pas de Pods dans le cluster.<br><br><br><br><b>Cas d'usage concrets :</b><br><br><ul><br>    <li><b>Intégration avec des services externes</b> :<br><br>        Par exemple, un Service sans selector peut être utilisé pour accéder à une base de données hébergée en dehors du cluster Kubernetes. L'objet <b>Endpoints</b> associé contiendra l'adresse IP et le port de la base de données externe.</li><br>    <li><b>Migration progressive vers Kubernetes</b> :<br><br>        Pendant une migration, certaines parties d'une application peuvent encore être hébergées en dehors du cluster. Un Service sans selector permet de maintenir une interface cohérente pour les autres composants du cluster.</li><br>    <li><b>Alias DNS pour des services externes</b> :<br><br>        Un Service de type <b>ExternalName</b> peut être utilisé pour masquer la complexité des noms DNS externes (ex : <code>my-database.example.com</code>) derrière un nom simple et cohérent dans le cluster (ex : <code>my-database</code>).</li><br></ul><br><br><br><hr><b>Explanatory Context :</b><br><br>Les Services sans selector offrent une flexibilité cruciale pour intégrer Kubernetes avec des infrastructures existantes ou des services externes. Ils permettent de :<br><br>- <b>Abstraire</b> les détails des endpoints externes, rendant le code des applications plus portable et moins dépendant de l'infrastructure sous-jacente.<br><br>- <b>Simplifier</b> les migrations en permettant une transition progressive vers Kubernetes sans perturber les autres composants de l'application.<br><br>- <b>Centraliser</b> la gestion des accès aux services externes via les mécanismes natifs de Kubernetes (ex : politiques réseau, monitoring).<br><br><br><br>Cependant, cette approche nécessite une gestion manuelle des objets <b>Endpoints</b>, ce qui peut ajouter de la complexité. Elle est donc généralement réservée à des cas spécifiques où les avantages l'emportent sur les inconvénients.<br><br><br><img src=\"img-5.jpeg\">",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Kubernetes_ExternalIntegration"
+  },
+  {
+    "id": 174,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les labels utilisés pour configurer les <b>Pod Security Standards</b> au niveau d'un namespace, et quelle est leur signification ?",
+    "back": "Les labels utilisés pour configurer les <b>Pod Security Standards</b> au niveau d'un namespace sont les suivants :<br><br><ul><br><li><b>pod-security.kubernetes.io/enforce</b> : Définit le niveau de sécurité à appliquer en mode <code>enforce</code> (par exemple, <code>baseline</code> ou <code>restricted</code>). Les pods non conformes à ce niveau seront rejetés.</li><br><li><b>pod-security.kubernetes.io/enforce-version</b> : Spécifie la version des <b>Pod Security Standards</b> à utiliser pour le mode <code>enforce</code> (par exemple, <code>latest</code>).</li><br><li><b>pod-security.kubernetes.io/warn</b> : Définit le niveau de sécurité à appliquer en mode <code>warn</code>. Les pods non conformes généreront un avertissement, mais seront créés.</li><br><li><b>pod-security.kubernetes.io/warn-version</b> : Spécifie la version des <b>Pod Security Standards</b> à utiliser pour le mode <code>warn</code>.</li><br><li><b>pod-security.kubernetes.io/audit</b> : Définit le niveau de sécurité à appliquer en mode <code>audit</code>. Les pods non conformes seront enregistrés dans les événements d'audit, mais seront créés sans avertissement visible.</li><br><li><b>pod-security.kubernetes.io/audit-version</b> : Spécifie la version des <b>Pod Security Standards</b> à utiliser pour le mode <code>audit</code>.</li><br></ul><br><br>Exemple de commande pour appliquer ces labels :<br><br><pre><br>kubectl label --overwrite ns example \\\\<br>  pod-security.kubernetes.io/enforce=baseline \\\\<br>  pod-security.kubernetes.io/enforce-version=latest \\\\<br>  pod-security.kubernetes.io/warn=restricted \\\\<br>  pod-security.kubernetes.io/warn-version=latest \\\\<br>  pod-security.kubernetes.io/audit=restricted \\\\<br>  pod-security.kubernetes.io/audit-version=latest<br></pre><br><br><b>Explanatory Context :</b><br><br>Ces labels permettent une configuration fine des politiques de sécurité pour chaque namespace, en combinant différents modes et niveaux. Par exemple, un namespace peut appliquer le niveau <code>baseline</code> en mode <code>enforce</code> pour bloquer les configurations non sécurisées, tout en utilisant le niveau <code>restricted</code> en modes <code>warn</code> et <code>audit</code> pour surveiller les pods qui ne respectent pas les politiques les plus strictes. Cela permet d'adapter la sécurité en fonction des besoins spécifiques des applications tout en maintenant une visibilité sur les risques potentiels.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_PSA_Labels"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 60
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> The three provided cards cover distinct but related concepts in Kubernetes, each with unique structural and contextual details that prevent merging without losing critical information:
+
+1. **Card 60 (Pods as ephemeral entities)**: Focuses on the ephemeral nature of Pods, their implications (e.g., no persistent storage, dynamic IP addressing), and design considerations for applications. It does not overlap with the other cards in scope or depth.
+
+2. **Card 70 (Service vs. Pod stability)**: Compares Services and Pods in terms of lifespan, IP stability, roles, and dependencies. While it references Pods, its primary focus is the contrast with Services, which is not addressed in the other cards. The tabular format and explanatory context are unique to this card.
+
+3. **Card 208 (StatefulSet behavior)**: Explains how StatefulSets manage Pod identity, storage persistence, and ordered recreation. This is a specialized topic unrelated to the ephemeral nature of Pods (Card 60) or the Service-Pod distinction (Card 70). The proof-like verification steps and guarantees are exclusive to StatefulSets.
+
+All cards adhere to the "Examples Zero-Context Rule" and are self-contained. No card contains redundant information that could be merged without violating the preservation of structural concepts or contextual depth. Thus, all three cards must remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 60,
+    "type": "Généralités",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi les Pods sont-ils considérés comme éphémères dans Kubernetes, et quelles en sont les implications ?",
+    "back": "Les Pods sont considérés comme <b>éphémères</b> dans Kubernetes car :<br><br><ul><br>    <li>Ils sont créés, détruits et recréés fréquemment en fonction des besoins du cluster (ex. : scaling, mises à jour, défaillances).</li><br>    <li>Ils n'ont pas d'identité persistante : un Pod recréé après une défaillance est un nouvel objet avec une nouvelle adresse IP et un nouvel identifiant.</li><br>    <li>Ils sont liés à un Node spécifique et ne peuvent pas être déplacés vers un autre Node sans être recréés.</li><br></ul><br><br><br><b>Implications :</b><br><br>- <b>Pas de stockage persistant</b> : Les données stockées localement dans un Pod sont perdues lorsqu'il est supprimé. Pour persister des données, il faut utiliser des <b>Volumes</b> ou des <b>PersistentVolumes</b>.<br><br>- <b>Adressage réseau dynamique</b> : L'adresse IP d'un Pod peut changer après une recréation. Pour exposer une application de manière stable, il faut utiliser un <b>Service</b>.<br><br>- <b>Conception des applications</b> : Les applications doivent être conçues pour être <b>stateless</b> (sans état) ou pour externaliser leur état (ex. : bases de données, caches).<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Cette éphémérité est une caractéristique fondamentale de Kubernetes, qui permet une grande flexibilité et résilience. Par exemple, lors d'une mise à jour d'application, Kubernetes peut recréer les Pods avec la nouvelle version sans temps d'arrêt, grâce à des stratégies comme <b>Rolling Updates</b>. De même, en cas de défaillance d'un Node, les Pods sont automatiquement recréés sur d'autres Nodes disponibles, assurant une haute disponibilité.<br><br>Cette approche s'intègre dans l'architecture globale de Kubernetes en encourageant des pratiques de développement modernes, comme les microservices et les applications cloud-native, où les composants sont conçus pour être remplaçables et scalables horizontalement.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pods"
+  },
+  {
+    "id": 70,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la différence entre un <b>Service</b> et un <b>Pod</b> dans Kubernetes en termes de durée de vie et de stabilité ?",
+    "back": "<b>Différences entre un Service et un Pod :</b><br><br><table border='1'><br>    <tr><br>        <th>Critère</th><br>        <th>Pod</th><br>        <th>Service</th><br>    </tr><br>    <tr><br>        <td><b>Durée de vie</b></td><br>        <td>Éphémère : Les Pods sont créés, détruits et recréés dynamiquement en fonction des besoins (ex : scaling, mises à jour, pannes). Un Pod peut être supprimé à tout moment, par exemple si le nœud sur lequel il s'exécute tombe en panne.</td><br>        <td>Stable : Un Service est une abstraction persistante qui reste active tant qu'elle n'est pas supprimée explicitement. Il ne dépend pas de la durée de vie des Pods sous-jacents.</td><br>    </tr><br>    <tr><br>        <td><b>Adresse IP</b></td><br>        <td>Unique mais instable : Chaque Pod reçoit une adresse IP unique au moment de sa création, mais cette adresse change si le Pod est recréé. Les Pods sur un même nœud ont des adresses IP différentes.</td><br>        <td>Stable : Un Service possède une adresse IP et un port fixes (ClusterIP, NodePort, ou IP externe pour LoadBalancer) qui ne changent pas tant que le Service existe. Cela permet aux autres composants de communiquer avec les Pods sans connaître leurs adresses IP individuelles.</td><br>    </tr><br>    <tr><br>        <td><b>Rôle</b></td><br>        <td>Exécute une ou plusieurs conteneurs : Un Pod est l'unité de déploiement de base dans Kubernetes. Il encapsule un ou plusieurs conteneurs qui partagent les mêmes ressources (ex : réseau, stockage).</td><br>        <td>Abstraction de routage : Un Service agit comme une couche de routage pour diriger le trafic vers un ensemble de Pods. Il assure l'équilibrage de charge et la découverte de services pour les Pods ciblés.</td><br>    </tr><br>    <tr><br>        <td><b>Dépendance</b></td><br>        <td>Géré par des contrôleurs (ex : ReplicaSet, Deployment) : Les Pods sont généralement créés et gérés par des contrôleurs qui garantissent que le nombre souhaité de Pods est toujours en cours d'exécution.</td><br>        <td>Dépend des Pods mais les gère indirectement : Un Service ne gère pas directement les Pods, mais utilise des labels et selectors pour cibler dynamiquement les Pods qui correspondent à ses critères. Si un Pod est supprimé ou recréé, le Service ajuste automatiquement le routage.</td><br>    </tr><br></table><br><br><br><hr><br><b>Explanatory Context :</b><br><br>La distinction entre Pods et Services est fondamentale pour comprendre l'architecture de Kubernetes. Les Pods représentent l'unité de travail éphémère, tandis que les Services fournissent une couche de stabilité et d'abstraction pour les applications.<br><br><br><br>Par exemple, dans une application web avec un frontend et un backend :<br><br>- Les Pods frontend et backend peuvent être recréés à tout moment (ex : pour une mise à jour ou en cas de panne).<br><br>- Les Services associés (ex : <code>frontend-service</code> et <code>backend-service</code>) restent stables et garantissent que le trafic est toujours routé vers les Pods disponibles, même si leurs adresses IP changent.<br><br><br><br>Cette séparation permet une gestion dynamique et résiliente des applications, où les composants individuels (Pods) peuvent évoluer sans impacter la disponibilité globale du système.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Kubernetes_Pods"
+  },
+  {
+    "id": 208,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Que se passe-t-il lorsque vous supprimez tous les Pods d'un StatefulSet, et comment le StatefulSet garantit-il la persistance des données et de l'identité des Pods ?",
+    "back": "<b>Comportement lors de la suppression des Pods d'un StatefulSet :</b><br><br><br>1. <b>Recréation automatique des Pods :</b><br><br>   - Le contrôleur StatefulSet <b>recrée immédiatement</b> les Pods supprimés, en respectant leur <b>ordinal</b> (ex: <code>web-0</code>, <code>web-1</code>).<br><br>   - Les nouveaux Pods sont créés <b>un par un</b>, dans l'ordre des ordinals (du plus petit au plus grand).<br><br><br>2. <b>Persistance de l'identité des Pods :</b><br><br>   - Chaque Pod conserve son <b>nom</b> (ex: <code>web-0</code>), son <b>nom DNS</b> (ex: <code>web-0.nginx.default.svc.cluster.local</code>), et son <b>stockage persistant</b>.<br><br>   - Les <b>SRV records</b> et <b>A records</b> associés aux Pods restent valides, même si leurs adresses IP changent.<br><br><br>3. <b>Remontage des volumes persistants :</b><br><br>   - Les <b>PersistentVolumeClaims (PVC)</b> des Pods supprimés ne sont <b>pas supprimés</b>.<br><br>   - Les nouveaux Pods sont liés aux <b>mêmes PVC</b> et <b>PersistentVolumes (PV)</b> que les Pods précédents.<br><br>   - Les données écrites dans les volumes montés (ex: <code>/usr/share/nginx/html</code>) <b>persistent</b> après la recréation des Pods.<br><br><br>4. <b>Exemple de vérification :</b><br><br>   - Après suppression des Pods, exécutez :<br><br>     <pre>kubectl get pod --watch -l app=nginx</pre><br>     Vous observerez que les Pods <code>web-0</code> et <code>web-1</code> sont recréés avec les mêmes noms.<br><br>   - Vérifiez que les données persistent :<br><br>     <pre>for i in 0 1; do kubectl exec -i -t web-$i -- curl http://localhost/; done</pre><br>     Les réponses doivent afficher les mêmes hostnames (<code>web-0</code>, <code>web-1</code>) qu'avant la suppression.<br><br><br><br><b>Garanties du StatefulSet :</b><br><br>- <b>Stabilité du nom</b> : Le nom du Pod (ex: <code>web-0</code>) ne change jamais, même après un redémarrage.<br><br>- <b>Stabilité du stockage</b> : Le PVC et le PV associés au Pod sont conservés et remontés dans le nouveau Pod.<br><br>- <b>Stabilité du réseau</b> : Le nom DNS du Pod reste valide, même si son adresse IP change.<br><br>- <b>Ordre de création</b> : Les Pods sont recréés dans l'ordre des ordinals, ce qui est crucial pour les applications nécessitant une initialisation séquentielle (ex: bases de données avec réplication primaire-secondaire).<br><br><hr><br><b>Explanatory Context :</b><br><br><br>Ce comportement est au cœur de la conception des StatefulSets, qui sont conçus pour gérer des applications stateful où l'identité et la persistance des données sont critiques. Contrairement aux Deployments (où les Pods sont interchangeables), les StatefulSets garantissent que chaque Pod a une identité stable et un stockage persistant, ce qui est essentiel pour les bases de données, les systèmes de fichiers distribués ou les applications nécessitant une configuration unique par instance. Ce mécanisme s'intègre dans l'architecture Kubernetes pour offrir une solution robuste et scalable pour les workloads stateful.",
+    "tags": "kubernetes-tutorials-manuel (3) StatefulSet_Persistence Identity_Management"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 89
+
+**Décision:** FUSION (3 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The three cards all relate to Kubernetes ConfigMaps but cover different aspects:
+
+1. Card 89 focuses on the basic syntax for creating a ConfigMap from literal values, using a cloze deletion for the command structure.
+2. Card 106 is nearly identical to Card 89 in structure but uses a specific example (app-config, log_level=debug) and has a slightly different cloze format.
+3. Card 113 is broader, covering the purpose, use cases, and examples of ConfigMaps, including how to mount them as volumes or use them as environment variables. It also includes a contextual explanation.
+
+Cards 89 and 106 are redundant in terms of the core concept (command syntax for creating ConfigMaps from literals), but Card 106 provides a more concrete example. However, Card 113 is not redundant because it covers additional concepts (e.g., mounting ConfigMaps as volumes, use cases) and provides a deeper explanation. Thus, Cards 89 and 106 can be merged, while Card 113 should remain separate.
+
+For the merged card, I will:
+- Use the more concrete example from Card 106 (app-config, log_level=debug).
+- Preserve the cloze structure but ensure it aligns with the example.
+- Keep the ID of the master card (106) as it is more specific.
+- Retain the subdeck and tags from the master card, adding any missing tags from Card 89.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 106,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez la commande suivante pour créer un ConfigMap nommé <code>app-config</code> avec la clé <code>log_level</code> et la valeur <code>debug</code> :<br><br><code>kubectl create configmap {{c1::app-config}} --from-literal={{c2::log_level}}={{c3::debug}}</code>",
+    "back": "<code>kubectl create configmap app-config --from-literal=log_level=debug</code><hr>\n<b>Exemple supplémentaire :</b><br>\nPour créer un ConfigMap nommé <code>sport</code> avec la clé <code>sport</code> et la valeur <code>football</code>, utilisez :<br><code>kubectl create configmap sport --from-literal=sport=football</code>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commands Kubernetes_ConfigMap Commandes_Kubectl"
+  },
+  {
+    "id": 113,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les informations manquantes sur les ConfigMaps dans Kubernetes :<br><br>",
+    "back": "Un ConfigMap est un objet Kubernetes utilisé pour stocker des données de configuration sous forme de paires clé-valeur. Il permet de séparer la configuration de l'application du code, facilitant ainsi les mises à jour sans redéploiement. Un ConfigMap peut être monté comme un {{c1::volume}} dans un Pod ou utilisé pour définir des {{c2::variables d'environnement}}.\n\n<br>Les ConfigMaps sont particulièrement utiles pour :\n<ul>\n<li>Stocker des fichiers de configuration (par exemple, des fichiers de propriétés ou des fichiers de configuration NGINX).</li>\n<li>Définir des variables d'environnement dynamiques pour les conteneurs.</li>\n<li>Centraliser la configuration pour plusieurs applications ou services.</li>\n</ul>\n\n<br>Pour créer un ConfigMap à partir de valeurs littérales, utilisez la commande :\n```bash\nkubectl create configmap <nom-du-configmap> --from-literal=<clé>=<valeur>\n```\n\n<br>Pour monter un ConfigMap comme volume dans un Pod, ajoutez la section suivante au manifeste du Pod :\n```yaml\nvolumes:\n- name: config-volume\n  configMap:\n    name: <nom-du-configmap>\ncontainers:\n- name: <nom-du-conteneur>\n  volumeMounts:\n  - name: config-volume\n    mountPath: <chemin-de-montage>\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLes ConfigMaps sont un outil essentiel pour gérer la configuration des applications dans Kubernetes. Ils permettent de découpler la configuration du code, ce qui facilite les mises à jour et la maintenance. Les ConfigMaps peuvent être utilisés de plusieurs manières, notamment comme volumes ou comme variables d'environnement, selon les besoins de l'application.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Configuration ConfigMap"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 132
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> The three input cards (IDs 132, 133, 147) all cover sequential steps for setting up a hostPath-based persistent storage directory on a Kubernetes node. While they are related, they do **not** cover the exact same structural concept. Each card focuses on a distinct command or operation:
+
+1. Card 132: Creating a directory (`/mnt/data`) with superuser permissions.
+2. Card 133: Creating a file (`index.html`) inside `/mnt/data` with specific content.
+3. Card 147: Creating a subdirectory (`/mnt/data/html`) and moving the file into it.
+
+These steps are part of a workflow but are not redundant. Combining them would violate the "exact same structural concept" rule and make the card overly complex (e.g., exceeding the cloze hard limit). Thus, they should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 132,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de créer un répertoire nommé <code>/mnt/data</code> sur un nœud Kubernetes avec les droits superutilisateur ?",
+    "back": "<code>sudo mkdir /mnt/data</code><hr><b>Explanatory Context :</b><br>Cette commande crée un répertoire sur le nœud Kubernetes pour simuler un stockage persistant de type <i>hostPath</i>. Ce répertoire sera utilisé pour émuler un stockage réseau attaché, essentiel pour les tests en environnement de développement sur un cluster mono-nœud. Dans un cluster de production, on utiliserait plutôt des ressources réseau comme des disques persistants GCE ou des volumes EBS AWS.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Stockage PersistentVolume"
+  },
+  {
+    "id": 133,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment créer un fichier <code>index.html</code> dans le répertoire <code>/mnt/data</code> avec le contenu 'Hello from Kubernetes storage' en utilisant les droits superutilisateur ?",
+    "back": "<code>sudo sh -c 'echo 'Hello from Kubernetes storage' > /mnt/data/index.html'</code><hr><b>Explanatory Context :</b><br>Cette commande écrit directement dans un fichier sur le nœud Kubernetes, ce qui permet de tester la persistance des données via un <i>PersistentVolume</i> de type <i>hostPath</i>. Le fichier <code>index.html</code> sera ensuite servi par un conteneur NGINX pour vérifier que le stockage persistant fonctionne correctement. Cette approche est typique des environnements de développement ou de test.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Stockage Commandes_Shell"
+  },
+  {
+    "id": 147,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles commandes utiliser pour créer le répertoire <code>/mnt/data/html</code> sur un nœud Kubernetes et y déplacer le fichier <code>index.html</code> ?",
+    "back": "Pour créer le répertoire et déplacer le fichier, utilisez les commandes suivantes :<br><br><ul><li>Création du répertoire :<br><code>sudo mkdir /mnt/data/html</code></li><li>Déplacement du fichier <code>index.html</code> :<br><code>sudo mv /mnt/data/index.html /mnt/data/html/</code></li></ul><hr><b>Explanatory Context :</b><br>Ces commandes sont typiquement exécutées directement sur le nœud Kubernetes pour préparer un stockage local (hostPath) qui sera ensuite monté dans un Pod. Le répertoire <code>/mnt/data/html</code> servira de point de montage pour exposer des fichiers statiques via un serveur web comme Nginx. L'utilisation de <code>sudo</code> est nécessaire pour obtenir les permissions superutilisateur.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Storage HostPath"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 26
+
+**Décision:** FUSION (8 → 6 carte(s))
+
+**Rationnel du Combiner:**
+> Analyzing the provided cards, the following observations and decisions are made:
+
+1. **Cards 26, 67, and 193**: These cards all focus on the **types of Kubernetes Services** (ClusterIP, NodePort, LoadBalancer). They are structurally identical in concept but presented in different formats (cloze, fill-in-the-blank, or direct explanation). These can be merged into a single card that preserves all key information while avoiding redundancy. The merged card will use a cloze format to maintain interactivity and cover all three service types.
+
+2. **Cards 55, 64, 66, and 104**: These cards describe **procedural steps** for exposing Kubernetes applications (via proxy, NodePort, Service deletion, and port-forwarding). They are distinct in their use cases and cannot be merged without losing specificity. Each card is kept separate.
+
+3. **Card 295**: This card explains **two methods for exposing a Service externally (NodePort and LoadBalancer)**. While it overlaps with the service types mentioned in cards 26, 67, and 193, it provides additional context about external IP exposure. It is kept separate to preserve its unique focus on external exposure methods and their trade-offs.
+
+4. **Image Usage**: Images are referenced in cards 66 (img-5.jpeg) and 295 (img-8.jpeg). These images are preserved in their respective cards as they provide visual context that is not redundant.
+
+5. **Theorem/Proof Preservation**: None of the cards contain proofs, so this rule is not applicable.
+
+6. **Examples Zero-Context Rule**: All examples in the merged card are self-contained and do not reference external context.
+
+7. **Cloze Hard Limit**: The merged card (for service types) uses 3 cloze deletions, adhering to the limit.
+
+8. **No Multiple Choice**: All cards adhere to this rule.
+
+The final output includes:
+- One merged card for Kubernetes Service types (combining cards 26, 67, and 193).
+- Four separate cards for procedural steps (cards 55, 64, 66, and 104).
+- One separate card for external exposure methods (card 295).
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 26,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les définitions des types de Services Kubernetes :<br><br>\n- {{c1::ClusterIP}} : Expose le Service sur une IP interne au cluster. Accessible uniquement depuis l'intérieur du cluster.<br><br>\n- {{c2::NodePort}} : Expose le Service sur le même port de chaque nœud sélectionné dans le cluster via NAT. Rend le Service accessible depuis l'extérieur via <code>NodeIP:NodePort</code>.<br><br>\n- {{c3::LoadBalancer}} : Crée un équilibreur de charge externe et assigne une IP externe fixe au Service. Utilisé pour exposer une application à l'extérieur du cluster en créant un {{c3::équilibreur de charge}} externe.<br><br>\n\n<b>Exemple de commande pour exposer un Deployment :</b><br>\n<pre>kubectl expose deployment hello-world --type={{c3::LoadBalancer}} --name=my-service</pre>",
+    "back": "- ClusterIP : Expose le Service sur une IP interne au cluster. Accessible uniquement depuis l'intérieur du cluster.<br><br>\n- NodePort : Expose le Service sur le même port de chaque nœud sélectionné dans le cluster via NAT. Rend le Service accessible depuis l'extérieur via <code>NodeIP:NodePort</code>.<br><br>\n- LoadBalancer : Crée un équilibreur de charge externe et assigne une IP externe fixe au Service. Utilisé pour exposer une application à l'extérieur du cluster en créant un équilibreur de charge externe.<br><br>\n\n<b>Exemple de commande pour exposer un Deployment :</b><br>\n<pre>kubectl expose deployment hello-world --type=LoadBalancer --name=my-service</pre><br><br>\n\n<hr><br>\n<b>Contexte Explicatif :</b><br>\nLes types de Services Kubernetes permettent de contrôler comment une application est exposée :<br><br>\n- <b>ClusterIP</b> : Idéal pour les communications internes entre microservices.<br>\n- <b>NodePort</b> : Souvent utilisé pour les environnements de développement ou les clusters locaux.<br>\n- <b>LoadBalancer</b> : Préféré pour les applications en production nécessitant une haute disponibilité et une gestion automatisée du trafic externe. Les Services de type <code>LoadBalancer</code> sont essentiels dans les environnements cloud, où ils automatisent la création d'équilibreurs de charge externes.<br><br>\n<b>Remarque :</b> Par défaut, un Pod Kubernetes n'est accessible que via son adresse IP interne au sein du cluster. Pour le rendre accessible depuis l'extérieur, il faut l'exposer en tant que Service de type <code>LoadBalancer</code> ou <code>NodePort</code>.<br><br>\n<b>Exemple concret :</b><br>\n<code>kubectl expose deployment hello-node --type=LoadBalancer --port=8080</code>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pod Kubernetes_Service Kubernetes_Services Kubernetes_Types StatelessApplications_Services"
+  },
+  {
+    "id": 55,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment accéder à une application s'exécutant dans un Pod Kubernetes depuis un terminal local ?",
+    "back": "Pour accéder à une application s'exécutant dans un Pod Kubernetes depuis un terminal local, il faut utiliser un <b>proxy</b> pour contourner l'isolation du réseau privé du Pod. Voici les étapes à suivre :<br><br><ol><br>    <li>Ouvrir un second terminal et exécuter la commande suivante pour démarrer un proxy :<br><br>        <code>kubectl proxy</code></li><br>    <li>Récupérer le nom du Pod et le stocker dans une variable d'environnement :<br><br>        <code>export POD_NAME='$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{'\\\\n'}}{{end}}')'</code><br><br>        <code>echo Name of the Pod: $POD_NAME</code></li><br>    <li>Effectuer une requête <code>curl</code> vers l'API du Pod via le proxy :<br><br>        <code>curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME:8080/proxy/</code></li><br></ol><br><br><br><b>Remarque :</b> L'URL utilisée correspond à la route vers l'API du Pod. Si le Pod ne contient qu'un seul conteneur, il n'est pas nécessaire de spécifier le nom du conteneur.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Les Pods s'exécutent dans un réseau isolé et privé, ce qui les rend inaccessibles directement depuis l'extérieur du cluster. Le proxy <code>kubectl proxy</code> crée un tunnel sécurisé entre votre machine locale et le cluster Kubernetes, permettant d'interagir avec les applications déployées sans exposer directement les Pods au réseau public. Cette méthode est particulièrement utile pour le débogage ou le test d'applications en développement, car elle évite de configurer des <b>Services</b> ou des <b>Ingress</b> pour des accès temporaires.<br><br>Cette approche s'intègre dans le flux de travail de développement Kubernetes en fournissant un moyen simple et sécurisé d'accéder aux applications pendant les phases de test et de dépannage, avant de les exposer de manière plus permanente via des <b>Services</b> ou des <b>Ingress Controllers</b>.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pods Troubleshooting"
+  },
+  {
+    "id": 64,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes pour exposer une application Kubernetes à l'extérieur du cluster en utilisant un Service de type <b>NodePort</b> ?",
+    "back": "<b>Étapes pour exposer une application avec un Service NodePort :</b><br><br>1. <b>Vérifier que l'application est en cours d'exécution</b> :<br><br>   Utilisez la commande suivante pour lister les Pods et confirmer qu'au moins un Pod est en cours d'exécution :<br><br>   <code>kubectl get pods</code><br><br>   <br><br>   Si aucun Pod n'est en cours d'exécution, recréez le Deployment en suivant le tutoriel précédent.<br><br>   <br><br>2. <b>Lister les Services existants</b> :<br><br>   <code>kubectl get services</code><br><br>   <br><br>3. <b>Exposer le Deployment avec un Service NodePort</b> :<br><br>   Utilisez la commande <code>kubectl expose</code> avec l'option <code>--type=NodePort</code> pour créer un Service qui expose le Deployment sur un port externe :<br><br>   <code>kubectl expose deployment/kubernetes-bootcamp --type='NodePort' --port 8080</code><br><br>   <br><br>   Cette commande crée un Service nommé <code>kubernetes-bootcamp</code> avec :<br><br>   - Une IP interne au cluster (ClusterIP).<br><br>   - Un port interne (ici, 8080).<br><br>   - Un port externe (NodePort) attribué dynamiquement par Kubernetes.<br><br>   <br><br>4. <b>Récupérer le port externe (NodePort)</b> :<br><br>   Utilisez la commande <code>kubectl describe</code> pour obtenir les détails du Service, y compris le port externe :<br><br>   <code>kubectl describe services/kubernetes-bootcamp</code><br><br>   <br><br>   Ou, pour extraire uniquement le port NodePort et le stocker dans une variable d'environnement :<br><br>   <code>export NODE_PORT='$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')'</code><br><br>   <code>echo 'NODE_PORT=$NODE_PORT'</code><br><br>   <br><br>5. <b>Tester l'accès externe à l'application</b> :<br><br>   Utilisez <code>curl</code> avec l'IP du nœud (obtenue via <code>minikube ip</code>) et le port NodePort pour vérifier que l'application est accessible depuis l'extérieur du cluster :<br><br>   <code>curl http://'$(minikube ip):$NODE_PORT'</code><br><br>   <br><br>   <b>Note pour Minikube avec Docker Desktop</b> :<br><br>   Si vous utilisez Minikube avec Docker Desktop comme driver de conteneur, vous devez exécuter une commande supplémentaire pour créer un tunnel :<br><br>   <code>minikube service kubernetes-bootcamp --url</code><br><br>   Utilisez ensuite l'URL fournie (ex : <code>http://127.0.0.1:51082</code>) pour accéder à l'application :<br><br>   <code>curl 127.0.0.1:51082</code><br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Exposer une application avec un Service NodePort est une méthode simple pour rendre une application accessible depuis l'extérieur du cluster, notamment dans des environnements de développement ou de test. Contrairement à un Service de type <b>LoadBalancer</b> (qui nécessite un support cloud), NodePort fonctionne dans n'importe quel environnement Kubernetes, y compris les clusters locaux comme Minikube.<br><br>Cependant, NodePort a des limitations :<br><br>- Le port externe est choisi dans une plage prédéfinie (par défaut, 30000-32767), ce qui peut poser des problèmes de sécurité ou de compatibilité avec certains pare-feux.<br><br>- L'IP du nœud doit être accessible depuis l'extérieur, ce qui peut nécessiter des configurations réseau supplémentaires (ex : règles de pare-feu, NAT).<br><br>Pour des environnements de production, un Service de type <b>LoadBalancer</b> ou une combinaison avec un <b>Ingress</b> est souvent préférable pour une gestion plus flexible et sécurisée du trafic externe.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_NodePort Kubernetes_Exposition"
+  },
+  {
+    "id": 66,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment supprimer un <b>Service</b> Kubernetes et vérifier que l'application n'est plus accessible depuis l'extérieur du cluster ?",
+    "back": "<b>Étapes pour supprimer un Service et vérifier son inaccessibilité :</b><br><br>1. <b>Supprimer le Service</b> :<br><br>   Utilisez la commande <code>kubectl delete service</code> suivie du nom du Service ou d'un selector pour cibler plusieurs Services :<br><br>   <code>kubectl delete service -l app=kubernetes-bootcamp</code><br><br>   <br><br>   Cette commande supprime tous les Services portant le label <code>app=kubernetes-bootcamp</code>.<br><br>   <br><br>2. <b>Vérifier que le Service a été supprimé</b> :<br><br>   Utilisez la commande suivante pour lister les Services et confirmer que le Service n'apparaît plus :<br><br>   <code>kubectl get services</code><br><br>   <br><br>3. <b>Vérifier que l'application n'est plus accessible depuis l'extérieur</b> :<br><br>   Utilisez <code>curl</code> avec l'IP du nœud et le port NodePort précédemment utilisé pour confirmer que la route n'est plus exposée :<br><br>   <code>curl http://'$(minikube ip):$NODE_PORT'</code><br><br>   <br><br>   Cette commande devrait échouer ou ne retourner aucune réponse, confirmant que le Service n'est plus accessible depuis l'extérieur du cluster.<br><br>   <br><br>4. <b>Vérifier que l'application est toujours en cours d'exécution à l'intérieur du cluster</b> :<br><br>   Exécutez une commande <code>curl</code> depuis l'intérieur du Pod pour confirmer que l'application fonctionne toujours :<br><br>   <code>kubectl exec -ti $POD_NAME -- curl http://localhost:8080</code><br><br>   <br><br>   Cette commande devrait retourner une réponse de l'application, confirmant que le Pod est toujours actif. Cependant, comme le Service a été supprimé, l'application n'est plus accessible depuis l'extérieur.<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Supprimer un Service est une opération courante pour désactiver l'accès externe à une application sans arrêter les Pods sous-jacents. Cela peut être utile dans plusieurs scénarios :<br><br>- <b>Mises à jour</b> : Désactiver temporairement l'accès pendant une mise à jour majeure.<br><br>- <b>Sécurité</b> : Limiter l'exposition d'une application vulnérable en attendant un correctif.<br><br>- <b>Tests</b> : Simuler une panne de Service pour tester la résilience de l'application.<br><br><br><br>Il est important de noter que la suppression d'un Service n'affecte pas les Pods eux-mêmes. Les Pods continuent de fonctionner et peuvent toujours communiquer entre eux via leurs adresses IP internes. Pour arrêter complètement l'application, il faudrait également supprimer le <b>Deployment</b> ou le <b>ReplicaSet</b> associé aux Pods.<br><br>Cette séparation entre les Services et les Pods illustre le principe de <b>couplage lâche</b> dans Kubernetes, où les différentes couches de l'application (ex : exposition, gestion des Pods) sont gérées indépendamment pour une plus grande flexibilité.<br>![img-5.jpeg](img-5.jpeg)",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Kubernetes_Management"
+  },
+  {
+    "id": 104,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles commandes permettent d'exposer un Deployment Kubernetes via un Service, puis d'y accéder depuis votre machine locale ? Détaillez les étapes.",
+    "back": "<b>Étapes pour exposer un Deployment et y accéder localement :</b><br><br><b>1. Exposer le Deployment via un Service :</b><br><code>kubectl expose deployment &lt;nom-du-deployment&gt; --name=&lt;nom-du-service&gt; --port=&lt;port-exposé&gt; --target-port=&lt;port-cible&gt;</code><br><br><b>Exemple :</b><br><code>kubectl expose deployment configmap-two-containers --name=configmap-service --port=8080 --target-port=80</code><br><br><b>2. Vérifier la création du Service :</b><br><code>kubectl get services</code><br><br><b>3. Rediriger le port localement :</b><br><code>kubectl port-forward service/&lt;nom-du-service&gt; &lt;port-local&gt;:&lt;port-du-service&gt; &</code><br><br><b>Exemple :</b><br><code>kubectl port-forward service/configmap-service 8080:8080 &</code><br><br><b>4. Accéder au service :</b><br>Ouvrez un navigateur ou utilisez <code>curl</code> pour accéder à l'URL :<br><code>http://localhost:&lt;port-local&gt;</code><br><br><b>Exemple de sortie attendue :</b><br><code>Fri Jan  5 08:08:22 UTC 2024 My preferred color is red</code><br><br><b>5. Arrêter le port-forwarding :</b><br>Appuyez sur <code>Ctrl+C</code> pour arrêter le processus en arrière-plan.<hr><b>Contexte Explicatif :</b><br>Exposer un Deployment via un Service permet de rendre une application accessible depuis l'extérieur du cluster Kubernetes. Le <code>port-forward</code> est utile pour le développement et le débogage local, car il permet de tester une application sans exposer le Service sur le réseau. Les Services Kubernetes fournissent une abstraction pour accéder aux Pods, même si ces derniers sont redémarrés ou déplacés.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Service Port_Forwarding"
+  },
+  {
+    "id": 295,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les deux méthodes pour exposer un Service Kubernetes sur une adresse IP externe, et comment fonctionnent-elles ?",
+    "back": "<b>Méthodes pour exposer un Service Kubernetes sur une IP externe :</b><br>\nKubernetes propose deux méthodes principales pour exposer un Service sur une adresse IP externe :\n\n1. <b>NodePort :</b><br>\n   - Le Service est exposé sur un port spécifique de chaque nœud du cluster (plage par défaut : 30000-32767).\n   - Le trafic est dirigé vers le port cible du pod via le mécanisme de <b>load balancing</b> intégré.\n   - Exemple : Un Service avec <code>nodePort: 31704</code> sera accessible via <code>&lt;IP-du-nœud&gt;:31704</code>.\n   - <b>Avantages :</b> Simple à configurer, fonctionne sans dépendance externe.\n   - <b>Inconvénients :</b> Nécessite de gérer manuellement les ports et peut ne pas être adapté aux environnements cloud.\n\n2. <b>LoadBalancer :</b>\n   - Le Service est exposé via un équilibreur de charge externe (ex: ELB sur AWS, GCLB sur GCP).\n   - Kubernetes interagit avec l'infrastructure cloud pour créer un équilibreur de charge dédié.\n   - Le Service reçoit une adresse IP publique ou un nom DNS (ex: <code>a320587ffd19711e5a37606cf4a74574-1142138393.us-east-1.elb.amazonaws.com</code>).\n   - <b>Avantages :</b> Intégration native avec les environnements cloud, gestion automatique des requêtes entrantes.\n   - <b>Inconvénients :</b> Coût supplémentaire, dépendance à l'infrastructure cloud.\n\n<br>\n<b>Exemple de configuration :</b>\nPour passer d'un Service <code>NodePort</code> à <code>LoadBalancer</code> :\n<code>kubectl edit svc my-nginx</code>\nPuis vérifier la nouvelle configuration :\n<code>kubectl get svc my-nginx</code>\n<code>kubectl describe service my-nginx</code>\n<hr><b>Contexte Explicatif :</b><br>\nCes méthodes sont illustrées par le diagramme suivant, montrant un équilibreur de charge distribuant le trafic entre deux nœuds :\n![img-8.jpeg](img-8.jpeg)",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Service_Exposure"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 138
+
+**Décision:** CONSERVÉES SÉPARÉMENT (4 → 4 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct Kubernetes commands and verification steps related to PersistentVolumes (PV), PersistentVolumeClaims (PVC), and Pods. They do not overlap in structural concepts:
+
+1. Card 138: Focuses on checking the status of a PersistentVolume (`kubectl get pv`).
+2. Card 140: Covers creating a PersistentVolumeClaim from a YAML file (`kubectl apply -f`).
+3. Card 141: Explains how to verify if a PVC is bound to a PV (`kubectl get pvc`).
+4. Card 143: Details steps to verify if a Pod is correctly using persistent storage (Pod status, shell access, and file validation).
+
+No merging is possible as each card addresses a unique command or verification process. All cards are self-contained and adhere to the rules (no proofs, examples are contextualized, and formatting is correct).
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 138,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier l'état d'un <i>PersistentVolume</i> nommé <code>task-pv-volume</code> après sa création ?",
+    "back": "<code>kubectl get pv task-pv-volume</code><br>Sortie attendue :<br>Le <i>PersistentVolume</i> affiche un <code>STATUS</code> de <code>Available</code>, indiquant qu'il n'est pas encore lié à une <i>PersistentVolumeClaim</i>.<hr><b>Explanatory Context :</b><br>La commande <code>kubectl get pv</code> permet de surveiller l'état des volumes persistants. Un statut <code>Available</code> signifie que le volume est prêt à être lié à une demande de stockage (<i>PersistentVolumeClaim</i>). Une fois lié, le statut passera à <code>Bound</code>.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commandes PersistentVolume"
+  },
+  {
+    "id": 140,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de créer une <i>PersistentVolumeClaim</i> à partir d'un fichier de configuration YAML hébergé en ligne ?",
+    "back": "<code>kubectl apply -f https://k8s.io/examples/pods/storage/pv-claim.yaml</code><hr><b>Explanatory Context :</b><br>Cette commande applique la configuration YAML pour créer une <i>PersistentVolumeClaim</i>. Le fichier spécifie les exigences de stockage, comme la taille minimale (3 GiB) et le mode d'accès (<code>ReadWriteOnce</code>). Une fois créée, la PVC est automatiquement liée à un <i>PersistentVolume</i> compatible par le plan de contrôle Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commandes PersistentVolumeClaim"
+  },
+  {
+    "id": 141,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier qu'une <i>PersistentVolumeClaim</i> nommée <code>task-pv-claim</code> est bien liée à un <i>PersistentVolume</i> ?",
+    "back": "<code>kubectl get pvc task-pv-claim</code><br>Sortie attendue :<br>La PVC affiche un <code>STATUS</code> de <code>Bound</code> et indique le nom du <i>PersistentVolume</i> auquel elle est liée (par exemple, <code>task-pv-volume</code>).<hr><b>Explanatory Context :</b><br>La commande <code>kubectl get pvc</code> permet de vérifier l'état des demandes de stockage. Un statut <code>Bound</code> confirme que la PVC a été liée à un <i>PersistentVolume</i> compatible, ce qui signifie que le Pod peut maintenant utiliser ce stockage persistant.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Commandes PersistentVolumeClaim"
+  },
+  {
+    "id": 143,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier qu'un Pod nommé <code>task-pv-pod</code> utilise correctement le stockage persistant via une <i>PersistentVolumeClaim</i> ?",
+    "back": "1. Vérifier que le Pod est en cours d'exécution :<br><code>kubectl get pod task-pv-pod</code><br><br>2. Ouvrir un shell dans le conteneur du Pod :<br><code>kubectl exec -it task-pv-pod -- /bin/bash</code><br><br>3. Dans le shell, installer <code>curl</code> et vérifier que NGINX sert le fichier <code>index.html</code> depuis le volume :<br><pre><code>apt update<br>apt install curl -y<br>curl http://localhost/</code></pre><br>Sortie attendue :<br><code>Hello from Kubernetes storage</code><hr><b>Explanatory Context :</b><br>Ces étapes permettent de confirmer que le stockage persistant est correctement monté dans le Pod et que les données écrites sur le nœud (<code>index.html</code>) sont accessibles depuis le conteneur. Cela valide l'intégration entre le <i>PersistentVolume</i>, la <i>PersistentVolumeClaim</i>, et le Pod.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pod PersistentVolumeClaim"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 148
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards (ID 148 and ID 151) are **not redundant** and cover **distinct concepts** despite both involving `nginx.conf` and `keepalive_timeout` in Kubernetes. 
+
+- **Card 148** focuses on **creating a custom `nginx.conf` file** with a modified `keepalive_timeout` and saving it to a hostPath. It includes the full configuration file and explains the purpose of `keepalive_timeout`.
+- **Card 151** focuses on **verifying the mounted `nginx.conf` file** inside a Pod to confirm the `keepalive_timeout` value. It provides a command to check the file and explains the importance of validation.
+
+These cards are **complementary** but not structurally identical. They should **not be merged** as they serve different learning objectives (creation vs. verification). Both are self-contained and adhere to the rules (no proofs, examples are contextualized, and formatting is correct).
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 148,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment créer un fichier <code>nginx.conf</code> personnalisé sur un nœud Kubernetes avec un <code>keepalive_timeout</code> modifié à 60 ?",
+    "back": "Pour créer un fichier <code>nginx.conf</code> personnalisé avec un <code>keepalive_timeout</code> de 60, utilisez la commande suivante :<br><br><pre><code>cat <<EOF> /mnt/data/nginx.conf<br>user nginx;<br>worker_processes auto;<br>error_log /var/log/nginx/error.log notice;<br>pid /var/run/nginx.pid;<br><br>events {<br>    worker_connections 1024;<br>}<br><br>http {<br>    include        /etc/nginx/mime.types;<br>    default_type  application/octet-stream;<br><br>    log_format  main  '\\$remote_addr - \\$remote_user [\\$time_local] '\\$request' '<br>                     '\\$status \\$body_bytes_sent '\\$http_referer' '<br>                     '\\$http_user_agent' '\\$http_x_forwarded_for';<br><br>    access_log  /var/log/nginx/access.log  main;<br><br>    sendfile        on;<br>    #tcp_nopush     on;<br><br>    keepalive_timeout  60;<br><br>    #gzip  on;<br><br>    include /etc/nginx/conf.d/*.conf;<br>}<br>EOF</code></pre><hr><b>Explanatory Context :</b><br>Ce fichier de configuration Nginx est essentiel pour personnaliser le comportement du serveur web, notamment la durée pendant laquelle une connexion TCP reste ouverte après la fin d'une requête (<code>keepalive_timeout</code>). Ce paramètre améliore les performances en réduisant la latence pour les requêtes répétées. Le fichier est placé dans <code>/mnt/data/</code> pour être monté ultérieurement dans un Pod via un volume PersistentVolume.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Storage Nginx_Configuration"
+  },
+  {
+    "id": 151,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier que le fichier <code>nginx.conf</code> monté dans un Pod Kubernetes depuis un volume hostPath contient bien la valeur modifiée de <code>keepalive_timeout</code> ?",
+    "back": "Pour vérifier la valeur de <code>keepalive_timeout</code> dans le fichier <code>nginx.conf</code>, utilisez les commandes suivantes dans le shell du conteneur :<br><br><pre><code>cat /etc/nginx/nginx.conf | grep keepalive_timeout</code></pre><br>L'affichage de la ligne <code>keepalive_timeout  60;</code> confirme que le fichier monté contient bien la valeur modifiée.<hr><b>Explanatory Context :</b><br>Cette vérification est cruciale pour s'assurer que les modifications apportées au fichier de configuration sur le nœud sont bien reflétées dans le Pod. Cela permet de valider que le montage du volume hostPath fonctionne correctement et que le serveur Nginx utilise les paramètres attendus pour optimiser les performances.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pod Nginx_Configuration"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 135
+
+**Décision:** CONSERVÉES SÉPARÉMENT (5 → 5 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct but related concepts about Kubernetes storage, specifically PersistentVolumes (PV), PersistentVolumeClaims (PVC), hostPath volumes, and the subPath field. While some cards (135, 136) focus on hostPath and its configuration, others (144) explain the subPath field, and the remaining (155, 233) describe the relationship between PV and PVC. These concepts are structurally different and cannot be merged without losing specificity or violating the 'Examples Zero-Context Rule'. For example:
+- Card 135 and 136 both discuss hostPath but serve different purposes (definition vs. cloze).
+- Card 144 is unique to subPath and unrelated to hostPath.
+- Cards 155 and 233 both explain PV/PVC but use different formats (basic vs. cloze).
+Thus, all cards must remain separate to preserve their distinct educational value.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 135,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un <i>hostPath PersistentVolume</i> dans Kubernetes et dans quel contexte est-il utilisé ?",
+    "back": "Un <i>hostPath PersistentVolume</i> est un type de volume Kubernetes qui utilise un fichier ou un répertoire sur le nœud pour émuler un stockage réseau attaché. Il est principalement utilisé pour le développement et les tests sur un cluster mono-nœud.<br><br>En production, on privilégie des ressources réseau comme des disques persistants Google Compute Engine, des partages NFS ou des volumes Amazon Elastic Block Store, car <i>hostPath</i> n'est pas adapté aux environnements distribués.<hr><b>Explanatory Context :</b><br>Le <i>hostPath</i> est une solution simple pour tester des configurations de stockage persistant sans dépendre d'infrastructures externes. Il permet de monter des répertoires locaux du nœud directement dans les conteneurs, ce qui est idéal pour les environnements de développement. Cependant, il présente des limites en termes de scalabilité et de résilience, d'où la nécessité d'utiliser des solutions réseau en production.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_PersistentVolume Stockage"
+  },
+  {
+    "id": 136,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez : Un <i>PersistentVolume</i> de type <code>hostPath</code> est configuré pour utiliser le répertoire <code>{{c1::/mnt/data}}</code> sur le nœud. Il a une taille de <code>{{c2::10 GiB}}</code> et un mode d'accès <code>{{c3::ReadWriteOnce}}</code>.",
+    "back": "Un <i>PersistentVolume</i> de type <code>hostPath</code> est configuré pour utiliser le répertoire <code>/mnt/data</code> sur le nœud. Il a une taille de <code>10 GiB</code> et un mode d'accès <code>ReadWriteOnce</code>.<hr><b>Explanatory Context :</b><br>Le mode <code>ReadWriteOnce</code> signifie que le volume peut être monté en lecture-écriture par un seul nœud à la fois. Ce mode est simple à configurer mais n'est pas recommandé pour la production, où <code>ReadWriteOncePod</code> est préféré pour éviter les conflits d'accès.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_PersistentVolume Stockage"
+  },
+  {
+    "id": 144,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que le champ <code>subPath</code> dans la configuration d'un volume Kubernetes et à quoi sert-il ?",
+    "back": "Le champ <code>subPath</code> permet de monter un sous-ensemble spécifique d'un <i>PersistentVolume</i> (un fichier ou un répertoire) à un emplacement différent dans le conteneur.<br><br>Exemple d'utilisation :<br><ul><li>Monter le répertoire <code>html</code> du volume à <code>/usr/share/nginx/html</code> dans le conteneur.</li><li>Monter le fichier <code>nginx.conf</code> du volume à <code>/etc/nginx/nginx.conf</code> dans le conteneur.</li></ul><br>Cela évite de monter l'intégralité du volume et permet de cibler des fichiers ou répertoires spécifiques.<hr><b>Explanatory Context :</b><br>Le <code>subPath</code> est utile pour partager un même <i>PersistentVolume</i> entre plusieurs emplacements dans un conteneur ou entre plusieurs conteneurs. Par exemple, un volume peut contenir à la fois des fichiers statiques pour un site web et un fichier de configuration pour un serveur NGINX, chacun monté à un emplacement différent dans le conteneur.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Volume Stockage"
+  },
+  {
+    "id": 155,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la différence entre un PersistentVolume (PV) et un PersistentVolumeClaim (PVC) dans Kubernetes, et comment interagissent-ils ?",
+    "back": "<b>PersistentVolume (PV) :</b> Un PV est une ressource de stockage dans le cluster qui a été provisionnée par un administrateur ou dynamiquement via des StorageClasses. Il représente un morceau de stockage physique ou logique (comme un disque dur, un partage NFS, etc.).<br><br><b>PersistentVolumeClaim (PVC) :</b> Un PVC est une demande de stockage faite par un utilisateur. Il spécifie la taille et les caractéristiques du stockage requis (comme le mode d'accès).<br><br><b>Interaction :</b> Un PVC lie un PV qui répond à ses exigences. Une fois lié, le PVC peut être utilisé par un Pod pour monter le stockage. Le Pod n'a pas besoin de connaître les détails du PV sous-jacent ; il interagit uniquement avec le PVC.<hr><b>Explanatory Context :</b><br>Cette séparation entre PV et PVC permet une abstraction du stockage, facilitant la gestion des ressources. Les administrateurs peuvent provisionner des volumes sans connaître les besoins spécifiques des utilisateurs, tandis que les utilisateurs peuvent demander du stockage sans se soucier de l'infrastructure sous-jacente. Cela favorise une utilisation flexible et scalable du stockage dans Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Storage PersistentVolume"
+  },
+  {
+    "id": 233,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les termes manquants :<br><br>Un <b>{{c1::PersistentVolume (PV)}}</b> est une ressource de stockage dans Kubernetes provisionnée manuellement ou dynamiquement via une <b>{{c2::StorageClass}}</b>. Un <b>{{c3::PersistentVolumeClaim (PVC)}}</b> est une demande de stockage faite par un utilisateur pour réclamer un PV.",
+    "back": "Un <b>PersistentVolume (PV)</b> est une ressource de stockage dans Kubernetes provisionnée manuellement ou dynamiquement via une <b>StorageClass</b>. Un <b>PersistentVolumeClaim (PVC)</b> est une demande de stockage faite par un utilisateur pour réclamer un PV.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Vocabulaire Stockage"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 125
+
+**Décision:** CONSERVÉES SÉPARÉMENT (4 → 4 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct aspects of Kubernetes sidecar containers and do not redundantly address the same structural concept. Each card focuses on a unique topic:
+
+1. Card 125: Explains the advantages of native sidecar containers in Kubernetes, including startup order, termination guarantees, and compatibility with Jobs.
+2. Card 126: Details the steps to verify if the native sidecar feature is enabled in a Kubernetes cluster, including version checks, feature gate verification, and troubleshooting third-party tools.
+3. Card 127: Describes strategies for automatically injecting native sidecars into Pods, considering node compatibility and transitioning from traditional sidecars.
+4. Card 128: A cloze deletion card defining the basic concept of a sidecar container in Kubernetes.
+
+These cards are not redundant and should be kept separate as they address different subtopics within the broader theme of Kubernetes sidecars. Merging them would violate the self-contained rule and dilute the focus of each card.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 125,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les avantages principaux des conteneurs sidecar natifs dans Kubernetes par rapport aux implémentations traditionnelles ?",
+    "back": "<b>Avantages des conteneurs sidecar natifs :</b><br><ul><li><b>Ordre de démarrage contrôlé :</b> Un sidecar natif peut être configuré pour démarrer <i>avant</i> les conteneurs principaux, ce qui est essentiel pour des services comme les proxys ou les agents de sécurité.</li><br><li><b>Terminaison garantie :</b> Les sidecars natifs sont terminés en dernier, après tous les conteneurs réguliers, via un signal SIGTERM. Si le sidecar ne s'arrête pas proprement, un SIGKILL est utilisé pour forcer la terminaison.</li><br><li><b>Compatibilité avec les Jobs :</b><ul><li>Avec une politique de redémarrage <code>restartPolicy: OnFailure</code> ou <code>restartPolicy: Never</code>, les sidecars natifs n'empêchent pas la complétion du Pod, contrairement aux sidecars traditionnels qui nécessitent des ajustements manuels.</li><li>Les sidecars natifs continuent de redémarrer même si les conteneurs réguliers ne le font pas (avec <code>restartPolicy: Never</code>).</li></ul></li></ul><br><hr><b>Explanatory Context :</b><br>Ces avantages résolvent des problèmes courants dans les architectures basées sur des sidecars, comme les blocages de Pods ou les terminaisons désordonnées. Par exemple, un sidecar de monitoring peut désormais s'assurer que toutes les métriques sont collectées avant la fin du Pod, évitant ainsi des pertes de données. Ces améliorations rendent les sidecars plus fiables et plus faciles à intégrer dans des workloads critiques comme les Jobs ou les services stateful.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Features Sidecar_Containers"
+  },
+  {
+    "id": 126,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes clés pour vérifier si la fonctionnalité de sidecar natif est activée dans un cluster Kubernetes ?",
+    "back": "<b>Étapes pour vérifier l'activation de la fonctionnalité <code>SidecarContainers</code> :</b><br><ol><li><b>Vérifier la version du cluster :</b><br>Assurez-vous que le serveur API et les nœuds exécutent Kubernetes v1.29 ou une version ultérieure. La fonctionnalité est en beta et activée par défaut à partir de cette version.<br><i>Note :</i> La version 1.28 peut activer la fonctionnalité, mais le comportement de terminaison des sidecars diffère et n'est pas recommandé.</li><br><li><b>Vérifier l'activation du feature gate :</b><br>Utilisez les commandes suivantes pour vérifier si le feature gate <code>SidecarContainers</code> est activé :<ul><li>Pour le serveur API :<br><code>kubectl get --raw /metrics | grep kubernetes_feature_enabled | grep SidecarContainers</code></li><li>Pour un nœud spécifique :<br><code>kubectl get --raw /api/v1/nodes/&lt;node-name&gt;/proxy/metrics | grep kubernetes_feature_enabled</code></li></ul><br>Si la sortie contient :<br><code>kubernetes_feature_enabled{name=\\'SidecarContainers\\',stage=\\'BETA\\'} 1</code><br>cela indique que la fonctionnalité est activée.</li><br><li><b>Vérifier les outils tiers et webhooks mutateurs :</b><br>Certains outils ou webhooks mutateurs peuvent supprimer les champs inconnus de l'API Kubernetes, comme le nouveau champ <code>restartPolicy: Always</code> pour les sidecars. Pour vérifier :<br><ul><li>Utilisez <code>kubectl describe pod &lt;pod-name&gt;</code> sur un Pod ayant traversé l'admission mutatrice.</li><li>Si le champ <code>restartPolicy: Always</code> est absent, cela indique que l'outil ou le webhook a supprimé le champ.</li></ul><br>Dans ce cas, il est recommandé de mettre à jour l'outil ou le webhook pour utiliser des stratégies de patching plutôt qu'une mise à jour complète de l'objet.</li></ol><br><hr><b>Explanatory Context :</b><br>Ces vérifications sont essentielles pour diagnostiquer les problèmes d'adoption des sidecars natifs, comme des Pods bloqués en phase d'initialisation. La compatibilité des nœuds et des outils tiers est cruciale, car une seule incompatibilité peut rendre un Pod inutilisable. Par exemple, un webhook mutateur mal configuré pourrait empêcher le démarrage d'un sidecar, même si le feature gate est activé.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Configuration Troubleshooting"
+  },
+  {
+    "id": 127,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles stratégies peuvent être utilisées pour injecter automatiquement des sidecars natifs dans des Pods, en tenant compte de la compatibilité des nœuds ?",
+    "back": "<b>Stratégies pour l'injection automatique de sidecars natifs :</b><br><ol><li><b>Marquage des Pods et nœuds compatibles :</b><br>Utilisez des labels de nœuds et l'affinité des Pods pour diriger les Pods vers des nœuds supportant les sidecars natifs. Par exemple :<ul><li>Ajoutez un label aux nœuds compatibles : <code>kubectl label nodes &lt;node-name&gt; sidecar-support=true</code>.</li><li>Configurez l'affinité des Pods pour cibler ces nœuds :<pre>&lt;code&gt;affinity:<br>  nodeAffinity:<br>    requiredDuringSchedulingIgnoredDuringExecution:<br>      nodeSelectorTerms:<br>      - matchExpressions:<br>        - key: sidecar-support<br>          operator: In<br>          values: [\\'true\\']&lt;/code&gt;</pre></li></ul></li><br><li><b>Vérification de la compatibilité des nœuds lors de l'injection :</b><br>Plusieurs approches peuvent être utilisées pour vérifier si un nœud supporte les sidecars natifs :<ul><li><b>Vérification de la version du nœud :</b> Supposer que la fonctionnalité est activée pour les nœuds en version 1.29+.</li><li><b>Requête des métriques Prometheus :</b> Vérifier l'état du feature gate via les métriques du nœud.</li><li><b>Supposition basée sur le skew de version :</b> Supposer que les nœuds ont une version compatible avec le serveur API.</li><li><b>Méthodes personnalisées :</b> Utiliser des scripts ou des outils personnalisés pour détecter la compatibilité.</li></ul></li><br><li><b>Injecteur universel de sidecars :</b><br>L'idée est d'injecter à la fois un sidecar natif et un sidecar traditionnel, puis de laisser une logique runtime décider lequel utiliser. Cette approche est coûteuse en ressources mais peut être utile dans des cas spécifiques :<ul><li>Définissez un <code>emptyDir</code> pour permettre la communication entre les conteneurs.</li><li>Injectez un conteneur d'init appelé <code>NativeSidecar</code> avec <code>restartPolicy=Always</code>.<ul><li>Au premier démarrage, <code>NativeSidecar</code> écrit un fichier dans <code>emptyDir</code> et se termine avec le code de sortie <code>0</code>.</li><li>Lors du redémarrage (si les sidecars natifs sont supportés), il modifie le fichier pour indiquer que le sidecar natif est actif.</li></ul></li><li>Injectez un conteneur traditionnel appelé <code>OldWaySidecar</code>.<ul><li>Au démarrage, <code>OldWaySidecar</code> vérifie le fichier dans <code>emptyDir</code>.<ul><li>Si le fichier indique que <code>NativeSidecar</code> n'est pas actif, il assume que la fonctionnalité n'est pas supportée et fonctionne comme sidecar.</li><li>Si <code>NativeSidecar</code> est actif, <code>OldWaySidecar</code> peut soit dormir indéfiniment (pour <code>restartPolicy=Always</code>), soit se terminer immédiatement avec le code de sortie <code>0</code> (pour <code>restartPolicy=Never</code>).</li></ul></li></ul></li></ul></li></ol><br><hr><b>Explanatory Context :</b><br>Ces stratégies permettent de gérer la transition vers les sidecars natifs dans des environnements hétérogènes, où certains nœuds peuvent ne pas supporter la fonctionnalité. Par exemple, un injecteur universel peut être utilisé pour garantir la compatibilité ascendante avec des clusters mixtes, tout en permettant une migration progressive vers les sidecars natifs. Cela est particulièrement utile pour les outils comme les service meshes, qui doivent fonctionner de manière transparente sur tous les nœuds.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Deployment Sidecar_Injection"
+  },
+  {
+    "id": 128,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les informations suivantes sur les sidecars dans Kubernetes :<br><br>Un conteneur sidecar est un conteneur {{c1::secondaire}} qui s'exécute aux côtés du conteneur {{c2::principal}} dans le même {{c3::Pod}} pour étendre ses fonctionnalités.",
+    "back": "Un conteneur sidecar est un conteneur <b>secondaire</b> qui s'exécute aux côtés du conteneur <b>principal</b> dans le même <b>Pod</b> pour étendre ses fonctionnalités.<br><br><hr><b>Explanatory Context :</b><br>Cette définition met en lumière la relation symbiotique entre le conteneur principal et le sidecar, où ce dernier agit comme un complément technique. Par exemple, un sidecar peut gérer la journalisation ou le chiffrement des communications, permettant au conteneur principal de se concentrer sur sa logique métier. Cette architecture est couramment utilisée dans les microservices pour modulariser les responsabilités.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Vocabulary Pod_Architecture"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 177
+
+**Décision:** CONSERVÉES SÉPARÉMENT (4 → 4 carte(s))
+
+**Rationnel du Combiner:**
+> All four input cards (IDs 177, 179, 180, 191) focus on **AppArmor in Kubernetes** but cover distinct aspects:
+
+1. **Card 177**: Prerequisites for using AppArmor in Kubernetes (kernel module, runtime compatibility, loaded profiles).
+2. **Card 179**: Verification of AppArmor profile application on a container (using `/proc/1/attr/current`).
+3. **Card 180**: Behavior when a Pod uses an unloaded AppArmor profile (rejection, error messages, solutions).
+4. **Card 191**: Cloze-style card about AppArmor's role, field name (`appArmorProfile`), and profile types.
+
+These cards are **not redundant** because they address different subtopics:
+- **Setup** (177), **Verification** (179), **Error Handling** (180), and **Terminology** (191).
+
+Merging them would violate the **self-contained rule** (e.g., mixing prerequisites with error handling) and exceed the **3-cloze limit** (191 already has 3). Thus, all cards are kept separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 177,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les conditions préalables pour utiliser AppArmor dans un cluster Kubernetes ?",
+    "back": "Pour utiliser AppArmor dans Kubernetes, les conditions suivantes doivent être remplies :<br><br><ol><li><b>Module AppArmor activé dans le noyau Linux</b> :<br>Vérifiez que le module est chargé en exécutant :<br><code>cat /sys/module/apparmor/parameters/enabled</code><br>La sortie doit être <code>Y</code>.</li><br><li><b>Runtime de conteneurs compatible</b> :<br>Tous les runtimes supportés par Kubernetes (comme containerd ou CRI-O) doivent prendre en charge AppArmor. Consultez la documentation du runtime pour vérifier cette compatibilité.</li><br><li><b>Profils AppArmor chargés sur les nœuds</b> :<br>Les profils doivent être préchargés sur chaque nœud où un Pod utilisant AppArmor pourrait être planifié. Pour vérifier les profils disponibles, exécutez :<br><code>cat /sys/kernel/security/apparmor/profiles</code>.<br>Exemple de sortie :<br><pre>apparmor-test-deny-write (enforce)<br>docker-default (enforce)</pre></li></ol><br>Le kubelet vérifie automatiquement que ces conditions sont remplies avant d'admettre un Pod avec un profil AppArmor configuré.<br><br><hr><br><b>Explanatory Context :</b><br>Ces prérequis garantissent que le cluster est prêt à appliquer les restrictions définies par AppArmor. Sans le module activé ou sans profils chargés, les Pods utilisant AppArmor seront rejetés ou exécutés sans protection. Cette vérification est cruciale pour éviter des failles de sécurité ou des comportements inattendus. AppArmor complète d'autres mécanismes de sécurité comme seccomp, qui filtre les appels système.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_AppArmor"
+  },
+  {
+    "id": 179,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier qu'un profil AppArmor est correctement appliqué à un conteneur ?",
+    "back": "Pour vérifier qu'un profil AppArmor est appliqué à un conteneur, utilisez la commande suivante pour inspecter les attributs du processus racine du conteneur :<br><br><pre>kubectl exec &lt;pod_name&gt; -- cat /proc/1/attr/current</pre><br><b>Exemple de sortie :</b><br><pre>cri-containerd.apparmor.d (enforce)</pre><br>Si le profil est correctement appliqué, la sortie affichera le nom du profil suivi de <code>(enforce)</code>. Par exemple :<br><pre>k8s-apparmor-example-deny-write (enforce)</pre><br><b>Cas d'erreur :</b><br>- Si le profil n'est pas chargé sur le nœud, le Pod sera rejeté avec un message d'erreur indiquant que le profil est introuvable.<br>- Si le conteneur est en mode <code>Unconfined</code>, la sortie sera vide ou indiquera <code>unconfined</code>.<br><br><hr><br><b>Explanatory Context :</b><br>Cette vérification est essentielle pour s'assurer que les politiques de sécurité sont effectivement appliquées. Sans cette étape, un conteneur pourrait s'exécuter sans les restrictions prévues, exposant le système à des risques. Le fichier <code>/proc/1/attr/current</code> est une interface standard du noyau Linux pour consulter les attributs de sécurité d'un processus, y compris les profils AppArmor.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_AppArmor"
+  },
+  {
+    "id": 180,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Que se passe-t-il si un Pod tente d'utiliser un profil AppArmor qui n'est pas chargé sur le nœud ?",
+    "back": "Si un Pod spécifie un profil AppArmor (via <code>type: Localhost</code>) qui n'est pas chargé sur le nœud où il est planifié, le kubelet rejettera le Pod. Le Pod restera dans l'état <code>Pending</code> et une erreur sera enregistrée dans les événements du cluster.<br><br><b>Exemple d'erreur :</b><br><pre>Events:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  5s    default-scheduler  Error: failed to get container spec opts: failed to generate apparmor spec opts: apparmor profile not found k8s-apparmor-example-allow-write</pre><br><b>Vérification :</b><br>Pour diagnostiquer le problème, utilisez les commandes suivantes :<br><pre>kubectl describe pod &lt;pod_name&gt;\nkubectl get events --sort-by='.metadata.creationTimestamp'</pre><br><b>Solution :</b><br>1. Chargez le profil manquant sur tous les nœuds du cluster.<br>2. Vérifiez que le profil est bien listé dans <code>/sys/kernel/security/apparmor/profiles</code>.<br>3. Relancez le Pod après avoir corrigé le problème.<br><br><hr><br><b>Explanatory Context :</b><br>Ce comportement garantit que les Pods ne s'exécutent pas sans les protections prévues. Le kubelet agit comme un gardien en vérifiant la disponibilité des profils avant d'admettre un Pod. Cela évite des failles de sécurité où un Pod pourrait contourner les restrictions en étant planifié sur un nœud non préparé. Pour une administration simplifiée, des outils comme le <i>Kubernetes Security Profiles Operator</i> peuvent automatiser le chargement des profils.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_AppArmor"
+  },
+  {
+    "id": 191,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les champs manquants concernant AppArmor dans Kubernetes :<br><br>\nAppArmor est un {{c1::module de sécurité du noyau Linux}} qui permet de restreindre les capacités des conteneurs. Dans Kubernetes, il est appliqué via le champ <code>{{c2::appArmorProfile}}</code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur. Les trois types de profils possibles sont : <code>{{c3::RuntimeDefault}}</code>, <code>{{c3::Localhost}}</code>, et <code>{{c3::Unconfined}}</code>.<br><br>\n![img-1.jpeg](img-1.jpeg)",
+    "back": "AppArmor est un <b>module de sécurité du noyau Linux</b> qui permet de restreindre les capacités des conteneurs. Dans Kubernetes, il est appliqué via le champ <code><b>appArmorProfile</b></code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur. Les trois types de profils possibles sont : <code><b>RuntimeDefault</b></code>, <code><b>Localhost</b></code>, et <code><b>Unconfined</b></code>.<br><br>\n<hr><br>\n<b>Contexte Explicatif :</b><br>\nAppArmor est un outil essentiel pour renforcer la sécurité des conteneurs en limitant leurs actions au niveau du noyau. Dans Kubernetes, il s'intègre avec le <code>securityContext</code> pour appliquer des politiques de sécurité granulaires. Par exemple, un profil <code>Localhost</code> peut bloquer l'écriture dans certains répertoires, tandis que <code>RuntimeDefault</code> applique les règles par défaut du runtime de conteneurs. Cela complète d'autres mécanismes comme seccomp pour une défense en profondeur.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_AppArmor"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 185
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> The three provided cards cover distinct aspects of seccomp in Kubernetes and do not redundantly explain the same structural concept. Each card addresses a unique question and provides non-overlapping information:
+
+1. Card 185: Focuses on **how to verify** if a seccomp profile is correctly applied to a container, including methods like inspecting container attributes, checking system logs, and verifying pod status.
+2. Card 186: Explains the **three types of seccomp profiles** (audit.json, violation.json, fine-grained.json) used in the tutorial and their purposes, providing a conceptual overview of seccomp profile types.
+3. Card 187: Describes **how to enable** `RuntimeDefault` as the default seccomp profile for all workloads in Kubernetes, including configuration steps for the kubelet and kind clusters.
+
+Since the cards are not redundant and each serves a unique purpose, they should not be merged. All cards are retained as-is.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 185,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier qu'un profil seccomp est correctement appliqué à un conteneur ?",
+    "back": "Pour vérifier qu'un profil seccomp est appliqué à un conteneur, utilisez les méthodes suivantes :<br><br><ol><br>    <li><b>Inspecter les attributs du conteneur avec <code>crictl</code></b> :<br><br>        Si vous utilisez <code>kind</code> ou un nœud avec Docker, exécutez :<br><br>        <pre>docker exec -it &lt;node_container&gt; crictl inspect &lt;container_id&gt; | jq .info.runtimeSpec.linux.seccomp</pre><br>        <b>Exemple de sortie :</b><br><br>        <pre>{<br>  'defaultAction': 'SCMP_ACT_ERRNO',<br>  'architectures': ['SCMP_ARCH_X86_64'],<br>  'syscalls': [<br>    {<br>      'names': ['read', 'write', 'exit', ...],<br>      'action': 'SCMP_ACT_ALLOW'<br>    }<br>  ]<br>}</pre><br>        Si le profil est appliqué, la sortie affichera les règles seccomp configurées.</li><br><br>    <li><b>Vérifier les logs système</b> :<br><br>        Si un appel système est bloqué par seccomp, une entrée sera enregistrée dans les logs du noyau. Pour les consulter :<br><br>        <pre>tail -f /var/log/syslog | grep 'seccomp'</pre><br>        <b>Exemple de sortie :</b><br><br>        <pre>Jul  6 15:37:40 my-machine kernel: [369128.669452] seccomp: pid 12345 comm http-echo syscall 59 (execve) blocked</pre></li><br><br>    <li><b>Vérifier l'état du Pod</b> :<br><br>        Si un profil seccomp bloque un appel système critique, le conteneur peut échouer avec un code d'erreur. Utilisez :<br><br>        <pre>kubectl describe pod &lt;pod_name&gt;<br>kubectl logs &lt;pod_name&gt;</pre><br>        <b>Exemple d'erreur :</b><br><br>        <pre>Error: failed to start container 'http-echo': Error response from daemon: OCI runtime create failed: container_linux.go:380: starting container process caused: apply caps: operation not permitted: unknown</pre></li><br></ol><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces vérifications sont essentielles pour s'assurer que les politiques de sécurité sont effectivement appliquées. Sans cette étape, un conteneur pourrait s'exécuter sans les restrictions prévues, exposant le système à des risques. Les logs système et les outils comme <code>crictl</code> fournissent des informations précises sur les appels système bloqués ou autorisés, ce qui est crucial pour le débogage.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_seccomp"
+  },
+  {
+    "id": 186,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les trois types de profils seccomp utilisés dans les exemples du tutoriel, et à quoi servent-ils ?",
+    "back": "Les exemples du tutoriel utilisent trois types de profils seccomp, chacun ayant un objectif spécifique :<br><br><ol><br>    <li><b>audit.json</b> :<br><br>        <b>Objectif</b> : Auditer tous les appels système effectués par un conteneur sans les bloquer.<br><br>        <b>Fonctionnement</b> :<br><br>        - Définit <code>'defaultAction': 'SCMP_ACT_LOG'</code>, ce qui permet d'enregistrer tous les appels système dans les logs système.<br><br>        - Utile pour analyser les appels système nécessaires à une application avant de créer un profil restrictif.<br><br>        <b>Exemple d'utilisation</b> :<br><br>        <pre>kubectl apply -f https://k8s.io/examples/pods/security/seccomp/ga/audit-pod.yaml</pre></li><br><br>    <li><b>violation.json</b> :<br><br>        <b>Objectif</b> : Bloquer tous les appels système pour démontrer les conséquences d'un profil trop restrictif.<br><br>        <b>Fonctionnement</b> :<br><br>        - Définit <code>'defaultAction': 'SCMP_ACT_ERRNO'</code>, ce qui retourne une erreur pour tout appel système non explicitement autorisé.<br><br>        - Aucun appel système n'est autorisé, ce qui rend le conteneur inutilisable.<br><br>        <b>Exemple d'utilisation</b> :<br><br>        <pre>kubectl apply -f https://k8s.io/examples/pods/security/seccomp/ga/violation-pod.yaml</pre><br>        <b>Résultat</b> : Le Pod échoue avec une erreur indiquant que l'appel système est bloqué.</li><br><br>    <li><b>fine-grained.json</b> :<br><br>        <b>Objectif</b> : Autoriser uniquement les appels système nécessaires à une application spécifique.<br><br>        <b>Fonctionnement</b> :<br><br>        - Définit <code>'defaultAction': 'SCMP_ACT_ERRNO'</code>, mais autorise explicitement une liste d'appels système via <code>'action': 'SCMP_ACT_ALLOW'</code>.<br><br>        - Permet de créer un profil sécurisé et fonctionnel pour une application donnée.<br><br>        <b>Exemple d'utilisation</b> :<br><br>        <pre>kubectl apply -f https://k8s.io/examples/pods/security/seccomp/ga/fine-pod.yaml</pre><br>        <b>Résultat</b> : Le Pod s'exécute normalement sans erreurs dans les logs système.</li><br></ol><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces profils illustrent les trois étapes clés de la création d'une politique seccomp :<br><br>1. <b>Audit</b> : Identifier les appels système nécessaires.<br><br>2. <b>Test restrictif</b> : Vérifier les conséquences d'un blocage total.<br><br>3. <b>Profil fin</b> : Autoriser uniquement les appels système essentiels.<br><br>Cette approche progressive permet de créer des profils sécurisés sans compromettre la fonctionnalité des applications. Dans un environnement de production, il est recommandé d'utiliser des profils comme <code>fine-grained.json</code> pour limiter la surface d'attaque des conteneurs.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_seccomp"
+  },
+  {
+    "id": 187,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment activer l'utilisation de <code>RuntimeDefault</code> comme profil seccomp par défaut pour tous les workloads dans Kubernetes ?",
+    "back": "Pour activer <code>RuntimeDefault</code> comme profil seccomp par défaut pour tous les workloads, vous devez configurer le kubelet avec l'option <code>--seccomp-default</code>. Voici les étapes détaillées :<br><br><ol><br>    <li><b>Modifier la configuration du kubelet</b> :<br><br>        - <b>Via la ligne de commande</b> : Lancez le kubelet avec l'argument suivant :<br><br>          <pre>kubelet --seccomp-default</pre><br>        - <b>Via un fichier de configuration</b> : Ajoutez la ligne suivante dans le fichier de configuration du kubelet (généralement <code>/var/lib/kubelet/config.yaml</code>) :<br><br>          <pre>seccompDefault: true</pre></li><br><br>    <li><b>Configurer un cluster <code>kind</code> avec cette option</b> :<br><br>        Utilisez un fichier de configuration <code>kind.yaml</code> pour activer <code>seccomp-default</code> sur tous les nœuds :<br><br>        <pre>kind: Cluster<br>apiVersion: kind.x-k8s.io/v1alpha4<br>nodes:<br>  - role: control-plane<br>    image: kindest/node:v1.28.0@sha256:9f3ff58f19dcf1a0611d11e8ac989fdb30a28f40f236f59f0bea31fb956ccf5c<br>    kubeadmConfigPatches:<br>      - |<br>        kind: JoinConfiguration<br>        nodeRegistration:<br>          kubeletExtraArgs:<br>            seccomp-default: 'true'<br>  - role: worker<br>    image: kindest/node:v1.28.0@sha256:9f3ff58f19dcf1a0611d11e8ac989fdb30a28f40f236f59f0bea31fb956ccf5c<br>    kubeadmConfigPatches:<br>      - |<br>        kind: JoinConfiguration<br>        nodeRegistration:<br>          kubeletExtraArgs:<br>            seccomp-default: 'true'</pre></li><br><br>    <li><b>Vérifier que le profil par défaut est appliqué</b> :<br><br>        Lancez un Pod sans spécifier de profil seccomp et vérifiez que <code>RuntimeDefault</code> est utilisé :<br><br>        <pre>kubectl run --rm -it --restart=Never --image=alpine alpine -- sh</pre><br>        Ensuite, inspectez le conteneur pour confirmer le profil :<br><br>        <pre>docker exec -it &lt;node_container&gt; crictl inspect $(crictl ps --name=alpine -q) | jq .info.runtimeSpec.linux.seccomp</pre><br>        La sortie doit indiquer que le profil par défaut est appliqué, par exemple :<br><br>        <pre>{<br>  'defaultAction': 'SCMP_ACT_ERRNO',<br>  'architectures': ['SCMP_ARCH_X86_64'],<br>  'syscalls': [{'names': ['...']}]<br>}</pre></li><br></ol><br><br><b>Remarques importantes :</b><br><br><ul><br>    <li>Cette fonctionnalité est disponible depuis Kubernetes v1.25 en version bêta.</li><br>    <li>Elle ne modifie pas les champs <code>securityContext.seccompProfile</code> des workloads existants, ce qui permet un rollback facile.</li><br>    <li>Certains workloads peuvent échouer si le profil <code>RuntimeDefault</code> est trop restrictif. Dans ce cas, vous pouvez :<br><br>        - Exécuter le workload en mode <code>Unconfined</code>.<br><br>        - Désactiver <code>seccompDefault</code> sur certains nœuds.<br><br>        - Créer un profil personnalisé pour le workload.</li><br></ul><br><br><hr><br><b>Explanatory Context :</b><br><br>Activer <code>RuntimeDefault</code> comme profil par défaut est une bonne pratique pour renforcer la sécurité des clusters Kubernetes. Cela garantit que tous les workloads utilisent un profil sécurisé, même si aucun profil n'est explicitement spécifié. Cependant, il est recommandé de tester cette configuration sur un sous-ensemble de nœuds avant de la déployer à l'échelle du cluster, afin d'éviter des interruptions de service.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_seccomp"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 229
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards cover distinct Kubernetes concepts: 
+- Card 229 explains **PodDisruptionBudget (PDB)** and its application to ZooKeeper, focusing on maintaining quorum during node drains.
+- Card 230 explains **PodAntiAffinity** and its role in distributing ZooKeeper Pods across nodes to avoid single points of failure.
+
+These concepts are structurally different and serve separate purposes in Kubernetes. PDB manages voluntary disruptions, while PodAntiAffinity governs Pod scheduling. Merging them would violate the **THEOREM/PROOF PRESERVATION** and **CONTEXTUAL RECONSTRUCTION** rules, as neither is redundant nor covers the same structural concept. Both cards are kept separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 229,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un <b>PodDisruptionBudget (PDB)</b> et comment est-il utilisé pour ZooKeeper dans ce tutoriel ?",
+    "back": "<b>Définition :</b><br><br>Un <b>PodDisruptionBudget (PDB)</b> est une ressource Kubernetes qui limite le nombre de Pods d'une application qui peuvent être indisponibles simultanément lors d'opérations de maintenance planifiées (comme le drainage d'un nœud). Il garantit la disponibilité de l'application en empêchant les interruptions excessives.<br><br><br><br><b>Utilisation pour ZooKeeper :</b><br><br>1. <b>Configuration du PDB :</b><br><br>   Dans ce tutoriel, le PDB pour ZooKeeper est configuré pour autoriser au maximum <b>1 Pod indisponible</b> à la fois :<br><br>   ```yaml<br>   apiVersion: policy/v1<br>   kind: PodDisruptionBudget<br>   metadata:<br>     name: zk-pdb<br>   spec:<br>     maxUnavailable: 1<br>     selector:<br>       matchLabels:<br>         app: zk<br>   ```<br><br>2. <b>Pourquoi `maxUnavailable: 1` ?</b><br><br>   - ZooKeeper nécessite un <b>quorum</b> (majorité des nœuds) pour fonctionner. Pour un ensemble de 3 nœuds, au moins 2 doivent être disponibles.<br><br>   - Si 2 Pods étaient indisponibles simultanément, le quorum serait perdu et ZooKeeper cesserait de fonctionner.<br><br>3. <b>Impact lors du drainage d'un nœud :</b><br><br>   - Lorsque vous drainez un nœud (`kubectl drain`), Kubernetes vérifie le PDB avant d'évincer les Pods.<br><br>   - Si l'éviction d'un Pod violerait le PDB (ex : 2 Pods déjà indisponibles), l'opération est bloquée.<br><br><br><b>Exemple concret :</b><br><br>- Supposons que les Pods `zk-0` et `zk-1` sont sur des nœuds différents.<br><br>- Si vous drainez le nœud de `zk-0`, Kubernetes évince `zk-0` et le reschedule.<br><br>- Si vous essayez ensuite de drainer le nœud de `zk-1`, Kubernetes <b>refusera</b> car cela rendrait 2 Pods indisponibles, violant le PDB.<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Les PDBs sont cruciaux pour les applications stateful comme ZooKeeper, car ils empêchent les interruptions de service lors des maintenances. Sans PDB, un drainage mal planifié pourrait casser le quorum et rendre l'application indisponible. Dans ce tutoriel, le PDB est utilisé pour garantir que ZooKeeper reste fonctionnel même pendant des opérations comme les mises à jour de nœuds ou les redémarrages. C'est une bonne pratique pour toute application critique nécessitant un quorum ou une haute disponibilité.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Disponibilité PodDisruptionBudget"
+  },
+  {
+    "id": 230,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que <b>PodAntiAffinity</b> et comment est-il utilisé pour déployer ZooKeeper dans ce tutoriel ?",
+    "back": "<b>Définition :</b><br><br><b>PodAntiAffinity</b> est une règle d'affinité Kubernetes qui empêche le scheduler de co-localiser des Pods sur le même nœud (ou dans le même domaine de défaillance). Il est utilisé pour améliorer la résilience en évitant les points uniques de défaillance.<br><br><br><br><b>Utilisation pour ZooKeeper :</b><br><br>1. <b>Configuration dans le StatefulSet :</b><br><br>   Dans ce tutoriel, `PodAntiAffinity` est configuré pour empêcher que deux Pods ZooKeeper ne s'exécutent sur le même nœud :<br><br>   ```yaml<br>   affinity:<br>     podAntiAffinity:<br>       requiredDuringSchedulingIgnoredDuringExecution:<br>       - labelSelector:<br>           matchExpressions:<br>           - key: app<br>             operator: In<br>             values:<br>             - zk<br>         topologyKey: kubernetes.io/hostname<br>   ```<br><br>2. <b>Explication des champs :</b><br><br>   - <b>`requiredDuringSchedulingIgnoredDuringExecution` :</b> La règle est <b>obligatoire</b> lors du scheduling. Si aucun nœud ne peut satisfaire la règle, le Pod reste en attente.<br><br>   - <b>`labelSelector` :</b> Sélectionne les Pods avec le label `app: zk`.<br><br>   - <b>`topologyKey: kubernetes.io/hostname` :</b> La règle s'applique au niveau du <b>nom d'hôte du nœud</b> (chaque Pod doit être sur un nœud différent).<br><br>3. <b>Pourquoi cette règle ?</b><br><br>   - ZooKeeper nécessite un <b>quorum</b> pour fonctionner. Si deux Pods sont sur le même nœud et que ce nœud tombe en panne, le quorum est perdu.<br><br>   - En répartissant les Pods sur différents nœuds, on minimise le risque de perte de quorum.<br><br><br><b>Exemple concret :</b><br><br>- Supposons un cluster avec 3 nœuds : `node-1`, `node-2`, `node-3`.<br><br>- Sans `PodAntiAffinity`, Kubernetes pourrait placer `zk-0` et `zk-1` sur `node-1`.<br><br>- Avec `PodAntiAffinity`, chaque Pod ZooKeeper est placé sur un nœud distinct.<br><br><br><b>Autres cas d'usage :</b><br><br>- <b>TopologyKey alternatifs :</b> Pour des clusters multi-zones, on peut utiliser `topologyKey: failure-domain.beta.kubernetes.io/zone` pour répartir les Pods sur différentes zones de disponibilité.<br><br>- <b>Règles préférées :</b> `preferredDuringSchedulingIgnoredDuringExecution` peut être utilisé pour des règles non strictes (ex :",
+    "tags": ""
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 189
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards cover distinct aspects of the Kubernetes Guestbook tutorial and do not overlap in structural concept. 
+
+- Card 189 describes the **components** of the Guestbook application (Redis Leader, Redis Followers, Frontend) and their roles, including architecture, deployment details, and data flow.
+- Card 190 explains **how to expose the Guestbook frontend** for external access, detailing methods like `NodePort`, `LoadBalancer`, and `kubectl port-forward`.
+
+These cards are not redundant; they address different questions and concepts. Merging them would violate the self-contained rule (Rule 3) and dilute the clarity of each topic. Both cards should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 189,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les composants de l'application 'Guestbook' déployée dans le tutoriel, et quel est leur rôle ?",
+    "back": "L'application <b>Guestbook</b> déployée dans le tutoriel est une application web multi-tiers simple (non prête pour la production) composée des composants suivants :<br><br><br><ol><br>    <li><b>Redis Leader (Base de données principale)</b> :<br><br>        <b>Rôle</b> : Stocke les entrées du livre d'or (guestbook) et gère les opérations d'écriture.<br><br>        <b>Déploiement</b> :<br><br>        - Un <code>Deployment</code> gère une seule instance de Redis Leader.<br><br>        - Un <code>Service</code> nommé <code>redis-leader</code> expose le Redis Leader aux autres composants du cluster.<br><br>        <b>Fichier utilisé</b> :<br><br>        <pre><br>kubectl apply -f https://k8s.io/examples/application/guestbook/redis-leader-deployment.yaml<br>kubectl apply -f https://k8s.io/examples/application/guestbook/redis-leader-service.yaml<br></pre></li><br>    <br><br>    <br>    <li><b>Redis Followers (Réplicas de la base de données)</b> :<br><br>        <b>Rôle</b> : Répliquent les données du Redis Leader pour améliorer la disponibilité et la lecture des données.<br><br>        <b>Déploiement</b> :<br><br>        - Un <code>Deployment</code> gère deux réplicas de Redis Followers.<br><br>        - Un <code>Service</code> nommé <code>redis-follower</code> expose les Redis Followers aux autres composants.<br><br>        <b>Fichier utilisé</b> :<br><br>        <pre><br>kubectl apply -f https://k8s.io/examples/application/guestbook/redis-follower-deployment.yaml<br>kubectl apply -f https://k8s.io/examples/application/guestbook/redis-follower-service.yaml<br></pre></li><br>    <br><br>    <br>    <li><b>Frontend (Interface utilisateur)</b> :<br><br>        <b>Rôle</b> : Fournit une interface web pour interagir avec le livre d'or. Les utilisateurs peuvent ajouter des messages et les consulter.<br><br>        <b>Technologies utilisées</b> :<br><br>        - PHP pour le backend.<br><br>        - jQuery et Ajax pour l'interface utilisateur.<br><br>        <b>Déploiement</b> :<br><br>        - Un <code>Deployment</code> gère trois réplicas du frontend pour assurer la haute disponibilité.<br><br>        - Un <code>Service</code> expose le frontend, soit via <code>ClusterIP</code> (interne), <code>NodePort</code> (pour les tests locaux), ou <code>LoadBalancer</code> (pour les environnements cloud).<br><br>        <b>Fichier utilisé</b> :<br><br>        <pre><br>kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-deployment.yaml<br>kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-service.yaml<br></pre></li><br></ol><br><br><b>Architecture globale :</b><br><br><ul><br>    <li>Le frontend communique avec le Redis Leader pour les opérations d'écriture et avec les Redis Followers pour les opérations de lecture.</li><br>    <li>Les Redis Followers répliquent les données du Redis Leader pour assurer la redondance et améliorer les performances de lecture.</li><br>    <li>Le frontend expose une interface JSON et une interface utilisateur web pour interagir avec les données du livre d'or.</li><br></ul><br><br><b>Exemple de flux de données :</b><br><br><ol><br>    <li>Un utilisateur soumet un message via l'interface web du frontend.</li><br>    <li>Le frontend envoie une requête d'écriture au Redis Leader.</li><br>    <li>Le Redis Leader stocke le message et le réplique vers les Redis Followers.</li><br>    <li>Un autre utilisateur consulte les messages via le frontend, qui lit les données depuis un Redis Follower.</li><br></ol><br><br><hr><br><br><b>Explanatory Context :</b><br><br>Cette application illustre les concepts clés de Kubernetes, comme les Deployments, les Services, et la communication entre composants multi-tiers. Elle montre comment séparer les responsabilités (base de données vs. frontend) et comment utiliser des réplicas pour améliorer la disponibilité et la scalabilité. Bien que simple, cette architecture est représentative des applications réelles déployées dans Kubernetes, où chaque composant est isolé et scalable indépendamment.",
+    "tags": "kubernetes-tutorials-manuel (3) StatelessApplications_Guestbook"
+  },
+  {
+    "id": 190,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment exposer le frontend de l'application Guestbook pour qu'il soit accessible depuis l'extérieur du cluster ?",
+    "back": "Pour exposer le frontend de l'application Guestbook et le rendre accessible depuis l'extérieur du cluster, vous pouvez utiliser l'une des méthodes suivantes, selon votre environnement :<br><br><br><ol><br>    <li><b>Utiliser un Service de type <code>NodePort</code> (pour les tests locaux)</b> :<br><br>        <b>Étapes :</b><br><br>        <ol><br>            <li>Créez un Service de type <code>NodePort</code> pour le frontend :<br><br>                <pre><br>kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-service.yaml<br></pre><br>                Par défaut, ce fichier crée un Service de type <code>ClusterIP</code>. Pour le modifier en <code>NodePort</code>, éditez le fichier YAML et remplacez <code>type: ClusterIP</code> par <code>type: NodePort</code>.</li><br>            <br><br>            <br>            <li>Vérifiez le port attribué par Kubernetes :<br><br>                <pre><br>kubectl get service frontend<br></pre><br>                <b>Exemple de sortie :</b><br><br>                <pre><br>NAME       TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE<br>frontend   NodePort   10.96.123.123   &lt;none&gt;        80:31234/TCP   5s<br></pre><br>                Le port externe (ici <code>31234</code>) est celui que vous utiliserez pour accéder au frontend.</li><br>            <br><br>            <br>            <li>Accédez au frontend via l'adresse IP d'un nœud du cluster et le port <code>NodePort</code> :<br><br>                <pre><br>http://&lt;NODE_IP&gt;:31234<br></pre><br>                Pour obtenir l'adresse IP d'un nœud, utilisez :<br><br>                <pre><br>kubectl get nodes -o wide<br></pre></li><br>        </ol><br>    </li><br>    <br><br>    <br>    <li><b>Utiliser un Service de type <code>LoadBalancer</code> (pour les environnements cloud)</b> :<br><br>        <b>Étapes :</b><br><br>        <ol><br>            <li>Modifiez le fichier <code>frontend-service.yaml</code> pour utiliser <code>type: LoadBalancer</code> :<br><br>                <pre><br>apiVersion: v1<br>kind: Service<br>metadata:<br>  name: frontend<br>spec:<br>  type: LoadBalancer<br>  ports:<br>  - port: 80<br>  selector:<br>    app: guestbook<br>    tier: frontend<br></pre></li><br>            <br><br>            <br>            <li>Appliquez le fichier YAML :<br><br>                <pre><br>kubectl apply -f frontend-service.yaml<br></pre></li><br>            <br><br>            <br>            <li>Vérifiez que le Service a obtenu une adresse IP externe :<br><br>                <pre><br>kubectl get service frontend<br></pre><br>                <b>Exemple de sortie :</b><br><br>                <pre><br>NAME       TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE<br>frontend   LoadBalancer   10.96.123.123   104.198.205.71   80:32377/TCP   5s<br></pre><br>                L'adresse IP externe (<code>EXTERNAL-IP</code>) est celle que vous utiliserez pour accéder au frontend.</li><br>            <br><br>            <br>            <li>Accédez au frontend via l'adresse IP externe :<br><br>                <pre><br>http://104.198.205.71<br></pre></li><br>        </ol><br>    </li><br>    <br><br>    <br>    <li><b>Utiliser <code>kubectl port-forward</code> (pour les tests locaux sans exposer le Service)</b> :<br><br>        <b>Étapes :</b><br><br>        <ol><br>            <li>Exécutez la commande suivante pour rediriger le port local 8080 vers le port 80 du Service <code>frontend</code> :<br><br>                <pre><br>kubectl port-forward svc/frontend 8080:80<br></pre></li><br>            <br><br>            <br>            <li>Accédez au frontend via votre navigateur :<br><br>                <pre><br>http://localhost:8080<br></pre></li><br>        </ol><br>    </li><br></ol><br><br><b>Remarques :</b><br><br><ul><br>    <li>Pour Minikube, utilisez <code>minikube service frontend</code> pour ouvrir automatiquement le frontend dans un navigateur.</li><br>    <li>Si vous utilisez <code>NodePort</code> ou <code>LoadBalancer</code>, assurez-vous que les règles de pare-feu autorisent le trafic sur les ports utilisés.</li><br>    <li>Dans un environnement de production, il est recommandé d'utiliser un <code>Ingress</code> pour gérer l'accès externe de manière plus sécurisée et scalable.</li><br></ul><br><br><hr><br><br><b>Explanatory Context :</b><br><br>Exposer le frontend de l'application Guestbook est une étape cruciale pour permettre aux utilisateurs d'interagir avec elle. Le choix de la méthode dépend de l'environnement :<br><br>- <code>NodePort</code> est simple et adapté aux tests locaux, mais expose un port sur tous les nœuds du cluster.<br><br>- <code>LoadBalancer</code> est idéal pour les environnements cloud, car il crée automatiquement un équilibreur de charge externe.<br><br>- <code>kubectl port-forward</code> est utile pour le débogage ou les tests rapides, mais n'est pas adapté à une utilisation en production.<br><br><br>Dans un scénario réel, une combinaison de <code>Ingress</code> et de <code>LoadBalancer</code> est souvent utilisée pour gérer le trafic entrant de manière sécurisée et scalable.",
+    "tags": "kubernetes-tutorials-manuel (3) StatelessApplications_Guestbook"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 255
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards cover distinct but related concepts about swap space in Linux, specifically within a Kubernetes context. Card 255 focuses on the command to format a file as swap space (`mkswap`), while card 257 details commands to verify if swap is active (`swapon -s` and `free -h`). These cards do not cover the exact same structural concept, as one is about setup and the other about verification. They should not be merged. Both cards are self-contained and adhere to the rules, so they will be kept separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 255,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de formater un fichier en tant qu'espace d'échange (swap) sous Linux ?",
+    "back": "<b>Commande :</b><br>`mkswap /swapfile`<br><br><b>Explications :</b><br>La commande `mkswap` est utilisée pour formater un fichier ou une partition en tant qu'espace d'échange (swap), permettant au système d'utiliser cet espace pour la pagination mémoire.<hr><b>Explanatory Context :</b><br>Cette commande est essentielle pour configurer un espace d'échange, qui sert de mémoire virtuelle lorsque la RAM physique est saturée. Elle est souvent utilisée avant d'activer l'espace swap avec `swapon`. Dans le contexte de Kubernetes, la gestion du swap est cruciale pour optimiser les performances des nœuds, surtout lorsque les charges de travail nécessitent plus de mémoire que disponible en RAM.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Configuration"
+  },
+  {
+    "id": 257,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles commandes permettent de vérifier que l'espace d'échange (swap) est activé sur un nœud Linux ? Donnez les deux méthodes principales.",
+    "back": "<b>Méthodes :</b><br><br>1. Utilisation de `swapon -s` :<br>Affiche un résumé des espaces d'échange actifs, incluant le fichier ou la partition utilisée, la taille et la priorité.<br><br>2. Utilisation de `free -h` :<br>Affiche l'utilisation de la mémoire et du swap dans un format lisible, incluant la quantité totale, utilisée et libre de swap.<br><br><b>Exemple de sortie pour `free -h` :</b><br><pre>              total        used        free      shared  buff/cache   available<br>Mem:           7.7G        2.1G        3.2G        200M        2.4G        5.1G<br>Swap:          2.0G        0B          2.0G</pre><br><b>Remarque :</b><br>Les tableaux suivants montrent des exemples de sorties pour ces commandes :<br><br>![tbl-92.md](tbl-92.md)<br><br>![tbl-93.md](tbl-93.md)<br><br><hr><b>Contexte Explicatif :</b><br>Vérifier l'état du swap est crucial pour s'assurer que le système peut gérer les charges de travail gourmandes en mémoire. Dans Kubernetes, cette vérification permet de confirmer que les configurations de swap (comme `LimitedSwap`) sont correctement appliquées et que les nœuds peuvent utiliser la mémoire virtuelle si nécessaire.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Verification"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 252
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> The three input cards all relate to Linux swap management commands, but they differ in scope and context:
+
+1. Card 252 (id: 252) focuses on **encrypted swap setup**, providing a full sequence of commands (allocation, permissions, encryption, formatting, and activation) with detailed explanations about encryption and Kubernetes relevance.
+2. Card 256 (id: 256) is a **basic question** about the `swapon` command alone, with a focus on its purpose and Kubernetes-specific considerations (e.g., LimitedSwap).
+3. Card 260 (id: 260) is a **cloze-style card** covering general swap commands (`mkswap`, `swapon`, and verification), with broader Linux/Kubernetes context.
+
+While all cards mention `swapon`, they are **not redundant** because:
+- Card 252 is specialized for **encrypted swap**, a distinct use case.
+- Card 256 is a **standalone question** about `swapon`, not a cloze or multi-step process.
+- Card 260 is a **general swap workflow**, lacking encryption details.
+
+No merging is possible without violating the **Examples Zero-Context Rule** or **Theorem/Proof Preservation** (e.g., losing encryption steps or Kubernetes-specific notes). All cards are kept separate to preserve their unique contexts.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 252,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les commandes suivantes pour configurer une mémoire swap chiffrée :",
+    "back": "1. Allouer 4GiB d'espace swap :<br>`fallocate --length 4GiB /swapfile`<br><br>2. Restreindre les permissions :<br>`chmod 600 /swapfile`<br><br>3. Créer un périphérique chiffré :<br>`cryptsetup --type plain --cipher aes-xts-plain64 --key-size 256 -d /dev/urandom open /swapfile cryptswap`<br><br>4. Formater le périphérique en espace d'échange :<br>`mkswap /dev/mapper/cryptswap`<br><br>5. Activer l'espace d'échange :<br>`swapon /dev/mapper/cryptswap`<br><br><hr><b>Contexte Explicatif :</b><br>Ces commandes permettent de configurer une mémoire swap chiffrée, essentielle pour sécuriser les données échangées entre la RAM et le disque dans un environnement Kubernetes. Le chiffrement est particulièrement utile pour les nœuds manipulant des données sensibles, comme dans les environnements de production ou réglementés.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Commands"
+  },
+  {
+    "id": 256,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande active l'espace d'échange (swap) pour la pagination mémoire sous Linux ?",
+    "back": "<b>Commande :</b><br>`swapon /swapfile`<br><br><b>Explications :</b><br>La commande `swapon` active l'espace d'échange (swap) spécifié, permettant au système d'utiliser cet espace pour stocker temporairement des données lorsque la RAM est insuffisante.<hr><b>Explanatory Context :</b><br>L'activation du swap est une étape clé pour éviter les erreurs de mémoire insuffisante. Dans Kubernetes, bien que le swap soit souvent désactivé par défaut pour des raisons de stabilité, certaines configurations (comme `LimitedSwap`) permettent son utilisation contrôlée pour améliorer les performances des nœuds sans compromettre la fiabilité.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Configuration"
+  },
+  {
+    "id": 260,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les commandes suivantes pour la gestion du swap sous Linux :",
+    "back": "1. Formater un fichier en tant qu'espace d'échange : `mkswap /swapfile`<br>2. Activer l'espace d'échange : `swapon /swapfile`<br>3. Vérifier l'état du swap : `swapon -s` ou `free -h`<br><br><hr><b>Contexte Explicatif :</b><br>Ces commandes sont fondamentales pour la gestion du swap sous Linux. Elles permettent de préparer, activer et vérifier l'espace d'échange, une ressource cruciale pour les systèmes où la RAM physique est limitée. Dans Kubernetes, leur maîtrise est essentielle pour configurer correctement les nœuds et optimiser l'utilisation de la mémoire.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Commands"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 238
+
+**Décision:** CONSERVÉES SÉPARÉMENT (7 → 7 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct aspects of running a kubelet in standalone mode, including objectives, installation steps for CRI-O and kubelet, diagnostic directories, cleanup procedures, configuration specifics, and limitations. None of these cards are redundant as they each address unique and non-overlapping concepts or steps. Merging them would violate the self-contained rule (Rule 3) and dilute the clarity of each individual topic. Thus, all cards should be kept separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 238,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les objectifs principaux de l'exécution d'un kubelet en mode standalone selon ce tutoriel ?",
+    "back": "<b>Objectifs principaux :</b><br><ul><li>Installer <code>cri-o</code> et <code>kubelet</code> sur un système Linux et les exécuter en tant que services <code>systemd</code>.</li><li>Lancer un Pod exécutant <code>nginx</code> qui écoute les requêtes sur le port TCP 80 à l'adresse IP du Pod.</li><li>Comprendre comment les différents composants de la solution interagissent entre eux.</li></ul><hr><b>Explanatory Context :</b><br>Ce mode standalone permet de découvrir Kubernetes sans avoir besoin d'un cluster complet. Il est idéal pour apprendre les bases comme la configuration d'un nœud, la gestion des Pods statiques et le fonctionnement des conteneurs. Ce tutoriel sert de point d'entrée pour explorer ensuite des outils comme Minikube, qui simulent un cluster complet. L'intuition ici est de démystifier Kubernetes en le réduisant à son composant minimal : le kubelet, qui gère les conteneurs sur un seul nœud.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Kubelet_Standalone"
+  },
+  {
+    "id": 242,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes pour installer et configurer le runtime de conteneurs CRI-O en vue d'exécuter un kubelet en mode standalone ?",
+    "back": "<b>Étapes pour installer CRI-O :</b><br><ol><li><b>Télécharger le script d'installation statique :</b><br><code>curl https://raw.githubusercontent.com/cri-o/packaging/main/get > crio-install</code></li><li><b>Exécuter le script d'installation :</b><br><code>sudo bash crio-install</code><br>Le script détecte automatiquement l'architecture du processeur (amd64 ou arm64) et installe les versions les plus récentes des paquets logiciels, y compris <code>cni-plugins</code>, <code>crun</code>, et <code>runc</code>.</li><li><b>Activer et démarrer le service CRI-O :</b><br><pre>sudo systemctl daemon-reload<br>sudo systemctl enable --now crio.service</pre></li><li><b>Vérifier que le service est actif :</b><br><code>sudo systemctl is-active crio.service</code><br>La sortie attendue est <code>active</code>.</li><li><b>Vérifier l'installation des plugins réseau :</b><br><code>/opt/cni/bin/bridge --version</code></li><li><b>Vérifier la configuration par défaut :</b><br><code>cat /etc/cni/net.d/11-crio-ipv4-bridge.conflist</code><br>Assurez-vous que le subnet par défaut (<code>10.85.0.0/16</code>) ne chevauche pas vos réseaux actifs. Sinon, modifiez-le et redémarrez le service.</li></ol><hr><b>Explanatory Context :</b><br>CRI-O est un runtime de conteneurs léger et sécurisé, spécialement conçu pour Kubernetes. Il implémente l'interface CRI (Container Runtime Interface), permettant au kubelet de gérer les conteneurs. Les plugins réseau (CNI) installés avec CRI-O sont responsables de la création des interfaces réseau virtuelles pour les Pods. Cette configuration est une étape clé pour reproduire un environnement Kubernetes fonctionnel, même en mode standalone.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management CRI-O_Installation"
+  },
+  {
+    "id": 243,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment télécharger, configurer et installer le kubelet pour un fonctionnement en mode standalone ?",
+    "back": "<b>Étapes pour installer et configurer le kubelet :</b><br><ol><li><b>Télécharger la dernière version stable du kubelet :</b><br><pre>curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubelet'</pre></li><li><b>Créer le répertoire des manifests :</b><br><code>sudo mkdir -p /etc/kubernetes/manifests</code></li><li><b>Créer le fichier de configuration du kubelet :</b><br><pre>sudo tee /etc/kubernetes/kubelet.yaml <<EOF<br>apiVersion: kubelet.config.k8s.io/v1beta1<br>kind: KubeletConfiguration<br>authentication:<br>  webhook:<br>    enabled: false<br>authorization:<br>  mode: AlwaysAllow<br>enableServer: false<br>logging:<br>  format: text<br>address: 127.0.0.1<br>readOnlyPort: 10255<br>staticPodPath: /etc/kubernetes/manifests<br>containerRuntimeEndpoint: unix:///var/run/crio/crio.sock<br>EOF</pre><br><b>Note :</b> Cette configuration est non sécurisée et ne doit pas être utilisée en production. Elle désactive l'authentification webhook et autorise tous les accès pour simplifier le tutoriel.</li><li><b>Installer le binaire du kubelet :</b><br><pre>chmod +x kubelet<br>sudo cp kubelet /usr/bin/</pre></li><li><b>Créer un fichier de service systemd :</b><br><pre>sudo tee /etc/systemd/system/kubelet.service <<EOF<br>[Unit]<br>Description=Kubelet<br>[Service]<br>ExecStart=/usr/bin/kubelet \\<br>--config=/etc/kubernetes/kubelet.yaml<br>Restart=always<br>[Install]<br>WantedBy=multi-user.target<br>EOF</pre><br><b>Note :</b> L'argument <code>--kubeconfig</code> est omis pour activer le mode standalone.</li><li><b>Activer et démarrer le service kubelet :</b><br><pre>sudo systemctl daemon-reload<br>sudo systemctl enable --now kubelet.service</pre></li><li><b>Vérifier que le service est actif :</b><br><code>sudo systemctl is-active kubelet.service</code><br>La sortie attendue est <code>active</code>.</li></ol><hr><b>Explanatory Context :</b><br>Le kubelet est l'agent principal qui s'exécute sur chaque nœud Kubernetes. En mode standalone, il gère les Pods statiques sans dépendre d'un plan de contrôle (API server). La configuration utilisée ici est simplifiée pour des raisons pédagogiques, mais elle illustre les concepts clés comme la gestion des Pods via des manifests et l'interaction avec le runtime de conteneurs. Ce setup permet de comprendre comment Kubernetes gère les conteneurs au niveau d'un nœud individuel.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Kubelet_Configuration"
+  },
+  {
+    "id": 245,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les répertoires clés à surveiller pour le diagnostic et le dépannage d'un kubelet en mode standalone ?",
+    "back": "<b>Répertoires clés pour le diagnostic :</b><br><ul><li><code>/var/lib/cni</code> : Contient les fichiers liés aux plugins réseau CNI.</li><li><code>/var/lib/containers</code> : Stocke les données des conteneurs gérés par le runtime (ex: CRI-O).</li><li><code>/var/lib/kubelet</code> : Contient les données du kubelet, y compris les Pods et les volumes.</li><li><code>/var/log/containers</code> : Journaux des conteneurs.</li><li><code>/var/log/pods</code> : Journaux spécifiques aux Pods.</li></ul><hr><b>Explanatory Context :</b><br>Ces répertoires sont essentiels pour comprendre l'état du système et diagnostiquer les problèmes. Par exemple, <code>/var/lib/cni</code> permet de vérifier si les plugins réseau fonctionnent correctement, tandis que <code>/var/log/pods</code> fournit des informations détaillées sur les erreurs ou les comportements inattendus des Pods. En mode standalone, ces répertoires sont les principales sources d'information pour le dépannage, car il n'y a pas d'API server centralisé pour centraliser les logs.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Troubleshooting"
+  },
+  {
+    "id": 246,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes pour nettoyer le système après avoir exécuté un kubelet en mode standalone ?",
+    "back": "<b>Étapes de nettoyage :</b><br><b>Pour le kubelet :</b><br><pre>sudo systemctl disable --now kubelet.service<br>sudo systemctl daemon-reload<br>sudo rm /etc/systemd/system/kubelet.service<br>sudo rm /usr/bin/kubelet<br>sudo rm -rf /etc/kubernetes<br>sudo rm -rf /var/lib/kubelet<br>sudo rm -rf /var/log/containers<br>sudo rm -rf /var/log/pods</pre><br><b>Pour le runtime de conteneurs (CRI-O) :</b><br><pre>sudo systemctl disable --now crio.service<br>sudo systemctl daemon-reload<br>sudo rm -rf /usr/local/bin<br>sudo rm -rf /usr/local/lib<br>sudo rm -rf /usr/local/share<br>sudo rm -rf /usr/libexec/crio<br>sudo rm -rf /etc/crio<br>sudo rm -rf /etc/containers</pre><br><b>Pour les plugins réseau :</b><br><pre>sudo rm -rf /opt/cni<br>sudo rm -rf /etc/cni<br>sudo rm -rf /var/lib/cni</pre><hr><b>Explanatory Context :</b><br>Le nettoyage est une étape cruciale pour éviter les conflits lors de futures installations ou pour libérer des ressources système. Ces commandes suppriment tous les fichiers de configuration, les binaires, et les données associées au kubelet, au runtime de conteneurs, et aux plugins réseau. Cela permet de revenir à un état système propre, comme avant l'installation du kubelet en mode standalone. Cette procédure est particulièrement utile pour les environnements de test ou les tutoriels.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Cleanup"
+  },
+  {
+    "id": 247,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les informations manquantes :<br>Le kubelet en mode standalone utilise un fichier de configuration de type <code>{{c1::KubeletConfiguration}}</code> avec l'API version <code>{{c2::kubelet.config.k8s.io/v1beta1}}</code>. Pour désactiver l'authentification, on définit <code>{{c3::webhook.enabled: false}}</code>.",
+    "back": "Le kubelet en mode standalone utilise un fichier de configuration de type <code>KubeletConfiguration</code> avec l'API version <code>kubelet.config.k8s.io/v1beta1</code>. Pour désactiver l'authentification, on définit <code>webhook.enabled: false</code>.<hr><b>Explanatory Context :</b><br>Cette configuration simplifiée est utilisée pour des raisons pédagogiques et ne doit pas être employée en production. Elle illustre comment le kubelet peut être configuré pour fonctionner en mode autonome, sans dépendre d'un plan de contrôle Kubernetes. Le champ <code>webhook.enabled: false</code> désactive l'authentification via webhook, ce qui est acceptable pour un environnement de test mais inacceptable en production.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Kubelet_Vocabulary"
+  },
+  {
+    "id": 249,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les limitations du mode standalone du kubelet mentionnées dans ce tutoriel ?",
+    "back": "<b>Limitations du mode standalone :</b><br><ul><li>Le kubelet ne peut pas récupérer les configurations de Pods depuis un plan de contrôle (API server), car il n'y a pas de connexion à ce dernier.</li><li>Il n'est pas possible d'utiliser un <code>Deployment</code> ou un <code>ReplicaSet</code> pour configurer les conteneurs dans un Pod statique.</li><li>La configuration utilisée dans ce tutoriel est <b>non sécurisée</b> et ne doit pas être utilisée en production (ex: désactivation de l'authentification et autorisation <code>AlwaysAllow</code>).</li></ul><hr><b>Explanatory Context :</b><br>Le mode standalone est conçu pour des cas d'usage simples ou pédagogiques, où l'objectif est de comprendre les bases de Kubernetes sans la complexité d'un cluster complet. Cependant, il manque des fonctionnalités clés comme la gestion centralisée des Pods, la haute disponibilité, et les mécanismes de sécurité avancés. Ces limitations reflètent le compromis entre simplicité et fonctionnalité : le mode standalone est idéal pour apprendre, mais insuffisant pour des environnements de production.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Kubelet_Limitations"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 274
+
+**Décision:** FUSION (3 → 1 carte(s))
+
+**Rationnel du Combiner:**
+> All three cards (274, 277, 282) cover the exact same structural concept: the three validation actions (`Audit`, `Warn`, `Deny`) supported by `ValidatingAdmissionPolicyBinding` in Kubernetes, along with their behaviors and constraints. 
+
+- Card 274 provides a detailed explanation of each action and their use cases.
+- Card 277 demonstrates the practical impact of these actions (e.g., `Deny` vs. `Warn`) through a concrete example (scaling a Deployment to 0 replicas).
+- Card 282 is a cloze deletion card that reinforces the same concepts but in a fill-in-the-blank format.
+
+Given the redundancy, the cards can be merged while preserving all critical information. The merged card will:
+1. Use the front of card 274 (most direct question) as the primary front.
+2. Combine the backs of all three cards, ensuring the full proof (explanations and examples) is preserved.
+3. Include the cloze deletions from card 282 but limit them to 3 (as per rule 6). The 4th cloze (`duplication`) will be converted to plain text to comply with the rule.
+4. Maintain the `Basique` type (most general) and the `01_Définitions` subdeck (most appropriate for the core concept).
+5. Merge tags to avoid duplication while preserving all relevant keywords.
+6. Ensure the merged card is 100% self-contained (no references to "Example 1" or similar).
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 274,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les trois actions de validation (<code>validationActions</code>) supportées par une <code>ValidatingAdmissionPolicyBinding</code>, et que fait chacune d'elles ?<br><br>Complétez également les termes manquants :<br>Dans une <code>ValidatingAdmissionPolicyBinding</code>, les actions de validation possibles sont {{c1::Audit}}, {{c2::Warn}} et {{c3::Deny}}.",
+    "back": "<b>Réponse :</b><br>Les trois actions de validation supportées sont :<br><ul><li><b>Audit</b> : L'échec de validation est inclus dans l'événement d'audit de la requête API. Cela permet de tracer les tentatives de violation de politique sans bloquer la requête.</li><li><b>Warn</b> : L'échec de validation est signalé au client de la requête sous forme d'avertissement. La requête est autorisée, mais un message d'avertissement est retourné dans l'en-tête HTTP <code>Warning:</code>.</li><li><b>Deny</b> : L'échec de validation entraîne le rejet de la requête. La ressource n'est pas créée ou modifiée.</li></ul><br><b>Note :</b> Il est interdit d'utiliser <code>Deny</code> et <code>Warn</code> ensemble, car cela créerait une duplication de l'échec de validation à la fois dans le corps de la réponse API et dans l'en-tête HTTP.<br><br><b>Exemple pratique :</b><br>Que se passe-t-il si vous essayez de créer un Deployment avec 0 réplica après avoir activé une <code>ValidatingAdmissionPolicy</code> imposant au moins 2 réplicas ?<br><ul><li><b>Avec <code>validationActions: [Deny]</code> :</b> La création du Deployment est <b>rejetée</b>. Un message d'erreur est retourné, indiquant que le Deployment doit avoir au moins 2 réplicas.</li><li><b>Avec <code>validationActions: [Warn]</code> :</b> La création du Deployment est <b>autorisée</b>, mais un avertissement est retourné dans l'en-tête HTTP <code>Warning:</code>. Le Deployment est créé avec 0 réplica, mais l'utilisateur est informé de la violation de la politique.</li></ul><br><b>Test des modes :</b><br>1. Modifier le <code>ValidatingAdmissionPolicyBinding</code> pour utiliser <code>Warn</code> au lieu de <code>Deny</code>.<br>2. Essayer de scaler un Deployment à 0 réplica avec :<br><code>kubectl scale deployment &lt;nom-du-deployment&gt; --replicas=0</code>.<br>3. Observer le comportement (autorisé avec avertissement ou rejeté).<hr><b>Explanatory Context :</b><br>Ces actions permettent de graduer la sévérité des politiques de validation. Par exemple, une politique en mode <code>Audit</code> peut être utilisée pour surveiller les violations sans impacter les utilisateurs, tandis que le mode <code>Deny</code> est adapté pour des contraintes strictes (comme les exigences de sécurité). Le mode <code>Warn</code> est utile pour éduquer les utilisateurs sans bloquer leurs actions. Cela permet d'équilibrer sécurité et flexibilité dans la gestion du cluster.",
+    "tags": "kubernetes-tutorials-manuel (3) Admission_Policies Validation_Actions Validation_Testing Vocabulary Catégorie::Cloze_Overload"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 157
+
+**Décision:** CONSERVÉES SÉPARÉMENT (9 → 9 carte(s))
+
+**Rationnel du Combiner:**
+> Analyzing the provided cards, the following observations and decisions were made:
+
+1. **Cards 157, 162, 169**: All three cards discuss the modes of Pod Security Admission (enforce, audit, warn). However:
+   - Card 157 provides a detailed explanation of the modes and their use cases, making it the most comprehensive.
+   - Cards 162 and 169 are cloze deletions focusing solely on the names of the modes. These are redundant with the information in Card 157 but serve a different purpose (active recall). They will be kept separate as they are of type 'Texte à trous'.
+
+2. **Cards 159 and 166**: Both cards discuss applying Pod Security Standards at the cluster level.
+   - Card 159 provides a step-by-step procedure for applying the `baseline` standard in `enforce` mode while exempting `kube-system`. It includes detailed commands and context.
+   - Card 166 is more generic and explains the high-level process of configuring PSA at the cluster level. It is less detailed than Card 159 but covers a broader scope.
+   - These cards are not redundant; they complement each other. Card 159 is kept as the master for procedural details, while Card 166 is retained for its broader explanation.
+
+3. **Cards 161 and 165**: 
+   - Card 161 is a cloze deletion about Pod Security Admission basics (e.g., it is an admission controller, applies Pod Security Standards, became GA in v1.25).
+   - Card 165 explains the three levels of Pod Security Standards (Privileged, Baseline, Restricted).
+   - These cards cover distinct concepts and are not redundant. Both are retained.
+
+4. **Card 170**: Discusses the difference between applying Pod Security Standards at the cluster level vs. namespace level. This is a unique concept not covered by other cards and is retained.
+
+5. **Card 173**: Explains how to verify the application of Pod Security Standards in a namespace. This is a unique procedural concept and is retained.
+
+6. **Images**: Images are referenced in Cards 159 and 166 (img-1.jpeg and img-2.jpeg). These images are relevant to Kubernetes cluster architecture and are preserved in the merged cards where applicable.
+
+No cards were merged due to distinct or complementary content, but the reasoning ensures no redundancy while preserving all critical information.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 157,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les trois modes disponibles pour appliquer les Pod Security Standards via le Pod Security Admission, et quelle est leur utilité respective ?",
+    "back": "Les trois modes disponibles sont :<br><br><ul><li><b>enforce</b> : Bloque la création de pods non conformes aux standards configurés. Les pods qui violent les règles sont rejetés.</li><li><b>audit</b> : Permet la création des pods mais enregistre un événement d'audit dans les logs du cluster pour analyse ultérieure.</li><li><b>warn</b> : Affiche un avertissement à l'utilisateur lors de la création d'un pod non conforme, sans bloquer son déploiement.</li></ul><br><b>Explanatory Context :</b><br>Ces modes permettent une adoption progressive des standards de sécurité. Par exemple, en phase de test, on peut utiliser <code>warn</code> pour identifier les pods problématiques sans impacter les déploiements, puis basculer vers <code>enforce</code> une fois les ajustements effectués. Le mode <code>audit</code> est particulièrement utile pour les environnements de production où l'on souhaite surveiller les violations sans interrompre les services existants. Ces modes s'intègrent dans une stratégie globale de <i>shift-left security</i>, où la sécurité est vérifiée dès la phase de développement.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_PodSecurityModes"
+  },
+  {
+    "id": 159,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment appliquer le Pod Security Standard <code>baseline</code> en mode <code>enforce</code> à l'échelle d'un cluster Kubernetes, tout en exemptant le namespace <code>kube-system</code> ? Décrivez la procédure étape par étape.",
+    "back": "Pour appliquer le standard <code>baseline</code> en mode <code>enforce</code> au niveau du cluster tout en exemptant <code>kube-system</code>, suivez ces étapes :<br><br><ol><li><b>Créer un fichier de configuration pour le Pod Security Admission Controller</b> :<br><pre><code>mkdir -p /tmp/pss<br>cat &lt;&lt;EOF &gt; /tmp/pss/cluster-level-pss.yaml<br>apiVersion: apiserver.config.k8s.io/v1<br>kind: AdmissionConfiguration<br>plugins:<br>- name: PodSecurity<br>  configuration:<br>    apiVersion: pod-security.admission.config.k8s.io/v1<br>    kind: PodSecurityConfiguration<br>    defaults:<br>      enforce: 'baseline'<br>      enforce-version: 'latest'<br>      audit: 'restricted'<br>      audit-version: 'latest'<br>      warn: 'restricted'<br>      warn-version: 'latest'<br>    exemptions:<br>      namespaces: ['kube-system']<br>EOF</code></pre></li><br><li><b>Configurer le kube-apiserver pour utiliser ce fichier</b> :<br>- Ajouter l'argument suivant à la configuration du kube-apiserver :<br><pre><code>--admission-control-config-file=/tmp/pss/cluster-level-pss.yaml</code></pre></li><br><li><b>Redémarrer le kube-apiserver</b> pour appliquer les changements.<br>- Pour un cluster <code>kind</code>, recréer le cluster avec la configuration appropriée :<br><pre><code>kind create cluster --name psa-cluster --config &lt;&lt;EOF<br>kind: Cluster<br>apiVersion: kind.x-k8s.io/v1alpha4<br>nodes:<br>- role: control-plane<br>  kubeadmConfigPatches:<br>  - |<br>    kind: ClusterConfiguration<br>    apiServer:<br>      extraArgs:<br>        admission-control-config-file: /etc/kubernetes/policies/pss.yaml<br>      extraVolumes:<br>      - name: pss-config<br>        hostPath: /tmp/pss<br>        mountPath: /etc/kubernetes/policies<br>        readOnly: true<br>EOF</code></pre></li></ol><br><b>Explanatory Context :</b><br>Cette procédure configure le PSA pour bloquer (<code>enforce</code>) les pods non conformes au standard <code>baseline</code> dans tous les namespaces sauf <code>kube-system</code>, tout en générant des avertissements et des logs d'audit pour les violations du standard <code>restricted</code>. L'exemption de <code>kube-system</code> est nécessaire car ce namespace contient des composants système critiques (ex : <code>kube-proxy</code>, <code>etcd</code>) qui nécessitent souvent des privilèges élevés. Cette approche permet de sécuriser les workloads utilisateur tout en maintenant la stabilité du cluster.<br><br>![img-1.jpeg](img-1.jpeg)<br>![img-2.jpeg](img-2.jpeg)",
+    "tags": "kubernetes-tutorials-manuel (3) Security_ClusterLevelPSA"
+  },
+  {
+    "id": 161,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les informations sur le Pod Security Admission :<br><br>Le Pod Security Admission est un {{c1::contrôleur d'admission}} qui applique les {{c2::Pod Security Standards}} lors de la création de nouveaux pods. Il est devenu {{c3::GA (Generally Available)}} à partir de la version {{c1::v1.25}} de Kubernetes.",
+    "back": "Le Pod Security Admission est un {{c1::contrôleur d'admission}} qui applique les {{c2::Pod Security Standards}} lors de la création de nouveaux pods. Il est devenu {{c3::GA (Generally Available)}} à partir de la version {{c1::v1.25}} de Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_Vocabulary"
+  },
+  {
+    "id": 162,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les modes du Pod Security Admission :<br><br>- {{c1::enforce}} : Bloque la création de pods non conformes.<br>- {{c2::audit}} : Enregistre un événement d'audit sans bloquer.<br>- {{c3::warn}} : Affiche un avertissement à l'utilisateur.",
+    "back": "- {{c1::enforce}} : Bloque la création de pods non conformes.<br>- {{c2::audit}} : Enregistre un événement d'audit sans bloquer.<br>- {{c3::warn}} : Affiche un avertissement à l'utilisateur.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_Vocabulary"
+  },
+  {
+    "id": 165,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les trois niveaux de <b>Pod Security Standards</b> définis par Kubernetes, et quelles sont leurs différences principales ?",
+    "back": "Kubernetes définit trois niveaux de <b>Pod Security Standards</b> :<br><br><ul><br><li><b>Privileged</b> : Aucune restriction. Ce niveau permet toutes les configurations, y compris celles potentiellement dangereuses. Il est réservé aux workloads nécessitant un accès complet au système.</li><br><li><b>Baseline</b> : Niveau par défaut recommandé pour la plupart des workloads. Il bloque les configurations les plus risquées (comme l'exécution en tant que root ou l'escalade de privilèges) tout en restant permissif pour les fonctionnalités courantes.</li><br><li><b>Restricted</b> : Niveau le plus strict. Il impose des restrictions supplémentaires (comme l'interdiction des conteneurs privilégiés ou l'utilisation de volumes hostPath) pour renforcer la sécurité. Ce niveau est adapté aux environnements sensibles.</li><br></ul><br><br><b>Explanatory Context :</b><br><br>Ces niveaux permettent d'adapter la sécurité en fonction des besoins des applications. Par exemple, un pod exécutant une base de données peut nécessiter le niveau 'baseline', tandis qu'un pod exécutant un outil de monitoring pourrait exiger le niveau 'restricted'. Le choix du niveau dépend du compromis entre sécurité et fonctionnalité, et il peut être appliqué au niveau du cluster ou d'un namespace spécifique pour une granularité fine.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_PodSecurityStandards"
+  },
+  {
+    "id": 166,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment configurer le <b>Pod Security Admission</b> au niveau du cluster pour appliquer les <b>Pod Security Standards</b> ?",
+    "back": "Pour configurer le <b>Pod Security Admission</b> au niveau du cluster, il faut :<br><br><ol><li>Créer un fichier YAML de configuration pour le PSA (par exemple, <code>cluster-level-pss.yaml</code>) définissant les politiques à appliquer.</li><li>Modifier la configuration de l'API server pour qu'il consomme ce fichier lors de la création du cluster. Cela se fait via des <code>kubeadmConfigPatches</code> dans la configuration du cluster (par exemple, avec <code>kind</code>).</li><li>Monter le fichier de configuration dans le conteneur de l'API server en utilisant <code>extraVolumes</code> et <code>extraMounts</code>.</li><li>Créer le cluster avec la configuration modifiée, par exemple :<br><br><code>kind create cluster --name psa-with-cluster-pss --config /tmp/pss/cluster-config.yaml</code>.</li></ol><br><br>Exemple de configuration pour l'API server :<br><br><pre>kind: ClusterConfiguration<br>apiServer:<br>  extraArgs:<br>    admission-control-config-file: /etc/config/cluster-level-pss.yaml<br>  extraVolumes:<br>    - name: accf<br>      hostPath: /etc/config<br>      mountPath: /etc/config<br>      readOnly: false<br>      pathType: 'DirectoryOrCreate'</pre><br><br><hr><b>Contexte Explicatif :</b><br><br>Cette configuration permet d'appliquer les <b>Pod Security Standards</b> de manière globale à tous les namespaces du cluster. Cela garantit une sécurité cohérente dès la création des pods, sans nécessiter de configuration manuelle pour chaque namespace. Cette approche est idéale pour les clusters où la sécurité doit être uniformément appliquée, comme dans les environnements de production ou les clusters partagés par plusieurs équipes.<br><br>![img-1.jpeg](img-1.jpeg)<br>![img-2.jpeg](img-2.jpeg)",
+    "tags": "kubernetes-tutorials-manuel (3) Security_ClusterLevelPSA"
+  },
+  {
+    "id": 169,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Quels sont les trois modes d'application des <b>Pod Security Standards</b> dans Kubernetes ? Complétez :<br><br><br>- <b>{{c1::enforce}}</b> : Bloque la création des pods non conformes.<br><br>- <b>{{c2::warn}}</b> : Affiche un avertissement mais autorise la création du pod.<br><br>- <b>{{c3::audit}}</b> : Enregistre un événement d'audit sans bloquer la création du pod.",
+    "back": "- <b>{{c1::enforce}}</b> : Bloque la création des pods non conformes.<br><br>- <b>{{c2::warn}}</b> : Affiche un avertissement mais autorise la création du pod.<br><br>- <b>{{c3::audit}}</b> : Enregistre un événement d'audit sans bloquer la création du pod.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_PSA_Modes"
+  },
+  {
+    "id": 170,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la différence entre appliquer les <b>Pod Security Standards</b> au niveau du cluster et au niveau d'un namespace ?",
+    "back": "La différence principale réside dans la portée et la granularité de l'application :<br><br><ul><br><li><b>Niveau du cluster</b> :<br><br>- Applique les <b>Pod Security Standards</b> à tous les namespaces du cluster.<br><br>- Nécessite une configuration de l'API server (par exemple, via <code>kubeadmConfigPatches</code> dans <code>kind</code>).<br><br>- Idéal pour les clusters où une politique de sécurité uniforme est requise (par exemple, en production).<br><br>- Exemple : Appliquer le niveau <code>baseline</code> à l'ensemble du cluster.</li><br><li><b>Niveau d'un namespace</b> :<br><br>- Applique les <b>Pod Security Standards</b> uniquement au namespace ciblé, via des labels.<br><br>- Permet une granularité fine, adaptée aux clusters multi-utilisateurs ou aux environnements avec des besoins de sécurité variés.<br><br>- Exemple : Appliquer le niveau <code>restricted</code> à un namespace dédié aux applications critiques, tout en laissant les autres namespaces avec des politiques moins strictes.</li><br></ul><br><br><b>Explanatory Context :</b><br><br>Le choix entre ces deux approches dépend des besoins spécifiques du cluster. Appliquer les politiques au niveau du cluster simplifie la gestion en évitant des configurations répétitives pour chaque namespace, mais peut être trop restrictif pour certains workloads. À l'inverse, appliquer les politiques au niveau des namespaces offre une flexibilité accrue, mais nécessite une gestion plus fine et peut introduire des incohérences si mal configuré. Une combinaison des deux approches est souvent utilisée pour équilibrer sécurité et flexibilité.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_PSA_Scope"
+  },
+  {
+    "id": 173,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier que les <b>Pod Security Standards</b> sont correctement appliqués à un namespace ?",
+    "back": "Pour vérifier que les <b>Pod Security Standards</b> sont correctement appliqués à un namespace, suivez ces étapes :<br><br><ol><li>Créer un pod dans le namespace ciblé (par exemple, <code>example</code>) en utilisant un manifeste YAML. Par exemple :<br><br><code>kubectl apply -n example -f https://k8s.io/examples/security/example-baseline-pod.yaml</code>.</li><li>Observer le comportement du cluster :<br><br><ul><li>Si le pod est conforme aux politiques appliquées (par exemple, niveau <code>baseline</code>), il sera créé sans avertissement.</li><li>Si le pod n'est pas conforme, le comportement dépend du mode configuré :<br><br>- En mode <code>enforce</code>, le pod sera rejeté et ne sera pas créé.<br><br>- En mode <code>warn</code>, le pod sera créé, mais un avertissement sera affiché (par exemple : <code>Warning: would violate PodSecurity 'restricted:latest': allowPrivilegeEscalation ≠ false</code>).<br><br>- En mode <code>audit</code>, le pod sera créé, et un événement d'audit sera enregistré sans avertissement visible.</li></ul></li><li>Vérifier les labels du namespace pour confirmer les politiques appliquées :<br><br><code>kubectl get ns example --show-labels</code>.<br><br>Les labels doivent inclure les modes et niveaux configurés (par exemple, <code>pod-security.kubernetes.io/enforce=baseline</code>).</li></ol><br><hr><b>Contexte Explicatif :</b><br><br>Cette vérification est cruciale pour s'assurer que les politiques de sécurité sont effectivement appliquées et que les pods non conformes sont correctement gérés. Par exemple, un pod avec <code>allowPrivilegeEscalation: true</code> sera rejeté dans un namespace où le niveau <code>restricted</code> est appliqué en mode <code>enforce</code>. Cela permet de prévenir les configurations dangereuses et de renforcer la sécurité du cluster. La vérification des labels du namespace permet également de s'assurer que les politiques sont correctement configurées et appliquées.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_PSA_Verification"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 280
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards (ID 280 and ID 281) cover distinct but complementary aspects of Kubernetes Admission Policies. Card 280 focuses on the purpose and language (CEL) of ValidatingAdmissionPolicy and MutatingAdmissionPolicy, while card 281 explains the structural components (Policy, Binding, and optional parameters like ConfigMap) required to apply these policies. They do not cover the exact same structural concept, and merging them would violate the CLOZE HARD LIMIT (resulting in more than 3 cloze deletions). Both cards are self-contained and adhere to the EXAMPLES ZERO-CONTEXT RULE. Thus, they should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 280,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les termes manquants :<br>Les politiques d'admission déclaratives dans Kubernetes utilisent le langage {{c1::CEL}} pour définir des règles. Une {{c2::ValidatingAdmissionPolicy}} sert à {{c3::enforcer des contraintes}}, tandis qu'une {{c4::MutatingAdmissionPolicy}} permet de {{c5::modifier les ressources}} pendant l'admission.",
+    "back": "Les politiques d'admission déclaratives dans Kubernetes utilisent le langage <b>CEL</b> pour définir des règles. Une <b>ValidatingAdmissionPolicy</b> sert à <b>enforcer des contraintes</b>, tandis qu'une <b>MutatingAdmissionPolicy</b> permet de <b>modifier les ressources</b> pendant l'admission.<hr><b>Explanatory Context :</b><br>CEL (Common Expression Language) est un langage d'expressions intégré à Kubernetes pour permettre une validation et une mutation déclaratives des ressources. Les politiques de validation bloquent ou avertissent sur des configurations non conformes, tandis que les politiques de mutation appliquent des transformations automatiques, comme l'ajout de labels ou de valeurs par défaut.",
+    "tags": "kubernetes-tutorials-manuel (3) Admission_Policies Vocabulary Catégorie::Cloze_Overload"
+  },
+  {
+    "id": 281,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les termes manquants :<br>Pour appliquer une politique d'admission, il faut un objet {{c1::Policy}} (ex: <code>ValidatingAdmissionPolicy</code>) et un objet {{c2::Binding}} (ex: <code>ValidatingAdmissionPolicyBinding</code>). Les paramètres sont {{c3::optionnels}} et peuvent être définis via une ressource comme un {{c4::ConfigMap}}.",
+    "back": "Pour appliquer une politique d'admission, il faut un objet <b>Policy</b> (ex: <code>ValidatingAdmissionPolicy</code>) et un objet <b>Binding</b> (ex: <code>ValidatingAdmissionPolicyBinding</code>). Les paramètres sont <b>optionnels</b> et peuvent être définis via une ressource comme un <b>ConfigMap</b>.<hr><b>Explanatory Context :</b><br>Cette structure modulaire permet de séparer la logique de la politique (définie dans le Policy) de son application (définie dans le Binding). Les paramètres ajoutent une couche de flexibilité, permettant de configurer dynamiquement le comportement des politiques sans les redéployer.",
+    "tags": "kubernetes-tutorials-manuel (3) Admission_Policies Vocabulary Catégorie::Cloze_Overload"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 240
+
+**Décision:** CONSERVÉES SÉPARÉMENT (7 → 7 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct aspects of swap configuration in Kubernetes, even though they share the same subdeck and some tags. They cannot be merged because:
+1. **Card 240** focuses on disabling swap for kubelet in standalone mode, which is conceptually opposite to the other cards that discuss enabling and configuring swap.
+2. **Card 250** and **Card 251** describe procedures for provisioning unencrypted and encrypted swap, respectively. These are distinct processes with different security implications and steps, so they must remain separate.
+3. **Card 254** explains the rationale for using encrypted swap over unencrypted swap, which is a conceptual question rather than a procedural one.
+4. **Card 258** describes methods to enable swap automatically at boot, which is a system-level configuration step unrelated to the kubelet-specific configurations in other cards.
+5. **Card 259** and **Card 261** focus on kubelet-specific configurations to allow swap usage, but they are not redundant. Card 259 provides a full explanation, while Card 261 is a cloze deletion for memorization.
+
+No cards can be merged without losing critical information or violating the rules for combining (e.g., preserving distinct procedures, proofs, or conceptual explanations).
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 240,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment configurer le système pour désactiver la mémoire swap avant d'exécuter un kubelet en mode standalone ?",
+    "back": "<b>Étapes pour désactiver la mémoire swap :</b><br><ol><li><b>Vérifier si la swap est activée :</b><br><code>sudo swapon --show</code><br>Si aucune sortie n'apparaît, la swap est déjà désactivée.</li><li><b>Désactiver la swap temporairement :</b><br><code>sudo swapoff -a</code></li><li><b>Rendre la désactivation persistante :</b><br>Modifier <code>/etc/fstab</code> ou <code>systemd.swap</code> pour supprimer ou commenter les lignes relatives à la swap.</li></ol><br><b>Alternative :</b> Si vous souhaitez tolérer la swap, ajoutez <code>failSwapOn: false</code> dans le fichier de configuration du kubelet.<hr><b>Explanatory Context :</b><br>Kubernetes désactive par défaut la swap pour garantir des performances prévisibles des conteneurs. La swap peut introduire de la latence et rendre le comportement des applications imprévisible. En mode standalone, cette configuration permet de reproduire les conditions d'un nœud Kubernetes standard. La désactivation persistante évite que la swap ne soit réactivée après un redémarrage du système.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Configuration"
+  },
+  {
+    "id": 250,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes pour provisionner et configurer de la mémoire swap **non chiffrée** sur un nœud Kubernetes en utilisant <code>kubeadm</code> ?",
+    "back": "<b>Étapes pour configurer une mémoire swap non chiffrée :</b><br><br>1. **Allouer l'espace swap** :<br>`fallocate --length 4GiB /swapfile`<br>2. **Restreindre les permissions** :<br>`chmod 600 /swapfile`<br>3. **Formater le fichier en espace d'échange** :<br>`mkswap /swapfile`<br>4. **Activer l'espace d'échange** :<br>`swapon /swapfile`<br>5. **Configurer le démarrage automatique** :<br>Ajoutez la ligne suivante dans `/etc/fstab` :<br><pre>/swapfile swap swap defaults 0 0</pre>6. **Configurer kubelet** :<br>Modifiez le fichier de configuration de kubelet pour inclure :<br><pre>failSwapOn: false<br>memorySwap:<br>  swapBehavior: LimitedSwap</pre>7. **Redémarrer kubelet** :<br>`systemctl restart kubelet.service`<br><br>Pour vérifier que le swap est activé, utilisez :<br>`swapon -s` ou `free -h`<br><br><hr><b>Contexte Explicatif :</b><br>La configuration d'une mémoire swap non chiffrée est utile pour des environnements où la sécurité des données n'est pas une priorité absolue. Dans Kubernetes, cette configuration permet d'améliorer les performances des nœuds en utilisant la mémoire virtuelle lorsque la RAM physique est insuffisante. Cependant, elle doit être utilisée avec prudence, car les données échangées ne sont pas protégées contre les accès non autorisés.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Configuration"
+  },
+  {
+    "id": 251,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes pour provisionner et configurer de la mémoire swap **chiffrée** sur un nœud Kubernetes en utilisant <code>kubeadm</code> ?",
+    "back": "<b>Étapes pour configurer une mémoire swap chiffrée :</b><br><br>1. **Allouer l'espace swap** :<br>`fallocate --length 4GiB /swapfile`<br>2. **Restreindre les permissions** :<br>`chmod 600 /swapfile`<br>3. **Créer un périphérique chiffré** :<br>`cryptsetup --type plain --cipher aes-xts-plain64 --key-size 256 -d /dev/urandom open /swapfile cryptswap`<br>4. **Formater le périphérique en espace d'échange** :<br>`mkswap /dev/mapper/cryptswap`<br>5. **Activer l'espace d'échange** :<br>`swapon /dev/mapper/cryptswap`<br>6. **Configurer le démarrage automatique** :<br>Créez une unité systemd pour activer le swap au démarrage (exemple ci-dessous).<br><br><b>Exemple de configuration systemd (à adapter) :</b><br><pre>[Unit]<br>Description=Activate encrypted swap<br>After=network.target<br><br>[Service]<br>Type=oneshot<br>ExecStart=/sbin/swapon /dev/mapper/cryptswap<br>ExecStop=/sbin/swapoff /dev/mapper/cryptswap<br><br>[Install]<br>WantedBy=multi-user.target</pre>7. **Configurer kubelet** :<br>Modifiez le fichier de configuration de kubelet pour inclure :<br><pre>failSwapOn: false<br>memorySwap:<br>  swapBehavior: LimitedSwap</pre>8. **Redémarrer kubelet** :<br>`systemctl restart kubelet.service`<br><br>Pour vérifier que le swap est activé, utilisez :<br>`swapon -s` ou `free -h`<br><br><hr><b>Contexte Explicatif :</b><br>La configuration d'une mémoire swap chiffrée est recommandée dans les environnements où la sécurité des données est une priorité. Dans Kubernetes, cette configuration permet de protéger les données sensibles échangées entre la RAM et le disque, tout en améliorant les performances des nœuds. Cependant, elle nécessite des ressources supplémentaires pour le chiffrement/déchiffrement, ce qui peut impacter légèrement les performances.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Encryption"
+  },
+  {
+    "id": 254,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi est-il recommandé d'utiliser une mémoire swap chiffrée plutôt qu'une mémoire swap non chiffrée dans un environnement Kubernetes ?",
+    "back": "<b>Raisons pour lesquelles une mémoire swap chiffrée est recommandée :</b><br><br>1. **Sécurité des données** :<br>Les données échangées entre la RAM et le disque peuvent contenir des informations sensibles (mots de passe, clés, données utilisateur). Le chiffrement protège ces données contre les accès non autorisés en cas de compromission du disque ou de vol physique.<br><br>2. **Conformité réglementaire** :<br>Dans certains environnements (santé, finance, gouvernement), les réglementations imposent l'utilisation de chiffrement pour protéger les données sensibles. Une mémoire swap chiffrée permet de se conformer à ces exigences.<br><br>3. **Protection contre les attaques** :<br>Les attaques par accès mémoire (comme les attaques par canaux auxiliaires) peuvent exploiter les données non chiffrées dans le swap. Le chiffrement atténue ce risque.<br><br>4. **Meilleures pratiques en sécurité** :<br>Le chiffrement du swap est une recommandation standard pour les systèmes exposés à des risques de sécurité, comme les nœuds Kubernetes dans des environnements multi-locataires ou cloud.<br><br><hr><b>Contexte Explicatif :</b><br>Dans Kubernetes, où les nœuds peuvent manipuler des données sensibles (comme dans les environnements de production ou réglementés), l'utilisation d'une mémoire swap chiffrée est une meilleure pratique. Elle permet de concilier performance et sécurité, tout en respectant les exigences de conformité. Cependant, elle nécessite des ressources supplémentaires pour le chiffrement/déchiffrement, ce qui peut impacter légèrement les performances.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Security"
+  },
+  {
+    "id": 258,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment configurer un système Linux pour activer automatiquement l'espace d'échange (swap) au démarrage ? Décrivez les deux méthodes principales.",
+    "back": "<b>Méthodes :</b><br><br>1. **Utilisation de `/etc/fstab`** :<br>Ajoutez la ligne suivante dans le fichier `/etc/fstab` pour monter automatiquement le fichier de swap au démarrage :<br><pre>/swapfile swap swap defaults 0 0</pre><br><br>2. **Utilisation de systemd** :<br>Créez une unité systemd pour activer le swap. Cette méthode permet de contrôler l'ordre de démarrage, par exemple pour retarder le démarrage de kubelet jusqu'à ce que le swap soit disponible.<br><br><b>Avantages de systemd :</b><br><ul><li>Permet de synchroniser l'activation du swap avec le démarrage de kubelet et du runtime de conteneurs.</li><li>Assure que le swap reste actif jusqu'à l'arrêt de kubelet et du runtime.</li></ul><br><b>Exemple de configuration systemd (à adapter) :</b><pre>[Unit]<br>Description=Activate swap at boot<br>After=network.target<br><br>[Service]<br>Type=oneshot<br>ExecStart=/sbin/swapon /swapfile<br>ExecStop=/sbin/swapoff /swapfile<br><br>[Install]<br>WantedBy=multi-user.target</pre><br><hr><b>Contexte Explicatif :</b><br>Configurer le swap pour qu'il s'active au démarrage est essentiel pour garantir la disponibilité de la mémoire virtuelle dès le lancement du système. Dans Kubernetes, cela permet d'éviter les échecs de démarrage des pods en cas de mémoire insuffisante, tout en maintenant une gestion contrôlée du swap pour préserver la stabilité du cluster.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Swap_Boot_Configuration"
+  },
+  {
+    "id": 259,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles configurations doivent être appliquées dans le fichier de configuration de kubelet pour permettre l'utilisation du swap sur un nœud Kubernetes ?",
+    "back": "<b>Configurations requises :</b><br><br>1. Définir `failSwapOn` à `false` :<br>Cette option désactive la vérification de swap au démarrage de kubelet, permettant ainsi son exécution même si le swap est activé.<br><br>2. Configurer `memorySwap.swapBehavior` à `LimitedSwap` :<br>Cette option définit le comportement du swap pour le nœud, limitant son utilisation pour éviter une dégradation des performances.<br><br><b>Exemple de configuration :</b><br><pre>failSwapOn: false<br>memorySwap:<br>  swapBehavior: LimitedSwap</pre><br><b>Redémarrage requis :</b><br>Pour appliquer ces configurations, redémarrez kubelet avec la commande :<br>`systemctl restart kubelet.service`<hr><b>Explanatory Context :</b><br>La configuration de kubelet pour autoriser le swap est une étape clé pour optimiser l'utilisation des ressources sur les nœuds Kubernetes. Le mode `LimitedSwap` permet d'utiliser le swap de manière contrôlée, évitant ainsi les problèmes de performance tout en offrant une marge de manœuvre supplémentaire pour les charges de travail gourmandes en mémoire.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Kubelet_Swap_Configuration"
+  },
+  {
+    "id": 261,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez la configuration de kubelet pour autoriser l'utilisation du swap :<br><br>`failSwapOn: {{c1::false}}`<br>`memorySwap:`<br>`  swapBehavior: {{c2::LimitedSwap}}`",
+    "back": "`failSwapOn: false`<br>`memorySwap:`<br>`  swapBehavior: LimitedSwap`<hr><b>Explanatory Context :</b><br>Cette configuration est nécessaire pour permettre à kubelet d'utiliser le swap sur un nœud Kubernetes. Le paramètre `failSwapOn: false` désactive la vérification de swap au démarrage, tandis que `swapBehavior: LimitedSwap` limite son utilisation pour éviter une dégradation des performances du cluster.",
+    "tags": "kubernetes-tutorials-manuel (3) Cluster_Management Kubelet_Swap_Parameters"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 286
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> The two provided cards cover distinct but related concepts about Kubernetes Namespaces and `kubectl` contexts. Card 286 focuses on configuring a `kubectl` context to work within a specific Namespace, while Card 287 explains how Namespaces ensure resource isolation between environments. These are not redundant; they address different structural concepts (context configuration vs. resource isolation). Merging them would violate the 'exact same structural concept' rule and dilute the clarity of each topic. Both cards are self-contained, adhere to formatting rules, and do not require merging.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 286,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment configurer un <b>contexte</b> pour le client <code>kubectl</code> afin de travailler dans un Namespace spécifique ? Illustrez avec un exemple pour le Namespace 'development'.",
+    "back": "<b>Configuration d'un contexte pour un Namespace :</b><br>Un contexte dans <code>kubectl</code> permet de définir le Namespace, le cluster et l'utilisateur à utiliser pour les commandes. Voici comment configurer un contexte pour le Namespace 'development' :<br><br><b>Étapes :</b><br><ol><li>Identifiez le cluster et l'utilisateur actuels avec :<br><pre>kubectl config view</pre></li><li>Créez un nouveau contexte pour le Namespace 'development' :<br><pre>kubectl config set-context dev --namespace=development \\<br>  --cluster=\\'lithe-cocoa-92103_kubernetes\\' \\<br>  --user=\\'lithe-cocoa-92103_kubernetes\\'</pre></li><li>Activez le contexte pour l'utiliser :<br><pre>kubectl config use-context dev</pre></li><li>Vérifiez le contexte actuel :<br><pre>kubectl config current-context</pre></li></ol><hr><b>Explanatory Context :</b><br>Les contextes <code>kubectl</code> sont essentiels pour basculer rapidement entre différents Namespaces ou clusters sans avoir à spécifier manuellement le Namespace à chaque commande. Cela simplifie la gestion des environnements multi-Namespaces et réduit les risques d'erreurs. Par exemple, un développeur peut basculer entre les contextes 'dev' et 'prod' pour interagir avec les ressources de chaque Namespace sans affecter les autres.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Namespaces kubectl_Contexts"
+  },
+  {
+    "id": 287,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment les Namespaces Kubernetes assurent-ils l'isolation des ressources entre différents environnements (par exemple, 'development' et 'production') ? Illustrez avec un exemple concret.",
+    "back": "<b>Isolation des ressources par les Namespaces :</b><br>Les Namespaces Kubernetes assurent une isolation logique des ressources. Cela signifie que les ressources créées dans un Namespace (par exemple, Pods, Services, Deployments) ne sont pas visibles ni accessibles depuis un autre Namespace, sauf si des politiques d'accès spécifiques sont configurées.<br><br><b>Exemple concret :</b><br><ol><li>Créez un Deployment dans le Namespace 'development' :<br><pre>kubectl apply -f https://k8s.io/examples/admin/snowflake-deployment.yaml</pre></li><li>Vérifiez que le Deployment est visible dans 'development' :<br><pre>kubectl get deployment</pre></li><li>Basculez vers le Namespace 'production' :<br><pre>kubectl config use-context prod</pre></li><li>Vérifiez que le Deployment de 'development' n'est pas visible dans 'production' :<br><pre>kubectl get deployment</pre><br>(Cette commande ne retourne aucun résultat, car les ressources sont isolées.)</li></ol><hr><b>Explanatory Context :</b><br>Cette isolation est cruciale pour éviter les interférences entre environnements. Par exemple, une équipe de développement peut tester des modifications dans le Namespace 'development' sans risquer d'affecter les applications critiques en production. Les Namespaces permettent également d'appliquer des politiques de sécurité distinctes, comme des quotas de ressources ou des règles d'accès, adaptées à chaque environnement.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Namespaces Resource_Isolation"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 314
+
+**Décision:** CONSERVÉES SÉPARÉMENT (3 → 3 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards (IDs 314, 319, 320) cover distinct operational commands related to Kubernetes deployments and services, specifically:
+- Card 314: Creating a deployment named 'source-ip-app'.
+- Card 319: Deleting services associated with 'source-ip-app'.
+- Card 320: Deleting the deployment, ReplicaSet, and Pods associated with 'source-ip-app'.
+
+These cards do not cover the exact same structural concept. They represent sequential but independent steps in managing a Kubernetes deployment and its associated resources. Merging them would violate the 'self-contained' rule (Examples Zero-Context Rule) and obscure the clarity of each individual command. Thus, they should remain separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 314,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment créer un déploiement nommé <b>source-ip-app</b> utilisant l'image <b>echoserver</b> pour tester la préservation de l'adresse IP source ?",
+    "back": "Pour créer un déploiement nommé <b>source-ip-app</b> utilisant l'image <b>echoserver</b>, utilisez la commande suivante :<br><br><pre>kubectl create deployment source-ip-app --image=registry.k8s.io/echoserver:1.10</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande crée un déploiement Kubernetes avec un pod contenant l'application <b>echoserver</b>, qui affiche les détails des requêtes HTTP, y compris l'adresse IP source du client. Cette application est couramment utilisée pour tester la préservation de l'adresse IP source dans les Services Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Deployment"
+  },
+  {
+    "id": 319,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de supprimer tous les Services associés à l'application <b>source-ip-app</b> ?",
+    "back": "Pour supprimer tous les Services associés à l'application <b>source-ip-app</b>, utilisez la commande suivante :<br><br><pre>kubectl delete svc -l app=source-ip-app</pre><br><br><hr><b>Contexte Explicatif :</b><br>Cette commande utilise un sélecteur de labels pour supprimer tous les Services Kubernetes associés au déploiement <b>source-ip-app</b>. Les labels <b>app=source-ip-app</b> sont automatiquement appliqués lors de la création du déploiement et des Services.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Cleanup"
+  },
+  {
+    "id": 320,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment supprimer le déploiement, le ReplicaSet, et le Pod associés à <b>source-ip-app</b> ?",
+    "back": "Pour supprimer le déploiement, le ReplicaSet, et le Pod associés à <b>source-ip-app</b>, utilisez la commande suivante :<br><br><pre>kubectl delete deployment source-ip-app</pre><br><br>Cette commande supprimera automatiquement le déploiement, le ReplicaSet, et les Pods associés.<br><br><hr><b>Contexte Explicatif :</b><br>La commande <b>kubectl delete deployment</b> est suffisante pour supprimer toutes les ressources associées au déploiement <b>source-ip-app</b>, y compris les ReplicaSets et les Pods. Kubernetes gère automatiquement la suppression des ressources dépendantes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Cleanup"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 302
+
+**Décision:** CONSERVÉES SÉPARÉMENT (6 → 6 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct but related concepts about Kubernetes Services and Source IP preservation. Cards 302, 304, and 307 describe the default behavior of ClusterIP, NodePort, and LoadBalancer services regarding Source IP preservation. Cards 303 and 305 provide testing or configuration methods for these behaviors. Card 313 synthesizes all three service types into a single comparison. While there is overlap, each card serves a unique purpose: explaining defaults, providing actionable steps, or offering a comparative summary. Merging them would violate the 'zero-context' rule and reduce clarity. Thus, all cards should be kept separate.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 302,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'arrive-t-il à l'adresse IP source des paquets envoyés à un Service de type <b>ClusterIP</b> depuis l'intérieur du cluster ?",
+    "back": "Pour un Service de type <b>ClusterIP</b>, les paquets envoyés depuis l'intérieur du cluster ne subissent <b>jamais</b> de Source NAT (SNAT) si <b>kube-proxy</b> fonctionne en mode <b>iptables</b> (mode par défaut). Cela signifie que l'adresse IP source du client est préservée et visible par le pod destinataire.<br><br>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services ClusterIP"
+  },
+  {
+    "id": 303,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment tester la préservation de l'adresse IP source pour un Service de type <b>ClusterIP</b> ?",
+    "back": "Pour tester la préservation de l'adresse IP source avec un Service <b>ClusterIP</b>, suivez ces étapes :<br><br>1. Créez un déploiement et un Service de type ClusterIP pour une application qui affiche l'adresse IP source des requêtes (par exemple, <b>echoserver</b>) :<br><pre>kubectl create deployment source-ip-app --image=registry.k8s.io/echoserver:1.10<br>kubectl expose deployment source-ip-app --name=clusterip --port=80 --target-port=8080</pre><br>2. Créez un pod temporaire pour envoyer une requête au Service :<br><pre>kubectl run busybox -it --image=busybox:1.28 --restart=Never --rm</pre><br>3. Dans le pod, exécutez :<br><pre>wget -qO - 10.0.170.92</pre><br>4. Vérifiez que le champ <b>client_address</b> dans la réponse correspond à l'adresse IP du pod client.<br><br><hr><b>Contexte Explicatif :</b><br>Cette procédure permet de valider que l'adresse IP source est préservée lorsque le trafic circule entre pods dans le même cluster. L'application <b>echoserver</b> affiche les détails de la requête, y compris l'adresse IP du client.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services ClusterIP"
+  },
+  {
+    "id": 304,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'arrive-t-il à l'adresse IP source des paquets envoyés à un Service de type <b>NodePort</b> par défaut ?",
+    "back": "Par défaut, les paquets envoyés à un Service de type <b>NodePort</b> subissent une <b>Source NAT (SNAT)</b>. Cela signifie que l'adresse IP source du client est remplacée par l'adresse IP du nœud qui a reçu le paquet, avant que celui-ci ne soit acheminé vers le pod destinataire.<br><br>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services NodePort"
+  },
+  {
+    "id": 305,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment préserver l'adresse IP source d'origine pour un Service de type <b>NodePort</b> ?",
+    "back": "Pour préserver l'adresse IP source d'origine avec un Service de type <b>NodePort</b>, définissez le champ <b>service.spec.externalTrafficPolicy</b> à la valeur <b>Local</b>. Cela configure <b>kube-proxy</b> pour ne router les requêtes qu'aux endpoints locaux au nœud, évitant ainsi le SNAT. Si aucun endpoint local n'existe, le paquet est abandonné.<br><br>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services NodePort"
+  },
+  {
+    "id": 307,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'arrive-t-il à l'adresse IP source des paquets envoyés à un Service de type <b>LoadBalancer</b> par défaut ?",
+    "back": "Par défaut, les paquets envoyés à un Service de type <b>LoadBalancer</b> subissent une <b>Source NAT (SNAT)</b>. Tous les nœuds du cluster en état <b>Ready</b> sont éligibles pour recevoir le trafic load-balancé. Si un paquet arrive sur un nœud sans endpoint, il est redirigé vers un nœud avec endpoint, et l'adresse IP source est remplacée par celle du nœud intermédiaire.<br><br>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services LoadBalancer"
+  },
+  {
+    "id": 313,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la différence entre les modes de préservation de l'adresse IP source pour les Services <b>ClusterIP</b>, <b>NodePort</b>, et <b>LoadBalancer</b> ? Synthétisez les comportements par défaut et les options de configuration.",
+    "back": "<b>Synthèse des comportements de préservation de l'adresse IP source :</b><br><br><b>1. ClusterIP :</b><br>- **Comportement par défaut** : L'adresse IP source est <b>toujours préservée</b> si <b>kube-proxy</b> est en mode iptables.<br>- **Configuration** : Aucune configuration supplémentaire n'est nécessaire.<br><br><b>2. NodePort :</b><br>- **Comportement par défaut** : L'adresse IP source est remplacée par celle du nœud (SNAT).<br>- **Préservation** : Définir <b>service.spec.externalTrafficPolicy: Local</b> pour éviter le SNAT.<br><br><b>3. LoadBalancer :</b><br>- **Comportement par défaut** : L'adresse IP source est remplacée par celle du nœud intermédiaire (SNAT).<br>- **Préservation** : Définir <b>service.spec.externalTrafficPolicy: Local</b> (supporté sur certains fournisseurs cloud comme GKE).<br><br><hr><b>Contexte Explicatif :</b><br>Le choix du type de Service et de la politique de trafic dépend des besoins de l'application. Les Services <b>ClusterIP</b> sont idéaux pour le trafic interne, tandis que les Services <b>NodePort</b> et <b>LoadBalancer</b> sont utilisés pour exposer des applications à l'extérieur du cluster. La préservation de l'adresse IP source est cruciale pour les applications qui en dépendent, comme les systèmes de sécurité ou de journalisation.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Network_Address_Translation"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 325
+
+**Décision:** CONSERVÉES SÉPARÉMENT (2 → 2 carte(s))
+
+**Rationnel du Combiner:**
+> Both cards (ID 325 and ID 328) cover the concept of Kubernetes EndpointSlice conditions and their interpretation. Card 325 focuses on the possible states of conditions and their meanings, while card 328 provides practical commands to check endpoints and interpret their status. However, they are not redundant because:
+1. Card 325 is theoretical, explaining the meaning of `ready`, `serving`, and `terminating` conditions.
+2. Card 328 is practical, showing how to verify endpoints and interpret their JSON output.
+
+They complement each other but do not cover the exact same structural concept. Thus, they should not be merged. Both cards are already self-contained and adhere to the rules (e.g., no clozes, proper escaping, and contextual reconstruction).
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 325,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les états possibles des conditions d'un endpoint dans un <i>EndpointSlice</i> Kubernetes, et que signifient-ils ?",
+    "back": "<b>États des conditions d'un endpoint dans un <i>EndpointSlice</i> :</b><br><br>1. <b>`ready`</b> :<br><br>   - `true` : L'endpoint est prêt à recevoir du trafic. Utilisé par les load balancers pour diriger le trafic vers ce Pod.<br><br>   - `false` : L'endpoint n'est pas prêt (par exemple, pendant la terminaison ou si le Pod est en échec).<br><br>2. <b>`serving`</b> :<br><br>   - `true` : Le Pod peut encore traiter des requêtes, même s'il est en cours de terminaison.<br><br>   - `false` : Le Pod ne peut plus traiter de requêtes (par exemple, si le conteneur a crashé).<br><br>3. <b>`terminating`</b> :<br><br>   - `true` : Le Pod associé est en cours de suppression (état <i>Terminating</i>).<br><br>   - `false` : Le Pod n'est pas en cours de suppression.<br><br><br><b>Comportement combiné :</b><br><br>- Pendant la terminaison d'un Pod, `ready` passe à `false` (pour éviter que les load balancers existants n'envoient du trafic), mais `serving` reste à `true` (pour permettre le <i>connection draining</i>).<br><br>- Un endpoint avec `terminating: true` est en cours de suppression et sera retiré de l'<i>EndpointSlice</i> une fois la période de <i>graceful termination</i> écoulée.<br><br><br><b>Exemple :</b><br><br><pre>'conditions': {\n  'ready': false,\n  'serving': true,\n  'terminating': true\n}</pre><br>Indique un Pod en cours de suppression, mais encore capable de traiter des requêtes existantes.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>Ces conditions permettent aux composants Kubernetes (comme les <i>kube-proxy</i> ou les load balancers externes) de prendre des décisions dynamiques sur la répartition du trafic. Par exemple, un load balancer peut utiliser `serving: true` pour continuer à envoyer des requêtes à un Pod en `terminating`, tout en évitant d'en envoyer de nouvelles grâce à `ready: false`. Cela garantit une transition fluide lors des mises à jour ou des scale-down, sans perte de requêtes en cours.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services EndpointSlice"
+  },
+  {
+    "id": 328,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier l'état des endpoints d'un Service Kubernetes et interpréter leur statut ?",
+    "back": "<b>Commandes pour vérifier les endpoints d'un Service :</b><br><br>1. <b>Lister les <i>EndpointSlices</i> associés à un Service :</b><br><br>   ```bash\n   kubectl get endpointslice\n   ```<br><br>   <i>Exemple de sortie :</i><br><br>   <pre>NAME                     ADDRESSTYPE   PORTS   ENDPOINTS   AGE\n   nginx-service-6tjbr      IPv4          80      1           5m</pre><br><br>2. <b>Obtenir les détails d'un <i>EndpointSlice</i> spécifique (format JSON) :</b><br><br>   ```bash\n   kubectl get endpointslice -o json -l kubernetes.io/service-name=<NOM_DU_SERVICE>\n   ```<br><br>   <i>Exemple avec `nginx-service` :</i><br><br>   ```bash\n   kubectl get endpointslice -o json -l kubernetes.io/service-name=nginx-service\n   ```<br><br><br><b>Interprétation des champs clés dans la sortie JSON :</b><br><br>- <b>`addressType`</b> : Type d'adresse (ex: `IPv4`).<br><br>- <b>`endpoints`</b> : Liste des endpoints associés au Service.<br><br>  - <b>`addresses`</b> : Adresses IP des Pods.<br><br>  - <b>`conditions`</b> : Statuts de l'endpoint (voir détails ci-dessous).<br><br>  - <b>`targetRef`</b> : Référence vers le Pod associé (nom, namespace, UID).<br><br>  - <b>`nodeName`</b> : Nom du nœud hébergeant le Pod.<br><br><br><b>Interprétation des conditions d'un endpoint :</b><br><br><pre>'conditions': {\n  'ready': &lt;bool&gt;,      // true si l'endpoint est prêt à recevoir du trafic\n  'serving': &lt;bool&gt;,    // true si le Pod peut traiter des requêtes (même en terminaison)\n  'terminating': &lt;bool&gt; // true si le Pod est en cours de suppression\n}</pre><br><br><b>Exemple d'analyse :</b><br><br>- Un endpoint avec `ready: true`, `serving: true`, `terminating: false` est pleinement opérationnel.<br><br>- Un endpoint avec `ready: false`, `serving: true`, `terminating: true` est en cours de suppression mais peut encore traiter des requêtes existantes (utile pour le <i>connection draining</i>).<br><br>- Un endpoint sans champ `targetRef` ou avec `ready: false` et `serving: false` est probablement en échec ou en cours de création.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>Vérifier l'état des endpoints est une compétence essentielle pour diagnostiquer les problèmes de connectivité dans Kubernetes. Par exemple, si un Service ne route pas correctement le trafic, inspecter les <i>EndpointSlices</i> permet de vérifier si les Pods sont prêts (`ready: true`) ou s'ils sont en cours de terminaison (`terminating: true`). Cette vérification est souvent la première étape pour résoudre des problèmes de disponibilité ou de performance dans un cluster.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services EndpointSlice"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 264
+
+**Décision:** CONSERVÉES SÉPARÉMENT (5 → 5 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards (IDs 264, 265, 266, 267, 268) cover distinct but complementary aspects of Kubernetes Dynamic Resource Allocation (DRA). They do not redundantly cover the same structural concept but instead form a sequential tutorial on DRA:
+
+1. **Card 264**: Explores the initial state of a Kubernetes cluster with DRA enabled (commands to check `DeviceClass`, `ResourceSlice`, `ResourceClaim`).
+2. **Card 265**: Details the installation of a DRA driver (e.g., `dra-example-driver`), including setup of `DeviceClass`, permissions, and deployment.
+3. **Card 266**: Explains how to create a `ResourceClaim` and associate it with a Pod.
+4. **Card 267**: Describes how to verify resource allocation to a Pod via DRA (logs, `ResourceClaim` status).
+5. **Card 268**: Covers the cleanup process when a Pod with a `ResourceClaim` is deleted.
+
+These cards are not redundant and should not be merged. Each card serves a unique step in the DRA workflow, and combining them would violate the "self-contained" rule (Rule 3) and the cloze limit (Rule 6). The cards are already well-structured and adhere to the formatting rules.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 264,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles commandes utiliser pour explorer l'état initial d'un cluster Kubernetes avec le <b>Dynamic Resource Allocation (DRA)</b> activé, et que signifient leurs résultats ?",
+    "back": "Pour explorer l'état initial d'un cluster Kubernetes avec le <b>Dynamic Resource Allocation (DRA)</b> activé, utilisez les commandes suivantes :<br><br><br><br>1. <b>Lister les <code>DeviceClass</code></b> :<br><br>   <code>kubectl get deviceclasses</code><br><br>   <i>Résultat attendu</i> : <code>No resources found</code><br><br>   <i>Signification</i> : Aucun <code>DeviceClass</code> n'est encore défini dans le cluster, ce qui est normal si aucun DRA driver n'est installé.<br><br><br><br>2. <b>Lister les <code>ResourceSlice</code></b> :<br><br>   <code>kubectl get resourceslices</code><br><br>   <i>Résultat attendu</i> : <code>No resources found</code><br><br>   <i>Signification</i> : Aucun <code>ResourceSlice</code> n'est disponible, car aucun DRA driver n'a encore annoncé de ressources matérielles.<br><br><br><br>3. <b>Lister les <code>ResourceClaim</code> et <code>ResourceClaimTemplate</code></b> :<br><br>   <code>kubectl get resourceclaims -A</code><br><br>   <code>kubectl get resourceclaimtemplates -A</code><br><br>   <i>Résultat attendu</i> : <code>No resources found</code> pour les deux commandes.<br><br>   <i>Signification</i> : Aucun <code>ResourceClaim</code> ou <code>ResourceClaimTemplate</code> n'a été créé, car aucun Pod n'a encore demandé de ressources via DRA.<hr><br><b>Explanatory Context :</b><br><br>Ces commandes permettent de vérifier que le DRA est correctement activé dans le cluster et qu'aucun driver n'a encore été déployé. Les <code>DeviceClass</code>, <code>ResourceSlice</code>, <code>ResourceClaim</code>, et <code>ResourceClaimTemplate</code> sont des objets clés du DRA qui représentent respectivement les types de dispositifs supportés, les ressources matérielles disponibles, les demandes de ressources par les Pods, et les modèles pour ces demandes. Leur absence initiale confirme que le cluster est prêt pour l'installation d'un DRA driver.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_DRA Cluster_Management"
+  },
+  {
+    "id": 265,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes clés pour installer un <b>DRA driver</b> dans un cluster Kubernetes, en utilisant l'exemple du <code>dra-example-driver</code> ?",
+    "back": "Pour installer un <b>DRA driver</b> comme le <code>dra-example-driver</code> dans un cluster Kubernetes, suivez ces étapes clés :<br><br><br><br>1. <b>Préparer le cluster pour l'installation du driver</b> :<br><br>   - Créer un namespace dédié pour simplifier le nettoyage ultérieur :<br><br>     <code>kubectl create namespace dra-tutorial</code><br><br><br><br>2. <b>Vérifier l'accès à l'image du driver</b> :<br><br>   - S'assurer que les nœuds du cluster peuvent accéder à l'image du driver. Par exemple, pour le <code>dra-example-driver</code> :<br><br>     <code>docker pull registry.k8s.io/dra-example-driver/dra-example-driver:v0.2.0</code><br><br><br><br>3. <b>Déployer les composants critiques du DRA driver</b> :<br><br>   - Créer un <code>DeviceClass</code> représentant les types de dispositifs supportés par le driver :<br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/deviceclass.yaml</code><br><br><br>   - Créer un <code>ServiceAccount</code>, un <code>ClusterRole</code>, et un <code>ClusterRoleBinding</code> pour donner au driver les permissions nécessaires pour interagir avec les APIs Kubernetes :<br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/serviceaccount.yaml</code><br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/clusterrole.yaml</code><br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/clusterrolebinding.yaml</code><br><br><br>   - Créer une <code>PriorityClass</code> pour le driver afin d'éviter la préemption du Pod du driver, qui est responsable des opérations critiques du cycle de vie des Pods avec des claims :<br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/priorityclass.yaml</code><br><br><br>   - Déployer le driver en tant que <code>DaemonSet</code>, configuré pour exécuter le binaire du driver avec les permissions accordées précédemment :<br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/daemonset.yaml</code><br><br>     Le <code>DaemonSet</code> est configuré avec les montages de volumes nécessaires pour interagir avec le répertoire <code>Container Device Interface (CDI)</code> et exposer son socket au kubelet via le répertoire <code>kubelet/plugins</code>.<br><br><br><br>4. <b>Vérifier l'installation du DRA driver</b> :<br><br>   - Lister les Pods du <code>DaemonSet</code> du driver sur tous les nœuds workers :<br><br>     <code>kubectl get pod -l app.kubernetes.io/name=dra-example-driver -n dra-tutorial</code><br><br>   - Vérifier que le driver annonce les dispositifs disponibles en publiant leurs métadonnées dans l'API <code>ResourceSlices</code> :<br><br>     <code>kubectl get resourceslices</code><hr><br><b>Explanatory Context :</b><br><br>L'installation d'un DRA driver est une étape cruciale pour permettre au cluster de gérer dynamiquement les ressources matérielles. Le <code>DeviceClass</code> définit les types de dispositifs que le driver peut gérer, tandis que le <code>ServiceAccount</code>, le <code>ClusterRole</code>, et le <code>ClusterRoleBinding</code> garantissent que le driver a les permissions nécessaires pour interagir avec les APIs Kubernetes. Le <code>DaemonSet</code> assure que le driver s'exécute sur chaque nœud du cluster, permettant ainsi une gestion locale des ressources matérielles. Enfin, la vérification de l'installation confirme que le driver est opérationnel et qu'il annonce correctement les ressources disponibles.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_DRA Cluster_Management"
+  },
+  {
+    "id": 266,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment créer une <b>ResourceClaim</b> pour demander des ressources matérielles via le <b>Dynamic Resource Allocation (DRA)</b>, et comment l'associer à un Pod ?",
+    "back": "Pour créer une <b>ResourceClaim</b> et l'associer à un Pod via le <b>Dynamic Resource Allocation (DRA)</b>, suivez ces étapes :<br><br><br><br>1. <b>Créer la ResourceClaim</b> :<br><br>   - Une <code>ResourceClaim</code> définit les ressources nécessaires pour un Pod. Elle doit inclure le champ obligatoire <code>deviceClassName</code>, qui spécifie le type de dispositif demandé (par exemple, <code>gpu.example.com</code> pour le <code>dra-example-driver</code>).<br><br>   - La demande peut inclure une expression référençant des attributs annoncés par le driver. Par exemple, pour demander un GPU avec une capacité mémoire supérieure à 10Gi :<br><br>     ```yaml<br>     devices:<br>       requests:<br>         - exactly:<br>             allocationMode: ExactCount<br>             count: 1<br>             deviceClassName: gpu.example.com<br>             selectors:<br>               - cel:<br>                   expression: device.capacity['gpu.example.com'].memory.compareTo(quantity('10Gi')) >= 0<br>     ```<br><br>   - Appliquer la <code>ResourceClaim</code> :<br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/example/resourceclaim.yaml</code><br><br><br><br>2. <b>Créer le Pod qui référence la ResourceClaim</b> :<br><br>   - Dans le manifeste du Pod, référencer la <code>ResourceClaim</code> dans le champ <code>spec.resourceClaims.resourceClaimName</code> (par exemple, <code>some-gpu</code>).<br><br>   - Utiliser un nom local (par exemple, <code>gpu</code>) dans le champ <code>spec.containers.resources.claims.name</code> pour allouer la claim au conteneur du Pod :<br><br>     ```yaml<br>     spec:<br>       resourceClaims:<br>         - name: gpu<br>           resourceClaimName: some-gpu<br>       containers:<br>         - name: ctr0<br>           resources:<br>             claims:<br>               - name: gpu<br>     ```<br><br>   - Appliquer le manifeste du Pod :<br><br>     <code>kubectl apply --server-side -f http://k8s.io/examples/dra/driver-install/example/pod.yaml</code><br><br><br><br>3. <b>Vérifier le déploiement du Pod</b> :<br><br>   - Confirmer que le Pod a été déployé :<br><br>     <code>kubectl get pod pod0 -n dra-tutorial</code><br><br>   - Vérifier que le Pod a été scheduled sur un nœud disposant des ressources requises et que la <code>ResourceClaim</code> a été allouée :<br><br>     <code>kubectl get resourceclaims -n dra-tutorial</code><br><br>     Le champ <code>STATE</code> doit indiquer <code>allocated, reserved</code>.<hr><br><b>Explanatory Context :</b><br><br>La <code>ResourceClaim</code> est un objet central du DRA qui permet aux Pods de demander des ressources matérielles spécifiques. En associant une <code>ResourceClaim</code> à un Pod, vous permettez au scheduler de Kubernetes de placer le Pod sur un nœud disposant des ressources requises. Le driver DRA se charge ensuite de préparer et d'allouer ces ressources au Pod, garantissant ainsi une utilisation optimale et sécurisée des ressources matérielles. Cette approche est particulièrement utile pour les workloads nécessitant des accélérateurs matériels comme les GPUs ou les FPGAs.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_DRA Resource_Management"
+  },
+  {
+    "id": 267,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier que les ressources matérielles ont été correctement allouées à un Pod via le <b>Dynamic Resource Allocation (DRA)</b>, et quelles informations peuvent être obtenues ?",
+    "back": "Pour vérifier que les ressources matérielles ont été correctement allouées à un Pod via le <b>Dynamic Resource Allocation (DRA)</b>, vous pouvez obtenir les informations suivantes :<br><br><br><br>1. <b>Vérifier les logs du Pod</b> :<br><br>   - Les logs du Pod peuvent indiquer quelles ressources ont été allouées. Par exemple, pour le <code>dra-example-driver</code>, les logs du conteneur peuvent contenir des variables d'environnement indiquant le nom du GPU alloué :<br><br>     <code>kubectl logs pod0 -c ctr0 -n dra-tutorial | grep -E 'GPU_DEVICE_[0-9]+=' | grep -v 'RESOURCE_CLAIM'</code><br><br>     <i>Résultat attendu</i> : <code>declare -x GPU_DEVICE_0='gpu-0'</code><br><br><br><br>2. <b>Vérifier l'état de la ResourceClaim</b> :<br><br>   - Lister les <code>ResourceClaim</code> pour voir leur état :<br><br>     <code>kubectl get resourceclaims -n dra-tutorial</code><br><br>     <i>Résultat attendu</i> : Le champ <code>STATE</code> doit indiquer <code>allocated, reserved</code>.<br><br><br>   - Obtenir les détails de la <code>ResourceClaim</code> pour voir les informations sur le dispositif alloué et le Pod pour lequel il est réservé :<br><br>     <code>kubectl get resourceclaim some-gpu -n dra-tutorial -o yaml</code><br><br>     <i>Exemple de sortie</i> :<br><br>     ```yaml<br>     status:<br>       allocation:<br>         devices:<br>           results:<br>             - device: gpu-0<br>               driver: gpu.example.com<br>               pool: kind-worker<br>               request: some-gpu<br>       reservedFor:<br>         - name: pod0<br>           resource: pods<br>     ```<br><br><br><br>3. <b>Vérifier les logs du DRA driver</b> :<br><br>   - Les logs du driver peuvent indiquer comment les dispositifs ont été préparés pour la <code>ResourceClaim</code> :<br><br>     <code>kubectl logs -l app.kubernetes.io/name=dra-example-driver -n dra-tutorial</code><br><br>     <i>Résultat attendu</i> : Des messages comme <code>PrepareResourceClaims is called: number of claims: 1</code> et <code>Returning newly prepared devices for claim 'd3e48dbf-40da-47c3-a7b9-f7d54d1051c3'</code>.<hr><br><b>Explanatory Context :</b><br><br>Ces vérifications permettent de confirmer que le DRA fonctionne correctement et que les ressources matérielles ont été allouées comme prévu. Les logs du Pod et du driver fournissent des informations détaillées sur le processus d'allocation, tandis que l'état de la <code>ResourceClaim</code> donne une vue d'ensemble de la réservation et de l'allocation des ressources. Cela est essentiel pour déboguer et s'assurer que les workloads critiques reçoivent les ressources dont ils ont besoin pour s'exécuter efficacement.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_DRA Resource_Management"
+  },
+  {
+    "id": 268,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Que se passe-t-il lorsque l'on supprime un Pod qui a une <b>ResourceClaim</b> associée via le <b>Dynamic Resource Allocation (DRA)</b>, et comment le vérifier ?",
+    "back": "Lorsque l'on supprime un Pod qui a une <b>ResourceClaim</b> associée via le <b>Dynamic Resource Allocation (DRA)</b>, les étapes suivantes se produisent :<br><br>1. <b>Suppression du Pod</b> :<br><br>Le Pod est supprimé du cluster :<br><code>kubectl delete pod pod0 -n dra-tutorial</code><br><i>Résultat attendu</i> : <code>pod 'pod0' deleted</code><br><br>2. <b>Libération des ressources par le DRA driver</b> :<br><br>Le DRA driver déalloue la ressource associée à la <code>ResourceClaim</code> et met à jour l'objet <code>ResourceClaim</code> dans l'API Kubernetes pour refléter que la ressource est à nouveau disponible.<br><br>La <code>ResourceClaim</code> passe à l'état <code>pending</code> jusqu'à ce qu'elle soit référencée par un nouveau Pod.<br><br>3. <b>Vérification de l'état du DRA</b> :<br><br>- Vérifier l'état de la <code>ResourceClaim</code> :<br><code>kubectl get resourceclaims -n dra-tutorial</code><br><i>Résultat attendu</i> : Le champ <code>STATE</code> doit indiquer <code>pending</code>.<br><br>- Vérifier les logs du DRA driver pour confirmer que le dispositif a été libéré :<br><code>kubectl logs -l app.kubernetes.io/name=dra-example-driver -n dra-tutorial</code><br><i>Résultat attendu</i> : Des messages comme <code>UnprepareResourceClaims is called: number of claims: 1</code>.<hr><b>Explanatory Context :</b><br><br>Cette suppression illustre le cycle de vie des ressources gérées par le DRA. Lorsque un Pod est supprimé, le driver libère les ressources associées, permettant leur réutilisation par d'autres Pods. Cela garantit une gestion efficace des ressources matérielles rares ou coûteuses, en évitant les fuites de ressources et en assurant leur disponibilité pour d'autres workloads.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_DRA Resource_Management"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 197
+
+**Décision:** CONSERVÉES SÉPARÉMENT (10 → 10 carte(s))
+
+**Rationnel du Combiner:**
+> The provided cards cover distinct aspects of StatefulSets in Kubernetes, with no true redundancy. Each card focuses on a unique concept or operation:
+
+1. **Card 197**: Explains how to create a StatefulSet, including terminal commands and monitoring. Unique focus on creation steps.
+
+2. **Card 207**: Cloze test about storage in StatefulSets (PVC, PV, volumeMounts). Unique focus on storage terminology.
+
+3. **Card 211**: Details scaling up a StatefulSet, including guarantees. Unique focus on scaling up.
+
+4. **Card 212**: Details scaling down a StatefulSet, including guarantees. Unique focus on scaling down.
+
+5. **Card 213**: Explains StatefulSet update strategies (RollingUpdate, OnDelete). Unique focus on updates.
+
+6. **Card 216**: Describes phased rollouts in StatefulSets. Unique focus on progressive deployments.
+
+7. **Card 219**: Cloze test about scaling terminology. Unique focus on scaling vocabulary.
+
+8. **Card 221**: Cloze test about Pod management policies (OrderedReady, Parallel). Unique focus on policies.
+
+9. **Card 236**: Step-by-step guide for deploying Cassandra with a StatefulSet. Unique focus on Cassandra deployment.
+
+10. **Card 237**: Step-by-step guide for deploying ZooKeeper with a StatefulSet, PDB, and PodAntiAffinity. Unique focus on ZooKeeper deployment.
+
+No cards can be merged as they each address different structural concepts or use cases. All cards are retained as-is.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 197,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment créer un StatefulSet dans Kubernetes ? Décrivez les étapes et les commandes utilisées.",
+    "back": "Pour créer un StatefulSet, suivez ces étapes :<br><br><br>1. <b>Ouvrir deux terminaux :</b><br><br>   - Un terminal pour surveiller la création des Pods avec <code>kubectl get</code>.<br><br>   - Un second terminal pour exécuter les commandes de création.<br><br><br>2. <b>Dans le premier terminal :</b><br><br>   Exécuter la commande suivante pour surveiller la création des Pods du StatefulSet :<br><br>   <code>kubectl get pods --watch -l app=nginx</code><br><br>   <i>Cette commande affiche en temps réel l'état des Pods étiquetés avec <code>app=nginx</code>.</i><br><br><br>3. <b>Dans le second terminal :</b><br><br>   Créer un Headless Service et un StatefulSet en appliquant un fichier YAML d'exemple :<br><br>   <code>kubectl apply -f https://k8s.io/examples/application/web/web.yaml</code><br><br>   <i>Cette commande crée :</i><br><br>   - Un Headless Service nommé <code>nginx</code> pour exposer les adresses IP des Pods.<br><br>   - Un StatefulSet nommé <code>web</code> avec deux réplicas (Pods <code>web-0</code> et <code>web-1</code>).<br><br><br>4. <b>Vérifier la création :</b><br><br>   - Vérifier que le Service <code>nginx</code> a été créé :<br><br>     <code>kubectl get service nginx</code><br><br>   - Vérifier que le StatefulSet <code>web</code> a été créé avec succès :<br><br>     <code>kubectl get statefulset web</code><br><br><br>5. <b>Observer la création ordonnée des Pods :</b><br><br>   Dans le premier terminal, surveiller la séquence de création des Pods. Le StatefulSet crée les Pods dans l'ordre <code>web-0</code>, puis <code>web-1</code>. Le Pod <code>web-1</code> ne démarre que lorsque <code>web-0</code> est en état <code>Running</code> et <code>Ready</code>.<br><br><hr><br><b>Explanatory Context :</b><br><br>La création ordonnée des Pods est une caractéristique clé des StatefulSets, essentielle pour les applications stateful comme les bases de données. Par exemple, dans un cluster MySQL, le Pod <code>mysql-0</code> doit démarrer en premier pour initialiser la base de données avant que les autres Pods ne rejoignent le cluster. Le Headless Service permet de résoudre directement les adresses DNS des Pods individuels, ce qui est crucial pour les communications internes entre les Pods.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Création_StatefulSet"
+  },
+  {
+    "id": 207,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les termes manquants concernant le stockage dans un StatefulSet :<br><br><br>Le contrôleur StatefulSet crée automatiquement un {{c1::PersistentVolumeClaim (PVC)}} pour chaque Pod, qui est lié à un {{c2::PersistentVolume (PV)}}. Le champ {{c3::volumeMounts}} dans la spécification du StatefulSet définit où le volume est monté dans le conteneur.",
+    "back": "Le contrôleur StatefulSet crée automatiquement un <b>PersistentVolumeClaim (PVC)</b> pour chaque Pod, qui est lié à un <b>PersistentVolume (PV)</b>. Le champ <b>volumeMounts</b> dans la spécification du StatefulSet définit où le volume est monté dans le conteneur.<br><br><hr><b>Contexte Explicatif :</b><br><br>Les PVC et PV sont les piliers du stockage persistant dans Kubernetes. Dans un StatefulSet, chaque Pod a son propre PVC, garantissant que ses données sont isolées et persistent même après un redémarrage. Le champ <code>volumeMounts</code> permet de mapper le stockage persistant à un chemin spécifique dans le conteneur, assurant que les données critiques (comme les bases de données) sont toujours accessibles, quel que soit le nœud où le Pod est schedulé.",
+    "tags": "kubernetes-tutorials-manuel (3) StatefulSet_Storage PVC_PV"
+  },
+  {
+    "id": 211,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes et les garanties associées au scaling up d'un StatefulSet ?",
+    "back": "<b>Scaling up d'un StatefulSet</b> :<br><br><br><br>Étapes pour scaler up un StatefulSet :<br><br><ol><br>    <li>Dans un terminal, surveiller les Pods du StatefulSet :<br><br>        <code>kubectl get pods --watch -l app=&lt;nom-de-l-app&gt;</code></li><br>    <li>Dans un autre terminal, scaler le StatefulSet à un nombre supérieur de réplicas (par exemple, 5) :<br><br>        <code>kubectl scale sts &lt;nom-du-statefulset&gt; --replicas=5</code></li><br>    <li>Attendre que les nouveaux Pods passent à l'état <code>Running</code> et <code>Ready</code>.</li><br></ol><br><br>Garanties associées :<br><br><ul><br>    <li>Le contrôleur StatefulSet crée chaque Pod séquentiellement par rapport à son indice ordinal.</li><br>    <li>Le contrôleur attend que le Pod précédent soit dans l'état <code>Running</code> et <code>Ready</code> avant de lancer le Pod suivant.</li><br></ul><br><br><hr><br><b>Explanatory Context :</b><br><br>Le scaling up d'un StatefulSet est conçu pour garantir la stabilité et la cohérence des applications stateful. En créant les Pods un par un et en vérifiant leur état avant de passer au suivant, Kubernetes s'assure que chaque réplica est correctement initialisé et prêt à recevoir des requêtes. Cela est crucial pour les applications comme les bases de données, où chaque Pod peut avoir un rôle spécifique et où une initialisation incorrecte pourrait entraîner des pertes de données ou des incohérences.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Scaling_Up"
+  },
+  {
+    "id": 212,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes et les garanties associées au scaling down d'un StatefulSet ?",
+    "back": "<b>Scaling down d'un StatefulSet</b> :<br><br><br><br>Étapes pour scaler down un StatefulSet :<br><br><ol><br>    <li>Dans un terminal, surveiller les Pods du StatefulSet :<br><br>        <code>kubectl get pods --watch -l app=&lt;nom-de-l-app&gt;</code></li><br>    <li>Dans un autre terminal, scaler le StatefulSet à un nombre inférieur de réplicas (par exemple, 3) :<br><br>        <code>kubectl patch sts &lt;nom-du-statefulset&gt; -p '{'spec':{'replicas':3}}'</code></li><br>    <li>Attendre que les Pods en excès passent à l'état <code>Terminating</code>.</li><br></ol><br><br>Garanties associées :<br><br><ul><br>    <li>Le plan de contrôle supprime un Pod à la fois, dans l'ordre inverse de leur indice ordinal.</li><br>    <li>Le plan de contrôle attend que chaque Pod soit complètement arrêté avant de supprimer le suivant.</li><br>    <li>Les <code>PersistentVolumeClaims</code> (PVC) et les <code>PersistentVolumes</code> (PV) associés aux Pods ne sont pas supprimés lors du scaling down.</li><br></ul><br><br><hr><br><b>Explanatory Context :</b><br><br>Le scaling down d'un StatefulSet est tout aussi critique que le scaling up, car il permet de libérer des ressources lorsque la charge de travail diminue. En supprimant les Pods dans l'ordre inverse de leur indice ordinal, Kubernetes garantit que les données persistantes ne sont pas perdues et que l'application reste cohérente. Cela est particulièrement important pour les applications stateful, où chaque Pod peut représenter une partie d'un ensemble de données distribuées. Les PVC et PV restent intacts pour permettre une reprise ultérieure sans perte de données.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Scaling_Down"
+  },
+  {
+    "id": 213,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les stratégies de mise à jour disponibles pour un StatefulSet dans Kubernetes et comment fonctionnent-elles ?",
+    "back": "<b>Stratégies de mise à jour pour un StatefulSet</b> :<br><br><br><br>Le contrôleur StatefulSet supporte les mises à jour automatisées, déterminées par le champ <code>spec.updateStrategy</code>. Les stratégies disponibles sont :<br><br><br>1. <b>RollingUpdate</b> (par défaut) :<br><br>   - Met à jour tous les Pods du StatefulSet dans l'ordre inverse de leur indice ordinal.<br><br>   - Respecte les garanties du StatefulSet : chaque Pod est mis à jour uniquement après que le Pod précédent soit dans l'état <code>Running</code> et <code>Ready</code>.<br><br>   - Permet de partitionner les mises à jour en spécifiant <code>.spec.updateStrategy.rollingUpdate.partition</code>.<br><br>   - Exemple de commande pour déclencher une mise à jour :<br><br>     <code>kubectl patch statefulset &lt;nom-du-statefulset&gt; --type='json' -p='[{'op': 'replace', 'path': '/spec/template/spec/containers/0/image', 'value':'&lt;nouvelle-image&gt;'}]'</code><br><br>2. <b>OnDelete</b> :<br><br>   - Le contrôleur StatefulSet ne met pas automatiquement à jour les Pods lorsque le champ <code>.spec.template</code> est modifié.<br><br>   - L'utilisateur doit supprimer manuellement chaque Pod pour déclencher sa recréation avec la nouvelle configuration.<br><br>   - Exemple de commande pour activer cette stratégie :<br><br>     <code>kubectl patch statefulset &lt;nom-du-statefulset&gt; -p '{'spec':{'updateStrategy':{'type':'OnDelete', 'rollingUpdate': null} }}'</code><br><br><hr><br><b>Explanatory Context :</b><br><br>Les stratégies de mise à jour d'un StatefulSet sont conçues pour garantir la stabilité et la disponibilité des applications stateful pendant les mises à jour. La stratégie <code>RollingUpdate</code> est idéale pour les mises à jour progressives, où chaque Pod est mis à jour individuellement pour minimiser les interruptions. La stratégie <code>OnDelete</code>, en revanche, offre un contrôle manuel total, ce qui peut être utile pour les applications nécessitant une supervision humaine pendant les mises à jour. Ces stratégies permettent de gérer efficacement les versions des applications tout en préservant l'intégrité des données.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Update_Strategies"
+  },
+  {
+    "id": 216,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un déploiement progressif (phased rollout) dans un StatefulSet et comment le réaliser ?",
+    "back": "<b>Déploiement progressif (phased rollout) dans un StatefulSet</b> :<br><br><br><br>Un déploiement progressif consiste à déployer une nouvelle configuration sur les Pods d'un StatefulSet de manière graduelle, en utilisant des partitions pour contrôler l'étendue de la mise à jour. Cela permet de déployer les changements de manière contrôlée et progressive.<br><br><br><br>Étapes pour réaliser un déploiement progressif :<br><br><ol><br>    <li>Configurer une partition pour limiter la mise à jour à un sous-ensemble de Pods (par exemple, partition = 3) :<br><br>        <code>kubectl patch statefulset &lt;nom-du-statefulset&gt; -p '{'spec':{'updateStrategy':{'type':'RollingUpdate','rollingUpdate':{'partition':3} }}'</code></li><br>    <li>Modifier le champ <code>.spec.template</code> pour appliquer la nouvelle configuration.</li><br>    <li>Décrémenter progressivement la partition pour inclure davantage de Pods dans la mise à jour (par exemple, passer de 3 à 2, puis à 1, et enfin à 0) :<br><br>        <code>kubectl patch statefulset &lt;nom-du-statefulset&gt; -p '{'spec':{'updateStrategy':{'type':'RollingUpdate','rollingUpdate':{'partition':0} }}'</code></li><br>    <li>Attendre que tous les Pods soient mis à jour et dans l'état <code>Running</code> et <code>Ready</code>.</li><br></ol><br><br><hr><br><b>Explanatory Context :</b><br><br>Les déploiements progressifs sont cruciaux pour les applications stateful, où les mises à jour doivent être soigneusement contrôlées pour éviter les interruptions de service ou les pertes de données. En utilisant des partitions, les équipes peuvent déployer les changements de manière linéaire, géométrique ou exponentielle, selon les besoins de l'application. Cette approche permet de surveiller l'impact des changements à chaque étape et d'intervenir rapidement en cas de problème, garantissant ainsi une transition fluide vers la nouvelle version.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Phased_Rollout"
+  },
+  {
+    "id": 219,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les informations suivantes sur le scaling d'un StatefulSet :<br><br><br>Le scaling d'un StatefulSet consiste à {{c1::augmenter}} ou {{c1::diminuer}} le nombre de {{c2::réplicas}}. Cela se fait en mettant à jour le champ {{c3::replicas}} de l'objet StatefulSet.",
+    "back": "Le scaling d'un StatefulSet consiste à augmenter ou diminuer le nombre de réplicas. Cela se fait en mettant à jour le champ replicas de l'objet StatefulSet.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Vocabulary"
+  },
+  {
+    "id": 221,
+    "type": "Texte à trous",
+    "subdeck": "03_Vocabulaire_et_Constantes",
+    "front": "Complétez les informations suivantes sur les politiques de gestion des Pods :<br><br><br>Les deux politiques de gestion des Pods pour un StatefulSet sont {{c1::OrderedReady}} (par défaut) et {{c2::Parallel}}.",
+    "back": "Les deux politiques de gestion des Pods pour un StatefulSet sont OrderedReady (par défaut) et Parallel.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Pod_Management_Policy"
+  },
+  {
+    "id": 236,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les <b>étapes clés</b> pour déployer Cassandra avec un StatefulSet dans Kubernetes ?",
+    "back": "<b>Étapes clés :</b><br><br>1. <b>Créer un Service headless pour Cassandra :</b><br><br>   - Déployer un Service headless nommé `cassandra` pour permettre la découverte DNS des Pods :<br><br>     ```yaml<br>     apiVersion: v1<br>     kind: Service<br>     metadata:<br>       name: cassandra<br>     spec:<br>       clusterIP: None<br>       ports:<br>       - port: 9042<br>       selector:<br>         app: cassandra<br>     ```<br><br>   - Appliquer le Service : `kubectl apply -f cassandra-service.yaml`.<br><br><br>2. <b>Créer un StatefulSet pour Cassandra :</b><br><br>   - Déployer un StatefulSet avec 3 réplicas pour former un <b>ring</b> Cassandra :<br><br>     ```yaml<br>     apiVersion: apps/v1<br>     kind: StatefulSet<br>     metadata:<br>       name: cassandra<br>     spec:<br>       serviceName: cassandra<br>       replicas: 3<br>       selector:<br>         matchLabels:<br>           app: cassandra<br>       template:<br>         metadata:<br>           labels:<br>             app: cassandra<br>         spec:<br>           containers:<br>           - name: cassandra<br>             image: gcr.io/google-samples/cassandra:v13<br>             volumeMounts:<br>             - name: cassandra-data<br>               mountPath: /var/lib/cassandra<br>       volumeClaimTemplates:<br>       - metadata:<br>           name: cassandra-data<br>         spec:<br>           accessModes: [ 'ReadWriteOnce' ]<br>           resources:<br>             requests:<br>               storage: 1Gi<br>     ```<br><br>   - Appliquer le StatefulSet : `kubectl apply -f cassandra-statefulset.yaml`.<br><br><br>3. <b>Vérifier le déploiement :</b><br><br>   - Vérifier que les Pods sont créés dans l'ordre : `kubectl get pods -w -l app=cassandra`.<br><br>   - Vérifier l'état du ring Cassandra avec `nodetool` :<br><br>     ```bash<br>     kubectl exec -it cassandra-0 -- nodetool status<br>     ```<br><br>   - Le résultat doit montrer 3 nœuds (`UN` pour Up/Normal).<br><br><br>4. <b>Scaler le StatefulSet :</b><br><br>   - Modifier le nombre de réplicas avec `kubectl edit statefulset cassandra`.<br><br>   - Exemple : passer de 3 à 4 réplicas.<br><br>   - Vérifier le scaling : `kubectl get statefulset cassandra`.<br><br><br>5. <b>Nettoyer les ressources :</b><br><br>   - Supprimer le StatefulSet et les PVCs associés :<br><br>     ```bash<br>     grace=$(kubectl get pod cassandra-0 -o=jsonpath='{.spec.terminationGracePeriodSeconds}') \\<br>       && kubectl delete statefulset -l app=cassandra \\<br>       && echo 'Sleeping ${grace} seconds' 1>&2 \\<br>       && sleep $grace \\<br>       && kubectl delete persistentvolumeclaim -l app=cassandra<br>     ```<br><br>   - Supprimer le Service : `kubectl delete service -l app=cassandra`.<br><br><br><b>Points importants :</b><br><br>- Le StatefulSet garantit que chaque Pod a un nom stable (ex : `cassandra-0`, `cassandra-1`) et un PVC dédié.<br><br>- Le Service headless permet aux Pods de se découvrir via DNS (ex : `cassandra-0.cassandra.default.svc.cluster.local`).<br><br>- Cassandra utilise un <b>seed provider</b> personnalisé pour découvrir les nouveaux nœuds lors du scaling.<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ce tutoriel montre comment déployer Cassandra, une base de données stateful, avec Kubernetes en utilisant un StatefulSet. Le StatefulSet est essentiel pour garantir que chaque nœud Cassandra conserve son identité et son stockage, même après un redémarrage. Le Service headless permet une découverte fiable des nœuds, ce qui est crucial pour former un cluster Cassandra fonctionnel. En production, il est recommandé d'utiliser des StorageClasses adaptées et de configurer des règles d'affinité pour répartir les Pods sur différents nœuds ou zones de disponibilité.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Cassandra"
+  },
+  {
+    "id": 237,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les <b>étapes clés</b> pour déployer ZooKeeper avec un StatefulSet, un PodDisruptionBudget et PodAntiAffinity dans Kubernetes ?",
+    "back": "<b>Étapes clés :</b><br><br>1. <b>Créer les ressources nécessaires :</b><br><br>   - Déployer un <b>Service headless</b> (`zk-hs`) pour la découverte DNS.<br><br>   - Déployer un <b>Service</b> (`zk-cs`) pour exposer le port client (2181).<br><br>   - Déployer un <b>PodDisruptionBudget (PDB)</b> pour limiter les indisponibilités :<br><br>     ```yaml<br>     apiVersion: policy/v1<br>     kind: PodDisruptionBudget<br>     metadata:<br>       name: zk-pdb<br>     spec:<br>       maxUnavailable: 1<br>       selector:<br>         matchLabels:<br>           app: zk<br>     ```<br><br>   - Déployer un <b>StatefulSet</b> avec 3 réplicas pour ZooKeeper :<br><br>     ```yaml<br>     apiVersion: apps/v1<br>     kind: StatefulSet<br>     metadata:<br>       name: zk<br>     spec:<br>       serviceName: zk-hs<br>       replicas: 3<br>       selector:<br>         matchLabels:<br>           app: zk<br>       template:<br>         metadata:<br>           labels:<br>             app: zk<br>         spec:<br>           affinity:<br>             podAntiAffinity:<br>               requiredDuringSchedulingIgnoredDuringExecution:<br>               - labelSelector:<br>                   matchExpressions:<br>                   - key: app<br>                     operator: In<br>                     values:<br>                     - zk<br>                 topologyKey: kubernetes.io/hostname<br>           containers:<br>           - name: kubernetes-zookeeper<br>             image: k8s.gcr.io/kubernetes-zookeeper:1.0-3.4.10<br>             volumeMounts:<br>             - name: datadir<br>               mountPath: /var/lib/zookeeper<br>       volumeClaimTemplates:<br>       - metadata:<br>           name: datadir<br>         spec:<br>           accessModes: [ 'ReadWriteOnce' ]<br>           resources:<br>             requests:<br>               storage: 20Gi<br>     ```<br><br>   - Appliquer les ressources : `kubectl apply -f zookeeper.yaml`.<br><br><br>2. <b>Vérifier le déploiement :</b><br><br>   - Vérifier que les Pods sont créés dans l'ordre : `kubectl get pods -w -l app=zk`.<br><br>   - Vérifier que les PVCs sont liés : `kubectl get pvc -l app=zk`.<br><br>   - Vérifier que le PDB est actif : `kubectl get pdb zk-pdb`.<br><br><br>3. <b>Tester la cohérence des données :</b><br><br>   - Écrire une donnée sur un Pod et la lire depuis un autre :<br><br>     ```bash<br>     kubectl exec zk-0 -- zkCli.sh create /hello world<br>     kubectl exec zk-1 -- zkCli.sh get /hello<br>     ```<br><br>   - La donnée doit être disponible sur tous les nœuds.<br><br><br>4. <b>Tester la durabilité du stockage :</b><br><br>   - Supprimer le StatefulSet : `kubectl delete statefulset zk`.<br><br>   - Recréer le StatefulSet : `kubectl apply -f zookeeper.yaml`.<br><br>   - Vérifier que les données sont toujours présentes :<br><br>     ```bash<br>     kubectl exec zk-2 -- zkCli.sh get /hello<br>     ```<br><br><br>5. <b>Tester la résilience aux pannes :</b><br><br>   - <b>Tester PodAntiAffinity :</b> Vérifier que les Pods sont sur des nœuds différents :<br><br>     ```bash<br>     for i in 0 1 2; do kubectl get pod zk-$i --template {{.spec.nodeName}}; echo ''; done<br>     ```<br><br>   - <b>Tester le PDB :</b> Draîner un nœud pour simuler une maintenance :<br><br>     ```bash<br>     kubectl drain <node-name> --ignore-daemonsets --force --delete-emptydir-data<br>     ```<br><br>     - Si le PDB est respecté, Kubernetes refusera de drainer un nœud si cela rendrait plus d'un Pod indisponible.<br><br><br>6. <b>Nettoyer les ressources :</b><br><br>   - Supprimer le StatefulSet et les PVCs :<br><br>     ```bash<br>     kubectl delete statefulset zk<br>     kubectl delete pvc -l app=zk<br>     ```<br><br>   - Supprimer les Services et le PDB :<br><br>     ```bash<br>     kubectl delete service zk-hs zk-cs<br>     kubectl delete pdb zk-pdb<br>     ```<br><br><br><b>Points importants :</b><br><br>- Le <b>StatefulSet</b> garantit une identité stable et un stockage persistant pour chaque Pod.<br><br>- Le <b>Service headless</b> permet la découverte DNS des nœuds ZooKeeper.<br><br>- Le <b>PodDisruptionBudget</b> limite les indisponibilités lors des maintenances.<br><br>- Le <b>PodAntiAffinity</b> répartit les Pods sur différents nœuds pour éviter les points uniques de défaillance.<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ce tutoriel montre comment déployer ZooKeeper, un système de coordination distribué, avec Kubernetes en utilisant des bonnes pratiques pour les applications stateful. Le StatefulSet assure que chaque nœud ZooKeeper conserve son identité et ses données, tandis que le PodDisruptionBudget et PodAntiAffinity garantissent la disponibilité et la résilience. Ces concepts sont essentiels pour déployer des applications critiques comme Kafka, HBase, ou Elasticsearch, qui dépendent de ZooKeeper pour la coordination.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet ZooKeeper"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 0
+
+**Décision:** FUSION (25 → 20 carte(s))
+
+**Rationnel du Combiner:**
+> Analyzing the provided cards for redundancy and structural concept overlap:
+
+1. **Kubernetes Definition Cards (IDs: 0, 32)**:
+   - Card 0: General definition of Kubernetes and its role in container orchestration.
+   - Card 32: Definition of a Kubernetes cluster and its two main resource types (Control Plane and Nodes).
+   - **Decision**: These cards cover different aspects (general definition vs. cluster architecture). They should remain separate.
+
+2. **Minikube Definition Cards (IDs: 1, 33)**:
+   - Card 1: Definition of Minikube and its use for learning Kubernetes.
+   - Card 33: Definition of Minikube and its role in local Kubernetes development.
+   - **Decision**: Both cards cover the same concept with slight variations in detail. They can be merged. Card 1 will be the master card.
+
+3. **Deployment Definition Cards (IDs: 18, 35)**:
+   - Card 18: Role of a Deployment in Kubernetes and why it is recommended for managing Pods.
+   - Card 35: Definition of a Deployment and its role in managing application instances.
+   - **Decision**: Both cards cover the same concept with overlapping details. They can be merged. Card 18 will be the master card.
+
+4. **Pod Definition Cards (IDs: 17, 51)**:
+   - Card 17: Definition of a Pod and its role in Kubernetes.
+   - Card 51: Detailed definition of a Pod, including shared resources and examples.
+   - **Decision**: Both cards cover the same concept, but Card 51 is more detailed. They can be merged. Card 51 will be the master card.
+
+5. **Node Definition Cards (IDs: 53, 59)**:
+   - Card 53: Definition of a Node and its essential components (Kubelet, container runtime).
+   - Card 59: Detailed explanation of the essential components executed on each Node.
+   - **Decision**: Both cards cover the same concept, but Card 59 is more detailed. They can be merged. Card 59 will be the master card.
+
+6. **Service Definition Cards (IDs: 62, 292)**:
+   - Card 62: Definition of a Service and its role in Kubernetes, including types of Services.
+   - Card 292: Definition of a Service and the problem it solves in a cluster.
+   - **Decision**: Both cards cover the same concept, but Card 62 is more detailed. They can be merged. Card 62 will be the master card.
+
+7. **Other Cards**:
+   - Cards 4, 5, 40, 41, 54, 72, 124, 176, 182, 194, 210, 283, 300 cover unique concepts or details not redundant with other cards. They will remain separate.
+
+8. **Image Usage**:
+   - Images are preserved in the merged cards where relevant (e.g., img-1.jpeg for cluster architecture, img-3.jpeg for Pods).
+
+9. **Formatting**:
+   - All merged cards adhere to the rules: theorem/proof preservation, self-contained examples, JSON backslash escaping, and Anki cloze limits.
+
+10. **Tags and Subdeck**:
+    - Tags and subdeck names are preserved from the master card or the most relevant card if no clear master exists.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 0,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que Kubernetes et quel est son rôle principal dans la gestion des applications conteneurisées ?",
+    "back": "<b>Kubernetes</b> est un système open-source conçu pour automatiser le déploiement, la mise à l'échelle et la gestion des applications conteneurisées.<br><br><br><br>Il permet de :<br><br><ul><br>    <li>Orchestrer des conteneurs (comme Docker) sur un cluster de machines.</li><br>    <li>Assurer la haute disponibilité des applications en redistribuant automatiquement les charges de travail en cas de défaillance.</li><br>    <li>Gérer le scaling horizontal (ajout/suppression d'instances) et vertical (ajustement des ressources).</li><br>    <li>Faciliter les mises à jour et les rollbacks sans temps d'arrêt.</li><br>    <li>Abstraire l'infrastructure sous-jacente pour une portabilité accrue.</li><br></ul><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Kubernetes agit comme un 'chef d'orchestre' pour les conteneurs, permettant de déployer des applications complexes de manière fiable et scalable. Il est particulièrement utile dans les environnements cloud ou hybrides où les ressources doivent être dynamiquement allouées. Par exemple, si un pod (unité de déploiement Kubernetes) tombe en panne, Kubernetes le redémarre automatiquement ou le remplace, garantissant ainsi la résilience de l'application. Ce système est au cœur des architectures modernes de microservices.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Orchestration Conteneurs"
+  },
+  {
+    "id": 1,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que <b>Minikube</b> et dans quel contexte est-il utilisé pour apprendre Kubernetes ?",
+    "back": "<b>Minikube</b> est un outil qui permet de créer un cluster Kubernetes local sur une seule machine (physique ou virtuelle). Il est principalement utilisé pour :<br><br><ul><br>    <li>Apprendre et expérimenter Kubernetes sans avoir besoin d'un cluster complet.</li><br>    <li>Développer et tester des applications localement avant de les déployer sur un cluster de production.</li><br>    <li>Simuler un environnement Kubernetes minimal pour des démonstrations ou des tutoriels.</li><br></ul><br><br>Minikube inclut tous les composants essentiels de Kubernetes (comme le <i>kube-apiserver</i>, <i>kubelet</i>, et <i>kube-scheduler</i>) et supporte des fonctionnalités comme les <i>add-ons</i> (ex : tableau de bord Kubernetes, monitoring).<br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Minikube est idéal pour les débutants car il élimine la complexité de configurer un cluster multi-nœuds. Il permet de se familiariser avec les concepts de base de Kubernetes (comme les pods, les déploiements, ou les services) dans un environnement isolé et sans risque. Par exemple, le tutoriel 'Hello Minikube' utilise cet outil pour déployer une application simple et interagir avec elle via la ligne de commande <i>kubectl</i>. Minikube est une implémentation légère de Kubernetes qui crée une machine virtuelle (VM) sur votre machine locale et déploie un cluster Kubernetes simple contenant un seul node. Il est conçu pour faciliter le développement et les tests locaux de Kubernetes.<br><br><b>Utilité :</b><br><ul><li>Permet de démarrer rapidement un cluster Kubernetes sur une machine locale (Linux, macOS, Windows).</li><li>Fournit une CLI (Command Line Interface) pour effectuer des opérations de base comme <code>start</code>, <code>stop</code>, <code>status</code>, et <code>delete</code>.</li><li>Idéal pour les développeurs qui souhaitent apprendre Kubernetes ou tester des applications avant de les déployer sur un cluster de production.</li></ul>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Minikube Outils_Apprentissage"
+  },
+  {
+    "id": 4,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quel est l'objectif principal du tutoriel 'Hello Minikube' dans l'apprentissage de Kubernetes ?",
+    "back": "L'objectif principal du tutoriel <b>'Hello Minikube'</b> est d'introduire les concepts fondamentaux de Kubernetes en guidant l'utilisateur à travers le déploiement d'une application simple sur un cluster local Minikube.<br><br>Les étapes clés couvertes incluent :<br><ul><li>La création d'un cluster Kubernetes local avec Minikube.</li><li>Le déploiement d'une application conteneurisée (par exemple, un serveur web NGINX) sous forme de <i>pod</i>.</li><li>L'exposition de l'application via un <i>service</i> Kubernetes pour la rendre accessible depuis l'extérieur du cluster.</li><li>L'interaction avec l'application via la ligne de commande <i>kubectl</i> (ex : afficher les logs, accéder au service).</li><li>Le nettoyage des ressources après utilisation.</li></ul><hr><b>Contexte Explicatif :</b><br>Ce tutoriel sert de point d'entrée pratique pour comprendre comment Kubernetes gère les applications conteneurisées. Il démontre les bases de l'orchestration, comme la création de pods (les plus petites unités déployables) et de services (qui exposent les pods au réseau). En utilisant Minikube, les utilisateurs peuvent expérimenter sans risque et visualiser concrètement le fonctionnement d'un cluster Kubernetes, même sur une seule machine.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Tutoriels Minikube"
+  },
+  {
+    "id": 5,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes pour déployer une application exemple sur Kubernetes en utilisant minikube ?",
+    "back": "<b>Étapes pour déployer une application exemple sur minikube :</b><br><br><br><br>1. <b>Créer un cluster minikube :</b><br><br>   Exécuter la commande :<br><br>   <code>minikube start</code><br><br><br><br>2. <b>Vérifier le statut du cluster minikube :</b><br><br>   Exécuter la commande :<br><br>   <code>minikube status</code><br><br>   Le résultat doit montrer que tous les composants sont en état <i>Running</i> ou <i>Configured</i>.<br><br><br><br>3. <b>Déployer l'application exemple :</b><br><br>   Utiliser une image conteneurisée (par exemple, une image NGINX qui renvoie toutes les requêtes).<br><br>   Exécuter la commande :<br><br>   <code>kubectl create deployment hello-nginx --image=nginx:alpine</code><br><br><br><br>4. <b>Exposer l'application :</b><br><br>   Créer un service pour exposer le déploiement :<br><br>   <code>kubectl expose deployment hello-nginx --port=80 --type=NodePort</code><br><br><br><br>5. <b>Accéder à l'application :</b><br><br>   Récupérer l'URL du service :<br><br>   <code>minikube service hello-nginx --url</code><br><br><br><br>6. <b>Voir les logs de l'application :</b><br><br>   Exécuter la commande :<br><br>   <code>kubectl logs -l app=hello-nginx</code><br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces étapes permettent de déployer une application conteneurisée sur un cluster Kubernetes local grâce à minikube. Minikube simule un environnement Kubernetes sur une machine locale, ce qui est idéal pour le développement et les tests. L'application exemple utilise NGINX pour renvoyer les requêtes, ce qui permet de vérifier que le déploiement fonctionne correctement. Cette procédure est la base pour comprendre comment déployer des applications plus complexes sur Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Minikube Deployment_Basics"
+  },
+  {
+    "id": 18,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quel est le rôle d'un <i>Deployment</i> dans Kubernetes et pourquoi est-il recommandé pour gérer les Pods ?",
+    "back": "Un <b>Deployment</b> dans Kubernetes est un objet qui surveille la santé des Pods et redémarre automatiquement le conteneur d'un Pod s'il se termine. Il est recommandé pour gérer la création et la mise à l'échelle des Pods car il offre les fonctionnalités suivantes :<br><ul><li>Gestion automatique des redémarrages en cas de défaillance.</li><li>Mise à jour progressive des Pods (rolling updates) sans temps d'arrêt.</li><li>Possibilité de revenir à une version précédente (rollback) en cas de problème.</li><li>Contrôle du nombre de réplicas d'un Pod pour assurer la haute disponibilité.</li></ul><br><br><b>Deployment dans Kubernetes :</b><br>Un <i>Deployment</i> est un objet Kubernetes responsable de la création et de la mise à jour des instances d'une application. Il permet de déclarer l'état souhaité de votre application (par exemple, le nombre de réplicas, l'image du conteneur, etc.), et Kubernetes s'assure que cet état est maintenu.<br><br><b>Rôle principal :</b><ul><li>Créer et gérer les instances (ou <i>Pods</i>) de votre application.</li><li>Assurer la haute disponibilité en remplaçant automatiquement les instances défaillantes ou supprimées (mécanisme d'auto-réparation).</li><li>Permettre le scaling horizontal (ajout ou suppression de réplicas) et les mises à jour progressives (<i>rolling updates</i>).</li><li>Fournir une approche déclarative pour gérer les applications, contrairement aux scripts d'installation traditionnels qui ne gèrent pas la reprise après panne.</li></ul><hr><b>Explanatory Context :</b><br>Les Deployments sont au cœur de la gestion des applications dans Kubernetes. Ils permettent de définir comment une application doit être déployée et maintenue, sans se soucier des machines individuelles. Par exemple, si un node tombe en panne, le <i>Deployment</i> s'assure qu'un nouveau <i>Pod</i> est créé sur un autre node pour maintenir le nombre de réplicas souhaité. Cela simplifie grandement la gestion des applications dans des environnements dynamiques et distribués. Les <i>Deployments</i> sont au cœur de la gestion des applications dans Kubernetes. Ils permettent de définir l'état souhaité de votre application (par exemple, 3 réplicas d'un Pod) et Kubernetes s'assure que cet état est maintenu. Cela simplifie grandement la gestion des applications en production, où la résilience et la scalabilité sont essentielles.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Deployment"
+  },
+  {
+    "id": 32,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un cluster Kubernetes et quels sont ses deux types de ressources principaux ?",
+    "back": "<b>Cluster Kubernetes :</b><br>Un cluster Kubernetes est un ensemble de machines (virtuelles ou physiques) connectées qui fonctionnent comme une seule unité pour orchestrer le déploiement, la planification et l'exécution d'applications conteneurisées.<br><br><b>Deux types de ressources :</b><br><ul><li><b>Control Plane :</b> Coordonne le cluster, gère la planification des applications, maintient l'état souhaité des applications, et gère les mises à jour et le scaling.</li><li><b>Nodes :</b> Machines travailleuses (VM ou physiques) qui exécutent les applications. Chaque node contient un <i>Kubelet</i>, un agent qui communique avec le Control Plane, et des outils pour gérer les opérations sur les conteneurs (comme Docker ou containerd).</li></ul><br><img src='img-1.jpeg'><br>Figure 1: Architecture d'un cluster Kubernetes<hr><b>Explanatory Context :</b><br>Un cluster Kubernetes permet de découpler les applications des machines individuelles, offrant ainsi une haute disponibilité et une résilience face aux pannes. Le <i>Control Plane</i> agit comme le 'cerveau' du cluster, tandis que les <i>nodes</i> sont les 'ouvriers' qui exécutent les charges de travail. Cette architecture est essentielle pour les environnements de production où la redondance et la scalabilité sont critiques. Par exemple, un cluster de production doit avoir au moins trois nodes pour éviter une perte de redondance en cas de panne d'un node.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Cluster Architecture"
+  },
+  {
+    "id": 40,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que <code>kubectl</code> et quel est son rôle dans l'interaction avec un cluster Kubernetes ?",
+    "back": "<b><code>kubectl</code> :</b><br><code>kubectl</code> est l'interface en ligne de commande (CLI) de Kubernetes. Il permet d'interagir avec le cluster Kubernetes en utilisant l'API Kubernetes pour effectuer des opérations telles que :<br><ul><li>Créer, mettre à jour ou supprimer des ressources (comme les <i>Deployments</i>, les <i>Pods</i>, ou les <i>Services</i>).</li><li>Obtenir des informations sur l'état du cluster et des applications (par exemple, lister les <i>Pods</i> en cours d'exécution).</li><li>Déployer des applications conteneurisées sur le cluster.</li><li>Gérer les configurations et les secrets.</li></ul><br>Le <code>kubectl</code> est l'outil principal pour les développeurs et les administrateurs qui travaillent avec Kubernetes.<hr><b>Explanatory Context :</b><br><code>kubectl</code> est indispensable pour interagir avec un cluster Kubernetes, car il permet de traduire des commandes humaines en appels API vers le <i>Control Plane</i>. Par exemple, lorsque vous exécutez <code>kubectl create deployment</code>, <code>kubectl</code> envoie une requête à l'API Kubernetes pour créer un <i>Deployment</i>. Cet outil est également utilisé pour déboguer et surveiller les applications déployées sur le cluster.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_kubectl CLI_Tool"
+  },
+  {
+    "id": 41,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quel est le format général d'une commande <code>kubectl</code> et à quoi servent les deux parties principales de ce format ?",
+    "back": "<b>Format général :</b><br>kubectl action resource<br><br><b>Explication :</b><ul><li><i>action</i> : Spécifie l'opération à effectuer (par exemple, <code>create</code>, <code>describe</code>, <code>delete</code>).</li><li><i>resource</i> : Désigne l'objet Kubernetes sur lequel l'action est appliquée (par exemple, <code>node</code>, <code>deployment</code>).</li></ul><br>Pour obtenir de l'aide sur les paramètres possibles, utilisez <code>--help</code> après la sous-commande (exemple : <code>kubectl get nodes --help</code>).<hr><b>Explanatory Context :</b><br>Ce format standardisé permet d'interagir de manière cohérente avec tous les objets gérés par Kubernetes. L'<i>action</i> définit ce que vous voulez faire (créer, inspecter, supprimer), tandis que la <i>resource</i> précise l'élément du cluster concerné. Cette structure reflète l'architecture déclarative de Kubernetes, où chaque objet a un cycle de vie géré par des commandes uniformes. Comprendre ce format est essentiel pour automatiser et orchestrer des applications dans un cluster.<br>![img-2.jpeg](img-2.jpeg)",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_CLI Basics"
+  },
+  {
+    "id": 51,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un Pod dans Kubernetes et quelles ressources partagées inclut-il ?",
+    "back": "<b>Un Pod</b> est un groupe d'un ou plusieurs conteneurs d'application (comme Docker) qui partagent des ressources communes.<br><br><br>Les ressources partagées incluent :<br><br><ul><br>    <li>Stockage partagé, sous forme de <b>Volumes</b></li><br>    <li>Réseau, via une <b>adresse IP unique</b> au sein du cluster</li><br>    <li>Informations sur l'exécution de chaque conteneur, comme la version de l'image ou les ports spécifiques à utiliser</li><br></ul><br><br><br>Un Pod modélise un 'hôte logique' spécifique à une application et peut contenir des conteneurs d'application relativement couplés. Par exemple, un Pod peut inclure à la fois un conteneur avec une application Node.js et un autre conteneur qui alimente les données publiées par le serveur web Node.js. Les conteneurs d'un Pod partagent une adresse IP et un espace de ports, sont toujours co-localisés et co-planifiés, et s'exécutent dans un contexte partagé sur le même <b>Node</b>.<br><br><br><br>Les Pods sont l'unité atomique de la plateforme Kubernetes. Lorsqu'un <b>Deployment</b> est créé, il génère des Pods contenant des conteneurs (plutôt que de créer directement des conteneurs). Chaque Pod est lié au Node où il est planifié et y reste jusqu'à sa terminaison (selon la politique de redémarrage) ou sa suppression. En cas de défaillance d'un Node, des Pods identiques sont planifiés sur d'autres Nodes disponibles du cluster.<br><br><hr><br><b>Explanatory Context :</b><br><br>Un Pod représente la plus petite unité déployable dans Kubernetes, encapsulant un ou plusieurs conteneurs qui doivent fonctionner ensemble. Cette abstraction permet de gérer des applications multi-conteneurs comme une seule entité logique, simplifiant ainsi le déploiement et la gestion des ressources partagées (comme le stockage ou le réseau). Par exemple, une application web avec un serveur backend et un sidecar pour les logs peut être encapsulée dans un seul Pod, garantissant que les deux conteneurs s'exécutent sur le même Node et partagent le même contexte réseau. Cette approche est essentielle pour les architectures microservices où les composants sont étroitement couplés.<br><br>Ce concept s'intègre dans l'architecture globale de Kubernetes en tant que couche fondamentale pour le déploiement d'applications, au-dessus des Nodes et en dessous des <b>Deployments</b> ou <b>Services</b>.<br>![img-3.jpeg](img-3.jpeg)<br><br>Un <b>Pod</b> dans Kubernetes est un groupe d'un ou plusieurs conteneurs (généralement des conteneurs Docker) qui sont liés ensemble pour des besoins d'administration et de mise en réseau. Les Pods partagent le même espace de noms réseau et le même stockage, ce qui leur permet de communiquer facilement entre eux via <code>localhost</code>.<br><br>Dans ce tutoriel, le Pod ne contient qu'un seul conteneur, mais il peut en contenir plusieurs si nécessaire.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Pods"
+  },
+  {
+    "id": 54,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les commandes <code>kubectl</code> les plus courantes pour le dépannage des applications déployées dans Kubernetes, et à quoi servent-elles ?",
+    "back": "Les commandes <code>kubectl</code> les plus courantes pour le dépannage sont :<br><br><ul><br>    <li><code>kubectl get</code> : liste les ressources (Pods, Nodes, Deployments, etc.).</li><br>    <li><code>kubectl describe</code> : affiche des informations détaillées sur une ressource spécifique (ex. : un Pod ou un Node).</li><br>    <li><code>kubectl logs</code> : imprime les logs d'un conteneur dans un Pod.</li><br>    <li><code>kubectl exec</code> : exécute une commande directement dans un conteneur d'un Pod.</li><br></ul><br><br><br>Ces commandes permettent de vérifier quand les applications ont été déployées, leur statut actuel, où elles s'exécutent et quelles sont leurs configurations.<br><br><br><br><b>Exemple d'utilisation :</b><br><br>- Pour lister les Pods en cours d'exécution : <code>kubectl get pods</code><br><br>- Pour obtenir des détails sur un Pod spécifique : <code>kubectl describe pods &lt;nom_du_pod&gt;</code><br><br>- Pour afficher les logs d'un conteneur : <code>kubectl logs &lt;nom_du_pod&gt;</code><br><br>- Pour exécuter une commande dans un conteneur (ex. : lister les variables d'environnement) : <code>kubectl exec &lt;nom_du_pod&gt; -- env</code><br><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Ces commandes <code>kubectl</code> sont essentielles pour interagir avec un cluster Kubernetes et diagnostiquer les problèmes. Par exemple, <code>kubectl get</code> permet de vérifier rapidement si un Pod est en cours d'exécution, tandis que <code>kubectl describe</code> fournit des détails techniques comme les événements liés au cycle de vie du Pod ou les erreurs de planification. <code>kubectl logs</code> et <code>kubectl exec</code> permettent d'inspecter le comportement interne des conteneurs, ce qui est crucial pour le débogage des applications. Ces outils s'intègrent dans le flux de travail global de Kubernetes pour assurer une gestion efficace et réactive des applications déployées.<br><br>Ces commandes sont souvent utilisées en combinaison pour obtenir une vue complète de l'état d'une application, par exemple en listant les Pods avec <code>kubectl get</code>, puis en examinant les logs ou en exécutant des commandes interactives pour investiguer plus en profondeur.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Troubleshooting"
+  },
+  {
+    "id": 59,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quels sont les composants essentiels exécutés sur chaque Node Kubernetes et quel est leur rôle ?",
+    "back": "Chaque Node Kubernetes exécute au moins deux composants essentiels :<br><br><ol><br>    <li><b>Kubelet</b> :<br><br>        - Rôle : Agent responsable de la communication entre le <b>control plane</b> et le Node.<br><br>        - Fonctions :<br><br>            <ul><br>                <li>Gère les Pods et les conteneurs s'exécutant sur le Node.</li><br>                <li>S'assure que les conteneurs décrits dans les spécifications des Pods sont en cours d'exécution et en bonne santé.</li><br>                <li>Rapporte l'état du Node et des Pods au <b>control plane</b>.</li><br>            </ul><br>    </li><br>    <li><b>Runtime de conteneur</b> (ex. : Docker, containerd) :<br><br>        - Rôle : Exécute les conteneurs sur le Node.<br><br>        - Fonctions :<br><br>            <ul><br>                <li>Récupère les images de conteneur depuis un registre.</li><br>                <li>Décompresse et lance les conteneurs.</li><br>                <li>Gère le cycle de vie des conteneurs (démarrage, arrêt, etc.).</li><br>            </ul><br>    </li><br></ol><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Le <b>Kubelet</b> et le runtime de conteneur forment le cœur de l'exécution des workloads sur un Node. Le Kubelet agit comme un pont entre le <b>control plane</b> (qui prend les décisions globales) et le Node (qui exécute les workloads). Il garantit que l'état réel des Pods correspond à l'état souhaité défini par l'utilisateur ou le <b>Deployment</b>. Le runtime de conteneur, quant à lui, est responsable de l'exécution effective des conteneurs, en s'appuyant sur des technologies comme Docker ou containerd.<br><br>Cette séparation des responsabilités permet à Kubernetes de supporter différents types de runtimes de conteneur (via le standard <b>CRI</b>, Container Runtime Interface) et de s'adapter à des environnements hétérogènes, tout en assurant une orchestration cohérente des applications.<br><br><b>Un Node</b> est une machine de travail dans Kubernetes, qui peut être soit virtuelle, soit physique, selon le cluster. Chaque Node est géré par le <b>control plane</b> et peut héberger plusieurs Pods. Le <b>control plane</b> gère automatiquement la planification des Pods sur les Nodes en tenant compte des ressources disponibles.<br><br><br>Chaque Node Kubernetes exécute au moins :<br><br><ul><br>    <li><b>Kubelet</b> : un processus responsable de la communication entre le <b>control plane</b> et le Node. Il gère les Pods et les conteneurs s'exécutant sur la machine.</li><br>    <li><b>Un runtime de conteneur</b> (comme Docker) : responsable de récupérer l'image du conteneur depuis un registre, de décompresser le conteneur et d'exécuter l'application.</li><br></ul>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Nodes"
+  },
+  {
+    "id": 62,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un <b>Service</b> dans Kubernetes et quel est son rôle principal ?",
+    "back": "<b>Définition :</b><br><br>Un <b>Service</b> dans Kubernetes est une abstraction qui définit un ensemble logique de Pods et une politique d'accès à ces Pods. Il permet l'exposition du trafic externe, l'équilibrage de charge (load balancing) et la découverte de services pour les Pods ciblés.<br><br><br><br><b>Rôle principal :</b><br><br>- Permettre une communication stable entre les Pods malgré leur nature éphémère (Pods peuvent être recréés, supprimés ou déplacés).<br><br>- Exposer une application en dehors du cluster Kubernetes.<br><br>- Assurer un couplage lâche entre les Pods dépendants (ex : frontend et backend).<br><br>- Fournir une adresse IP et un port stables pour accéder aux Pods, même si leurs adresses IP individuelles changent.<br><br><br><br><b>Types de Services :</b><br><br><ul><br>    <li><b>ClusterIP (par défaut)</b> : Expose le Service sur une IP interne au cluster. Accessible uniquement depuis l'intérieur du cluster.</li><br>    <li><b>NodePort</b> : Expose le Service sur le même port de chaque nœud sélectionné dans le cluster via NAT. Rend le Service accessible depuis l'extérieur du cluster via <code>NodeIP:NodePort</code>. Superset de ClusterIP.</li><br>    <li><b>LoadBalancer</b> : Crée un équilibreur de charge externe (si supporté par le cloud) et assigne une IP externe fixe au Service. Superset de NodePort.</li><br>    <li><b>ExternalName</b> : Mappe le Service au contenu du champ <code>externalName</code> (ex : <code>foo.bar.example.com</code>) en retournant un enregistrement CNAME. Aucun proxy n'est configuré. Nécessite kube-dns v1.7+ ou CoreDNS 0.0.8+.</li><br></ul><br><br><br><hr><br><b>Explanatory Context :</b><br><br>Un Service est essentiel pour garantir la résilience et la disponibilité des applications dans Kubernetes. Comme les Pods sont éphémères (ils peuvent être détruits ou recréés dynamiquement), le Service agit comme une couche d'abstraction stable pour router le trafic vers les Pods sous-jacents. Par exemple, si un Pod backend tombe en panne, le Service redirigera automatiquement le trafic vers un autre Pod backend disponible, sans que le frontend n'ait besoin de connaître les détails des Pods individuels. Cela simplifie la gestion des applications distribuées et permet une scalabilité horizontale transparente.<br><br>Dans l'architecture Kubernetes, les Services sont souvent utilisés en conjonction avec des <b>ReplicaSets</b> ou des <b>Deployments</b> pour assurer une haute disponibilité. Ils sont également cruciaux pour exposer des applications à des utilisateurs externes, par exemple via un <b>LoadBalancer</b> dans un environnement cloud.<br><br><b>Définition d'un Service Kubernetes :</b><br>\nUn Service Kubernetes est une abstraction qui définit un ensemble logique de pods fournissant la même fonctionnalité. Il résout le problème suivant :<br>\n<ul>\n<li>Lorsque des pods meurent (par exemple, en cas de défaillance d'un nœud), de nouveaux pods sont recréés avec de nouvelles adresses IP par le ReplicaSet.</li>\n<li>Les pods existants ne peuvent pas être mis à jour dynamiquement pour suivre ces changements d'adresses IP.</li>\n</ul>\nLe Service attribue une adresse IP stable (<b>clusterIP</b>) et un mécanisme de <b>load balancing</b> pour diriger le trafic vers les pods actifs membres du Service. Cela garantit une communication fiable et continue avec l'application, indépendamment des changements sous-jacents des pods.<br>\n<hr><b>Contexte Explicatif :</b><br>\nCe concept est illustré par le diagramme suivant, montrant la relation entre un Service, un ReplicaSet et les pods :<br>\n![img-5.jpeg](img-5.jpeg)<br>\nCe schéma montre comment les étiquettes (<i>labels</i>) et les sélecteurs (<i>selectors</i>) permettent de lier un Service à un ensemble de pods, avec des adresses IP stables pour le Service.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services Kubernetes_Abstraction"
+  },
+  {
+    "id": 72,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que le <i>scaling</i> dans le contexte d'une application déployée sur Kubernetes, et comment est-il accompli ?",
+    "back": "<b>Le scaling</b> dans Kubernetes désigne l'ajustement du nombre d'instances (Pods) d'une application pour répondre à la demande en trafic.<br><br><br><br>Il est accompli en modifiant le nombre de <b>réplicas</b> dans un <i>Deployment</i>. Par exemple, pour augmenter le nombre de Pods, on utilise la commande :<br><br><pre>kubectl scale deployments/[nom-du-deployment] --replicas=[nombre-désiré]</pre><br><br><br>Un <i>Service</i> de type <code>LoadBalancer</code> distribue automatiquement le trafic entre tous les Pods disponibles du Deployment, assurant une haute disponibilité.<br><br><br><b>Exemple de scaling :</b><br><br>- Initialement, un Deployment peut avoir 1 Pod.<br><br>- Après scaling, il peut en avoir 4, chacun avec une IP distincte.<br><br>- Le <i>ReplicaSet</i> géré par le Deployment garantit que le nombre de Pods en cours d'exécution correspond toujours au nombre désiré.<br><br><br><hr><br><b>Explanatory Context :</b><br><br>Le scaling est une opération fondamentale pour garantir la résilience et la performance d'une application. En augmentant le nombre de réplicas, Kubernetes répartit la charge sur plusieurs nœuds du cluster, évitant ainsi les goulots d'étranglement. Cela permet également de réaliser des mises à jour sans interruption de service (<i>rolling updates</i>). Le <i>Service</i> joue un rôle clé en agissant comme un répartiteur de charge intelligent, surveillant en permanence l'état des Pods pour diriger le trafic uniquement vers ceux qui sont disponibles.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Scaling Deployment_Management"
+  },
+  {
+    "id": 124,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un conteneur sidecar dans Kubernetes et quel est son rôle principal ?",
+    "back": "<b>Définition :</b><br>Un conteneur sidecar est un conteneur secondaire qui s'exécute aux côtés du conteneur principal d'une application au sein du même Pod. Son rôle est d'étendre ou d'améliorer les fonctionnalités du conteneur principal sans modifier directement le code de l'application.<br><br><b>Fonctionnalités typiques :</b><ul><li>Journalisation (logging)</li><li>Surveillance (monitoring)</li><li>Sécurité (ex : chiffrement TLS)</li><li>Synchronisation de données</li><li>Gestion du trafic réseau (ex : service mesh)</li></ul><br><b>Exemple d'utilisation :</b><br>Un sidecar peut injecter automatiquement des certificats TLS pour sécuriser les communications entre Pods, comme le fait un service mesh tel qu'Istio.<br><hr><b>Explanatory Context :</b><br>Le concept de sidecar permet de découpler les responsabilités techniques (comme la sécurité ou la journalisation) du code métier de l'application. Cela suit le principe de séparation des préoccupations (separation of concerns), rendant les applications plus modulaires et plus faciles à maintenir. Dans Kubernetes, les sidecars natifs (introduits en version 1.29) améliorent la gestion du cycle de vie des Pods, notamment pour les Jobs, en garantissant un démarrage et une terminaison ordonnés des conteneurs.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Concepts Pod_Architecture"
+  },
+  {
+    "id": 176,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'AppArmor et quel est son rôle dans Kubernetes ?",
+    "back": "<b>AppArmor</b> est un module de sécurité du noyau Linux qui permet de restreindre les capacités des conteneurs en appliquant des profils de sécurité.<br><br><br><br>Dans Kubernetes, AppArmor est utilisé pour :<br><br><ul><br>    <li>Limiter l'accès des conteneurs à certaines ressources système (fichiers, réseaux, etc.).</li><br>    <li>Empêcher des actions malveillantes ou non autorisées en définissant des règles strictes.</li><br>    <li>Appliquer des profils de sécurité au niveau des Pods ou des conteneurs pour renforcer leur isolation.</li><br></ul><br><br>Un profil AppArmor peut être appliqué via le champ <code>appArmorProfile</code> dans le <code>securityContext</code> d'un Pod ou d'un conteneur.<br><br><br><br><hr><br><br><b>Explanatory Context :</b><br><br>AppArmor agit comme une couche de protection supplémentaire pour les conteneurs en limitant leurs actions au strict nécessaire. Par exemple, un profil peut bloquer l'écriture dans certains répertoires ou interdire l'exécution de commandes spécifiques. Dans Kubernetes, cela permet de réduire les risques liés aux vulnérabilités des applications conteneurisées. Ce mécanisme s'intègre dans une stratégie de sécurité globale, aux côtés d'autres outils comme seccomp ou les <code>PodSecurityPolicies</code> (dépréciées).",
+    "tags": "kubernetes-tutorials-manuel (3) Security_AppArmor"
+  },
+  {
+    "id": 182,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que seccomp et quel est son rôle dans Kubernetes ?",
+    "back": "<b>seccomp</b> (secure computing mode) est une fonctionnalité du noyau Linux qui permet de restreindre les appels système qu'un processus peut effectuer. Intégré depuis la version 2.6.12 du noyau, seccomp agit comme un filtre pour les appels système, réduisant ainsi la surface d'attaque des conteneurs.<br><br><br>Dans Kubernetes, seccomp permet de :<br><br><ul><br>    <li>Appliquer des profils de sécurité aux Pods et conteneurs pour limiter leurs privilèges.</li><br>    <li>Définir des règles précises sur les appels système autorisés ou bloqués.</li><br>    <li>Utiliser des profils par défaut fournis par le runtime de conteneurs (comme <code>RuntimeDefault</code>).</li><br></ul><br><br><b>Exemple de configuration :</b><br><br><pre><br>securityContext:<br>  seccompProfile:<br>    type: Localhost<br>    localhostProfile: profiles/fine-grained.json<br></pre><br><br><b>Note :</b><br><br>seccomp ne peut pas être appliqué aux conteneurs en mode <code>privileged: true</code>.<br><br><br><br><hr><br><br><b>Explanatory Context :</b><br><br>seccomp est un mécanisme de sécurité essentiel pour les environnements conteneurisés, car il limite les actions qu'un conteneur peut effectuer au niveau du noyau. Par exemple, un profil seccomp peut bloquer des appels système comme <code>execve</code> ou <code>open</code> pour empêcher des attaques par escalade de privilèges. Dans Kubernetes, seccomp s'intègre avec d'autres outils comme AppArmor pour fournir une défense en profondeur.",
+    "tags": "kubernetes-tutorials-manuel (3) Security_seccomp"
+  },
+  {
+    "id": 194,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un StatefulSet dans Kubernetes et à quoi sert-il ?",
+    "back": "<b>StatefulSet</b> est un objet Kubernetes utilisé pour gérer des applications stateful (avec état) et des systèmes distribués.<br><br><br><br>Il permet de :<br><br><ul><br>    <li>Créer, supprimer, mettre à l'échelle et mettre à jour les Pods de manière ordonnée et prévisible.</li><br>    <li>Assurer une identité réseau stable pour chaque Pod (nom d'hôte et adresse DNS uniques).</li><br>    <li>Garantir un stockage persistant associé à chaque Pod via des PersistentVolumeClaims.</li><br>    <li>Maintenir un index ordinal unique pour chaque Pod (ex: <code>web-0</code>, <code>web-1</code>).</li><br></ul><br><br><b>Cas d'usage typiques :</b><br><br>- Bases de données (MySQL, PostgreSQL).<br><br>- Systèmes distribués nécessitant une identité stable (ZooKeeper, Kafka).<br><br>- Applications nécessitant un stockage persistant et une séquence de déploiement contrôlée.<br><br><hr><br><b>Explanatory Context :</b><br><br>Un StatefulSet est essentiel pour les applications qui nécessitent une persistance des données ou une identité stable entre les redémarrages. Contrairement aux Deployments (utilisés pour les applications stateless), un StatefulSet garantit que chaque Pod conserve son nom, son stockage et son adresse réseau même après un redémarrage ou une mise à jour. Cela est crucial pour les bases de données ou les systèmes où l'ordre de déploiement et la cohérence des données sont critiques. Par exemple, dans un cluster MySQL, le Pod <code>mysql-0</code> doit toujours démarrer en premier pour initialiser la réplication.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Applications_Stateful"
+  },
+  {
+    "id": 210,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce que le scaling d'un StatefulSet dans Kubernetes et comment est-il réalisé ?",
+    "back": "<b>Scaling d'un StatefulSet</b> :<br><br><br><br>Le scaling d'un StatefulSet consiste à augmenter ou diminuer le nombre de réplicas (scaling horizontal). Cela se fait en mettant à jour le champ <code>replicas</code> de l'objet StatefulSet.<br><br><br><br>Méthodes pour scaler un StatefulSet :<br><br><ul><br>    <li>Utilisation de la commande <code>kubectl scale</code> :<br><br>        <code>kubectl scale sts &lt;nom-du-statefulset&gt; --replicas=&lt;nombre-de-réplicas&gt;</code></li><br>    <li>Utilisation de la commande <code>kubectl patch</code> :<br><br>        <code>kubectl patch sts &lt;nom-du-statefulset&gt; -p '{'spec':{'replicas':&lt;nombre-de-réplicas&gt;}}'</code></li><br></ul><br><br><hr><br><b>Explanatory Context :</b><br><br>Le scaling d'un StatefulSet est essentiel pour ajuster dynamiquement les ressources disponibles en fonction de la charge de travail. Par exemple, augmenter le nombre de réplicas permet de gérer une augmentation du trafic, tandis que réduire ce nombre permet d'économiser des ressources lorsque la charge diminue. Ce mécanisme est particulièrement important pour les applications stateful, où chaque réplica peut avoir un état unique et persistant, comme dans le cas des bases de données ou des systèmes de fichiers distribués. Le scaling respecte l'ordre des indices ordinaux pour garantir la cohérence des données.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_StatefulSet Scaling"
+  },
+  {
+    "id": 283,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Qu'est-ce qu'un <b>Namespace</b> dans Kubernetes et quels sont ses deux principaux objectifs ?",
+    "back": "<b>Définition :</b><br>Un <b>Namespace</b> dans Kubernetes est un mécanisme qui permet de subdiviser un cluster Kubernetes en sous-sections logiques.<br><br><b>Deux principaux objectifs :</b><br><ul><li>Fournir un <b>scope pour les noms</b> : Les ressources (Pods, Services, Deployments) dans des Namespaces différents peuvent porter le même nom sans conflit.</li><li>Permettre d'<b>attacher des autorisations et des politiques</b> spécifiques à une sous-section du cluster, facilitant ainsi la gestion des accès et des règles de sécurité.</li></ul><hr><b>Explanatory Context :</b><br>Les Namespaces sont particulièrement utiles dans des environnements partagés où plusieurs équipes, projets ou clients utilisent le même cluster Kubernetes. Ils permettent d'isoler les ressources et de contrôler finement les permissions, évitant ainsi les interférences accidentelles entre équipes. Par exemple, une équipe de développement peut travailler dans un Namespace dédié sans risquer d'affecter les ressources critiques de production situées dans un autre Namespace. Cela s'intègre dans une architecture de cluster multi-tenant, où l'isolation et la sécurité sont essentielles.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Namespaces Cluster_Management"
+  },
+  {
+    "id": 300,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quel est le rôle de <b>kube-proxy</b> dans la gestion des Services Kubernetes ?",
+    "back": "<b>kube-proxy</b> est un démon réseau qui s'exécute sur chaque nœud du cluster. Il orchestrer la gestion des VIP des Services, en configurant les règles de routage (via iptables ou IPVS) pour acheminer le trafic vers les pods appropriés.<br><br><b>Explanatory Context :</b><br><br>![img-7.jpeg](img-7.jpeg)",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Services kube-proxy"
+  }
+]
+```
+
+---
+## [FUSION SUPERVISEUR] Groupe Master ID: 87
+
+**Décision:** CONSERVÉES SÉPARÉMENT (15 → 15 carte(s))
+
+**Rationnel du Combiner:**
+> Analyzing the provided cards, the following observations and decisions were made:
+
+1. **Cards 87, 90, 92, 94, 95, 99, 102, 105, 110, 112, 115, 118, 120, 122, and 123** all focus on **Kubernetes ConfigMaps**, but they cover **distinct subtopics** and **structural concepts**. None of these cards are truly redundant, as they address:
+   - **Creation** (102)
+   - **Modification** (92, 99, 105, 110)
+   - **Usage as volumes vs. environment variables** (94, 115)
+   - **Limitations and lifecycle** (90, 95, 120)
+   - **Verification and YAML structure** (122, 123)
+   - **Specific use cases (e.g., Redis)** (118, 120, 122, 123)
+   - **Immutable ConfigMaps and Deployment updates** (112)
+   - **General update procedures** (87, 105, 110)
+
+   These cards are **complementary** rather than redundant, as they provide **unique perspectives** and **practical examples** for different aspects of ConfigMaps. Merging them would violate the **Examples Zero-Context Rule** and **Theorem/Proof Preservation Rule**, as each card contains **self-contained, non-overlapping information**.
+
+2. **Image Usage**: The images referenced in the cards are **contextually relevant** but **not redundant**. For example:
+   - `img-0.jpeg` (geometric shapes) is irrelevant to Kubernetes and should be **removed** from card 87.
+   - `img-8.jpeg` (load balancer) is tangentially related to Kubernetes but does not add value to the ConfigMap explanation in card 87 and should be **removed**.
+   - The other images (`img-2.jpeg`, `img-5.jpeg`, etc.) are **specific to Kubernetes concepts** and are appropriately used in their respective cards.
+
+3. **Formatting and Escaping**: All cards adhere to the required formatting rules (e.g., `\( ... \)` for inline math, `<b>` for bold, and proper escaping). No corrections are needed here.
+
+4. **Cloze Deletions**: None of the cards use cloze deletions, so the **Cloze Hard Limit** rule is not violated.
+
+5. **Final Decision**: No cards are merged. All cards are retained as-is, with minor **image cleanup** for card 87 to ensure relevance and adherence to the **Examples Zero-Context Rule**.
+
+### Résultat Combiner:
+```json
+[
+  {
+    "id": 87,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la méthode pour mettre à jour la configuration d'un Pod en utilisant un ConfigMap monté en tant que volume ?",
+    "back": "<b>Étapes pour mettre à jour la configuration d'un Pod via un ConfigMap monté en tant que volume :</b><br><br>1. Créer un ConfigMap à partir de valeurs littérales :<br><br>   <code>kubectl create configmap sport --from-literal=sport=football</code><br><br>2. Déployer un manifeste (ex. Deployment) où le ConfigMap est monté en tant que volume dans le conteneur du Pod :<br><br>   <code>kubectl apply -f https://k8s.io/examples/deployments/deployment-with-configmap-as-volume.yaml</code><br><br>3. Vérifier que les Pods du Deployment sont prêts :<br><br>   <code>kubectl get pods --selector=app.kubernetes.io/name=configmap-volume</code><br><br>4. Consulter les logs du Pod pour confirmer que la configuration initiale est chargée :<br><br>   <code>kubectl logs deployments/configmap-volume</code><br><br>5. Modifier le ConfigMap pour mettre à jour la configuration :<br><br>   <code>kubectl edit configmap sport</code><br>   Changer la valeur de la clé (ex. <code>sport: cricket</code>) et sauvegarder.<br><br>6. Suivre les logs du Pod pour observer la mise à jour automatique de la configuration :<br><br>   <code>kubectl logs deployments/configmap-volume --follow</code><br><br><b>Remarque :</b> La mise à jour du ConfigMap est reflétée presque immédiatement dans le Pod, mais l'application doit être conçue pour recharger dynamiquement la configuration (ex. via polling ou surveillance des fichiers).<br><br><hr><b>Explanatory Context :</b><br><br>Cette méthode permet de découpler la configuration de l'application de son déploiement, facilitant les mises à jour sans redémarrer les Pods. Le ConfigMap agit comme une source centralisée de vérité pour les paramètres, tandis que le volume monté expose ces paramètres sous forme de fichiers accessibles par le conteneur. Cela s'intègre dans l'architecture Kubernetes pour la gestion déclarative des configurations, essentielle pour les environnements dynamiques et scalables.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Kubernetes_Volume"
+  },
+  {
+    "id": 90,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la limitation principale concernant la détection des mises à jour d'un ConfigMap par une application dans un Pod ?",
+    "back": "<b>Limitation principale :</b><br><br>L'application doit être conçue pour détecter dynamiquement les changements de configuration. Si elle charge la configuration une seule fois au démarrage, elle ne verra pas les mises à jour du ConfigMap.<br><br><b>Solutions possibles :</b><br><br>- Implémenter un mécanisme de <i>polling</i> pour recharger périodiquement la configuration.<br>- Utiliser un système de surveillance des fichiers (ex. <i>inotify</i>) pour détecter les modifications en temps réel.<br><br><b>Remarque :</b> Le délai entre la mise à jour du ConfigMap et sa projection dans le Pod peut atteindre la période de synchronisation du kubelet.<br><br><img-2.jpeg><br><hr><b>Explanatory Context :</b><br><br>Cette limitation souligne l'importance de concevoir des applications cloud-native, capables de s'adapter aux changements dynamiques de leur environnement. Dans Kubernetes, la configuration est souvent externalisée et mutable, ce qui nécessite des applications réactives. Cette approche s'aligne avec les principes des <i>12-factor apps</i>, où la configuration est strictement séparée du code et injectée via l'environnement.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Kubernetes_Application_Design"
+  },
+  {
+    "id": 92,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de modifier un ConfigMap existant, et comment se présente le manifeste après modification ?",
+    "back": "<b>Commande pour modifier un ConfigMap :</b><br><br><code>kubectl edit configmap sport</code><br><br><b>Exemple de manifeste après modification :</b><br><br><pre>apiVersion: v1<br>data:<br>  sport: cricket<br>kind: ConfigMap<br>metadata:<br>  creationTimestamp: '2024-01-04T14:05:06Z'<br>  name: sport<br>  namespace: default<br>  resourceVersion: '1743935'<br>  uid: 024ee001-fe72-487e-872e-34d6464a8a23</pre><br><b>Remarque :</b><br>- La clé <code>sport</code> est mise à jour avec la nouvelle valeur <code>cricket</code>.<br>- Les métadonnées (ex. <code>resourceVersion</code>, <code>uid</code>) sont gérées automatiquement par Kubernetes et peuvent différer.<br><br><img-5.jpeg><br><hr><b>Explanatory Context :</b><br><br>La commande <code>kubectl edit</code> permet de modifier directement les ressources Kubernetes via un éditeur interactif, simplifiant les mises à jour sans avoir à recréer le manifeste. Cela s'inscrit dans une approche déclarative, où l'état souhaité de la configuration est défini et appliqué dynamiquement. Le ConfigMap agit comme une source de vérité pour les paramètres, facilitant la gestion des environnements multiples (dev, staging, prod).",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Kubernetes_Commands"
+  },
+  {
+    "id": 94,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment injecter une valeur d'un ConfigMap comme variable d'environnement dans un conteneur d'un Pod ? Illustrez avec un exemple de manifest Deployment complet.",
+    "back": "<b>Méthode :</b><br>Pour injecter une valeur d'un ConfigMap comme variable d'environnement dans un conteneur, utilisez le champ <code>env</code> dans la spécification du conteneur du Deployment. Voici un exemple complet de manifest :<br><br><pre><code>apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: configmap-env-var\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: configmap-env-var\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: configmap-env-var\n    spec:\n      containers:\n      - name: my-container\n        image: busybox\n        command: ['sh', '-c', 'echo The basket is full of $(FRUITS) && sleep 3600']\n        env:\n        - name: FRUITS\n          valueFrom:\n            configMapKeyRef:\n              name: fruits\n              key: fruits\n</code></pre><br><b>Explication :</b><br>Le champ <code>env</code> référence le ConfigMap <code>fruits</code> et extrait la valeur associée à la clé <code>fruits</code> pour l'injecter comme variable d'environnement <code>FRUITS</code> dans le conteneur.<br><br><hr><b>Contexte Explicatif :</b><br>Les variables d'environnement sont une méthode courante pour injecter des configurations dans les applications conteneurisées. Elles permettent aux applications de lire dynamiquement des valeurs de configuration sans nécessiter de redémarrage ou de reconstruction de l'image du conteneur.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Kubernetes_Deployment"
+  },
+  {
+    "id": 95,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi les variables d'environnement d'un Pod ne se mettent-elles pas à jour automatiquement après modification d'un ConfigMap ?",
+    "back": "<b>Raison :</b><br>Les variables d'environnement d'un processus en cours d'exécution dans un Pod sont initialisées au démarrage du conteneur. Une fois le conteneur lancé, ces variables ne sont pas mises à jour dynamiquement, même si la source (comme un ConfigMap) est modifiée.<br><br>",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Kubernetes_Pod_Lifecycle"
+  },
+  {
+    "id": 99,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de modifier un ConfigMap existant ? Donnez un exemple de modification et expliquez les étapes à suivre.",
+    "back": "<b>Commande :</b><br>`kubectl edit configmap fruits`<br><br><b>Étapes à suivre :</b><br>1. Exécutez la commande <code>kubectl edit configmap fruits</code> pour ouvrir l'éditeur par défaut (par exemple, <code>vim</code> ou <code>nano</code>).<br>2. Modifiez la valeur de la clé <code>fruits</code> (par exemple, de <code>apples</code> à <code>mangoes</code>).<br>3. Sauvegardez et fermez l'éditeur. Kubernetes mettra à jour le ConfigMap.<br><br><b>Exemple de manifest après modification :</b><br><pre><code>apiVersion: v1\nkind: ConfigMap\ndata:\n  fruits: mangoes\n</code></pre><br><hr><b>Contexte Explicatif :</b><br>La commande <code>kubectl edit</code> permet de modifier directement un objet Kubernetes via un éditeur de texte. Cette méthode est utile pour des modifications rapides, mais elle n'est pas recommandée pour des configurations complexes ou versionnées. Pour des modifications plus robustes, il est préférable d'utiliser un fichier manifest et la commande <code>kubectl apply</code>.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Kubernetes_Commandes"
+  },
+  {
+    "id": 102,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle commande permet de créer un ConfigMap à partir de valeurs littérales dans Kubernetes, et à quoi sert cette commande ?",
+    "back": "<b>Commande pour créer un ConfigMap à partir de valeurs littérales :</b><br><br><code>kubectl create configmap &lt;nom-du-configmap&gt; --from-literal=&lt;clé&gt;=&lt;valeur&gt;</code><br><br><b>Exemple :</b><br><code>kubectl create configmap color --from-literal=color=red</code><br><br><b>Utilité :</b><br>Cette commande crée un ConfigMap qui stocke des paires clé-valeur. Les ConfigMaps sont utilisés pour externaliser la configuration des applications conteneurisées, permettant de modifier la configuration sans reconstruire les images des conteneurs. Les applications peuvent accéder à ces valeurs via des variables d'environnement ou des fichiers montés dans leurs conteneurs.<hr><b>Contexte Explicatif :</b><br>Les ConfigMaps sont essentiels dans Kubernetes pour séparer la configuration de l'application elle-même. Ils permettent de gérer dynamiquement les paramètres de configuration, comme les chaînes de connexion à une base de données ou les chemins de fichiers, sans modifier le code de l'application. Les changements apportés à un ConfigMap sont automatiquement reflétés dans les Pods qui l'utilisent, à condition que ces Pods soient redémarrés ou que le Deployment soit mis à jour.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Commandes_Kubectl"
+  },
+  {
+    "id": 105,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle procédure permet de mettre à jour un ConfigMap existant dans Kubernetes, et quel est l'impact sur les Pods utilisant ce ConfigMap ?",
+    "back": "<b>Procédure pour mettre à jour un ConfigMap :</b><br><br><b>1. Éditer le ConfigMap :</b><br><code>kubectl edit configmap &lt;nom-du-configmap&gt;</code><br><br>Cela ouvre l'éditeur par défaut pour modifier le ConfigMap. Par exemple :<br><br><code>kubectl edit configmap color</code><br><br><b>2. Modifier les valeurs :</b><br>Changez les valeurs des clés dans le fichier YAML qui s'ouvre. Par exemple, modifiez <code>color: red</code> en <code>color: blue</code>.<br><br><b>3. Sauvegarder les modifications :</b><br>Enregistrez et quittez l'éditeur. Kubernetes met à jour le ConfigMap automatiquement.<br><br><b>Impact sur les Pods :</b><br>Les Pods existants ne sont <b>pas mis à jour automatiquement</b>. Pour appliquer les changements :<br><ul><li>Redémarrez les Pods existants : <code>kubectl delete pod &lt;nom-du-pod&gt;</code>.</li><li>Ou déclenchez un rollout : <code>kubectl rollout restart deployment/&lt;nom-du-deployment&gt;</code>.</li><li>Les nouveaux Pods créés (par exemple, lors d'un scaling) utiliseront automatiquement la nouvelle configuration.</li></ul><br><b>Exemple de sortie après mise à jour :</b><br><code>Fri Jan  5 08:14:00 UTC 2024 My preferred color is blue</code><br><br>Les logs montrent que l'application utilise désormais la nouvelle valeur du ConfigMap.<hr><b>Contexte Explicatif :</b><br>Les ConfigMaps sont conçus pour externaliser la configuration des applications. Cependant, Kubernetes ne propage pas automatiquement les mises à jour des ConfigMaps aux Pods en cours d'exécution. Cela permet de contrôler précisément quand les changements sont appliqués. Cette approche garantit la stabilité des applications en production, tout en permettant une gestion flexible de la configuration.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Mise_À_Jour"
+  },
+  {
+    "id": 110,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment modifier un ConfigMap existant dans Kubernetes, et quel est l'impact sur les Pods qui l'utilisent ?",
+    "back": "<b>Modification d'un ConfigMap existant :</b><br>\nPour modifier un ConfigMap existant dans Kubernetes, utilisez la commande suivante :\n\n```bash\nkubectl edit configmap <nom-du-configmap>\n```\n\nPar exemple, pour modifier le ConfigMap `color` :\n\n```bash\nkubectl edit configmap color\n```\n\nDans l'éditeur qui s'ouvre, changez la valeur de la clé `color` de `blue` à `green` et enregistrez les modifications. Kubernetes mettra à jour le ConfigMap en conséquence.\n\n<br><b>Impact sur les Pods :</b><br>\n- **ConfigMap monté comme volume :** Les modifications sont disponibles immédiatement après la synchronisation suivante du kubelet. Les Pods existants ne verront pas les changements tant qu'ils ne sont pas redémarrés ou recréés.\n- **ConfigMap utilisé pour des variables d'environnement :** Les modifications ne sont disponibles qu'après un redéploiement du Pod (par exemple, via un `kubectl rollout restart`).\n\n<br><b>Exemple de sortie après modification :</b><br>\n```\nSat Feb 17 13:13:15 UTC 2024 My preferred color is blue\nSat Feb 17 13:13:25 UTC 2024 My preferred color is blue\nSat Feb 17 13:13:35 UTC 2024 My preferred color is green\n```\n\n<br><b>Vérification des logs :</b><br>\nPour vérifier que les modifications sont appliquées, vous pouvez surveiller les logs des Pods :\n\n```bash\nwhile true; do curl --connect-timeout 7.5 http://localhost:8081; sleep 10; done\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLa modification d'un ConfigMap est une opération courante pour mettre à jour la configuration d'une application sans redéployer le code. Cependant, l'impact sur les Pods dépend de la méthode d'utilisation du ConfigMap (volume ou variables d'environnement). Pour les volumes, les changements sont détectés automatiquement, tandis que pour les variables d'environnement, un redéploiement est nécessaire.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Configuration ConfigMap"
+  },
+  {
+    "id": 112,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment mettre à jour un Deployment pour utiliser un nouveau ConfigMap immutable dans Kubernetes ?",
+    "back": "<b>Étapes pour mettre à jour un Deployment avec un nouveau ConfigMap immutable :</b><br>\nPour mettre à jour un Deployment afin d'utiliser un nouveau ConfigMap immutable, suivez ces étapes :\n\n1. **Créer un nouveau ConfigMap immutable :**\n   ```bash\n   kubectl apply -f https://k8s.io/examples/configmap/new-immutable-configmap.yaml\n   ```\n   Vérifiez que le nouveau ConfigMap a été créé :\n   ```bash\n   kubectl get configmap\n   ```\n\n2. **Modifier le Deployment pour référencer le nouveau ConfigMap :**\n   ```bash\n   kubectl edit deployment <nom-du-deployment>\n   ```\n   Dans l'éditeur, mettez à jour la définition du volume pour utiliser le nouveau ConfigMap :\n   ```yaml\n   volumes:\n   - configMap:\n       defaultMode: 420\n       name: <nom-du-nouveau-configmap>  # Mettez à jour ce champ\n     name: config-volume\n   ```\n\n3. **Déclencher un redéploiement :**\n   La modification du Deployment déclenchera un redéploiement. Attendez que tous les anciens Pods soient terminés et que les nouveaux Pods soient prêts :\n   ```bash\n   kubectl get pods --selector=app.kubernetes.io/name=<nom-du-deployment>\n   ```\n\n4. **Vérifier les logs des nouveaux Pods :**\n   ```bash\n   kubectl logs deployment/<nom-du-deployment>\n   ```\n   Vous devriez voir la nouvelle configuration appliquée.\n\n<br><b>Exemple de sortie après mise à jour :</b>\br>\n```\nWed Mar 20 04:24:17 UTC 2024 The name of the company is Fiktivesunternehmen GmbH\n```\n\n<br><b>Nettoyage des anciens ConfigMaps :</b>\br>\nUne fois que tous les Deployments ont migré vers le nouveau ConfigMap, il est conseillé de supprimer l'ancien :\n\n```bash\nkubectl delete configmap <nom-du-ancien-configmap>\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLa mise à jour d'un Deployment pour utiliser un nouveau ConfigMap immutable est une opération délicate qui nécessite une planification. Les ConfigMaps immutables ne peuvent pas être modifiés directement, donc la solution consiste à créer un nouveau ConfigMap et à mettre à jour les références dans les Deployments. Cela garantit que la configuration reste stable et sécurisée pendant la transition.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Configuration Deployment_Update"
+  },
+  {
+    "id": 115,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les différences entre un ConfigMap monté comme volume et un ConfigMap utilisé pour configurer des variables d'environnement dans un Pod ?",
+    "back": "<b>Différences entre ConfigMap monté comme volume et ConfigMap pour variables d'environnement :</b><br>\n\n1. **Méthode de consommation :**\n   - **Volume :** Le ConfigMap est monté comme un système de fichiers dans le conteneur. Les fichiers sont créés à partir des paires clé-valeur du ConfigMap.\n   - **Variables d'environnement :** Les valeurs du ConfigMap sont injectées directement comme variables d'environnement dans le conteneur.\n\n2. **Mise à jour des données :**\n   - **Volume :** Les modifications du ConfigMap sont détectées par le kubelet et propagées aux Pods. Les fichiers sont mis à jour automatiquement.\n   - **Variables d'environnement :** Les modifications du ConfigMap ne sont pas propagées aux variables d'environnement existantes. Un redéploiement du Pod est nécessaire pour que les nouvelles valeurs soient prises en compte.\n\n3. **Cas d'utilisation :**\n   - **Volume :** Idéal pour les fichiers de configuration (par exemple, fichiers de configuration NGINX, fichiers de propriétés Java).\n   - **Variables d'environnement :** Idéal pour les configurations dynamiques qui doivent être accessibles via des variables d'environnement (par exemple, `DATABASE_URL`, `API_KEY`).\n\n4. **Performance :**\n   - **Volume :** Peut avoir un léger impact sur les performances, car le kubelet doit surveiller les changements et mettre à jour les fichiers.\n   - **Variables d'environnement :** Aucune surcharge de performance, car les variables sont injectées une fois au démarrage du conteneur.\n\n<br><b>Exemple de montage comme volume :</b>\n```yaml\nvolumes:\n- name: config-volume\n  configMap:\n    name: app-config\ncontainers:\n- name: nginx\n  image: nginx\n  volumeMounts:\n  - name: config-volume\n    mountPath: /etc/nginx/nginx.conf\n    subPath: nginx.conf\n```\n\n<br><b>Exemple d'utilisation pour variables d'environnement :</b>\n```yaml\nenv:\n- name: DATABASE_URL\n  valueFrom:\n    configMapKeyRef:\n      name: db-config\n      key: database-url\n```\n\n<hr><b>Contexte Explicatif :</b><br>\nLe choix entre monter un ConfigMap comme volume ou l'utiliser pour des variables d'environnement dépend des besoins spécifiques de l'application. Les volumes sont plus adaptés pour les fichiers de configuration complexes, tandis que les variables d'environnement sont idéales pour les configurations simples et dynamiques. Il est important de comprendre les différences pour optimiser l'utilisation des ConfigMaps dans Kubernetes.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_Configuration ConfigMap_Volume_EnvVar"
+  },
+  {
+    "id": 118,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelles sont les étapes clés pour configurer Redis à l'aide d'une ConfigMap dans Kubernetes ?",
+    "back": "<b>Étapes pour configurer Redis avec une ConfigMap :</b><br><br><br>1. <b>Créer la ConfigMap :</b><br><br>   - Définir une ConfigMap avec les paramètres de configuration Redis. Par exemple :<br><br>   ```yaml<br><br>   apiVersion: v1<br><br>   kind: ConfigMap<br><br>   metadata:<br><br>     name: example-redis-config<br><br>   data:<br><br>     redis-config: |\n<br>       maxmemory 2mb\n<br>       maxmemory-policy allkeys-lru\n<br>   ```<br><br>   - Appliquer la ConfigMap avec `kubectl apply -f example-redis-config.yaml`.<br><br><br><br>2. <b>Créer un Pod Redis qui utilise la ConfigMap :</b><br><br>   - Définir un Pod Redis qui monte la ConfigMap en tant que volume. Par exemple :<br><br>   ```yaml<br><br>   spec:<br><br>     volumes:<br><br>       - name: config<br><br>         configMap:<br><br>           name: example-redis-config<br><br>           items:<br><br>             - key: redis-config<br><br>               path: redis.conf<br><br>     containers:<br><br>       - name: redis<br><br>         image: redis<br><br>         volumeMounts:<br><br>           - name: config<br><br>             mountPath: /redis-master<br><br>   ```<br><br>   - Appliquer le manifeste du Pod avec `kubectl apply -f redis-pod.yaml`.<br><br><br><br>3. <b>Vérifier la configuration :</b><br><br>   - Utiliser `kubectl exec` pour entrer dans le Pod Redis et vérifier les paramètres avec `redis-cli` :<br><br>   ```bash<br><br>   kubectl exec -it pod/redis -- redis-cli<br><br>   127.0.0.1:6379> CONFIG GET maxmemory<br><br>   127.0.0.1:6379> CONFIG GET maxmemory-policy<br><br>   ```<br><br>   - Si les valeurs ne sont pas mises à jour, redémarrer le Pod pour appliquer les modifications.<br><br><br><br>4. <b>Mettre à jour la configuration (si nécessaire) :</b><br><br>   - Modifier la ConfigMap et la réappliquer avec `kubectl apply -f example-redis-config.yaml`.<br><br>   - Supprimer et recréer le Pod pour appliquer les nouvelles valeurs :<br><br>   ```bash<br><br>   kubectl delete pod redis<br><br>   kubectl apply -f redis-pod.yaml<br><br>   ```<br><br><hr><br><b>Explanatory Context :</b><br><br>Ces étapes illustrent comment Kubernetes permet de gérer dynamiquement les configurations d'une application comme Redis. La séparation entre la configuration (ConfigMap) et le Pod permet une grande flexibilité, car vous pouvez modifier les paramètres sans toucher au code ou à l'image de l'application. Cependant, il est crucial de comprendre que les Pods ne rechargent pas automatiquement les ConfigMaps modifiées ; un redémarrage est souvent nécessaire. Cette approche est particulièrement utile dans des environnements où les configurations varient entre les déploiements (ex: développement, staging, production).",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Redis_Deployment"
+  },
+  {
+    "id": 120,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Pourquoi est-il nécessaire de redémarrer un Pod Redis après avoir modifié une ConfigMap associée ?",
+    "back": "<b>Raison du redémarrage du Pod Redis :</b><br><br>Dans Kubernetes, les ConfigMaps sont montées dans les Pods au moment de leur création. Lorsque vous modifiez une ConfigMap, les changements ne sont pas automatiquement répercutés dans les Pods déjà en cours d'exécution. Voici pourquoi :<br><br><br>- <b>Montage statique des volumes :</b> Les volumes ConfigMap sont montés comme des systèmes de fichiers en lecture seule (ou en lecture-écriture si configuré) au démarrage du Pod. Une fois montés, les fichiers générés à partir de la ConfigMap ne sont pas mis à jour dynamiquement.<br><br>- <b>Comportement de Redis :</b> Redis lit son fichier de configuration (`redis.conf`) uniquement au démarrage. Si le fichier est modifié après le démarrage, Redis ne recharge pas automatiquement les nouveaux paramètres.<br><br>- <b>Absence de mécanisme de rechargement automatique :</b> Kubernetes ne fournit pas de mécanisme natif pour recharger dynamiquement les ConfigMaps dans les Pods en cours d'exécution. Les applications doivent être conçues pour surveiller et recharger les fichiers de configuration, ce que Redis ne fait pas par défaut.<br><br><br><br><b>Solution :</b><br><br>Pour appliquer les modifications apportées à une ConfigMap, il est nécessaire de supprimer et de recréer le Pod. Cela force Kubernetes à remonter la ConfigMap mise à jour et permet à Redis de lire les nouveaux paramètres au démarrage.<br><br><hr><br><b>Explanatory Context :</b><br><br>Cette limitation souligne l'importance de concevoir des applications cloud-native pour qu'elles soient résilientes et capables de recharger dynamiquement leurs configurations. Bien que le redémarrage du Pod soit une solution simple, il peut entraîner une brève interruption de service. Pour les applications critiques, des stratégies comme les déploiements progressifs (rolling updates) ou l'utilisation de sidecars pour recharger les configurations peuvent être envisagées. Dans le cas de Redis, des outils comme `confd` ou des scripts personnalisés peuvent être utilisés pour surveiller les modifications de la ConfigMap et recharger dynamiquement la configuration.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Redis_Lifecycle"
+  },
+  {
+    "id": 122,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Comment vérifier que les paramètres d'une ConfigMap ont été correctement appliqués à un Pod Redis ?",
+    "back": "<b>Méthode pour vérifier l'application des paramètres d'une ConfigMap à un Pod Redis :</b><br><br><br>1. <b>Accéder au Pod Redis :</b><br><br>   Utilisez la commande `kubectl exec` pour entrer dans le conteneur Redis et lancer l'outil en ligne de commande `redis-cli` :<br><br>   ```bash<br><br>   kubectl exec -it pod/redis -- redis-cli<br><br>   ```<br><br><br><br>2. <b>Vérifier les paramètres de configuration :</b><br><br>   - Pour vérifier la valeur de `maxmemory` :<br><br>     ```bash<br><br>     127.0.0.1:6379> CONFIG GET maxmemory<br><br>     ```<br><br>     La réponse attendue après configuration est :<br><br>     ```bash<br><br>     1) 'maxmemory'<br><br>     2) '2097152'  # Valeur correspondant à 2mb<br><br>     ```<br><br><br>   - Pour vérifier la valeur de `maxmemory-policy` :<br><br>     ```bash<br><br>     127.0.0.1:6379> CONFIG GET maxmemory-policy<br><br>     ```<br><br>     La réponse attendue après configuration est :<br><br>     ```bash<br><br>     1) 'maxmemory-policy'<br><br>     2) 'allkeys-lru'<br><br>     ```<br><br><br><br>3. <b>Vérifier le contenu du fichier de configuration monté :</b><br><br>   Vous pouvez également vérifier directement le contenu du fichier de configuration généré à partir de la ConfigMap :<br><br>   ```bash<br><br>   kubectl exec -it pod/redis -- cat /redis-master/redis.conf<br><br>   ```<br><br>   Le fichier doit contenir les paramètres configurés dans la ConfigMap, par exemple :<br><br>   ```\nmaxmemory 2mb\nmaxmemory-policy allkeys-lru\n```<br><br><br><br>4. <b>Vérifier les logs du Pod (si nécessaire) :</b><br><br>   Pour diagnostiquer d'éventuels problèmes, consultez les logs du Pod Redis :<br><br>   ```bash<br><br>   kubectl logs pod/redis<br><br>   ```<br><br><hr><br><b>Explanatory Context :</b><br><br>Cette méthode de vérification est essentielle pour s'assurer que les configurations appliquées via une ConfigMap sont correctement prises en compte par l'application. Dans le cas de Redis, l'utilisation de `redis-cli` permet de vérifier directement les paramètres actifs, ce qui est plus fiable que de simplement consulter le fichier de configuration. Cela permet de détecter d'éventuels problèmes, comme un fichier de configuration mal monté ou des paramètres non supportés par la version de Redis utilisée. Cette approche est applicable à d'autres applications configurées via des ConfigMaps, en adaptant les commandes de vérification à l'outil spécifique de l'application.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Redis_Verification"
+  },
+  {
+    "id": 123,
+    "type": "Basique",
+    "subdeck": "01_Définitions",
+    "front": "Quelle est la structure YAML d'un Pod Redis configuré pour utiliser une ConfigMap, et comment cette structure permet-elle d'exposer les paramètres de la ConfigMap au conteneur Redis ?",
+    "back": "<b>Structure YAML d'un Pod Redis utilisant une ConfigMap :</b><br><br>Voici un exemple de manifeste YAML pour un Pod Redis configuré avec une ConfigMap :<br><br><br>```yaml<br><br>apiVersion: v1<br><br>kind: Pod<br><br>metadata:<br><br>  name: redis<br><br>spec:<br><br>  containers:<br><br>    - name: redis<br><br>      image: redis<br><br>      volumeMounts:<br><br>        - name: config<br><br>          mountPath: /redis-master<br><br>  volumes:<br><br>    - name: config<br><br>      configMap:<br><br>        name: example-redis-config<br><br>        items:<br><br>          - key: redis-config<br><br>            path: redis.conf<br><br>```<br><br><br><br><b>Explication de la structure :</b><br><br><br>1. <b>Définition du volume ConfigMap :</b><br><br>   - Le bloc `spec.volumes` définit un volume nommé `config` qui utilise une ConfigMap (`configMap`).<br><br>   - Le champ `name: example-redis-config` spécifie le nom de la ConfigMap à utiliser.<br><br>   - Le sous-bloc `items` permet de sélectionner des clés spécifiques de la ConfigMap et de les exposer sous forme de fichiers dans le volume. Ici, la clé `redis-config` de la ConfigMap est exposée sous le nom de fichier `redis.conf`.<br><br><br><br>2. <b>Montage du volume dans le conteneur :</b><br><br>   - Le bloc `spec.containers[0].volumeMounts` définit où le volume `config` sera monté dans le conteneur.<br><br>   - Le champ `mountPath: /redis-master` spécifie que le volume sera monté dans le répertoire `/redis-master` du conteneur.<br><br>   - Le fichier `redis.conf` (généré à partir de la clé `redis-config` de la ConfigMap) sera donc accessible à l'emplacement `/redis-master/redis.conf` dans le conteneur.<br><br><br><br>3. <b>Effet net :</b><br><br>   - La clé `redis-config` de la ConfigMap `example-redis-config` est exposée sous forme de fichier `redis.conf` dans le volume `config`.<br><br>   - Ce volume est monté dans le conteneur Redis à l'emplacement `/redis-master`.<br><br>   - Redis lit le fichier `/redis-master/redis.conf` au démarrage pour appliquer les paramètres de configuration.<br><br><hr><br><b>Explanatory Context :</b><br><br>Cette structure illustre comment Kubernetes permet de découpler la configuration de l'application de son déploiement. Le volume ConfigMap agit comme un pont entre la ConfigMap (qui stocke les paramètres) et le conteneur (qui les utilise). En montant la ConfigMap en tant que volume, vous pouvez fournir des fichiers de configuration complets à vos applications, ce qui est particulièrement utile pour les applications comme Redis qui s'attendent à lire leur configuration à partir d'un fichier. Cette approche est flexible et portable, car la même image Redis peut être utilisée dans différents environnements avec des configurations différentes, simplement en changeant la ConfigMap associée.",
+    "tags": "kubernetes-tutorials-manuel (3) Kubernetes_ConfigMap Redis_YAML"
+  }
+]
+```
+
+---

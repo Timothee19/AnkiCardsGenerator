@@ -82,7 +82,7 @@ if os.path.exists(".env"):
                 os.environ[key.strip()] = val.strip().strip("\"'")
 
 try:
-    from mistralai import Mistral
+    from mistralai.client import Mistral
     from mistralai.extra import response_format_from_pydantic_model
 except ImportError:
     print("Veuillez installer le package mistralai : pip install mistralai")
