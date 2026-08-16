@@ -745,10 +745,6 @@ def clean_mathjax_environments(text):
 
     return re.sub(pattern, repl, text, flags=re.DOTALL)
 
-def fix_inline_block_math(text):
-    # Désactivation du forçage inline.
-    # Laissons le choix du LLM (qui respecte le prompt) piloter la mise en page.
-    return text
 
 def clean_for_anki_tsv(text):
     if not text:
@@ -1064,7 +1060,6 @@ JSON OUTPUT ONLY:
                     c["front"] = remove_code_tags_around_mathjax(c["front"])
                     c["front"] = clean_mathjax_environments(c["front"])
                     c["front"] = restore_html_tags(c["front"])
-                    c["front"] = fix_inline_block_math(c["front"])
                     c["front"] = normalize_image_references(c["front"])
                     c["front"] = clean_for_anki_tsv(c["front"])
                     
@@ -1072,7 +1067,6 @@ JSON OUTPUT ONLY:
                     c["back"] = remove_code_tags_around_mathjax(c["back"])
                     c["back"] = clean_mathjax_environments(c["back"])
                     c["back"] = restore_html_tags(c["back"])
-                    c["back"] = fix_inline_block_math(c["back"])
                     c["back"] = normalize_image_references(c["back"])
                     c["back"] = clean_for_anki_tsv(c["back"])
                     
@@ -2294,7 +2288,6 @@ def add_card_to_decks(deck_definitions, deck_theoremes, deck_vocabulaire, deck_s
     raw_front = remove_code_tags_around_mathjax(raw_front)
     raw_front = clean_mathjax_environments(raw_front)
     raw_front = restore_html_tags(raw_front)
-    raw_front = fix_inline_block_math(raw_front)
     raw_front = normalize_image_references(raw_front)
     raw_front = clean_for_anki_tsv(raw_front)
     
@@ -2302,7 +2295,6 @@ def add_card_to_decks(deck_definitions, deck_theoremes, deck_vocabulaire, deck_s
     raw_back = remove_code_tags_around_mathjax(raw_back)
     raw_back = clean_mathjax_environments(raw_back)
     raw_back = restore_html_tags(raw_back)
-    raw_back = fix_inline_block_math(raw_back)
     raw_back = normalize_image_references(raw_back)
     raw_back = clean_for_anki_tsv(raw_back)
     
