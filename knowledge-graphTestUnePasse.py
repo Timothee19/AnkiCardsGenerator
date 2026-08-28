@@ -6,6 +6,11 @@ import json
 import re
 import markdown
 
+from ocr import traiter_pdf_vers_markdown
+
+from dotenv import load_dotenv
+
+load_dotenv()  # reads variables from a .env file and sets them in os.environ
 
 labels_fr = ["Théorème", "Proposition", "Corollaire", "Lemme", "Définition", "Contexte"]
 sub_labels_fr = ["Enoncé", "Démonstration", "Exemple", "Remarque", "Exercice"]
@@ -13,13 +18,12 @@ labels_en = ["Theorem", "Proposition", "Corollary", "Lemma", "Definition", "Cont
 sub_labels_en = ["Proof", "Example", "Remark", "Exercise"]
 
 
+
 #==========================
 # Numérotation du markdown
 #==========================
 
-from dotenv import load_dotenv
-
-load_dotenv()  # reads variables from a .env file and sets them in os.environ
+markdown_file, media_files = traiter_pdf_vers_markdown()
 
 def numeroter_fichier_markdown(input_path: str, output_path: str = None) -> str:
     """
@@ -62,7 +66,7 @@ def numeroter_texte_en_memoire(texte_markdown: str) -> str:
     lignes_numerotees = [f"{i}: {ligne}" for i, ligne in enumerate(lignes, 1)]
     return "\n".join(lignes_numerotees)
 
-numbered_markdown_output = numeroter_fichier_markdown("C:/Users/a956068/Downloads/ocr-playground-download-20260817T215800Z/Lebesgue_integral_V2.pdf/markdown.md","markown_numerote.md")
+numbered_markdown_output = numeroter_fichier_markdown(markdown_file,"markown_numerote.md")
 
 if os.path.exists(numbered_markdown_output):
         with open(numbered_markdown_output, "r", encoding="utf-8") as f:
@@ -89,6 +93,7 @@ STRICT RULES:
 1. WHAT IS A NODE:
    - A node is ONLY created when introducing a formal concept: "Definition", "Théorème", "Proposition", "Lemme", "Corollaire", or "Contexte".
    - "main" MUST be strictly one of: ["Théorème", "Proposition", "Definition", "Lemme", "Corollaire", "Contexte"].
+   - COMPLETELY FORBIDDEN: You must NEVER use "Exemple_XX", "Remarque_XX", "Démonstration_XX", or "Exercice_XX" as a main node.
    - "name": The explicit name of the concept if stated (e.g., "Concept Alpha", "Theorem Beta"), otherwise "None".
 
 2. STRICT SUB-ELEMENT AGGREGATION (NO STANDALONE EXAMPLES/REMARKS):
@@ -98,7 +103,8 @@ STRICT RULES:
    * Example in text: Lines 150-160 are "Example C". This is an example of "Theorem D". Put lines 150-160 inside Theorem D under the "Exemple" key.
 
 3. NON-CONTIGUOUS & DEFERRED SUB-ELEMENT AGGREGATION:
-   - Sub-elements (Proofs, Examples, Remarks, Exercises) are sometimes located far away from their parent statement or interleaved with unrelated concepts. 
+   Sub-elements (Proofs, Examples, Remarks, Exercises) are sometimes located far away from their parent statement or interleaved with unrelated concepts :
+   - BEFORE you close the JSON object for a concept, you MUST actively scan the remainder of the document. Locate any deferred proofs, examples, or exercises belonging to this concept and insert their line numbers into the CURRENT node right now, even if they appear pages later.
    - Always bind each sub-element strictly to its true semantic parent, regardless of distance, page breaks, or intervening nodes.
    - Disjoint Resolution Example:
        {
@@ -125,6 +131,10 @@ STRICT RULES:
 4. EXHAUSTIVE PARTITION (NO OMISSIONS, NO OVERLAPS):
    - Every single line from line 1 to the end of the text must belong to at least one interval in the output.
    - For general text, table of contents, introduction sections, or summaries not attached to a single theorem/definition, use a "Contexte" node with "Enoncé".
+
+5. ANTI-LAZINESS & NO MICRO-FRAGMENTATION (CRITICAL):
+- You MUST process the text line by line until the VERY LAST LINE of the document. Do NOT skip any sections, and do NOT summarize. Stopping early is strictly forbidden.
+- Do NOT fragment intervals unnecessarily. A block of text should be one continuous interval `[[start, end]]` unless explicitly interrupted by a new Theorem/Definition.
 
 OUTPUT FORMAT:
 Output MUST be strictly valid JSON matching this schema:
@@ -304,7 +314,15 @@ mistral_output = chat_response
 #print(chat_response)
 # 1. On accède à la chaîne de caractères JSON contenue dans la réponse
 json_string = mistral_output.choices[0].message.content
+finish_reason = mistral_output.choices[0].finish_reason
 
+print(f"\nℹ️ Raison de fin : {finish_reason}")
+if finish_reason == "length":
+    print("⚠️ ATTENTION : La limite de tokens a été atteinte, la réponse a été coupée !")
+elif finish_reason == "stop":
+    print("✅ Le modèle a terminé sa génération normalement.")
+else:
+    print(mistral_output)
 # 2. On transforme cette chaîne de caractères en vrai dictionnaire Python
 parsed_data = json.loads(json_string)
 
@@ -580,6 +598,9 @@ for card in anki_source:
 import genanki
 
 
+import genanki
+import random
+
 CSS = r"""
 :root{
   --bg:#faf6ef;
@@ -693,7 +714,28 @@ pre{
 }
 pre code{ background:none; padding:0; color:inherit; box-shadow:none; }
  
-/* tableaux */
+/* equations LaTeX trop larges (cases, matrices...) : defilement horizontal plutot que debordement */
+.card mjx-container{
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+.card mjx-container[display="true"]{
+  display:block;
+  margin:14px 0;
+  padding-bottom:2px; /* evite que la scrollbar colle au texte */
+}
+/* anciens rendus MathJax (v2) et rendu image legacy, par securite */
+.card .MathJax_Display, .card .MJXc-display{
+  overflow-x:auto;
+  overflow-y:hidden;
+  max-width:100%;
+}
+.card img.latex{
+  max-width:100%;
+  width:auto;
+  height:auto;
+}
 table{
   border-collapse:separate;
   border-spacing:0;
@@ -744,7 +786,7 @@ th{ background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%); col
 MODEL_BASIC_ID = 1875392046
 model_basic = genanki.Model(
     MODEL_BASIC_ID,
-    'Basique (Claude)V2',
+    'Basique (Claude)',
     fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
     sort_field_index=2,
     templates=[
@@ -804,6 +846,8 @@ model_cloze = genanki.Model(
 )
 
 
+
+
 my_deck = genanki.Deck(
   2059400111,
   'LebesgueTestSinglePass')
@@ -839,8 +883,14 @@ for card in anki_source:
     j+=1
     my_deck.add_note(my_note)
 
-genanki.Package(my_deck).write_to_file('TestLebesgueSinglePasse.apkg')
+# 1. Création du package à partir du deck
+my_package = genanki.Package(my_deck)
 
+# 2. Injection des images locales dans le fichier Anki
+my_package.media_files = media_files 
+
+# 3. Écriture du fichier final
+my_package.write_to_file('TestLebesgueSinglePasse.apkg')
 
 
 

@@ -7,19 +7,24 @@ import re
 import markdown
 
 
+from ocr import traiter_pdf_vers_markdown
+
+from dotenv import load_dotenv
+
+load_dotenv()  # reads variables from a .env file and sets them in os.environ
+
 labels_fr = ["Théorème", "Proposition", "Corollaire", "Lemme", "Définition", "Contexte"]
 sub_labels_fr = ["Enoncé", "Démonstration", "Exemple", "Remarque", "Exercice"]
 labels_en = ["Theorem", "Proposition", "Corollary", "Lemma", "Definition", "Context"]
 sub_labels_en = ["Proof", "Example", "Remark", "Exercise"]
 
 
+
 #==========================
 # Numérotation du markdown
 #==========================
 
-from dotenv import load_dotenv
-
-load_dotenv()  # reads variables from a .env file and sets them in os.environ
+markdown_file, media_files = traiter_pdf_vers_markdown()
 
 def numeroter_fichier_markdown(input_path: str, output_path: str = None) -> str:
     """
@@ -62,7 +67,7 @@ def numeroter_texte_en_memoire(texte_markdown: str) -> str:
     lignes_numerotees = [f"{i}: {ligne}" for i, ligne in enumerate(lignes, 1)]
     return "\n".join(lignes_numerotees)
 
-numbered_markdown_output = numeroter_fichier_markdown("C:/Users/a956068/Downloads/ocr-playground-download-20260817T215800Z/Lebesgue_integral_V2.pdf/markdown.md","markown_numerote.md")
+numbered_markdown_output = numeroter_fichier_markdown(markdown_file,"markown_numerote.md")
 
 if os.path.exists(numbered_markdown_output):
         with open(numbered_markdown_output, "r", encoding="utf-8") as f:
@@ -81,7 +86,7 @@ inputs = [
 ROLE
 You are a structural parser and semantic extraction agent for academic course notes.
 Your task is to parse a markdown text provided with line numbers (format "LineNumber: Text") and extract the sequence of primary concepts into a structured list.
-Note: You are the FIRST agent in a pipeline. Your job is ONLY to extract the main conceptual blocks. A second agent will process the internal sub-elements later.
+Note: You are the FIRST agent in a pipeline. Your job is ONLY to extract the main conceptual blocks (ALL OF THEM). A second agent will process the internal sub-elements later.
 
 OBJECTIVE
 Identify every primary pedagogical concept (Théorème, Proposition, Définition, Lemme, Corollaire) or general introductory/transitional material (Contexte) in the document.
@@ -103,8 +108,10 @@ STRICT RULES:
 3. IGNORE SUB-ELEMENTS:
    - Whenever you encounter an Example, Remark, Proof, or Exercise in the text, you MUST IGNORE IT entirely. Do NOT create a node for these sub-elements. Your focus is strictly on the main parent concepts.
 
-4. EXHAUSTIVE EXTRACTION:
+4. EXHAUSTIVE EXTRACTION (NO OMISSION):
    - Every single main theorem, definition, proposition, lemma, corollary, and context block present in the text must be extracted.
+   - Every single line from line 1 to the end of the text must belong to at least one interval in the output.
+   - For general text, table of contents, introduction sections, or summaries not attached to a single theorem/definition/proposition/corrolary/lemma, use a "Contexte" node.
 
 OUTPUT FORMAT:
 Output MUST be strictly valid JSON matching this schema:
@@ -301,7 +308,7 @@ for node_info in parsed_data.get("node",[]):
     """
                         }, {"role":"user", "content": markdown_lines}]
     sub_node_mistral = client.chat.complete(
-        model = "mistral-small-latest",
+        model = "mistral-large-latest",
         messages = sub_nodes_inputs,
         temperature=0.0,
         top_p = 1.0,
@@ -408,6 +415,10 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
     else:
         markdown_lines = markdown_source.splitlines(keepends=True)
 
+    total_lines_count = len(markdown_lines)
+    all_lines = set(range(1, total_lines_count+1))
+    covered_lines = set()
+    
     # Expression régulière pour matcher les préfixes de type "1291: ", "1291 | ", etc.
     line_number_regex = re.compile(r"^\s*\d+[\s\|\:\.\-\)]\s*")
 
@@ -463,6 +474,35 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
         concepts_list.append(main_data)
         current_main = next_main
 
+        # 4. Vérification de la complétude
+        missing_lines = sorted(all_lines - covered_lines)
+        
+        print("\n" + "=" * 50)
+        if not missing_lines:
+            print("✅ Intégralité respectée : 100% du Markdown a été retranscrit !")
+        else:
+            taux = ((total_lines_count - len(missing_lines)) / total_lines_count) * 100
+            print(f"⚠️ Retranscription incomplète : {taux:.1f}% des lignes couvertes.")
+            print(f"❌ {len(missing_lines)} ligne(s) non retranscrite(s).")
+        
+            # 1. Sauvegarde détaillée dans un fichier texte
+            report_file = "lignes_manquantes_rapport.txt"
+            with open(report_file, "w", encoding="utf-8") as f:
+                f.write(f"=== RAPPORT DES {len(missing_lines)} LIGNES MANQUANTES ===\n\n")
+                for line_num in missing_lines:
+                    raw_content = markdown_lines[line_num - 1].rstrip("\n")
+                    f.write(f"[Ligne {line_num:4d}] : {raw_content}\n")
+        
+            print(f"📁 Le détail complet a été sauvegardé dans le fichier : {report_file}")
+        
+            # 2. Aperçu restreint dans la console (seulement les 10 premières)
+            print("\n🔍 Aperçu des 10 premières lignes manquantes :")
+            for line_num in missing_lines[:10]:
+                raw_content = markdown_lines[line_num - 1].rstrip("\n")
+                print(f"   [Ligne {line_num:4d}] : {raw_content}")
+        
+        print("=" * 50 + "\n")
+
     return concepts_list
 
 anki_source = extraire_blocs_pour_anki(G, "markown_numerote.md")
@@ -470,7 +510,7 @@ import json
 
 
 # Affiche le dictionnaire formaté sur plusieurs lignes avec encodage UTF-8 respecté
-print(json.dumps(anki_source, indent=4, ensure_ascii=False))
+#print(json.dumps(anki_source, indent=4, ensure_ascii=False))
 
 
 
@@ -485,6 +525,10 @@ def markdown_to_anki_html(text: str) -> str:
     """
     if not text:
         return ""
+    
+    # 1. Échapper les chevrons isolés pour qu'Anki ne les prenne pas pour du HTML
+    # On n'échappe que les chevrons de mathématiques.
+    text = text.replace("< ", "&lt; ").replace(" <", " &lt;").replace(">\n", "&gt;\n")
 
     placeholders = {}
     counter = 0
@@ -563,7 +607,7 @@ example = []
 sub_labels_fr = ["Enoncé", "Démonstration", "Exemple", "Remarque", "Exercice"]
 
 for card in anki_source:
-    print(card["label"])
+    #print(card["label"])
     for i in range(len(card["sub_nodes"])):
         if card["sub_nodes"][i]["type"] == "Enoncé":
             enonce.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
@@ -573,19 +617,19 @@ for card in anki_source:
             remark.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
         elif card["sub_nodes"][i]["type"] == "Exemple":
             example.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
-    print(enonce[0] + "\n")
-    if len(proof)>=1:
-        print(proof[0] + "\n")
-    if len(remark) >= 1:
-        print("\n".join(remark))
-    if len(example)>=1:
-        print("\n".join(example))
+    #print(enonce[0] + "\n")
+    #if len(proof)>=1:
+        #print(proof[0] + "\n")
+    #if len(remark) >= 1:
+        #print("\n".join(remark))
+    #if len(example)>=1:
+        #print("\n".join(example))
     
 #========================================
 # Création d'un paquet Anki intermédiaire
 #========================================
 import genanki
-
+import random
 
 CSS = r"""
 :root{
@@ -609,14 +653,14 @@ CSS = r"""
   --code-dark-bg2:#3c3527;
   --code-dark-ink:#f4ede0;
 }
-
+ 
 html, body{
   margin:0;
   background-color:var(--bg);
   background-image:radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
   background-size:22px 22px;
 }
-
+ 
 .card{
   font-family:"Source Sans 3","Segoe UI",-apple-system,BlinkMacSystemFont,Arial,sans-serif;
   font-size:20px;
@@ -627,10 +671,10 @@ html, body{
   margin:0 auto;
   padding:32px 36px;
   background:linear-gradient(165deg, #ffffff 0%, var(--card-bg) 100%);
-  border-radius:22px;
-  box-shadow:0 22px 46px rgba(46,42,36,.20), 0 2px 6px rgba(46,42,36,.10), inset 0 1px 0 rgba(255,255,255,.9);
+  border-radius:0 0 22px 22px;
+  box-shadow:0 1px 2px rgba(46,42,36,.16), 0 4px 10px rgba(46,42,36,.18), inset 0 1px 0 rgba(255,255,255,.9);
 }
-
+ 
 /* separateur Question / Reponse : barre droite + bulle en relief */
 .divider{
   display:flex;
@@ -650,23 +694,23 @@ html, body{
   letter-spacing:.06em;
   text-transform:uppercase;
   color:var(--accent-dark);
-  background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%);
+  background:linear-gradient(160deg, rgba(79,125,92,.07) 0%, rgba(79,125,92,.17) 100%);
   padding:4px 12px;
   border-radius:999px;
-  box-shadow:0 4px 10px rgba(79,125,92,.28), inset 0 1px 0 rgba(255,255,255,.9), inset 0 -2px 3px rgba(60,96,71,.10);
+  box-shadow:0 1px 2px rgba(79,125,92,.22), 0 2px 6px rgba(79,125,92,.22), inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 2px rgba(60,96,71,.10);
   white-space:nowrap;
 }
-
+ 
 /* cloze : relief marque, forme V1 conservee */
 .cloze{
   font-weight:600;
   color:var(--accent2-dark);
-  background:linear-gradient(160deg, #ffffff 0%, var(--accent2-soft) 100%);
+  background:linear-gradient(160deg, rgba(193,105,79,.07) 0%, rgba(193,105,79,.17) 100%);
   padding:1px 7px;
   border-radius:5px;
-  box-shadow:0 3px 7px rgba(193,105,79,.25), inset 0 1px 0 rgba(255,255,255,.9);
+  box-shadow:0 1px 2px rgba(193,105,79,.18), 0 2px 5px rgba(193,105,79,.18), inset 0 1px 0 rgba(255,255,255,.9);
 }
-
+ 
 /* images */
 img{
   max-width:100%;
@@ -674,9 +718,9 @@ img{
   display:block;
   margin:16px auto;
   border-radius:26px 8px 26px 8px;
-  box-shadow:0 16px 32px rgba(46,42,36,.22);
+  box-shadow:0 2px 4px rgba(46,42,36,.16), 0 6px 14px rgba(46,42,36,.18);
 }
-
+ 
 /* code */
 code{
   font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
@@ -685,7 +729,7 @@ code{
   color:var(--code-ink);
   padding:2px 7px;
   border-radius:8px 3px 8px 3px;
-  box-shadow:0 2px 5px rgba(46,42,36,.12), inset 0 1px 0 rgba(255,255,255,.8);
+  box-shadow:0 1px 2px rgba(46,42,36,.12), inset 0 1px 0 rgba(255,255,255,.8);
 }
 pre{
   font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
@@ -696,11 +740,32 @@ pre{
   overflow-x:auto;
   line-height:1.55;
   font-size:.85em;
-  box-shadow:0 16px 34px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08);
+  box-shadow:0 1px 3px rgba(0,0,0,.24), 0 4px 10px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.08);
 }
 pre code{ background:none; padding:0; color:inherit; box-shadow:none; }
-
-/* tableaux */
+ 
+/* equations LaTeX trop larges (cases, matrices...) : defilement horizontal plutot que debordement */
+.card mjx-container{
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+.card mjx-container[display="true"]{
+  display:block;
+  margin:14px 0;
+  padding-bottom:2px; /* evite que la scrollbar colle au texte */
+}
+/* anciens rendus MathJax (v2) et rendu image legacy, par securite */
+.card .MathJax_Display, .card .MJXc-display{
+  overflow-x:auto;
+  overflow-y:hidden;
+  max-width:100%;
+}
+.card img.latex{
+  max-width:100%;
+  width:auto;
+  height:auto;
+}
 table{
   border-collapse:separate;
   border-spacing:0;
@@ -710,12 +775,12 @@ table{
   border:1px solid var(--line);
   border-radius:16px;
   overflow:hidden;
-  box-shadow:0 10px 22px rgba(46,42,36,.14);
+  box-shadow:0 2px 4px rgba(46,42,36,.12), 0 6px 14px rgba(46,42,36,.14);
 }
 th, td{ padding:10px 13px; text-align:left; border-bottom:1px solid var(--line); }
 tr:last-child td{ border-bottom:none; }
 th{ background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%); color:var(--accent-dark); font-weight:700; box-shadow:inset 0 -1px 0 rgba(46,42,36,.06); }
-
+ 
 /* mode nuit (desktop + AnkiDroid) */
 .night_mode body, body.night_mode, .nightMode body, body.nightMode{
   background-color:#211d18;
@@ -747,7 +812,7 @@ th{ background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%); col
 .night_mode code, .nightMode code{ background:linear-gradient(160deg, #3a352c 0%, var(--code-bg) 100%); box-shadow:0 2px 5px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
 .night_mode th, .nightMode th{ background:linear-gradient(160deg, #3a352c 0%, var(--accent-soft) 100%); box-shadow:inset 0 -1px 0 rgba(0,0,0,.2); }
 """
-
+ 
 MODEL_BASIC_ID = 1875392046
 model_basic = genanki.Model(
     MODEL_BASIC_ID,
@@ -765,10 +830,57 @@ model_basic = genanki.Model(
     ],
     css=CSS,
 )
+ 
+MODEL_GENERALITES_ID = 1875392091
+model_generalites = genanki.Model(
+    MODEL_GENERALITES_ID,
+    'Generalites deux sens (Claude)',
+    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
+    sort_field_index=2,
+    templates=[
+        {
+            'name': 'Sens 1',
+            'qfmt': '<div class="note">{{Front}}</div>',
+            'afmt': '<div class="note">{{Front}}</div>'
+                    '<div class="divider"><span>Reponse</span></div>'
+                    '<div class="note answer">{{Back}}</div>',
+        },
+        {
+            'name': 'Sens 2',
+            'qfmt': '<div class="note">{{Back}}</div>',
+            'afmt': '<div class="note">{{Back}}</div>'
+                    '<div class="divider"><span>Reponse</span></div>'
+                    '<div class="note answer">{{Front}}</div>',
+        },
+    ],
+    css=CSS,
+)
+ 
+MODEL_CLOZE_ID = 1875392177
+model_cloze = genanki.Model(
+    MODEL_CLOZE_ID,
+    'Cloze (Claude)',
+    model_type=genanki.Model.CLOZE,
+    fields=[{'name': 'Text'}, {'name': 'Extra'}, {'name': 'Sequence'}],
+    sort_field_index=2,
+    templates=[
+        {
+            'name': 'Cloze',
+            'qfmt': '<div class="note">{{cloze:Text}}</div>',
+            'afmt': '<div class="note">{{cloze:Text}}</div>'
+                    '{{#Extra}}<div class="divider"><span>Info</span></div>'
+                    '<div class="note answer">{{Extra}}</div>{{/Extra}}',
+        },
+    ],
+    css=CSS,
+)
+
+
+
 
 my_deck = genanki.Deck(
-  2059400110,
-  'LebesgueTest')
+  2059400111,
+  'AI_Chap2Test')
 
 j=0
 for card in anki_source:
@@ -788,7 +900,8 @@ for card in anki_source:
             remark.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
         elif card["sub_nodes"][i]["type"] == "Exemple":
             example.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
-    back+=enonce[0] + "<br><br>"
+    if len(enonce)>=1:
+        back+=enonce[0] + "<br><br>"
     if len(proof)>=1:
         back+=proof[0] + "<br><br>"
     if len(remark) >= 1:
@@ -801,7 +914,7 @@ for card in anki_source:
     j+=1
     my_deck.add_note(my_note)
 
-genanki.Package(my_deck).write_to_file('TestLebesgue.apkg')
+genanki.Package(my_deck).write_to_file('AI_Chap2Test.apkg')
 
 
 
