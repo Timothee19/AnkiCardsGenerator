@@ -146,10 +146,10 @@
 146: 
 147: Figure 2.2 Plots of the beta distribution $\mathrm{Beta}(\mu |a,b)$ given by (2.13) as a function of $\mu$ for various values of the hyperparameters $a$ and $b$.
 148: 
-149: where $l = N - m$, and therefore corresponds to the number of ‘tails’ in the coin example. We see that (2.17) has the same functional dependence on $\mu$ as the prior distribution, reflecting the conjugacy properties of the prior with respect to the likelihood function. Indeed, it is simply another beta distribution, and its normalization coefficient can therefore be obtained by comparison with (2.13) to give
+149: where $l = N - m$, and therefore corresponds to the number of 'tails' in the coin example. We see that (2.17) has the same functional dependence on $\mu$ as the prior distribution, reflecting the conjugacy properties of the prior with respect to the likelihood function. Indeed, it is simply another beta distribution, and its normalization coefficient can therefore be obtained by comparison with (2.13) to give
 150: 
 151: $$
-152: p(\mu|m,l,a,b) = \frac{\Gamma(m + a + l + b)}{\Gamma(m + a)\Gamma(l + b)} \mu^{m+a-1}(1 - \mu)^{l+b-1}. \tag{2.18}
+152: p(\mu|m,l,a,b) = \frac{\Gamma(m+a+l+b)}{\Gamma(m+a)\Gamma(l+b)}\mu^{m+a-1}(1-\mu)^{l+b-1}. \tag{2.18}
 153: $$
 154: 
 155: We see that the effect of observing a data set of $m$ observations of $x = 1$ and $l$ observations of $x = 0$ has been to increase the value of $a$ by $m$, and the value of $b$ by $l$, in going from the prior distribution to the posterior distribution. This allows us to provide a simple interpretation of the hyperparameters $a$ and $b$ in the prior as an *effective number of observations* of $x = 1$ and $x = 0$, respectively. Note that $a$ and $b$ need not be integers. Furthermore, the posterior distribution can act as the prior if we subsequently observe additional data. To see this, we can imagine taking observations one at a time and after each observation updating the current posterior
@@ -189,13 +189,13 @@
 189: To address this, we can take a frequentist view of Bayesian learning and show that, on average, such a property does indeed hold. Consider a general Bayesian inference problem for a parameter $\boldsymbol{\theta}$ for which we have observed a data set $\mathcal{D}$, described by the joint distribution $p(\boldsymbol{\theta}, \mathcal{D})$. The following result
 190: 
 191: $$
-192: \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] = \mathbb{E}_{\mathcal{D}} \left[ \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}] \right] \tag{2.21}
+192: \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] = \mathbb{E}_{\mathcal{D}}[\mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}]] \tag{2.21}
 193: $$
 194: 
 195: where
 196: 
 197: $$
-198: \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] \equiv \int p(\boldsymbol{\theta}) \boldsymbol{\theta} \, \mathrm{d}\boldsymbol{\theta} \tag{2.22}
+198: \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] \equiv \int p(\boldsymbol{\theta})\boldsymbol{\theta} \, \mathrm{d}\boldsymbol{\theta} \tag{2.22}
 199: $$
 200: 
 201: $$
@@ -205,7 +205,7 @@
 205: says that the posterior mean of $\boldsymbol{\theta}$, averaged over the distribution generating the data, is equal to the prior mean of $\boldsymbol{\theta}$. Similarly, we can show that
 206: 
 207: $$
-208: \operatorname{var}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] = \mathbb{E}_{\mathcal{D}} \left[ \operatorname{var}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}] \right] + \operatorname{var}_{\mathcal{D}} \left[ \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}] \right]. \tag{2.24}
+208: \operatorname{var}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] = \mathbb{E}_{\mathcal{D}}[\operatorname{var}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}]] + \operatorname{var}_{\mathcal{D}}[\mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}]]. \tag{2.24}
 209: $$
 210: 
 211: The term on the left-hand side of (2.24) is the prior variance of $\boldsymbol{\theta}$. On the right-hand side, the first term is the average posterior variance of $\boldsymbol{\theta}$, and the second term measures the variance in the posterior mean of $\boldsymbol{\theta}$. Because this variance is a positive quantity, this result shows that, on average, the posterior variance of $\boldsymbol{\theta}$ is smaller than the prior variance. The reduction in variance is greater if the variance in the posterior mean is greater. Note, however, that this result only holds on average, and that for a particular observed data set it is possible for the posterior variance to be larger than the prior variance.
@@ -903,7 +903,7 @@
 903: 
 904: Now let us consider how a general maximum likelihood problem can be solved sequentially using the Robbins-Monro algorithm. By definition, the maximum likelihood solution $\theta_{\text{ML}}$ is a stationary point of the log likelihood function and hence satisfies
 905: 
-906: $$\frac{\partial}{\partial \theta} \left\{ \frac{1}{N} \sum_{n=1}^{N} \ln p(\mathbf{x}_n | \theta) \right\} \Bigg|_{\theta_{\text{ML}}} = 0. \tag{2.133}$$
+906: $$\left. \frac{\partial}{\partial \theta} \left\{ \frac{1}{N} \sum_{n=1}^{N} \ln p(\mathbf{x}_n | \theta) \right\} \right|_{\theta_{\text{ML}}} = 0. \tag{2.133}$$
 907: 
 908: Exchanging the derivative and the summation, and taking the limit $N \to \infty$ we have
 909: 
@@ -1131,13 +1131,13 @@
 1131: If we go back to (2.158) and substitute the alternative parameters $\nu = 2a$, $\lambda = a/b$, and $\eta = \tau b/a$, we see that the t-distribution can be written in the form
 1132: 
 1133: $$
-1134: \operatorname{St}(x|\mu, \lambda, \nu) = \int_0^\infty \mathcal{N}\left(x|\mu, (\eta\lambda)^{-1}\right) \operatorname{Gam}(\eta|\nu/2, \nu/2) \, \mathrm{d}\eta. \tag{2.160}
+1134: \operatorname{St}(x|\mu, \lambda, \nu) = \int_0^\infty \mathcal{N}\left(x|\mu, (\eta\lambda)^{-1}\right) \operatorname{Gam}(\eta|\nu/2, \nu/2) \, d\eta. \tag{2.160}
 1135: $$
 1136: 
 1137: We can then generalize this to a multivariate Gaussian $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda})$ to obtain the corresponding multivariate Student's t-distribution in the form
 1138: 
 1139: $$
-1140: \operatorname{St}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda}, \nu) = \int_0^\infty \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, (\eta\boldsymbol{\Lambda})^{-1}) \operatorname{Gam}(\eta|\nu/2, \nu/2) \, \mathrm{d}\eta. \tag{2.161}
+1140: \operatorname{St}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda}, \nu) = \int_0^\infty \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, (\eta\boldsymbol{\Lambda})^{-1}) \operatorname{Gam}(\eta|\nu/2, \nu/2) \, d\eta. \tag{2.161}
 1141: $$
 1142: 
 1143: Exercise 2.48
@@ -1153,11 +1153,11 @@
 1153: 
 1154: This is the multivariate form of Student's t-distribution and satisfies the following properties
 1155: 
-1156: $$\mathbb{E}[\mathbf{x}] = \boldsymbol{\mu}, \quad \text{if} \quad \nu > 1 \tag{2.164}$$
+1156: $$\mathbb{E}[\mathbf{x}]=\boldsymbol{\mu}, \quad \text{if} \quad \nu>1 \tag{2.164}$$
 1157: 
-1158: $$\operatorname{cov}[\mathbf{x}] = \frac{\nu}{(\nu-2)}\boldsymbol{\Lambda}^{-1}, \quad \text{if} \quad \nu > 2 \tag{2.165}$$
+1158: $$\operatorname{cov}[\mathbf{x}]=\frac{\nu}{(\nu-2)}\boldsymbol{\Lambda}^{-1}, \quad \text{if} \quad \nu>2 \tag{2.165}$$
 1159: 
-1160: $$\operatorname{mode}[\mathbf{x}] = \boldsymbol{\mu} \tag{2.166}$$
+1160: $$\operatorname{mode}[\mathbf{x}]=\boldsymbol{\mu} \tag{2.166}$$
 1161: 
 1162: with corresponding results for the univariate case.
 1163: 
@@ -1220,7 +1220,7 @@
 1220: We can easily obtain a Gaussian-like distribution that satisfies these three properties as follows. Consider a Gaussian distribution over two variables $\mathbf{x} = (x_1, x_2)$ having mean $\boldsymbol{\mu} = (\mu_1, \mu_2)$ and a covariance matrix $\boldsymbol{\Sigma} = \sigma^2\mathbf{I}$ where $\mathbf{I}$ is the $2 \times 2$ identity matrix, so that
 1221: 
 1222: $$
-1223: p(x_1, x_2) = \frac{1}{2\pi\sigma^2} \exp \left\{ -\frac{(x_1 - \mu_1)^2 + (x_2 - \mu_2)^2}{2\sigma^2} \right\}. \tag{2.173}
+1223: p(x_1, x_2) = \frac{1}{2\pi\sigma^2} \exp\left\{-\frac{(x_1 - \mu_1)^2 + (x_2 - \mu_2)^2}{2\sigma^2}\right\}. \tag{2.173}
 1224: $$
 1225: 
 1226: The contours of constant $p(\mathbf{x})$ are circles, as illustrated in Figure 2.18. Now suppose we consider the value of this distribution along a circle of fixed radius. Then by construction this distribution will be periodic, although it will not be normalized. We can determine the form of this distribution by transforming from Cartesian coordinates $(x_1, x_2)$ to polar coordinates $(r, \theta)$ so that
@@ -1239,9 +1239,9 @@
 1239: 
 1240: $$
 1241: \begin{aligned}
-1242: & -\frac{1}{2\sigma^2} \left\{ (r \cos \theta - r_0 \cos \theta_0)^2 + (r \sin \theta - r_0 \sin \theta_0)^2 \right\} \\
-1243: & = -\frac{1}{2\sigma^2} \left\{ 1 + r_0^2 - 2r_0 \cos \theta \cos \theta_0 - 2r_0 \sin \theta \sin \theta_0 \right\} \\
-1244: & = \frac{r_0}{\sigma^2} \cos(\theta - \theta_0) + \text{const} \tag{2.176}
+1242: &-\frac{1}{2\sigma^2} \left\{ (r \cos \theta - r_0 \cos \theta_0)^2 + (r \sin \theta - r_0 \sin \theta_0)^2 \right\} \\
+1243: &= -\frac{1}{2\sigma^2} \left\{ 1 + r_0^2 - 2r_0 \cos \theta \cos \theta_0 - 2r_0 \sin \theta \sin \theta_0 \right\} \\
+1244: &= \frac{r_0}{\sigma^2} \cos(\theta - \theta_0) + \text{const} \tag{2.176}
 1245: \end{aligned}
 1246: $$
 1247: ![img-36.jpeg](img-36.jpeg)
@@ -1395,816 +1395,815 @@
 1395: \gamma_k(\mathbf{x}) \equiv p(k|\mathbf{x}) \\
 1396: \quad = \frac{p(k)p(\mathbf{x}|k)}{\sum_l p(l)p(\mathbf{x}|l)} \\
 1397: \quad = \frac{\pi_k \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k)}{\sum_l \pi_l \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_l,\boldsymbol{\Sigma}_l)}.
-1398: \end{array}
-1399: \tag{2.192}
-1400: $$
-1401: 
-1402: We shall discuss the probabilistic interpretation of the mixture distribution in greater detail in Chapter 9.
-1403: 
-1404: The form of the Gaussian mixture distribution is governed by the parameters $\boldsymbol{\pi}$, $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$, where we have used the notation $\boldsymbol{\pi} \equiv \{\pi_1, \dots, \pi_K\}$, $\boldsymbol{\mu} \equiv \{\boldsymbol{\mu}_1, \dots, \boldsymbol{\mu}_K\}$ and $\boldsymbol{\Sigma} \equiv \{\boldsymbol{\Sigma}_1, \dots, \boldsymbol{\Sigma}_K\}$. One way to set the values of these parameters is to use maximum likelihood. From (2.188) the log of the likelihood function is given by
-1405: 
-1406: $$
-1407: \ln p(\mathbf{X}|\boldsymbol{\pi},\boldsymbol{\mu},\boldsymbol{\Sigma}) = \sum_{n=1}^{N} \ln \left\{ \sum_{k=1}^{K} \pi_k \mathcal{N}(\mathbf{x}_n|\boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k) \right\} \tag{2.193}
-1408: $$
-1409: where $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$. We immediately see that the situation is now much more complex than with a single Gaussian, due to the presence of the summation over $k$ inside the logarithm. As a result, the maximum likelihood solution for the parameters no longer has a closed-form analytical solution. One approach to maximizing the likelihood function is to use iterative numerical optimization techniques (Fletcher, 1987; Nocedal and Wright, 1999; Bishop and Nabney, 2008). Alternatively we can employ a powerful framework called *expectation maximization*, which will be discussed at length in Chapter 9.
-1410: 
-1411: ## 2.4. The Exponential Family
-1412: 
-1413: The probability distributions that we have studied so far in this chapter (with the exception of the Gaussian mixture) are specific examples of a broad class of distributions called the *exponential family* (Duda and Hart, 1973; Bernardo and Smith, 1994). Members of the exponential family have many important properties in common, and it is illuminating to discuss these properties in some generality.
-1414: 
-1415: The exponential family of distributions over $\mathbf{x}$, given parameters $\boldsymbol{\eta}$, is defined to be the set of distributions of the form
-1416: 
-1417: $$
-1418: p(\mathbf{x}|\boldsymbol{\eta}) = h(\mathbf{x})g(\boldsymbol{\eta}) \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \mathbf{u}(\mathbf{x}) \right\} \tag{2.194}
-1419: $$
-1420: 
-1421: where $\mathbf{x}$ may be scalar or vector, and may be discrete or continuous. Here $\boldsymbol{\eta}$ are called the *natural parameters* of the distribution, and $\mathbf{u}(\mathbf{x})$ is some function of $\mathbf{x}$. The function $g(\boldsymbol{\eta})$ can be interpreted as the coefficient that ensures that the distribution is normalized and therefore satisfies
-1422: 
-1423: $$
-1424: g(\boldsymbol{\eta}) \int h(\mathbf{x}) \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \mathbf{u}(\mathbf{x}) \right\} \mathrm{d}\mathbf{x} = 1 \tag{2.195}
-1425: $$
-1426: 
-1427: where the integration is replaced by summation if $\mathbf{x}$ is a discrete variable.
-1428: 
-1429: We begin by taking some examples of the distributions introduced earlier in the chapter and showing that they are indeed members of the exponential family. Consider first the Bernoulli distribution
-1430: 
-1431: $$
-1432: p(x|\mu) = \operatorname{Bern}(x|\mu) = \mu^x (1 - \mu)^{1-x}. \tag{2.196}
-1433: $$
-1434: 
-1435: Expressing the right-hand side as the exponential of the logarithm, we have
-1436: 
-1437: $$
-1438: \begin{aligned}
-1439: p(x|\mu) &= \exp \left\{ x \ln \mu + (1 - x) \ln(1 - \mu) \right\} \\
-1440: &= (1 - \mu) \exp \left\{ \ln \left( \frac{\mu}{1 - \mu} \right) x \right\}. \tag{2.197}
-1441: \end{aligned}
-1442: $$
-1443: 
-1444: Comparison with (2.194) allows us to identify
-1445: 
-1446: $$
-1447: \eta = \ln \left( \frac{\mu}{1 - \mu} \right) \tag{2.198}
-1448: $$
-1449: which we can solve for $\mu$ to give $\mu = \sigma(\eta)$, where
-1450: 
-1451: $$
-1452: \sigma(\eta) = \frac{1}{1 + \exp(-\eta)} \tag{2.199}
-1453: $$
-1454: 
-1455: is called the *logistic sigmoid* function. Thus we can write the Bernoulli distribution using the standard representation (2.194) in the form
-1456: 
-1457: $$
-1458: p(x|\eta) = \sigma(-\eta) \exp(\eta x) \tag{2.200}
-1459: $$
-1460: 
-1461: where we have used $1 - \sigma(\eta) = \sigma(-\eta)$, which is easily proved from (2.199). Comparison with (2.194) shows that
-1462: 
-1463: $$
-1464: u(x) = x \tag{2.201}
-1465: $$
-1466: 
-1467: $$
-1468: h(x) = 1 \tag{2.202}
-1469: $$
-1470: 
-1471: $$
-1472: g(\eta) = \sigma(-\eta). \tag{2.203}
-1473: $$
-1474: 
-1475: Next consider the multinomial distribution that, for a single observation $\mathbf{x}$, takes the form
-1476: 
-1477: $$
-1478: p(\mathbf{x}|\boldsymbol{\mu}) = \prod_{k=1}^{M} \mu_k^{x_k} = \exp \left\{ \sum_{k=1}^{M} x_k \ln \mu_k \right\} \tag{2.204}
-1479: $$
-1480: 
-1481: where $\mathbf{x} = (x_1, \ldots, x_N)^{\mathrm{T}}$. Again, we can write this in the standard representation (2.194) so that
-1482: 
-1483: $$
-1484: p(\mathbf{x}|\boldsymbol{\eta}) = \exp(\boldsymbol{\eta}^{\mathrm{T}} \mathbf{x}) \tag{2.205}
-1485: $$
-1486: 
-1487: where $\eta_k = \ln \mu_k$, and we have defined $\boldsymbol{\eta} = (\eta_1, \ldots, \eta_M)^{\mathrm{T}}$. Again, comparing with (2.194) we have
-1488: 
-1489: $$
-1490: \mathbf{u}(\mathbf{x}) = \mathbf{x} \tag{2.206}
-1491: $$
-1492: 
-1493: $$
-1494: h(\mathbf{x}) = 1 \tag{2.207}
-1495: $$
-1496: 
-1497: $$
-1498: g(\boldsymbol{\eta}) = 1. \tag{2.208}
-1499: $$
-1500: 
-1501: Note that the parameters $\eta_k$ are not independent because the parameters $\mu_k$ are subject to the constraint
-1502: 
-1503: $$
-1504: \sum_{k=1}^{M} \mu_k = 1 \tag{2.209}
-1505: $$
-1506: 
-1507: so that, given any $M - 1$ of the parameters $\mu_k$, the value of the remaining parameter is fixed. In some circumstances, it will be convenient to remove this constraint by expressing the distribution in terms of only $M - 1$ parameters. This can be achieved by using the relationship (2.209) to eliminate $\mu_M$ by expressing it in terms of the remaining $\{\mu_k\}$ where $k = 1, \ldots, M - 1$, thereby leaving $M - 1$ parameters. Note that these remaining parameters are still subject to the constraints
-1508: 
-1509: $$
-1510: 0 \leqslant \mu_k \leqslant 1, \quad \sum_{k=1}^{M-1} \mu_k \leqslant 1. \tag{2.210}
-1511: $$
-1512: Making use of the constraint (2.209), the multinomial distribution in this representation then becomes
-1513: 
-1514: $$\begin{array}{l} \exp \left\{\sum_{k=1}^{M} x_{k} \ln \mu_{k}\right\} \\ = \exp \left\{\sum_{k=1}^{M-1} x_{k} \ln \mu_{k} + \left(1 - \sum_{k=1}^{M-1} x_{k}\right) \ln \left(1 - \sum_{k=1}^{M-1} \mu_{k}\right)\right\} \\ = \exp \left\{\sum_{k=1}^{M-1} x_{k} \ln \left(\frac{\mu_{k}}{1 - \sum_{j=1}^{M-1} \mu_{j}}\right) + \ln \left(1 - \sum_{k=1}^{M-1} \mu_{k}\right)\right\}. \end{array} \tag{2.211}$$
-1515: 
-1516: We now identify
-1517: 
-1518: $$\ln \left(\frac{\mu_{k}}{1 - \sum_{j} \mu_{j}}\right) = \eta_{k} \tag{2.212}$$
-1519: 
-1520: which we can solve for $\mu_{k}$ by first summing both sides over $k$ and then rearranging and back-substituting to give
-1521: 
-1522: $$\mu_{k} = \frac{\exp(\eta_{k})}{1 + \sum_{j} \exp(\eta_{j})}. \tag{2.213}$$
-1523: 
-1524: This is called the softmax function, or the normalized exponential. In this representation, the multinomial distribution therefore takes the form
-1525: 
-1526: $$p(\mathbf{x}|\boldsymbol{\eta}) = \left(1 + \sum_{k=1}^{M-1} \exp(\eta_{k})\right)^{-1} \exp(\boldsymbol{\eta}^{\mathrm{T}}\mathbf{x}). \tag{2.214}$$
-1527: 
-1528: This is the standard form of the exponential family, with parameter vector $\boldsymbol{\eta} = (\eta_{1}, \ldots, \eta_{M-1})^{\mathrm{T}}$ in which
-1529: 
-1530: $$\mathbf{u}(\mathbf{x}) = \mathbf{x} \tag{2.215}$$
-1531: 
-1532: $$h(\mathbf{x}) = 1 \tag{2.216}$$
-1533: 
-1534: $$g(\boldsymbol{\eta}) = \left(1 + \sum_{k=1}^{M-1} \exp(\eta_{k})\right)^{-1}. \tag{2.217}$$
-1535: 
-1536: Finally, let us consider the Gaussian distribution. For the univariate Gaussian, we have
-1537: 
-1538: $$p(x|\mu, \sigma^{2}) = \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp \left\{-\frac{1}{2\sigma^{2}}(x - \mu)^{2}\right\} \tag{2.218}$$
-1539: 
-1540: $$= \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp \left\{-\frac{1}{2\sigma^{2}}x^{2} + \frac{\mu}{\sigma^{2}}x - \frac{1}{2\sigma^{2}}\mu^{2}\right\} \tag{2.219}$$
-1541: Exercise 2.57
-1542: 
-1543: which, after some simple rearrangement, can be cast in the standard exponential family form (2.194) with
-1544: 
-1545: $$
-1546: \boldsymbol {\eta} = \left( \begin{array}{c} \mu / \sigma^ {2} \\ - 1 / 2 \sigma^ {2} \end{array} \right) \tag {2.220}
-1547: $$
-1548: 
-1549: $$
-1550: \mathbf {u} (x) = \left( \begin{array}{c} x \\ x ^ {2} \end{array} \right) \tag {2.221}
-1551: $$
-1552: 
-1553: $$
-1554: h (\mathbf {x}) = (2 \pi) ^ {- 1 / 2} \tag {2.222}
-1555: $$
-1556: 
-1557: $$
-1558: g (\boldsymbol {\eta}) = (- 2 \eta_ {2}) ^ {1 / 2} \exp \left(\frac {\eta_ {1} ^ {2}}{4 \eta_ {2}}\right). \tag {2.223}
-1559: $$
-1560: 
-1561: ## 2.4.1 Maximum likelihood and sufficient statistics
-1562: 
-1563: Let us now consider the problem of estimating the parameter vector $\boldsymbol{\eta}$ in the general exponential family distribution (2.194) using the technique of maximum likelihood. Taking the gradient of both sides of (2.195) with respect to $\boldsymbol{\eta}$, we have
-1564: 
-1565: $$
-1566: \begin{array}{l} \nabla g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathrm {d} \mathbf {x} \\ + \quad g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathbf {u} (\mathbf {x}) \mathrm {d} \mathbf {x} = 0. \tag {2.224} \\ \end{array}
-1567: $$
-1568: 
-1569: Rearranging, and making use again of (2.195) then gives
-1570: 
-1571: $$
-1572: - \frac {1}{g (\boldsymbol {\eta})} \nabla g (\boldsymbol {\eta}) = g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathbf {u} (\mathbf {x}) \mathrm {d} \mathbf {x} = \mathbb {E} [ \mathbf {u} (\mathbf {x}) ] \tag {2.225}
-1573: $$
-1574: 
-1575: where we have used (2.194). We therefore obtain the result
-1576: 
-1577: $$
-1578: - \nabla \ln g (\boldsymbol {\eta}) = \mathbb {E} [ \mathbf {u} (\mathbf {x}) ]. \tag {2.226}
-1579: $$
-1580: 
-1581: Exercise 2.58
-1582: 
-1583: Note that the covariance of $\mathbf{u}(\mathbf{x})$ can be expressed in terms of the second derivatives of $g(\boldsymbol{\eta})$, and similarly for higher order moments. Thus, provided we can normalize a distribution from the exponential family, we can always find its moments by simple differentiation.
-1584: 
-1585: Now consider a set of independent identically distributed data denoted by $\mathbf{X} = \{\mathbf{x}_1,\dots ,\mathbf{x}_n\}$, for which the likelihood function is given by
-1586: 
-1587: $$
-1588: p (\mathbf {X} | \boldsymbol {\eta}) = \left(\prod_ {n = 1} ^ {N} h \left(\mathbf {x} _ {n}\right)\right) g (\boldsymbol {\eta}) ^ {N} \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \sum_ {n = 1} ^ {N} \mathbf {u} \left(\mathbf {x} _ {n}\right) \right\}. \tag {2.227}
-1589: $$
-1590: 
-1591: Setting the gradient of $\ln p(\mathbf{X}|\boldsymbol{\eta})$ with respect to $\boldsymbol{\eta}$ to zero, we get the following condition to be satisfied by the maximum likelihood estimator $\boldsymbol{\eta}_{\mathrm{ML}}$
-1592: 
-1593: $$
-1594: - \nabla \ln g (\boldsymbol {\eta} _ {\mathrm {M L}}) = \frac {1}{N} \sum_ {n = 1} ^ {N} \mathbf {u} (\mathbf {x} _ {n}) \tag {2.228}
-1595: $$
-1596: which can in principle be solved to obtain $\boldsymbol{\eta}_{\mathrm{ML}}$. We see that the solution for the maximum likelihood estimator depends on the data only through $\sum_{n} \mathbf{u}(\mathbf{x}_{n})$, which is therefore called the *sufficient statistic* of the distribution (2.194). We do not need to store the entire data set itself but only the value of the sufficient statistic. For the Bernoulli distribution, for example, the function $\mathbf{u}(x)$ is given just by $x$ and so we need only keep the sum of the data points $\{x_{n}\}$, whereas for the Gaussian $\mathbf{u}(x) = (x, x^{2})^{\mathrm{T}}$, and so we should keep both the sum of $\{x_{n}\}$ and the sum of $\{x_{n}^{2}\}$.
-1597: 
-1598: If we consider the limit $N \to \infty$, then the right-hand side of (2.228) becomes $\mathbb{E}[\mathbf{u}(\mathbf{x})]$, and so by comparing with (2.226) we see that in this limit $\boldsymbol{\eta}_{\mathrm{ML}}$ will equal the true value $\boldsymbol{\eta}$.
-1599: 
-1600: In fact, this sufficiency property holds also for Bayesian inference, although we shall defer discussion of this until Chapter 8 when we have equipped ourselves with the tools of graphical models and can thereby gain a deeper insight into these important concepts.
-1601: 
-1602: ## 2.4.2 Conjugate priors
-1603: 
-1604: We have already encountered the concept of a conjugate prior several times, for example in the context of the Bernoulli distribution (for which the conjugate prior is the beta distribution) or the Gaussian (where the conjugate prior for the mean is a Gaussian, and the conjugate prior for the precision is the Wishart distribution). In general, for a given probability distribution $p(\mathbf{x}|\boldsymbol{\eta})$, we can seek a prior $p(\boldsymbol{\eta})$ that is conjugate to the likelihood function, so that the posterior distribution has the same functional form as the prior. For any member of the exponential family (2.194), there exists a conjugate prior that can be written in the form
-1605: 
-1606: $$
-1607: p(\boldsymbol{\eta}|\boldsymbol{\chi}, \nu) = f(\boldsymbol{\chi}, \nu)g(\boldsymbol{\eta})^{\nu} \exp \left\{ \nu \boldsymbol{\eta}^{\mathrm{T}} \boldsymbol{\chi} \right\} \tag{2.229}
-1608: $$
-1609: 
-1610: where $f(\boldsymbol{\chi}, \nu)$ is a normalization coefficient, and $g(\boldsymbol{\eta})$ is the same function as appears in (2.194). To see that this is indeed conjugate, let us multiply the prior (2.229) by the likelihood function (2.227) to obtain the posterior distribution, up to a normalization coefficient, in the form
-1611: 
-1612: $$
-1613: p(\boldsymbol{\eta}|\mathbf{X}, \boldsymbol{\chi}, \nu) \propto g(\boldsymbol{\eta})^{\nu+N} \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \left( \sum_{n=1}^{N} \mathbf{u}(\mathbf{x}_{n}) + \nu \boldsymbol{\chi} \right) \right\}. \tag{2.230}
-1614: $$
-1615: 
-1616: This again takes the same functional form as the prior (2.229), confirming conjugacy. Furthermore, we see that the parameter $\nu$ can be interpreted as a effective number of pseudo-observations in the prior, each of which has a value for the sufficient statistic $\mathbf{u}(\mathbf{x})$ given by $\boldsymbol{\chi}$.
-1617: 
-1618: ## 2.4.3 Noninformative priors
-1619: 
-1620: In some applications of probabilistic inference, we may have prior knowledge that can be conveniently expressed through the prior distribution. For example, if the prior assigns zero probability to some value of variable, then the posterior distribution will necessarily also assign zero probability to that value, irrespective of
-1621: any subsequent observations of data. In many cases, however, we may have little idea of what form the distribution should take. We may then seek a form of prior distribution, called a *noninformative prior*, which is intended to have as little influence on the posterior distribution as possible (Jeffries, 1946; Box and Tao, 1973; Bernardo and Smith, 1994). This is sometimes referred to as 'letting the data speak for themselves'.
-1622: 
-1623: If we have a distribution $p(x|\lambda)$ governed by a parameter $\lambda$, we might be tempted to propose a prior distribution $p(\lambda) = \text{const}$ as a suitable prior. If $\lambda$ is a discrete variable with $K$ states, this simply amounts to setting the prior probability of each state to $1/K$. In the case of continuous parameters, however, there are two potential difficulties with this approach. The first is that, if the domain of $\lambda$ is unbounded, this prior distribution cannot be correctly normalized because the integral over $\lambda$ diverges. Such priors are called *improper*. In practice, improper priors can often be used provided the corresponding posterior distribution is *proper*, i.e., that it can be correctly normalized. For instance, if we put a uniform prior distribution over the mean of a Gaussian, then the posterior distribution for the mean, once we have observed at least one data point, will be proper.
-1624: 
-1625: A second difficulty arises from the transformation behaviour of a probability density under a nonlinear change of variables, given by (1.27). If a function $h(\lambda)$ is constant, and we change variables to $\lambda = \eta^2$, then $\widehat{h}(\eta) = h(\eta^2)$ will also be constant. However, if we choose the density $p_{\lambda}(\lambda)$ to be constant, then the density of $\eta$ will be given, from (1.27), by
-1626: 
-1627: $$
-1628: p_{\eta}(\eta) = p_{\lambda}(\lambda) \left| \frac{\mathrm{d}\lambda}{\mathrm{d}\eta} \right| = p_{\lambda}(\eta^2) 2\eta \propto \eta \tag{2.231}
-1629: $$
-1630: 
-1631: and so the density over $\eta$ will not be constant. This issue does not arise when we use maximum likelihood, because the likelihood function $p(x|\lambda)$ is a simple function of $\lambda$ and so we are free to use any convenient parameterization. If, however, we are to choose a prior distribution that is constant, we must take care to use an appropriate representation for the parameters.
-1632: 
-1633: Here we consider two simple examples of noninformative priors (Berger, 1985). First of all, if a density takes the form
-1634: 
-1635: $$
-1636: p(x|\mu) = f(x - \mu) \tag{2.232}
-1637: $$
-1638: 
-1639: then the parameter $\mu$ is known as a *location parameter*. This family of densities exhibits *translation invariance* because if we shift $x$ by a constant to give $\widehat{x} = x + c$, then
-1640: 
-1641: $$
-1642: p(\widehat{x}|\widehat{\mu}) = f(\widehat{x} - \widehat{\mu}) \tag{2.233}
-1643: $$
-1644: 
-1645: where we have defined $\widehat{\mu} = \mu + c$. Thus the density takes the same form in the new variable as in the original one, and so the density is independent of the choice of origin. We would like to choose a prior distribution that reflects this translation invariance property, and so we choose a prior that assigns equal probability mass to
-1646: an interval $A \leqslant \mu \leqslant B$ as to the shifted interval $A - c \leqslant \mu \leqslant B - c$. This implies
-1647: 
-1648: $$
-1649: \int_{A}^{B} p(\mu) \, \mathrm{d}\mu = \int_{A-c}^{B-c} p(\mu) \, \mathrm{d}\mu = \int_{A}^{B} p(\mu - c) \, \mathrm{d}\mu \tag{2.234}
-1650: $$
-1651: 
-1652: and because this must hold for all choices of $A$ and $B$, we have
-1653: 
-1654: $$
-1655: p(\mu - c) = p(\mu) \tag{2.235}
-1656: $$
-1657: 
-1658: which implies that $p(\mu)$ is constant. An example of a location parameter would be the mean $\mu$ of a Gaussian distribution. As we have seen, the conjugate prior distribution for $\mu$ in this case is a Gaussian $p(\mu|\mu_0, \sigma_0^2) = \mathcal{N}(\mu|\mu_0, \sigma_0^2)$, and we obtain a noninformative prior by taking the limit $\sigma_0^2 \to \infty$. Indeed, from (2.141) and (2.142) we see that this gives a posterior distribution over $\mu$ in which the contributions from the prior vanish.
-1659: 
-1660: As a second example, consider a density of the form
-1661: 
-1662: $$
-1663: p(x|\sigma) = \frac{1}{\sigma} f\left(\frac{x}{\sigma}\right) \tag{2.236}
-1664: $$
-1665: 
-1666: Exercise 2.59
-1667: 
-1668: where $\sigma > 0$. Note that this will be a normalized density provided $f(x)$ is correctly normalized. The parameter $\sigma$ is known as a *scale parameter*, and the density exhibits *scale invariance* because if we scale $x$ by a constant to give $\widehat{x} = cx$, then
-1669: 
-1670: $$
-1671: p(\widehat{x}|\widehat{\sigma}) = \frac{1}{\widehat{\sigma}} f\left(\frac{\widehat{x}}{\widehat{\sigma}}\right) \tag{2.237}
-1672: $$
-1673: 
-1674: where we have defined $\widehat{\sigma} = c\sigma$. This transformation corresponds to a change of scale, for example from meters to kilometers if $x$ is a length, and we would like to choose a prior distribution that reflects this scale invariance. If we consider an interval $A \leqslant \sigma \leqslant B$, and a scaled interval $A/c \leqslant \sigma \leqslant B/c$, then the prior should assign equal probability mass to these two intervals. Thus we have
-1675: 
-1676: $$
-1677: \int_{A}^{B} p(\sigma) \, \mathrm{d}\sigma = \int_{A/c}^{B/c} p(\sigma) \, \mathrm{d}\sigma = \int_{A}^{B} p\left(\frac{1}{c}\sigma\right) \frac{1}{c} \, \mathrm{d}\sigma \tag{2.238}
-1678: $$
-1679: 
-1680: and because this must hold for choices of $A$ and $B$, we have
-1681: 
-1682: $$
-1683: p(\sigma) = p\left(\frac{1}{c}\sigma\right) \frac{1}{c} \tag{2.239}
-1684: $$
-1685: 
-1686: and hence $p(\sigma) \propto 1/\sigma$. Note that again this is an improper prior because the integral of the distribution over $0 \leqslant \sigma \leqslant \infty$ is divergent. It is sometimes also convenient to think of the prior distribution for a scale parameter in terms of the density of the log of the parameter. Using the transformation rule (1.27) for densities we see that $p(\ln \sigma) = \text{const}$. Thus, for this prior there is the same probability mass in the range $1 \leqslant \sigma \leqslant 10$ as in the range $10 \leqslant \sigma \leqslant 100$ and in $100 \leqslant \sigma \leqslant 1000$.
-1687: An example of a scale parameter would be the standard deviation $\sigma$ of a Gaussian distribution, after we have taken account of the location parameter $\mu$, because
-1688: 
-1689: $$
-1690: \mathcal{N}(x|\mu,\sigma^2) \propto \sigma^{-1} \exp \left\{ -(\widetilde{x}/\sigma)^2 \right\} \tag{2.240}
-1691: $$
-1692: 
-1693: Section 2.3
-1694: 
-1695: where $\widetilde{x} = x - \mu$. As discussed earlier, it is often more convenient to work in terms of the precision $\lambda = 1/\sigma^2$ rather than $\sigma$ itself. Using the transformation rule for densities, we see that a distribution $p(\sigma) \propto 1/\sigma$ corresponds to a distribution over $\lambda$ of the form $p(\lambda) \propto 1/\lambda$. We have seen that the conjugate prior for $\lambda$ was the gamma distribution $\mathrm{Gam}(\lambda|a_0, b_0)$ given by (2.146). The noninformative prior is obtained as the special case $a_0 = b_0 = 0$. Again, if we examine the results (2.150) and (2.151) for the posterior distribution of $\lambda$, we see that for $a_0 = b_0 = 0$, the posterior depends only on terms arising from the data and not from the prior.
-1696: 
-1697: ## 2.5. Nonparametric Methods
-1698: 
-1699: Throughout this chapter, we have focussed on the use of probability distributions having specific functional forms governed by a small number of parameters whose values are to be determined from a data set. This is called the *parametric* approach to density modelling. An important limitation of this approach is that the chosen density might be a poor model of the distribution that generates the data, which can result in poor predictive performance. For instance, if the process that generates the data is multimodal, then this aspect of the distribution can never be captured by a Gaussian, which is necessarily unimodal.
-1700: 
-1701: In this final section, we consider some *nonparametric* approaches to density estimation that make few assumptions about the form of the distribution. Here we shall focus mainly on simple frequentist methods. The reader should be aware, however, that nonparametric Bayesian methods are attracting increasing interest (Walker et al., 1999; Neal, 2000; Müller and Quintana, 2004; Teh et al., 2006).
-1702: 
-1703: Let us start with a discussion of histogram methods for density estimation, which we have already encountered in the context of marginal and conditional distributions in Figure 1.11 and in the context of the central limit theorem in Figure 2.6. Here we explore the properties of histogram density models in more detail, focussing on the case of a single continuous variable $x$. Standard histograms simply partition $x$ into distinct bins of width $\Delta_i$ and then count the number $n_i$ of observations of $x$ falling in bin $i$. In order to turn this count into a normalized probability density, we simply divide by the total number $N$ of observations and by the width $\Delta_i$ of the bins to obtain probability values for each bin given by
-1704: 
-1705: $$
-1706: p_i = \frac{n_i}{N\Delta_i} \tag{2.241}
-1707: $$
-1708: 
-1709: for which it is easily seen that $\int p(x) \, \mathrm{d}x = 1$. This gives a model for the density $p(x)$ that is constant over the width of each bin, and often the bins are chosen to have the same width $\Delta_i = \Delta$.
-1710: Figure 2.24 An illustration of the histogram approach to density estimation, in which a data set of 50 data points is generated from the distribution shown by the green curve. Histogram density estimates, based on (2.241), with a common bin width $\Delta$ are shown for various values of $\Delta$.
-1711: 
-1712: ![img-46.jpeg](img-46.jpeg)
-1713: 
-1714: In Figure 2.24, we show an example of histogram density estimation. Here the data is drawn from the distribution, corresponding to the green curve, which is formed from a mixture of two Gaussians. Also shown are three examples of histogram density estimates corresponding to three different choices for the bin width $\Delta$. We see that when $\Delta$ is very small (top figure), the resulting density model is very spiky, with a lot of structure that is not present in the underlying distribution that generated the data set. Conversely, if $\Delta$ is too large (bottom figure) then the result is a model that is too smooth and that consequently fails to capture the bimodal property of the green curve. The best results are obtained for some intermediate value of $\Delta$ (middle figure). In principle, a histogram density model is also dependent on the choice of edge location for the bins, though this is typically much less significant than the value of $\Delta$.
-1715: 
-1716: Note that the histogram method has the property (unlike the methods to be discussed shortly) that, once the histogram has been computed, the data set itself can be discarded, which can be advantageous if the data set is large. Also, the histogram approach is easily applied if the data points are arriving sequentially.
-1717: 
-1718: In practice, the histogram technique can be useful for obtaining a quick visualization of data in one or two dimensions but is unsuited to most density estimation applications. One obvious problem is that the estimated density has discontinuities that are due to the bin edges rather than any property of the underlying distribution that generated the data. Another major limitation of the histogram approach is its scaling with dimensionality. If we divide each variable in a $D$-dimensional space into $M$ bins, then the total number of bins will be $M^D$. This exponential scaling with $D$ is an example of the curse of dimensionality. In a space of high dimensionality, the quantity of data needed to provide meaningful estimates of local probability density would be prohibitive.
-1719: 
-1720: The histogram approach to density estimation does, however, teach us two important lessons. First, to estimate the probability density at a particular location, we should consider the data points that lie within some local neighbourhood of that point. Note that the concept of locality requires that we assume some form of distance measure, and here we have been assuming Euclidean distance. For histograms,
-1721: 
-1722: Section 1.4
-1723: this neighbourhood property was defined by the bins, and there is a natural 'smoothing' parameter describing the spatial extent of the local region, in this case the bin width. Second, the value of the smoothing parameter should be neither too large nor too small in order to obtain good results. This is reminiscent of the choice of model complexity in polynomial curve fitting discussed in Chapter 1 where the degree $M$ of the polynomial, or alternatively the value $\alpha$ of the regularization parameter, was optimal for some intermediate value, neither too large nor too small. Armed with these insights, we turn now to a discussion of two widely used nonparametric techniques for density estimation, kernel estimators and nearest neighbours, which have better scaling with dimensionality than the simple histogram model.
-1724: 
-1725: ## 2.5.1 Kernel density estimators
-1726: 
-1727: Let us suppose that observations are being drawn from some unknown probability density $p(\mathbf{x})$ in some $D$-dimensional space, which we shall take to be Euclidean, and we wish to estimate the value of $p(\mathbf{x})$. From our earlier discussion of locality, let us consider some small region $\mathcal{R}$ containing $\mathbf{x}$. The probability mass associated with this region is given by
-1728: 
-1729: $$
-1730: P = \int_{\mathcal{R}} p(\mathbf{x}) \, \mathrm{d}\mathbf{x}. \tag{2.242}
-1731: $$
-1732: 
-1733: Now suppose that we have collected a data set comprising $N$ observations drawn from $p(\mathbf{x})$. Because each data point has a probability $P$ of falling within $\mathcal{R}$, the total number $K$ of points that lie inside $\mathcal{R}$ will be distributed according to the binomial distribution
-1734: 
-1735: $$
-1736: \operatorname{Bin}(K|N, P) = \frac{N!}{K!(N - K)!} P^K (1 - P)^{1 - K}. \tag{2.243}
-1737: $$
-1738: 
-1739: Using (2.11), we see that the mean fraction of points falling inside the region is $\mathbb{E}[K/N] = P$, and similarly using (2.12) we see that the variance around this mean is $\operatorname{var}[K/N] = P(1 - P)/N$. For large $N$, this distribution will be sharply peaked around the mean and so
-1740: 
-1741: $$
-1742: K \simeq NP. \tag{2.244}
-1743: $$
-1744: 
-1745: If, however, we also assume that the region $\mathcal{R}$ is sufficiently small that the probability density $p(\mathbf{x})$ is roughly constant over the region, then we have
-1746: 
-1747: $$
-1748: P \simeq p(\mathbf{x})V \tag{2.245}
-1749: $$
-1750: 
-1751: where $V$ is the volume of $\mathcal{R}$. Combining (2.244) and (2.245), we obtain our density estimate in the form
-1752: 
-1753: $$
-1754: p(\mathbf{x}) = \frac{K}{NV}. \tag{2.246}
-1755: $$
-1756: 
-1757: Note that the validity of (2.246) depends on two contradictory assumptions, namely that the region $\mathcal{R}$ be sufficiently small that the density is approximately constant over the region and yet sufficiently large (in relation to the value of that density) that the number $K$ of points falling inside the region is sufficient for the binomial distribution to be sharply peaked.
-1758: 
-1759: Section 2.1
-1760: We can exploit the result (2.246) in two different ways. Either we can fix $K$ and determine the value of $V$ from the data, which gives rise to the $K$-nearest-neighbour technique discussed shortly, or we can fix $V$ and determine $K$ from the data, giving rise to the kernel approach. It can be shown that both the $K$-nearest-neighbour density estimator and the kernel density estimator converge to the true probability density in the limit $N \to \infty$ provided $V$ shrinks suitably with $N$, and $K$ grows with $N$ (Duda and Hart, 1973).
-1761: 
-1762: We begin by discussing the kernel method in detail, and to start with we take the region $\mathcal{R}$ to be a small hypercube centred on the point $\mathbf{x}$ at which we wish to determine the probability density. In order to count the number $K$ of points falling within this region, it is convenient to define the following function
-1763: 
-1764: $$
-1765: k(\mathbf{u}) = \left\{ \begin{array}{ll} 1, & |u_i| \leqslant 1/2, \\ 0, & \text{otherwise} \end{array} \right. \quad i = 1, \dots, D, \tag{2.247}
-1766: $$
-1767: 
-1768: which represents a unit cube centred on the origin. The function $k(\mathbf{u})$ is an example of a *kernel function*, and in this context is also called a *Parzen window*. From (2.247), the quantity $k((\mathbf{x} - \mathbf{x}_n)/h)$ will be one if the data point $\mathbf{x}_n$ lies inside a cube of side $h$ centred on $\mathbf{x}$, and zero otherwise. The total number of data points lying inside this cube will therefore be
-1769: 
-1770: $$
-1771: K = \sum_{n=1}^{N} k \left( \frac{\mathbf{x} - \mathbf{x}_n}{h} \right). \tag{2.248}
-1772: $$
-1773: 
-1774: Substituting this expression into (2.246) then gives the following result for the estimated density at $\mathbf{x}$
-1775: 
-1776: $$
-1777: p(\mathbf{x}) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{h^D} k \left( \frac{\mathbf{x} - \mathbf{x}_n}{h} \right) \tag{2.249}
-1778: $$
-1779: 
-1780: where we have used $V = h^D$ for the volume of a hypercube of side $h$ in $D$ dimensions. Using the symmetry of the function $k(\mathbf{u})$, we can now re-interpret this equation, not as a single cube centred on $\mathbf{x}$ but as the sum over $N$ cubes centred on the $N$ data points $\mathbf{x}_n$.
-1781: 
-1782: As it stands, the kernel density estimator (2.249) will suffer from one of the same problems that the histogram method suffered from, namely the presence of artificial discontinuities, in this case at the boundaries of the cubes. We can obtain a smoother density model if we choose a smoother kernel function, and a common choice is the Gaussian, which gives rise to the following kernel density model
-1783: 
-1784: $$
-1785: p(\mathbf{x}) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{(2\pi h^2)^{1/2}} \exp \left\{ -\frac{\|\mathbf{x} - \mathbf{x}_n\|^2}{2h^2} \right\} \tag{2.250}
-1786: $$
-1787: 
-1788: where $h$ represents the standard deviation of the Gaussian components. Thus our density model is obtained by placing a Gaussian over each data point and then adding up the contributions over the whole data set, and then dividing by $N$ so that the density is correctly normalized. In Figure 2.25, we apply the model (2.250) to the data
-1789: Figure 2.25 Illustration of the kernel density model (2.250) applied to the same data set used to demonstrate the histogram approach in Figure 2.24. We see that $h$ acts as a smoothing parameter and that if it is set too small (top panel), the result is a very noisy density model, whereas if it is set too large (bottom panel), then the bimodal nature of the underlying distribution from which the data is generated (shown by the green curve) is washed out. The best density model is obtained for some intermediate value of $h$ (middle panel).
-1790: 
-1791: ![img-47.jpeg](img-47.jpeg)
-1792: 
-1793: set used earlier to demonstrate the histogram technique. We see that, as expected, the parameter $h$ plays the role of a smoothing parameter, and there is a trade-off between sensitivity to noise at small $h$ and over-smoothing at large $h$. Again, the optimization of $h$ is a problem in model complexity, analogous to the choice of bin width in histogram density estimation, or the degree of the polynomial used in curve fitting.
-1794: 
-1795: We can choose any other kernel function $k(\mathbf{u})$ in (2.249) subject to the conditions
-1796: 
-1797: $$
-1798: k(\mathbf{u}) \geqslant 0, \tag{2.251}
-1799: $$
-1800: 
-1801: $$
-1802: \int k(\mathbf{u}) \, d\mathbf{u} = 1 \tag{2.252}
-1803: $$
-1804: 
-1805: which ensure that the resulting probability distribution is nonnegative everywhere and integrates to one. The class of density model given by (2.249) is called a kernel density estimator, or *Parzen* estimator. It has a great merit that there is no computation involved in the ‘training’ phase because this simply requires storage of the training set. However, this is also one of its great weaknesses because the computational cost of evaluating the density grows linearly with the size of the data set.
-1806: 
-1807: ## 2.5.2 Nearest-neighbour methods
-1808: 
-1809: One of the difficulties with the kernel approach to density estimation is that the parameter $h$ governing the kernel width is fixed for all kernels. In regions of high data density, a large value of $h$ may lead to over-smoothing and a washing out of structure that might otherwise be extracted from the data. However, reducing $h$ may lead to noisy estimates elsewhere in data space where the density is smaller. Thus the optimal choice for $h$ may be dependent on location within the data space. This issue is addressed by nearest-neighbour methods for density estimation.
-1810: 
-1811: We therefore return to our general result (2.246) for local density estimation, and instead of fixing $V$ and determining the value of $K$ from the data, we consider a fixed value of $K$ and use the data to find an appropriate value for $V$. To do this, we consider a small sphere centred on the point $\mathbf{x}$ at which we wish to estimate the
-1812: Figure 2.26 Illustration of $K$-nearest-neighbour density estimation using the same data set as in Figures 2.25 and 2.24. We see that the parameter $K$ governs the degree of smoothing, so that a small value of $K$ leads to a very noisy density model (top panel), whereas a large value (bottom panel) smoothes out the bimodal nature of the true distribution (shown by the green curve) from which the data set was generated.
-1813: 
-1814: ![img-48.jpeg](img-48.jpeg)
-1815: 
-1816: Exercise 2.61
-1817: 
-1818: density $p(\mathbf{x})$, and we allow the radius of the sphere to grow until it contains precisely $K$ data points. The estimate of the density $p(\mathbf{x})$ is then given by (2.246) with $V$ set to the volume of the resulting sphere. This technique is known as $K$ nearest neighbours and is illustrated in Figure 2.26, for various choices of the parameter $K$, using the same data set as used in Figure 2.24 and Figure 2.25. We see that the value of $K$ now governs the degree of smoothing and that again there is an optimum choice for $K$ that is neither too large nor too small. Note that the model produced by $K$ nearest neighbours is not a true density model because the integral over all space diverges.
-1819: 
-1820: We close this chapter by showing how the $K$-nearest-neighbour technique for density estimation can be extended to the problem of classification. To do this, we apply the $K$-nearest-neighbour density estimation technique to each class separately and then make use of Bayes' theorem. Let us suppose that we have a data set comprising $N_k$ points in class $\mathcal{C}_k$ with $N$ points in total, so that $\sum_k N_k = N$. If we wish to classify a new point $\mathbf{x}$, we draw a sphere centred on $\mathbf{x}$ containing precisely $K$ points irrespective of their class. Suppose this sphere has volume $V$ and contains $K_k$ points from class $\mathcal{C}_k$. Then (2.246) provides an estimate of the density associated with each class
-1821: 
-1822: $$
-1823: p(\mathbf{x}|\mathcal{C}_k) = \frac{K_k}{N_k V}. \tag{2.253}
-1824: $$
-1825: 
-1826: Similarly, the unconditional density is given by
-1827: 
-1828: $$
-1829: p(\mathbf{x}) = \frac{K}{NV} \tag{2.254}
-1830: $$
-1831: 
-1832: while the class priors are given by
-1833: 
-1834: $$
-1835: p(\mathcal{C}_k) = \frac{N_k}{N}. \tag{2.255}
-1836: $$
-1837: 
-1838: We can now combine (2.253), (2.254), and (2.255) using Bayes' theorem to obtain the posterior probability of class membership
-1839: 
-1840: $$
-1841: p(\mathcal{C}_k|\mathbf{x}) = \frac{p(\mathbf{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{p(\mathbf{x})} = \frac{K_k}{K}. \tag{2.256}
-1842: $$
-1843: Figure 2.27 (a) In the $K$-nearest-neighbour classifier, a new point, shown by the black diamond, is classified according to the majority class membership of the $K$ closest training data points, in this case $K = 3$. (b) In the nearest-neighbour ($K = 1$) approach to classification, the resulting decision boundary is composed of hyperplanes that form perpendicular bisectors of pairs of points from different classes.
-1844: 
-1845: ![img-49.jpeg](img-49.jpeg)
-1846: 
-1847: (a)
-1848: 
-1849: ![img-50.jpeg](img-50.jpeg)
-1850: 
-1851: (b)
-1852: 
-1853: If we wish to minimize the probability of misclassification, this is done by assigning the test point $\mathbf{x}$ to the class having the largest posterior probability, corresponding to the largest value of $K_{k} / K$. Thus to classify a new point, we identify the $K$ nearest points from the training data set and then assign the new point to the class having the largest number of representatives amongst this set. Ties can be broken at random. The particular case of $K = 1$ is called the *nearest-neighbour* rule, because a test point is simply assigned to the same class as the nearest point from the training set. These concepts are illustrated in Figure 2.27.
-1854: 
-1855: In Figure 2.28, we show the results of applying the $K$-nearest-neighbour algorithm to the oil flow data, introduced in Chapter 1, for various values of $K$. As expected, we see that $K$ controls the degree of smoothing, so that small $K$ produces many small regions of each class, whereas large $K$ leads to fewer larger regions.
-1856: 
-1857: ![img-51.jpeg](img-51.jpeg)
-1858: 
-1859: ![img-52.jpeg](img-52.jpeg)
-1860: 
-1861: ![img-53.jpeg](img-53.jpeg)
-1862: 
-1863: Figure 2.28 Plot of 200 data points from the oil data set showing values of \( x_{6} \) plotted against \( x_{7} \), where the red, green, and blue points correspond to the 'laminar', 'annular', and 'homogeneous' classes, respectively. Also shown are the classifications of the input space given by the \( K \)-nearest-neighbour algorithm for various values of \( K \).
-1864: An interesting property of the nearest-neighbour ($K = 1$) classifier is that, in the limit $N \to \infty$, the error rate is never more than twice the minimum achievable error rate of an optimal classifier, i.e., one that uses the true class distributions (Cover and Hart, 1967).
-1865: 
-1866: As discussed so far, both the $K$-nearest-neighbour method, and the kernel density estimator, require the entire training data set to be stored, leading to expensive computation if the data set is large. This effect can be offset, at the expense of some additional one-off computation, by constructing tree-based search structures to allow (approximate) near neighbours to be found efficiently without doing an exhaustive search of the data set. Nevertheless, these nonparametric methods are still severely limited. On the other hand, we have seen that simple parametric models are very restricted in terms of the forms of distribution that they can represent. We therefore need to find density models that are very flexible and yet for which the complexity of the models can be controlled independently of the size of the training set, and we shall see in subsequent chapters how to achieve this.
-1867: 
-1868: ## Exercises
-1869: 
-1870: **2.1** $(\star)$ **www** Verify that the Bernoulli distribution (2.2) satisfies the following properties
-1871: 
-1872: $$
-1873: \sum_{x=0}^{1} p(x|\mu) = 1 \tag{2.257}
-1874: $$
-1875: 
-1876: $$
-1877: \mathbb{E}[x] = \mu \tag{2.258}
-1878: $$
-1879: 
-1880: $$
-1881: \operatorname{var}[x] = \mu(1 - \mu). \tag{2.259}
-1882: $$
-1883: 
-1884: Show that the entropy $\mathrm{H}[x]$ of a Bernoulli distributed random binary variable $x$ is given by
-1885: 
-1886: $$
-1887: \mathrm{H}[x] = -\mu \ln \mu - (1 - \mu) \ln(1 - \mu). \tag{2.260}
-1888: $$
-1889: 
-1890: **2.2** $(\star\star)$ The form of the Bernoulli distribution given by (2.2) is not symmetric between the two values of $x$. In some situations, it will be more convenient to use an equivalent formulation for which $x \in \{-1, 1\}$, in which case the distribution can be written
-1891: 
-1892: $$
-1893: p(x|\mu) = \left(\frac{1 - \mu}{2}\right)^{(1-x)/2} \left(\frac{1 + \mu}{2}\right)^{(1+x)/2} \tag{2.261}
-1894: $$
-1895: 
-1896: where $\mu \in [-1, 1]$. Show that the distribution (2.261) is normalized, and evaluate its mean, variance, and entropy.
-1897: 
-1898: **2.3** $(\star\star)$ **www** In this exercise, we prove that the binomial distribution (2.9) is normalized. First use the definition (2.10) of the number of combinations of $m$ identical objects chosen from a total of $N$ to show that
-1899: 
-1900: $$
-1901: \binom{N}{m} + \binom{N}{m - 1} = \binom{N + 1}{m}. \tag{2.262}
-1902: $$
-1903: Use this result to prove by induction the following result
-1904: 
-1905: $$
-1906: (1 + x)^N = \sum_{m=0}^{N} \binom{N}{m} x^m \tag{2.263}
-1907: $$
-1908: 
-1909: which is known as the *binomial theorem*, and which is valid for all real values of $x$. Finally, show that the binomial distribution is normalized, so that
-1910: 
-1911: $$
-1912: \sum_{m=0}^{N} \binom{N}{m} \mu^m (1 - \mu)^{N-m} = 1 \tag{2.264}
-1913: $$
-1914: 
-1915: which can be done by first pulling out a factor $(1 - \mu)^N$ out of the summation and then making use of the binomial theorem.
-1916: 
-1917: **2.4** $(\star \star)$ Show that the mean of the binomial distribution is given by (2.11). To do this, differentiate both sides of the normalization condition (2.264) with respect to $\mu$ and then rearrange to obtain an expression for the mean of $n$. Similarly, by differentiating (2.264) twice with respect to $\mu$ and making use of the result (2.11) for the mean of the binomial distribution prove the result (2.12) for the variance of the binomial.
-1918: 
-1919: **2.5** $(\star \star)$ **www** In this exercise, we prove that the beta distribution, given by (2.13), is correctly normalized, so that (2.14) holds. This is equivalent to showing that
-1920: 
-1921: $$
-1922: \int_0^1 \mu^{a-1} (1 - \mu)^{b-1} \, \mathrm{d}\mu = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a + b)}. \tag{2.265}
-1923: $$
-1924: 
-1925: From the definition (1.141) of the gamma function, we have
-1926: 
-1927: $$
-1928: \Gamma(a)\Gamma(b) = \int_0^\infty \exp(-x) x^{a-1} \, \mathrm{d}x \int_0^\infty \exp(-y) y^{b-1} \, \mathrm{d}y. \tag{2.266}
-1929: $$
-1930: 
-1931: Use this expression to prove (2.265) as follows. First bring the integral over $y$ inside the integrand of the integral over $x$, next make the change of variable $t = y + x$ where $x$ is fixed, then interchange the order of the $x$ and $t$ integrations, and finally make the change of variable $x = t\mu$ where $t$ is fixed.
-1932: 
-1933: **2.6** $(\star)$ Make use of the result (2.265) to show that the mean, variance, and mode of the beta distribution (2.13) are given respectively by
-1934: 
-1935: $$
-1936: \mathbb{E}[\mu] = \frac{a}{a + b} \tag{2.267}
-1937: $$
-1938: 
-1939: $$
-1940: \operatorname{var}[\mu] = \frac{ab}{(a + b)^2(a + b + 1)} \tag{2.268}
-1941: $$
-1942: 
-1943: $$
-1944: \operatorname{mode}[\mu] = \frac{a - 1}{a + b - 2}. \tag{2.269}
-1945: $$
-1946: 2.7 (★★) Consider a binomial random variable $x$ given by (2.9), with prior distribution for $\mu$ given by the beta distribution (2.13), and suppose we have observed $m$ occurrences of $x = 1$ and $l$ occurrences of $x = 0$. Show that the posterior mean value of $x$ lies between the prior mean and the maximum likelihood estimate for $\mu$. To do this, show that the posterior mean can be written as $\lambda$ times the prior mean plus $(1 - \lambda)$ times the maximum likelihood estimate, where $0 \leqslant \lambda \leqslant 1$. This illustrates the concept of the posterior distribution being a compromise between the prior distribution and the maximum likelihood solution.
-1947: 
-1948: 2.8 (★) Consider two variables $x$ and $y$ with joint distribution $p(x, y)$. Prove the following two results
-1949: 
-1950: $$
-1951: \mathbb{E}[x] = \mathbb{E}_y [\mathbb{E}_x[x|y]] \tag{2.270}
-1952: $$
-1953: 
-1954: $$
-1955: \operatorname{var}[x] = \mathbb{E}_y [\operatorname{var}_x[x|y]] + \operatorname{var}_y [\mathbb{E}_x[x|y]] \tag{2.271}
-1956: $$
-1957: 
-1958: Here $\mathbb{E}_x[x|y]$ denotes the expectation of $x$ under the conditional distribution $p(x|y)$, with a similar notation for the conditional variance.
-1959: 
-1960: 2.9 (★★★) **WWW**. In this exercise, we prove the normalization of the Dirichlet distribution (2.38) using induction. We have already shown in Exercise 2.5 that the beta distribution, which is a special case of the Dirichlet for $M = 2$, is normalized. We now assume that the Dirichlet distribution is normalized for $M - 1$ variables and prove that it is normalized for $M$ variables. To do this, consider the Dirichlet distribution over $M$ variables, and take account of the constraint $\sum_{k=1}^{M} \mu_k = 1$ by eliminating $\mu_M$, so that the Dirichlet is written
-1961: 
-1962: $$
-1963: p_M(\mu_1, \dots, \mu_{M-1}) = C_M \prod_{k=1}^{M-1} \mu_k^{\alpha_k - 1} \left(1 - \sum_{j=1}^{M-1} \mu_j\right)^{\alpha_M - 1} \tag{2.272}
-1964: $$
-1965: 
-1966: and our goal is to find an expression for $C_M$. To do this, integrate over $\mu_{M-1}$, taking care over the limits of integration, and then make a change of variable so that this integral has limits 0 and 1. By assuming the correct result for $C_{M-1}$ and making use of (2.265), derive the expression for $C_M$.
-1967: 
-1968: 2.10 (★★) Using the property $\Gamma(x + 1) = x\Gamma(x)$ of the gamma function, derive the following results for the mean, variance, and covariance of the Dirichlet distribution given by (2.38)
-1969: 
-1970: $$
-1971: \mathbb{E}[\mu_j] = \frac{\alpha_j}{\alpha_0} \tag{2.273}
-1972: $$
-1973: 
-1974: $$
-1975: \operatorname{var}[\mu_j] = \frac{\alpha_j(\alpha_0 - \alpha_j)}{\alpha_0^2(\alpha_0 + 1)} \tag{2.274}
-1976: $$
-1977: 
-1978: $$
-1979: \operatorname{cov}[\mu_j \mu_l] = -\frac{\alpha_j \alpha_l}{\alpha_0^2(\alpha_0 + 1)}, \quad j \neq l \tag{2.275}
-1980: $$
-1981: 
-1982: where $\alpha_0$ is defined by (2.39).
-1983: **2.11** $(\star)$ **www** By expressing the expectation of $\ln \mu_j$ under the Dirichlet distribution (2.38) as a derivative with respect to $\alpha_j$, show that
-1984: 
-1985: $$
-1986: \mathbb{E}[\ln \mu_j] = \psi(\alpha_j) - \psi(\alpha_0) \tag{2.276}
-1987: $$
-1988: 
-1989: where $\alpha_0$ is given by (2.39) and
-1990: 
-1991: $$
-1992: \psi(a) \equiv \frac{d}{da} \ln \Gamma(a) \tag{2.277}
-1993: $$
-1994: 
-1995: is the *digamma* function.
-1996: 
-1997: **2.12** $(\star)$ The uniform distribution for a continuous variable $x$ is defined by
-1998: 
-1999: $$
-2000: \mathrm{U}(x|a,b) = \frac{1}{b-a}, \quad a \leqslant x \leqslant b. \tag{2.278}
-2001: $$
-2002: 
-2003: Verify that this distribution is normalized, and find expressions for its mean and variance.
-2004: 
-2005: 2.13 \((\star \star)\) Evaluate the Kullback-Leibler divergence (1.113) between two Gaussians \(p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\pmb {\mu},\pmb {\Sigma})\) and \(q(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\mathbf{m},\mathbf{L})\)
-2006: 2.14 \((\star \star)\) www This exercise demonstrates that the multivariate distribution with maximum entropy, for a given covariance, is a Gaussian. The entropy of a distribution \(p(\mathbf{x})\) is given by
-2007: 
-2008: $$
-2009: \mathrm{H}[\mathbf{x}] = - \int p(\mathbf{x}) \ln p(\mathbf{x}) \, \mathrm{d}\mathbf{x}. \tag{2.279}
-2010: $$
-2011: 
-2012: We wish to maximize $\mathrm{H}[\mathbf{x}]$ over all distributions $p(\mathbf{x})$ subject to the constraints that $p(\mathbf{x})$ be normalized and that it have a specific mean and covariance, so that
-2013: 
-2014: $$
-2015: \int p(\mathbf{x}) \, \mathrm{d}\mathbf{x} = 1 \tag{2.280}
-2016: $$
-2017: 
-2018: $$
-2019: \int p(\mathbf{x}) \mathbf{x} \, \mathrm{d}\mathbf{x} = \boldsymbol{\mu} \tag{2.281}
-2020: $$
-2021: 
-2022: $$
-2023: \int p(\mathbf{x})(\mathbf{x} - \boldsymbol{\mu})(\mathbf{x} - \boldsymbol{\mu})^{\mathrm{T}} \, \mathrm{d}\mathbf{x} = \boldsymbol{\Sigma}. \tag{2.282}
-2024: $$
-2025: 
-2026: By performing a variational maximization of (2.279) and using Lagrange multipliers to enforce the constraints (2.280), (2.281), and (2.282), show that the maximum likelihood distribution is given by the Gaussian (2.43).
-2027: 
-2028: **2.15** $(\star \star)$ Show that the entropy of the multivariate Gaussian $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Sigma})$ is given by
-2029: 
-2030: $$
-2031: \mathrm{H}[\mathbf{x}] = \frac{1}{2} \ln |\boldsymbol{\Sigma}| + \frac{D}{2} (1 + \ln(2\pi)) \tag{2.283}
-2032: $$
-2033: 
-2034: where $D$ is the dimensionality of $\mathbf{x}$.
-2035: 2.16 $(\star \star \star)$ **www** Consider two random variables $x_{1}$ and $x_{2}$ having Gaussian distributions with means $\mu_{1}, \mu_{2}$ and precisions $\tau_{1}, \tau_{2}$ respectively. Derive an expression for the differential entropy of the variable $x = x_{1} + x_{2}$. To do this, first find the distribution of $x$ by using the relation
-2036: 
-2037: $$
-2038: p(x) = \int_{-\infty}^{\infty} p(x|x_{2})p(x_{2}) \, \mathrm{d}x_{2} \tag{2.284}
-2039: $$
-2040: 
-2041: and completing the square in the exponent. Then observe that this represents the convolution of two Gaussian distributions, which itself will be Gaussian, and finally make use of the result (1.110) for the entropy of the univariate Gaussian.
-2042: 
-2043: 2.17 \((\star)\) www Consider the multivariate Gaussian distribution given by (2.43). By writing the precision matrix (inverse covariance matrix) \(\Sigma^{-1}\) as the sum of a symmetric and an anti-symmetric matrix, show that the anti-symmetric term does not appear in the exponent of the Gaussian, and hence that the precision matrix may be taken to be symmetric without loss of generality. Because the inverse of a symmetric matrix is also symmetric (see Exercise 2.22), it follows that the covariance matrix may also be chosen to be symmetric without loss of generality.
-2044: 2.18 \((\star \star \star)\) Consider a real, symmetric matrix \(\Sigma\) whose eigenvalue equation is given by (2.45). By taking the complex conjugate of this equation and subtracting the original equation, and then forming the inner product with eigenvector \(\mathbf{u}_i\), show that the eigenvalues \(\lambda_{i}\) are real. Similarly, use the symmetry property of \(\Sigma\) to show that two eigenvectors \(\mathbf{u}_i\) and \(\mathbf{u}_j\) will be orthogonal provided \(\lambda_{j} \neq \lambda_{i}\). Finally, show that without loss of generality, the set of eigenvectors can be chosen to be orthonormal, so that they satisfy (2.46), even if some of the eigenvalues are zero.
-2045: 2.19 \((\star \star)\) Show that a real, symmetric matrix \(\Sigma\) having the eigenvector equation (2.45) can be expressed as an expansion in the eigenvectors, with coefficients given by the eigenvalues, of the form (2.48). Similarly, show that the inverse matrix \(\Sigma^{-1}\) has a representation of the form (2.49).
-2046: 2.20 \((\star \star)\) www A positive definite matrix \(\Sigma\) can be defined as one for which the quadratic form
-2047: 
-2048: $$
-2049: \mathbf{a}^{\mathrm{T}} \boldsymbol{\Sigma} \mathbf{a} \tag{2.285}
-2050: $$
-2051: 
-2052: is positive for any real value of the vector $\mathbf{a}$. Show that a necessary and sufficient condition for $\boldsymbol{\Sigma}$ to be positive definite is that all of the eigenvalues $\lambda_{i}$ of $\boldsymbol{\Sigma}$, defined by (2.45), are positive.
-2053: 
-2054: 2.21 \((\star)\) Show that a real, symmetric matrix of size \(D\times D\) has \(D(D + 1) / 2\) independent parameters.
-2055: 2.22 \((\star)\) www Show that the inverse of a symmetric matrix is itself symmetric.
-2056: 2.23 \((\star \star)\) By diagonalizing the coordinate system using the eigenvector expansion (2.45), show that the volume contained within the hyperellipsoid corresponding to a constant
-2057: Mahalanobis distance $\Delta$ is given by
-2058: 
-2059: $$
-2060: V_D |\boldsymbol{\Sigma}|^{1/2} \Delta^D \tag{2.286}
-2061: $$
-2062: 
-2063: where $V_D$ is the volume of the unit sphere in $D$ dimensions, and the Mahalanobis distance is defined by (2.44).
-2064: 
-2065: **2.24** $(\star\star)$ **www** Prove the identity (2.76) by multiplying both sides by the matrix
-2066: 
-2067: $$
-2068: \begin{pmatrix}
-2069: \mathbf{A} & \mathbf{B} \\
-2070: \mathbf{C} & \mathbf{D}
-2071: \end{pmatrix} \tag{2.287}
-2072: $$
-2073: 
-2074: and making use of the definition (2.77).
-2075: 
-2076: **2.25** $(\star\star)$ In Sections 2.3.1 and 2.3.2, we considered the conditional and marginal distributions for a multivariate Gaussian. More generally, we can consider a partitioning of the components of $\mathbf{x}$ into three groups $\mathbf{x}_a$, $\mathbf{x}_b$, and $\mathbf{x}_c$, with a corresponding partitioning of the mean vector $\boldsymbol{\mu}$ and of the covariance matrix $\boldsymbol{\Sigma}$ in the form
-2077: 
-2078: $$
-2079: \boldsymbol{\mu} = \begin{pmatrix}
-2080: \boldsymbol{\mu}_a \\
-2081: \boldsymbol{\mu}_b \\
-2082: \boldsymbol{\mu}_c
-2083: \end{pmatrix}, \quad
-2084: \boldsymbol{\Sigma} = \begin{pmatrix}
-2085: \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} & \boldsymbol{\Sigma}_{ac} \\
-2086: \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} & \boldsymbol{\Sigma}_{bc} \\
-2087: \boldsymbol{\Sigma}_{ca} & \boldsymbol{\Sigma}_{cb} & \boldsymbol{\Sigma}_{cc}
-2088: \end{pmatrix}. \tag{2.288}
-2089: $$
-2090: 
-2091: By making use of the results of Section 2.3, find an expression for the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ in which $\mathbf{x}_c$ has been marginalized out.
-2092: 
-2093: **2.26** $(\star\star)$ A very useful result from linear algebra is the *Woodbury* matrix inversion formula given by
-2094: 
-2095: $$
-2096: (\mathbf{A} + \mathbf{BCD})^{-1} = \mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{B}(\mathbf{C}^{-1} + \mathbf{DA}^{-1}\mathbf{B})^{-1}\mathbf{DA}^{-1}. \tag{2.289}
-2097: $$
-2098: 
-2099: By multiplying both sides by $(\mathbf{A} + \mathbf{BCD})$ prove the correctness of this result.
-2100: 
-2101: **2.27** $(\star)$ Let $\mathbf{x}$ and $\mathbf{z}$ be two independent random vectors, so that $p(\mathbf{x}, \mathbf{z}) = p(\mathbf{x})p(\mathbf{z})$. Show that the mean of their sum $\mathbf{y} = \mathbf{x} + \mathbf{z}$ is given by the sum of the means of each of the variable separately. Similarly, show that the covariance matrix of $\mathbf{y}$ is given by the sum of the covariance matrices of $\mathbf{x}$ and $\mathbf{z}$. Confirm that this result agrees with that of Exercise 1.10.
-2102: 
-2103: **2.28** $(\star\star\star)$ **www** Consider a joint distribution over the variable
-2104: 
-2105: $$
-2106: \mathbf{z} = \begin{pmatrix}
-2107: \mathbf{x} \\
-2108: \mathbf{y}
-2109: \end{pmatrix} \tag{2.290}
-2110: $$
-2111: 
-2112: whose mean and covariance are given by (2.108) and (2.105) respectively. By making use of the results (2.92) and (2.93) show that the marginal distribution $p(\mathbf{x})$ is given (2.99). Similarly, by making use of the results (2.81) and (2.82) show that the conditional distribution $p(\mathbf{y}|\mathbf{x})$ is given by (2.100).
-2113: 2.29 $(\star \star)$ Using the partitioned matrix inversion formula (2.76), show that the inverse of the precision matrix (2.104) is given by the covariance matrix (2.105).
-2114: 
-2115: 2.30 $(\star)$ By starting from (2.107) and making use of the result (2.105), verify the result (2.108).
-2116: 
-2117: 2.31 $(\star \star)$ Consider two multidimensional random vectors $\mathbf{x}$ and $\mathbf{z}$ having Gaussian distributions $p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_{\mathbf{x}},\boldsymbol{\Sigma}_{\mathbf{x}})$ and $p(\mathbf{z}) = \mathcal{N}(\mathbf{z}|\boldsymbol{\mu}_{\mathbf{z}},\boldsymbol{\Sigma}_{\mathbf{z}})$ respectively, together with their sum $\mathbf{y} = \mathbf{x} + \mathbf{z}$. Use the results (2.109) and (2.110) to find an expression for the marginal distribution $p(\mathbf{y})$ by considering the linear-Gaussian model comprising the product of the marginal distribution $p(\mathbf{x})$ and the conditional distribution $p(\mathbf{y}|\mathbf{x})$.
-2118: 
-2119: 2.32 $(\star \star \star)$ **www** This exercise and the next provide practice at manipulating the quadratic forms that arise in linear-Gaussian models, as well as giving an independent check of results derived in the main text. Consider a joint distribution $p(\mathbf{x},\mathbf{y})$ defined by the marginal and conditional distributions given by (2.99) and (2.100). By examining the quadratic form in the exponent of the joint distribution, and using the technique of 'completing the square' discussed in Section 2.3, find expressions for the mean and covariance of the marginal distribution $p(\mathbf{y})$ in which the variable $\mathbf{x}$ has been integrated out. To do this, make use of the Woodbury matrix inversion formula (2.289). Verify that these results agree with (2.109) and (2.110) obtained using the results of Chapter 2.
-2120: 
-2121: 2.33 $(\star \star \star)$ Consider the same joint distribution as in Exercise 2.32, but now use the technique of completing the square to find expressions for the mean and covariance of the conditional distribution $p(\mathbf{x}|\mathbf{y})$. Again, verify that these agree with the corresponding expressions (2.111) and (2.112).
-2122: 
-2123: 2.34 $(\star \star)$ **www** To find the maximum likelihood solution for the covariance matrix of a multivariate Gaussian, we need to maximize the log likelihood function (2.118) with respect to $\Sigma$, noting that the covariance matrix must be symmetric and positive definite. Here we proceed by ignoring these constraints and doing a straightforward maximization. Using the results (C.21), (C.26), and (C.28) from Appendix C, show that the covariance matrix $\Sigma$ that maximizes the log likelihood function (2.118) is given by the sample covariance (2.122). We note that the final result is necessarily symmetric and positive definite (provided the sample covariance is nonsingular).
-2124: 
-2125: 2.35 $(\star \star)$ Use the result (2.59) to prove (2.62). Now, using the results (2.59), and (2.62), show that
-2126: 
-2127: $$
-2128: \mathbb{E}[\mathbf{x}_n\mathbf{x}_m] = \boldsymbol{\mu}\boldsymbol{\mu}^{\mathrm{T}} + I_{nm}\boldsymbol{\Sigma} \tag{2.291}
-2129: $$
-2130: 
-2131: where $\mathbf{x}_n$ denotes a data point sampled from a Gaussian distribution with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$, and $I_{nm}$ denotes the $(n,m)$ element of the identity matrix. Hence prove the result (2.124).
-2132: 
-2133: 2.36 $(\star \star)$ **www** Using an analogous procedure to that used to obtain (2.126), derive an expression for the sequential estimation of the variance of a univariate Gaussian
-2134: distribution, by starting with the maximum likelihood expression
-2135: 
-2136: $$\sigma_{\mathrm{ML}}^{2}=\frac{1}{N}\sum_{n=1}^{N}(x_{n}-\mu)^{2}.$$ (2.292)
-2137: 
-2138: Verify that substituting the expression for a Gaussian distribution into the Robbins-Monro sequential estimation formula (2.135) gives a result of the same form, and hence obtain an expression for the corresponding coefficients $a_{N}$.
-2139: 
-2140: 2.37 (★★) Using an analogous procedure to that used to obtain (2.126), derive an expression for the sequential estimation of the covariance of a multivariate Gaussian distribution, by starting with the maximum likelihood expression (2.122). Verify that substituting the expression for a Gaussian distribution into the Robbins-Monro sequential estimation formula (2.135) gives a result of the same form, and hence obtain an expression for the corresponding coefficients $a_{N}$.
-2141: 2.38 (★) Use the technique of completing the square for the quadratic form in the exponent to derive the results (2.141) and (2.142).
-2142: 2.39 (★★) Starting from the results (2.141) and (2.142) for the posterior distribution of the mean of a Gaussian random variable, dissect out the contributions from the first $N-1$ data points and hence obtain expressions for the sequential update of $\mu_{N}$ and $\sigma_{N}^{2}$. Now derive the same results starting from the posterior distribution $p(\mu|x_{1},\ldots,x_{N-1})=\mathcal{N}(\mu|\mu_{N-1},\sigma_{N-1}^{2})$ and multiplying by the likelihood function $p(x_{N}|\mu)=\mathcal{N}(x_{N}|\mu,\sigma^{2})$ and then completing the square and normalizing to obtain the posterior distribution after $N$ observations.
-2143: 2.40 (★★) WWW Consider a $D$-dimensional Gaussian random variable $\mathbf{x}$ with distribution $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Sigma})$ in which the covariance $\boldsymbol{\Sigma}$ is known and for which we wish to infer the mean $\boldsymbol{\mu}$ from a set of observations $\mathbf{X}=\{\mathbf{x}_{1},\ldots,\mathbf{x}_{N}\}$. Given a prior distribution $p(\boldsymbol{\mu})=\mathcal{N}(\boldsymbol{\mu}|\boldsymbol{\mu}_{0},\boldsymbol{\Sigma}_{0})$, find the corresponding posterior distribution $p(\boldsymbol{\mu}|\mathbf{X})$.
-2144: 2.41 (★) Use the definition of the gamma function (1.141) to show that the gamma distribution (2.146) is normalized.
-2145: 2.42 (★★) Evaluate the mean, variance, and mode of the gamma distribution (2.146).
-2146: 2.43 (★) The following distribution
-2147: 
-2148: $$p(x|\sigma^{2},q)=\frac{q}{2(2\sigma^{2})^{1/q}\Gamma(1/q)}\exp\left(-\frac{|x|^{q}}{2\sigma^{2}}\right)$$ (2.293)
-2149: 
-2150: is a generalization of the univariate Gaussian distribution. Show that this distribution is normalized so that
-2151: 
-2152: $$\int_{-\infty}^{\infty}p(x|\sigma^{2},q)\,\mathrm{d}x=1$$ (2.294)
-2153: 
-2154: and that it reduces to the Gaussian when $q=2$. Consider a regression model in which the target variable is given by $t=y(\mathbf{x},\mathbf{w})+\epsilon$ and $\epsilon$ is a random noise
-2155: variable drawn from the distribution (2.293). Show that the log likelihood function over $\mathbf{w}$ and $\sigma^2$, for an observed data set of input vectors $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$ and corresponding target variables $\mathbf{t} = (t_1, \dots, t_N)^\mathrm{T}$, is given by
-2156: 
-2157: $$
-2158: \ln p(\mathbf{t}|\mathbf{X}, \mathbf{w}, \sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^N |y(\mathbf{x}_n, \mathbf{w}) - t_n|^q - \frac{N}{q} \ln(2\sigma^2) + \text{const} \tag{2.295}
-2159: $$
-2160: 
-2161: where ‘const’ denotes terms independent of both $\mathbf{w}$ and $\sigma^2$. Note that, as a function of $\mathbf{w}$, this is the $L_q$ error function considered in Section 1.5.5.
-2162: 
-2163: 2.44 \((\star \star)\) Consider a univariate Gaussian distribution \(\mathcal{N}(x|\mu ,\tau^{-1})\) having conjugate Gaussian-gamma prior given by (2.154), and a data set \(\mathbf{x} = \{x_{1},\ldots ,x_{N}\}\) of i.i.d. observations. Show that the posterior distribution is also a Gaussian-gamma distribution of the same functional form as the prior, and write down expressions for the parameters of this posterior distribution.
-2164: 2.45 \((\star)\) Verify that the Wishart distribution defined by (2.155) is indeed a conjugate prior for the precision matrix of a multivariate Gaussian.
-2165: 2.46 \((\star)\) www Verify that evaluating the integral in (2.158) leads to the result (2.159).
-2166: 2.47 \((\star)\) www Show that in the limit \(\nu \to \infty\), the t-distribution (2.159) becomes a Gaussian. Hint: ignore the normalization coefficient, and simply look at the dependence on \(x\).
-2167: 2.48 \((\star)\) By following analogous steps to those used to derive the univariate Student's t-distribution (2.159), verify the result (2.162) for the multivariate form of the Student's t-distribution, by marginalizing over the variable \(\eta\) in (2.161). Using the definition (2.161), show by exchanging integration variables that the multivariate t-distribution is correctly normalized.
-2168: 2.49 \((\star \star)\) By using the definition (2.161) of the multivariate Student's t-distribution as a convolution of a Gaussian with a gamma distribution, verify the properties (2.164), (2.165), and (2.166) for the multivariate t-distribution defined by (2.162).
-2169: 2.50 \((\star)\) Show that in the limit \(\nu \to \infty\), the multivariate Student's t-distribution (2.162) reduces to a Gaussian with mean \(\mu\) and precision \(\Lambda\).
-2170: 2.51 \((\star)\) www The various trigonometric identities used in the discussion of periodic variables in this chapter can be proven easily from the relation
-2171: 
-2172: $$
-2173: \exp(iA) = \cos A + i \sin A \tag{2.296}
-2174: $$
-2175: 
-2176: in which $i$ is the square root of minus one. By considering the identity
-2177: 
-2178: $$
-2179: \exp(iA) \exp(-iA) = 1 \tag{2.297}
-2180: $$
-2181: 
-2182: prove the result (2.177). Similarly, using the identity
-2183: 
-2184: $$
-2185: \cos(A - B) = \Re \exp\{i(A - B)\} \tag{2.298}
-2186: $$
-2187: where $\Re$ denotes the real part, prove (2.178). Finally, by using $\sin(A - B) = \Im \exp\{i(A - B)\}$, where $\Im$ denotes the imaginary part, prove the result (2.183).
-2188: 
-2189: **2.52** $(\star \star)$ For large $m$, the von Mises distribution (2.179) becomes sharply peaked around the mode $\theta_0$. By defining $\xi = m^{1/2}(\theta - \theta_0)$ and making the Taylor expansion of the cosine function given by
-2190: 
-2191: $$
-2192: \cos \alpha = 1 - \frac{\alpha^2}{2} + O(\alpha^4) \tag{2.299}
-2193: $$
-2194: 
-2195: show that as $m \to \infty$, the von Mises distribution tends to a Gaussian.
-2196: 
-2197: 2.53 \((\star)\) Using the trigonometric identity (2.183), show that solution of (2.182) for \(\theta_0\) is given by (2.184).
-2198: 2.54 \((\star)\) By computing first and second derivatives of the von Mises distribution (2.179), and using \(I_0(m) > 0\) for \(m > 0\), show that the maximum of the distribution occurs when \(\theta = \theta_0\) and that the minimum occurs when \(\theta = \theta_0 + \pi (\mathrm{mod} 2\pi)\).
-2199: 2.55 \((\star)\) By making use of the result (2.168), together with (2.184) and the trigonometric identity (2.178), show that the maximum likelihood solution \(m_{\mathrm{ML}}\) for the concentration of the von Mises distribution satisfies \(A(m_{\mathrm{ML}}) = \overline{r}\) where \(\overline{r}\) is the radius of the mean of the observations viewed as unit vectors in the two-dimensional Euclidean plane, as illustrated in Figure 2.17.
-2200: 2.56 (★★) www Express the beta distribution (2.13), the gamma distribution (2.146), and the von Mises distribution (2.179) as members of the exponential family (2.194) and thereby identify their natural parameters.
-2201: 2.57 \((\star)\) Verify that the multivariate Gaussian distribution can be cast in exponential family form (2.194) and derive expressions for \(\pmb{\eta}\), \(\mathbf{u}(\mathbf{x})\), \(h(\mathbf{x})\) and \(g(\pmb{\eta})\) analogous to (2.220)-(2.223).
-2202: 2.58 \((\star)\) The result (2.226) showed that the negative gradient of \(\ln g(\pmb{\eta})\) for the exponential family is given by the expectation of \(\mathbf{u}(\mathbf{x})\). By taking the second derivatives of (2.195), show that
-2203: 
-2204: $$
-2205: -\nabla \nabla \ln g(\boldsymbol{\eta}) = \mathbb{E}[\mathbf{u}(\mathbf{x})\mathbf{u}(\mathbf{x})^{\mathrm{T}}] - \mathbb{E}[\mathbf{u}(\mathbf{x})]\mathbb{E}[\mathbf{u}(\mathbf{x})^{\mathrm{T}}] = \operatorname{cov}[\mathbf{u}(\mathbf{x})]. \tag{2.300}
-2206: $$
-2207: 
-2208: 2.59 \((\star)\) By changing variables using \(y = x / \sigma\), show that the density (2.236) will be correctly normalized, provided \(f(x)\) is correctly normalized.
-2209: 2.60 (★★) www Consider a histogram-like density model in which the space \(\mathbf{x}\) is divided into fixed regions for which the density \(p(\mathbf{x})\) takes the constant value \(h_i\) over the \(i^{\mathrm{th}}\) region, and that the volume of region \(i\) is denoted \(\Delta_{i}\). Suppose we have a set of \(N\) observations of \(\mathbf{x}\) such that \(n_i\) of these observations fall in region \(i\). Using a Lagrange multiplier to enforce the normalization constraint on the density, derive an expression for the maximum likelihood estimator for the \(\{h_i\}\).
-2210: 2.61 \((\star)\) Show that the \(K\)-nearest-neighbour density model defines an improper distribution whose integral over all space is divergent.
+1398: \end{array} \tag{2.192}
+1399: $$
+1400: 
+1401: We shall discuss the probabilistic interpretation of the mixture distribution in greater detail in Chapter 9.
+1402: 
+1403: The form of the Gaussian mixture distribution is governed by the parameters $\boldsymbol{\pi}$, $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$, where we have used the notation $\boldsymbol{\pi} \equiv \{\pi_1, \dots, \pi_K\}$, $\boldsymbol{\mu} \equiv \{\boldsymbol{\mu}_1, \dots, \boldsymbol{\mu}_K\}$ and $\boldsymbol{\Sigma} \equiv \{\boldsymbol{\Sigma}_1, \dots, \boldsymbol{\Sigma}_K\}$. One way to set the values of these parameters is to use maximum likelihood. From (2.188) the log of the likelihood function is given by
+1404: 
+1405: $$
+1406: \ln p(\mathbf{X}|\boldsymbol{\pi},\boldsymbol{\mu},\boldsymbol{\Sigma}) = \sum_{n=1}^{N} \ln \left\{ \sum_{k=1}^{K} \pi_k \mathcal{N}(\mathbf{x}_n|\boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k) \right\} \tag{2.193}
+1407: $$
+1408: where $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$. We immediately see that the situation is now much more complex than with a single Gaussian, due to the presence of the summation over $k$ inside the logarithm. As a result, the maximum likelihood solution for the parameters no longer has a closed-form analytical solution. One approach to maximizing the likelihood function is to use iterative numerical optimization techniques (Fletcher, 1987; Nocedal and Wright, 1999; Bishop and Nabney, 2008). Alternatively we can employ a powerful framework called *expectation maximization*, which will be discussed at length in Chapter 9.
+1409: 
+1410: ## 2.4. The Exponential Family
+1411: 
+1412: The probability distributions that we have studied so far in this chapter (with the exception of the Gaussian mixture) are specific examples of a broad class of distributions called the *exponential family* (Duda and Hart, 1973; Bernardo and Smith, 1994). Members of the exponential family have many important properties in common, and it is illuminating to discuss these properties in some generality.
+1413: 
+1414: The exponential family of distributions over $\mathbf{x}$, given parameters $\boldsymbol{\eta}$, is defined to be the set of distributions of the form
+1415: 
+1416: $$
+1417: p(\mathbf{x}|\boldsymbol{\eta}) = h(\mathbf{x})g(\boldsymbol{\eta}) \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \mathbf{u}(\mathbf{x}) \right\} \tag{2.194}
+1418: $$
+1419: 
+1420: where $\mathbf{x}$ may be scalar or vector, and may be discrete or continuous. Here $\boldsymbol{\eta}$ are called the *natural parameters* of the distribution, and $\mathbf{u}(\mathbf{x})$ is some function of $\mathbf{x}$. The function $g(\boldsymbol{\eta})$ can be interpreted as the coefficient that ensures that the distribution is normalized and therefore satisfies
+1421: 
+1422: $$
+1423: g(\boldsymbol{\eta}) \int h(\mathbf{x}) \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \mathbf{u}(\mathbf{x}) \right\} \mathrm{d}\mathbf{x} = 1 \tag{2.195}
+1424: $$
+1425: 
+1426: where the integration is replaced by summation if $\mathbf{x}$ is a discrete variable.
+1427: 
+1428: We begin by taking some examples of the distributions introduced earlier in the chapter and showing that they are indeed members of the exponential family. Consider first the Bernoulli distribution
+1429: 
+1430: $$
+1431: p(x|\mu) = \operatorname{Bern}(x|\mu) = \mu^x (1 - \mu)^{1-x}. \tag{2.196}
+1432: $$
+1433: 
+1434: Expressing the right-hand side as the exponential of the logarithm, we have
+1435: 
+1436: $$
+1437: \begin{aligned}
+1438: p(x|\mu) &= \exp \left\{ x \ln \mu + (1 - x) \ln(1 - \mu) \right\} \\
+1439: &= (1 - \mu) \exp \left\{ \ln \left( \frac{\mu}{1 - \mu} \right) x \right\}. \tag{2.197}
+1440: \end{aligned}
+1441: $$
+1442: 
+1443: Comparison with (2.194) allows us to identify
+1444: 
+1445: $$
+1446: \eta = \ln \left( \frac{\mu}{1 - \mu} \right) \tag{2.198}
+1447: $$
+1448: which we can solve for $\mu$ to give $\mu = \sigma(\eta)$, where
+1449: 
+1450: $$
+1451: \sigma(\eta) = \frac{1}{1 + \exp(-\eta)} \tag{2.199}
+1452: $$
+1453: 
+1454: is called the *logistic sigmoid* function. Thus we can write the Bernoulli distribution using the standard representation (2.194) in the form
+1455: 
+1456: $$
+1457: p(x|\eta) = \sigma(-\eta) \exp(\eta x) \tag{2.200}
+1458: $$
+1459: 
+1460: where we have used $1 - \sigma(\eta) = \sigma(-\eta)$, which is easily proved from (2.199). Comparison with (2.194) shows that
+1461: 
+1462: $$
+1463: u(x) = x \tag{2.201}
+1464: $$
+1465: 
+1466: $$
+1467: h(x) = 1 \tag{2.202}
+1468: $$
+1469: 
+1470: $$
+1471: g(\eta) = \sigma(-\eta). \tag{2.203}
+1472: $$
+1473: 
+1474: Next consider the multinomial distribution that, for a single observation $\mathbf{x}$, takes the form
+1475: 
+1476: $$
+1477: p(\mathbf{x}|\boldsymbol{\mu}) = \prod_{k=1}^{M} \mu_k^{x_k} = \exp \left\{ \sum_{k=1}^{M} x_k \ln \mu_k \right\} \tag{2.204}
+1478: $$
+1479: 
+1480: where $\mathbf{x} = (x_1, \ldots, x_N)^{\mathrm{T}}$. Again, we can write this in the standard representation (2.194) so that
+1481: 
+1482: $$
+1483: p(\mathbf{x}|\boldsymbol{\eta}) = \exp(\boldsymbol{\eta}^{\mathrm{T}} \mathbf{x}) \tag{2.205}
+1484: $$
+1485: 
+1486: where $\eta_k = \ln \mu_k$, and we have defined $\boldsymbol{\eta} = (\eta_1, \ldots, \eta_M)^{\mathrm{T}}$. Again, comparing with (2.194) we have
+1487: 
+1488: $$
+1489: \mathbf{u}(\mathbf{x}) = \mathbf{x} \tag{2.206}
+1490: $$
+1491: 
+1492: $$
+1493: h(\mathbf{x}) = 1 \tag{2.207}
+1494: $$
+1495: 
+1496: $$
+1497: g(\boldsymbol{\eta}) = 1. \tag{2.208}
+1498: $$
+1499: 
+1500: Note that the parameters $\eta_k$ are not independent because the parameters $\mu_k$ are subject to the constraint
+1501: 
+1502: $$
+1503: \sum_{k=1}^{M} \mu_k = 1 \tag{2.209}
+1504: $$
+1505: 
+1506: so that, given any $M - 1$ of the parameters $\mu_k$, the value of the remaining parameter is fixed. In some circumstances, it will be convenient to remove this constraint by expressing the distribution in terms of only $M - 1$ parameters. This can be achieved by using the relationship (2.209) to eliminate $\mu_M$ by expressing it in terms of the remaining $\{\mu_k\}$ where $k = 1, \ldots, M - 1$, thereby leaving $M - 1$ parameters. Note that these remaining parameters are still subject to the constraints
+1507: 
+1508: $$
+1509: 0 \leqslant \mu_k \leqslant 1, \quad \sum_{k=1}^{M-1} \mu_k \leqslant 1. \tag{2.210}
+1510: $$
+1511: Making use of the constraint (2.209), the multinomial distribution in this representation then becomes
+1512: 
+1513: $$\begin{array}{l} \exp \left\{\sum_{k=1}^{M} x_{k} \ln \mu_{k}\right\} \\ = \exp \left\{\sum_{k=1}^{M-1} x_{k} \ln \mu_{k} + \left(1 - \sum_{k=1}^{M-1} x_{k}\right) \ln \left(1 - \sum_{k=1}^{M-1} \mu_{k}\right)\right\} \\ = \exp \left\{\sum_{k=1}^{M-1} x_{k} \ln \left(\frac{\mu_{k}}{1 - \sum_{j=1}^{M-1} \mu_{j}}\right) + \ln \left(1 - \sum_{k=1}^{M-1} \mu_{k}\right)\right\}. \end{array} \tag{2.211}$$
+1514: 
+1515: We now identify
+1516: 
+1517: $$\ln \left(\frac{\mu_{k}}{1 - \sum_{j} \mu_{j}}\right) = \eta_{k} \tag{2.212}$$
+1518: 
+1519: which we can solve for $\mu_{k}$ by first summing both sides over $k$ and then rearranging and back-substituting to give
+1520: 
+1521: $$\mu_{k} = \frac{\exp(\eta_{k})}{1 + \sum_{j} \exp(\eta_{j})}. \tag{2.213}$$
+1522: 
+1523: This is called the softmax function, or the normalized exponential. In this representation, the multinomial distribution therefore takes the form
+1524: 
+1525: $$p(\mathbf{x}|\boldsymbol{\eta}) = \left(1 + \sum_{k=1}^{M-1} \exp(\eta_{k})\right)^{-1} \exp(\boldsymbol{\eta}^{\mathrm{T}}\mathbf{x}). \tag{2.214}$$
+1526: 
+1527: This is the standard form of the exponential family, with parameter vector $\boldsymbol{\eta} = (\eta_{1}, \ldots, \eta_{M-1})^{\mathrm{T}}$ in which
+1528: 
+1529: $$\mathbf{u}(\mathbf{x}) = \mathbf{x} \tag{2.215}$$
+1530: 
+1531: $$h(\mathbf{x}) = 1 \tag{2.216}$$
+1532: 
+1533: $$g(\boldsymbol{\eta}) = \left(1 + \sum_{k=1}^{M-1} \exp(\eta_{k})\right)^{-1}. \tag{2.217}$$
+1534: 
+1535: Finally, let us consider the Gaussian distribution. For the univariate Gaussian, we have
+1536: 
+1537: $$p(x|\mu, \sigma^{2}) = \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp \left\{-\frac{1}{2\sigma^{2}}(x - \mu)^{2}\right\} \tag{2.218}$$
+1538: 
+1539: $$= \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp \left\{-\frac{1}{2\sigma^{2}}x^{2} + \frac{\mu}{\sigma^{2}}x - \frac{1}{2\sigma^{2}}\mu^{2}\right\} \tag{2.219}$$
+1540: Exercise 2.57
+1541: 
+1542: which, after some simple rearrangement, can be cast in the standard exponential family form (2.194) with
+1543: 
+1544: $$
+1545: \boldsymbol {\eta} = \left( \begin{array}{c} \mu / \sigma^ {2} \\ - 1 / 2 \sigma^ {2} \end{array} \right) \tag {2.220}
+1546: $$
+1547: 
+1548: $$
+1549: \mathbf {u} (x) = \left( \begin{array}{c} x \\ x ^ {2} \end{array} \right) \tag {2.221}
+1550: $$
+1551: 
+1552: $$
+1553: h (\mathbf {x}) = (2 \pi) ^ {- 1 / 2} \tag {2.222}
+1554: $$
+1555: 
+1556: $$
+1557: g (\boldsymbol {\eta}) = (- 2 \eta_ {2}) ^ {1 / 2} \exp \left(\frac {\eta_ {1} ^ {2}}{4 \eta_ {2}}\right). \tag {2.223}
+1558: $$
+1559: 
+1560: ## 2.4.1 Maximum likelihood and sufficient statistics
+1561: 
+1562: Let us now consider the problem of estimating the parameter vector $\boldsymbol{\eta}$ in the general exponential family distribution (2.194) using the technique of maximum likelihood. Taking the gradient of both sides of (2.195) with respect to $\boldsymbol{\eta}$, we have
+1563: 
+1564: $$
+1565: \begin{array}{l} \nabla g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathrm {d} \mathbf {x} \\ + \quad g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathbf {u} (\mathbf {x}) \mathrm {d} \mathbf {x} = 0. \tag {2.224} \\ \end{array}
+1566: $$
+1567: 
+1568: Rearranging, and making use again of (2.195) then gives
+1569: 
+1570: $$
+1571: - \frac {1}{g (\boldsymbol {\eta})} \nabla g (\boldsymbol {\eta}) = g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathbf {u} (\mathbf {x}) \mathrm {d} \mathbf {x} = \mathbb {E} [ \mathbf {u} (\mathbf {x}) ] \tag {2.225}
+1572: $$
+1573: 
+1574: where we have used (2.194). We therefore obtain the result
+1575: 
+1576: $$
+1577: - \nabla \ln g (\boldsymbol {\eta}) = \mathbb {E} [ \mathbf {u} (\mathbf {x}) ]. \tag {2.226}
+1578: $$
+1579: 
+1580: Exercise 2.58
+1581: 
+1582: Note that the covariance of $\mathbf{u}(\mathbf{x})$ can be expressed in terms of the second derivatives of $g(\boldsymbol{\eta})$, and similarly for higher order moments. Thus, provided we can normalize a distribution from the exponential family, we can always find its moments by simple differentiation.
+1583: 
+1584: Now consider a set of independent identically distributed data denoted by $\mathbf{X} = \{\mathbf{x}_1,\dots ,\mathbf{x}_n\}$, for which the likelihood function is given by
+1585: 
+1586: $$
+1587: p (\mathbf {X} | \boldsymbol {\eta}) = \left(\prod_ {n = 1} ^ {N} h \left(\mathbf {x} _ {n}\right)\right) g (\boldsymbol {\eta}) ^ {N} \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \sum_ {n = 1} ^ {N} \mathbf {u} \left(\mathbf {x} _ {n}\right) \right\}. \tag {2.227}
+1588: $$
+1589: 
+1590: Setting the gradient of $\ln p(\mathbf{X}|\boldsymbol{\eta})$ with respect to $\boldsymbol{\eta}$ to zero, we get the following condition to be satisfied by the maximum likelihood estimator $\boldsymbol{\eta}_{\mathrm{ML}}$
+1591: 
+1592: $$
+1593: - \nabla \ln g (\boldsymbol {\eta} _ {\mathrm {M L}}) = \frac {1}{N} \sum_ {n = 1} ^ {N} \mathbf {u} (\mathbf {x} _ {n}) \tag {2.228}
+1594: $$
+1595: which can in principle be solved to obtain $\boldsymbol{\eta}_{\mathrm{ML}}$. We see that the solution for the maximum likelihood estimator depends on the data only through $\sum_{n} \mathbf{u}(\mathbf{x}_{n})$, which is therefore called the *sufficient statistic* of the distribution (2.194). We do not need to store the entire data set itself but only the value of the sufficient statistic. For the Bernoulli distribution, for example, the function $\mathbf{u}(x)$ is given just by $x$ and so we need only keep the sum of the data points $\{x_{n}\}$, whereas for the Gaussian $\mathbf{u}(x) = (x, x^{2})^{\mathrm{T}}$, and so we should keep both the sum of $\{x_{n}\}$ and the sum of $\{x_{n}^{2}\}$.
+1596: 
+1597: If we consider the limit $N \to \infty$, then the right-hand side of (2.228) becomes $\mathbb{E}[\mathbf{u}(\mathbf{x})]$, and so by comparing with (2.226) we see that in this limit $\boldsymbol{\eta}_{\mathrm{ML}}$ will equal the true value $\boldsymbol{\eta}$.
+1598: 
+1599: In fact, this sufficiency property holds also for Bayesian inference, although we shall defer discussion of this until Chapter 8 when we have equipped ourselves with the tools of graphical models and can thereby gain a deeper insight into these important concepts.
+1600: 
+1601: ## 2.4.2 Conjugate priors
+1602: 
+1603: We have already encountered the concept of a conjugate prior several times, for example in the context of the Bernoulli distribution (for which the conjugate prior is the beta distribution) or the Gaussian (where the conjugate prior for the mean is a Gaussian, and the conjugate prior for the precision is the Wishart distribution). In general, for a given probability distribution $p(\mathbf{x}|\boldsymbol{\eta})$, we can seek a prior $p(\boldsymbol{\eta})$ that is conjugate to the likelihood function, so that the posterior distribution has the same functional form as the prior. For any member of the exponential family (2.194), there exists a conjugate prior that can be written in the form
+1604: 
+1605: $$
+1606: p(\boldsymbol{\eta}|\boldsymbol{\chi}, \nu) = f(\boldsymbol{\chi}, \nu)g(\boldsymbol{\eta})^{\nu} \exp \left\{ \nu \boldsymbol{\eta}^{\mathrm{T}} \boldsymbol{\chi} \right\} \tag{2.229}
+1607: $$
+1608: 
+1609: where $f(\boldsymbol{\chi}, \nu)$ is a normalization coefficient, and $g(\boldsymbol{\eta})$ is the same function as appears in (2.194). To see that this is indeed conjugate, let us multiply the prior (2.229) by the likelihood function (2.227) to obtain the posterior distribution, up to a normalization coefficient, in the form
+1610: 
+1611: $$
+1612: p(\boldsymbol{\eta}|\mathbf{X}, \boldsymbol{\chi}, \nu) \propto g(\boldsymbol{\eta})^{\nu+N} \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \left( \sum_{n=1}^{N} \mathbf{u}(\mathbf{x}_{n}) + \nu \boldsymbol{\chi} \right) \right\}. \tag{2.230}
+1613: $$
+1614: 
+1615: This again takes the same functional form as the prior (2.229), confirming conjugacy. Furthermore, we see that the parameter $\nu$ can be interpreted as a effective number of pseudo-observations in the prior, each of which has a value for the sufficient statistic $\mathbf{u}(\mathbf{x})$ given by $\boldsymbol{\chi}$.
+1616: 
+1617: ## 2.4.3 Noninformative priors
+1618: 
+1619: In some applications of probabilistic inference, we may have prior knowledge that can be conveniently expressed through the prior distribution. For example, if the prior assigns zero probability to some value of variable, then the posterior distribution will necessarily also assign zero probability to that value, irrespective of
+1620: any subsequent observations of data. In many cases, however, we may have little idea of what form the distribution should take. We may then seek a form of prior distribution, called a *noninformative prior*, which is intended to have as little influence on the posterior distribution as possible (Jeffries, 1946; Box and Tao, 1973; Bernardo and Smith, 1994). This is sometimes referred to as 'letting the data speak for themselves'.
+1621: 
+1622: If we have a distribution $p(x|\lambda)$ governed by a parameter $\lambda$, we might be tempted to propose a prior distribution $p(\lambda) = \text{const}$ as a suitable prior. If $\lambda$ is a discrete variable with $K$ states, this simply amounts to setting the prior probability of each state to $1/K$. In the case of continuous parameters, however, there are two potential difficulties with this approach. The first is that, if the domain of $\lambda$ is unbounded, this prior distribution cannot be correctly normalized because the integral over $\lambda$ diverges. Such priors are called *improper*. In practice, improper priors can often be used provided the corresponding posterior distribution is *proper*, i.e., that it can be correctly normalized. For instance, if we put a uniform prior distribution over the mean of a Gaussian, then the posterior distribution for the mean, once we have observed at least one data point, will be proper.
+1623: 
+1624: A second difficulty arises from the transformation behaviour of a probability density under a nonlinear change of variables, given by (1.27). If a function $h(\lambda)$ is constant, and we change variables to $\lambda = \eta^2$, then $\widehat{h}(\eta) = h(\eta^2)$ will also be constant. However, if we choose the density $p_{\lambda}(\lambda)$ to be constant, then the density of $\eta$ will be given, from (1.27), by
+1625: 
+1626: $$
+1627: p_{\eta}(\eta) = p_{\lambda}(\lambda) \left| \frac{\mathrm{d}\lambda}{\mathrm{d}\eta} \right| = p_{\lambda}(\eta^2) 2\eta \propto \eta \tag{2.231}
+1628: $$
+1629: 
+1630: and so the density over $\eta$ will not be constant. This issue does not arise when we use maximum likelihood, because the likelihood function $p(x|\lambda)$ is a simple function of $\lambda$ and so we are free to use any convenient parameterization. If, however, we are to choose a prior distribution that is constant, we must take care to use an appropriate representation for the parameters.
+1631: 
+1632: Here we consider two simple examples of noninformative priors (Berger, 1985). First of all, if a density takes the form
+1633: 
+1634: $$
+1635: p(x|\mu) = f(x - \mu) \tag{2.232}
+1636: $$
+1637: 
+1638: then the parameter $\mu$ is known as a *location parameter*. This family of densities exhibits *translation invariance* because if we shift $x$ by a constant to give $\widehat{x} = x + c$, then
+1639: 
+1640: $$
+1641: p(\widehat{x}|\widehat{\mu}) = f(\widehat{x} - \widehat{\mu}) \tag{2.233}
+1642: $$
+1643: 
+1644: where we have defined $\widehat{\mu} = \mu + c$. Thus the density takes the same form in the new variable as in the original one, and so the density is independent of the choice of origin. We would like to choose a prior distribution that reflects this translation invariance property, and so we choose a prior that assigns equal probability mass to
+1645: an interval $A \leqslant \mu \leqslant B$ as to the shifted interval $A - c \leqslant \mu \leqslant B - c$. This implies
+1646: 
+1647: $$
+1648: \int_{A}^{B} p(\mu) \, \mathrm{d}\mu = \int_{A-c}^{B-c} p(\mu) \, \mathrm{d}\mu = \int_{A}^{B} p(\mu - c) \, \mathrm{d}\mu \tag{2.234}
+1649: $$
+1650: 
+1651: and because this must hold for all choices of $A$ and $B$, we have
+1652: 
+1653: $$
+1654: p(\mu - c) = p(\mu) \tag{2.235}
+1655: $$
+1656: 
+1657: which implies that $p(\mu)$ is constant. An example of a location parameter would be the mean $\mu$ of a Gaussian distribution. As we have seen, the conjugate prior distribution for $\mu$ in this case is a Gaussian $p(\mu|\mu_0, \sigma_0^2) = \mathcal{N}(\mu|\mu_0, \sigma_0^2)$, and we obtain a noninformative prior by taking the limit $\sigma_0^2 \to \infty$. Indeed, from (2.141) and (2.142) we see that this gives a posterior distribution over $\mu$ in which the contributions from the prior vanish.
+1658: 
+1659: As a second example, consider a density of the form
+1660: 
+1661: $$
+1662: p(x|\sigma) = \frac{1}{\sigma} f\left(\frac{x}{\sigma}\right) \tag{2.236}
+1663: $$
+1664: 
+1665: Exercise 2.59
+1666: 
+1667: where $\sigma > 0$. Note that this will be a normalized density provided $f(x)$ is correctly normalized. The parameter $\sigma$ is known as a *scale parameter*, and the density exhibits *scale invariance* because if we scale $x$ by a constant to give $\widehat{x} = cx$, then
+1668: 
+1669: $$
+1670: p(\widehat{x}|\widehat{\sigma}) = \frac{1}{\widehat{\sigma}} f\left(\frac{\widehat{x}}{\widehat{\sigma}}\right) \tag{2.237}
+1671: $$
+1672: 
+1673: where we have defined $\widehat{\sigma} = c\sigma$. This transformation corresponds to a change of scale, for example from meters to kilometers if $x$ is a length, and we would like to choose a prior distribution that reflects this scale invariance. If we consider an interval $A \leqslant \sigma \leqslant B$, and a scaled interval $A/c \leqslant \sigma \leqslant B/c$, then the prior should assign equal probability mass to these two intervals. Thus we have
+1674: 
+1675: $$
+1676: \int_{A}^{B} p(\sigma) \, \mathrm{d}\sigma = \int_{A/c}^{B/c} p(\sigma) \, \mathrm{d}\sigma = \int_{A}^{B} p\left(\frac{1}{c}\sigma\right) \frac{1}{c} \, \mathrm{d}\sigma \tag{2.238}
+1677: $$
+1678: 
+1679: and because this must hold for choices of $A$ and $B$, we have
+1680: 
+1681: $$
+1682: p(\sigma) = p\left(\frac{1}{c}\sigma\right) \frac{1}{c} \tag{2.239}
+1683: $$
+1684: 
+1685: and hence $p(\sigma) \propto 1/\sigma$. Note that again this is an improper prior because the integral of the distribution over $0 \leqslant \sigma \leqslant \infty$ is divergent. It is sometimes also convenient to think of the prior distribution for a scale parameter in terms of the density of the log of the parameter. Using the transformation rule (1.27) for densities we see that $p(\ln \sigma) = \text{const}$. Thus, for this prior there is the same probability mass in the range $1 \leqslant \sigma \leqslant 10$ as in the range $10 \leqslant \sigma \leqslant 100$ and in $100 \leqslant \sigma \leqslant 1000$.
+1686: An example of a scale parameter would be the standard deviation $\sigma$ of a Gaussian distribution, after we have taken account of the location parameter $\mu$, because
+1687: 
+1688: $$
+1689: \mathcal{N}(x|\mu,\sigma^2) \propto \sigma^{-1} \exp \left\{ -(\widetilde{x}/\sigma)^2 \right\} \tag{2.240}
+1690: $$
+1691: 
+1692: Section 2.3
+1693: 
+1694: where $\widetilde{x} = x - \mu$. As discussed earlier, it is often more convenient to work in terms of the precision $\lambda = 1/\sigma^2$ rather than $\sigma$ itself. Using the transformation rule for densities, we see that a distribution $p(\sigma) \propto 1/\sigma$ corresponds to a distribution over $\lambda$ of the form $p(\lambda) \propto 1/\lambda$. We have seen that the conjugate prior for $\lambda$ was the gamma distribution $\mathrm{Gam}(\lambda|a_0, b_0)$ given by (2.146). The noninformative prior is obtained as the special case $a_0 = b_0 = 0$. Again, if we examine the results (2.150) and (2.151) for the posterior distribution of $\lambda$, we see that for $a_0 = b_0 = 0$, the posterior depends only on terms arising from the data and not from the prior.
+1695: 
+1696: ## 2.5. Nonparametric Methods
+1697: 
+1698: Throughout this chapter, we have focussed on the use of probability distributions having specific functional forms governed by a small number of parameters whose values are to be determined from a data set. This is called the *parametric* approach to density modelling. An important limitation of this approach is that the chosen density might be a poor model of the distribution that generates the data, which can result in poor predictive performance. For instance, if the process that generates the data is multimodal, then this aspect of the distribution can never be captured by a Gaussian, which is necessarily unimodal.
+1699: 
+1700: In this final section, we consider some *nonparametric* approaches to density estimation that make few assumptions about the form of the distribution. Here we shall focus mainly on simple frequentist methods. The reader should be aware, however, that nonparametric Bayesian methods are attracting increasing interest (Walker et al., 1999; Neal, 2000; Müller and Quintana, 2004; Teh et al., 2006).
+1701: 
+1702: Let us start with a discussion of histogram methods for density estimation, which we have already encountered in the context of marginal and conditional distributions in Figure 1.11 and in the context of the central limit theorem in Figure 2.6. Here we explore the properties of histogram density models in more detail, focussing on the case of a single continuous variable $x$. Standard histograms simply partition $x$ into distinct bins of width $\Delta_i$ and then count the number $n_i$ of observations of $x$ falling in bin $i$. In order to turn this count into a normalized probability density, we simply divide by the total number $N$ of observations and by the width $\Delta_i$ of the bins to obtain probability values for each bin given by
+1703: 
+1704: $$
+1705: p_i = \frac{n_i}{N\Delta_i} \tag{2.241}
+1706: $$
+1707: 
+1708: for which it is easily seen that $\int p(x) \, \mathrm{d}x = 1$. This gives a model for the density $p(x)$ that is constant over the width of each bin, and often the bins are chosen to have the same width $\Delta_i = \Delta$.
+1709: Figure 2.24 An illustration of the histogram approach to density estimation, in which a data set of 50 data points is generated from the distribution shown by the green curve. Histogram density estimates, based on (2.241), with a common bin width $\Delta$ are shown for various values of $\Delta$.
+1710: 
+1711: ![img-46.jpeg](img-46.jpeg)
+1712: 
+1713: In Figure 2.24, we show an example of histogram density estimation. Here the data is drawn from the distribution, corresponding to the green curve, which is formed from a mixture of two Gaussians. Also shown are three examples of histogram density estimates corresponding to three different choices for the bin width $\Delta$. We see that when $\Delta$ is very small (top figure), the resulting density model is very spiky, with a lot of structure that is not present in the underlying distribution that generated the data set. Conversely, if $\Delta$ is too large (bottom figure) then the result is a model that is too smooth and that consequently fails to capture the bimodal property of the green curve. The best results are obtained for some intermediate value of $\Delta$ (middle figure). In principle, a histogram density model is also dependent on the choice of edge location for the bins, though this is typically much less significant than the value of $\Delta$.
+1714: 
+1715: Note that the histogram method has the property (unlike the methods to be discussed shortly) that, once the histogram has been computed, the data set itself can be discarded, which can be advantageous if the data set is large. Also, the histogram approach is easily applied if the data points are arriving sequentially.
+1716: 
+1717: In practice, the histogram technique can be useful for obtaining a quick visualization of data in one or two dimensions but is unsuited to most density estimation applications. One obvious problem is that the estimated density has discontinuities that are due to the bin edges rather than any property of the underlying distribution that generated the data. Another major limitation of the histogram approach is its scaling with dimensionality. If we divide each variable in a $D$-dimensional space into $M$ bins, then the total number of bins will be $M^D$. This exponential scaling with $D$ is an example of the curse of dimensionality. In a space of high dimensionality, the quantity of data needed to provide meaningful estimates of local probability density would be prohibitive.
+1718: 
+1719: The histogram approach to density estimation does, however, teach us two important lessons. First, to estimate the probability density at a particular location, we should consider the data points that lie within some local neighbourhood of that point. Note that the concept of locality requires that we assume some form of distance measure, and here we have been assuming Euclidean distance. For histograms,
+1720: 
+1721: Section 1.4
+1722: this neighbourhood property was defined by the bins, and there is a natural 'smoothing' parameter describing the spatial extent of the local region, in this case the bin width. Second, the value of the smoothing parameter should be neither too large nor too small in order to obtain good results. This is reminiscent of the choice of model complexity in polynomial curve fitting discussed in Chapter 1 where the degree $M$ of the polynomial, or alternatively the value $\alpha$ of the regularization parameter, was optimal for some intermediate value, neither too large nor too small. Armed with these insights, we turn now to a discussion of two widely used nonparametric techniques for density estimation, kernel estimators and nearest neighbours, which have better scaling with dimensionality than the simple histogram model.
+1723: 
+1724: ## 2.5.1 Kernel density estimators
+1725: 
+1726: Let us suppose that observations are being drawn from some unknown probability density $p(\mathbf{x})$ in some $D$-dimensional space, which we shall take to be Euclidean, and we wish to estimate the value of $p(\mathbf{x})$. From our earlier discussion of locality, let us consider some small region $\mathcal{R}$ containing $\mathbf{x}$. The probability mass associated with this region is given by
+1727: 
+1728: $$
+1729: P = \int_{\mathcal{R}} p(\mathbf{x}) \, \mathrm{d}\mathbf{x}. \tag{2.242}
+1730: $$
+1731: 
+1732: Now suppose that we have collected a data set comprising $N$ observations drawn from $p(\mathbf{x})$. Because each data point has a probability $P$ of falling within $\mathcal{R}$, the total number $K$ of points that lie inside $\mathcal{R}$ will be distributed according to the binomial distribution
+1733: 
+1734: $$
+1735: \operatorname{Bin}(K|N, P) = \frac{N!}{K!(N - K)!} P^K (1 - P)^{1 - K}. \tag{2.243}
+1736: $$
+1737: 
+1738: Using (2.11), we see that the mean fraction of points falling inside the region is $\mathbb{E}[K/N] = P$, and similarly using (2.12) we see that the variance around this mean is $\operatorname{var}[K/N] = P(1 - P)/N$. For large $N$, this distribution will be sharply peaked around the mean and so
+1739: 
+1740: $$
+1741: K \simeq NP. \tag{2.244}
+1742: $$
+1743: 
+1744: If, however, we also assume that the region $\mathcal{R}$ is sufficiently small that the probability density $p(\mathbf{x})$ is roughly constant over the region, then we have
+1745: 
+1746: $$
+1747: P \simeq p(\mathbf{x})V \tag{2.245}
+1748: $$
+1749: 
+1750: where $V$ is the volume of $\mathcal{R}$. Combining (2.244) and (2.245), we obtain our density estimate in the form
+1751: 
+1752: $$
+1753: p(\mathbf{x}) = \frac{K}{NV}. \tag{2.246}
+1754: $$
+1755: 
+1756: Note that the validity of (2.246) depends on two contradictory assumptions, namely that the region $\mathcal{R}$ be sufficiently small that the density is approximately constant over the region and yet sufficiently large (in relation to the value of that density) that the number $K$ of points falling inside the region is sufficient for the binomial distribution to be sharply peaked.
+1757: 
+1758: Section 2.1
+1759: We can exploit the result (2.246) in two different ways. Either we can fix $K$ and determine the value of $V$ from the data, which gives rise to the $K$-nearest-neighbour technique discussed shortly, or we can fix $V$ and determine $K$ from the data, giving rise to the kernel approach. It can be shown that both the $K$-nearest-neighbour density estimator and the kernel density estimator converge to the true probability density in the limit $N \to \infty$ provided $V$ shrinks suitably with $N$, and $K$ grows with $N$ (Duda and Hart, 1973).
+1760: 
+1761: We begin by discussing the kernel method in detail, and to start with we take the region $\mathcal{R}$ to be a small hypercube centred on the point $\mathbf{x}$ at which we wish to determine the probability density. In order to count the number $K$ of points falling within this region, it is convenient to define the following function
+1762: 
+1763: $$
+1764: k(\mathbf{u}) = \left\{ \begin{array}{ll} 1, & |u_i| \leqslant 1/2, \\ 0, & \text{otherwise} \end{array} \right. \quad i = 1, \dots, D, \tag{2.247}
+1765: $$
+1766: 
+1767: which represents a unit cube centred on the origin. The function $k(\mathbf{u})$ is an example of a *kernel function*, and in this context is also called a *Parzen window*. From (2.247), the quantity $k((\mathbf{x} - \mathbf{x}_n)/h)$ will be one if the data point $\mathbf{x}_n$ lies inside a cube of side $h$ centred on $\mathbf{x}$, and zero otherwise. The total number of data points lying inside this cube will therefore be
+1768: 
+1769: $$
+1770: K = \sum_{n=1}^{N} k \left( \frac{\mathbf{x} - \mathbf{x}_n}{h} \right). \tag{2.248}
+1771: $$
+1772: 
+1773: Substituting this expression into (2.246) then gives the following result for the estimated density at $\mathbf{x}$
+1774: 
+1775: $$
+1776: p(\mathbf{x}) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{h^D} k \left( \frac{\mathbf{x} - \mathbf{x}_n}{h} \right) \tag{2.249}
+1777: $$
+1778: 
+1779: where we have used $V = h^D$ for the volume of a hypercube of side $h$ in $D$ dimensions. Using the symmetry of the function $k(\mathbf{u})$, we can now re-interpret this equation, not as a single cube centred on $\mathbf{x}$ but as the sum over $N$ cubes centred on the $N$ data points $\mathbf{x}_n$.
+1780: 
+1781: As it stands, the kernel density estimator (2.249) will suffer from one of the same problems that the histogram method suffered from, namely the presence of artificial discontinuities, in this case at the boundaries of the cubes. We can obtain a smoother density model if we choose a smoother kernel function, and a common choice is the Gaussian, which gives rise to the following kernel density model
+1782: 
+1783: $$
+1784: p(\mathbf{x}) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{(2\pi h^2)^{1/2}} \exp \left\{ -\frac{\|\mathbf{x} - \mathbf{x}_n\|^2}{2h^2} \right\} \tag{2.250}
+1785: $$
+1786: 
+1787: where $h$ represents the standard deviation of the Gaussian components. Thus our density model is obtained by placing a Gaussian over each data point and then adding up the contributions over the whole data set, and then dividing by $N$ so that the density is correctly normalized. In Figure 2.25, we apply the model (2.250) to the data
+1788: Figure 2.25 Illustration of the kernel density model (2.250) applied to the same data set used to demonstrate the histogram approach in Figure 2.24. We see that $h$ acts as a smoothing parameter and that if it is set too small (top panel), the result is a very noisy density model, whereas if it is set too large (bottom panel), then the bimodal nature of the underlying distribution from which the data is generated (shown by the green curve) is washed out. The best density model is obtained for some intermediate value of $h$ (middle panel).
+1789: 
+1790: ![img-47.jpeg](img-47.jpeg)
+1791: 
+1792: set used earlier to demonstrate the histogram technique. We see that, as expected, the parameter $h$ plays the role of a smoothing parameter, and there is a trade-off between sensitivity to noise at small $h$ and over-smoothing at large $h$. Again, the optimization of $h$ is a problem in model complexity, analogous to the choice of bin width in histogram density estimation, or the degree of the polynomial used in curve fitting.
+1793: 
+1794: We can choose any other kernel function $k(\mathbf{u})$ in (2.249) subject to the conditions
+1795: 
+1796: $$
+1797: k(\mathbf{u}) \geqslant 0, \tag{2.251}
+1798: $$
+1799: 
+1800: $$
+1801: \int k(\mathbf{u}) \, d\mathbf{u} = 1 \tag{2.252}
+1802: $$
+1803: 
+1804: which ensure that the resulting probability distribution is nonnegative everywhere and integrates to one. The class of density model given by (2.249) is called a kernel density estimator, or *Parzen* estimator. It has a great merit that there is no computation involved in the ‘training’ phase because this simply requires storage of the training set. However, this is also one of its great weaknesses because the computational cost of evaluating the density grows linearly with the size of the data set.
+1805: 
+1806: ## 2.5.2 Nearest-neighbour methods
+1807: 
+1808: One of the difficulties with the kernel approach to density estimation is that the parameter $h$ governing the kernel width is fixed for all kernels. In regions of high data density, a large value of $h$ may lead to over-smoothing and a washing out of structure that might otherwise be extracted from the data. However, reducing $h$ may lead to noisy estimates elsewhere in data space where the density is smaller. Thus the optimal choice for $h$ may be dependent on location within the data space. This issue is addressed by nearest-neighbour methods for density estimation.
+1809: 
+1810: We therefore return to our general result (2.246) for local density estimation, and instead of fixing $V$ and determining the value of $K$ from the data, we consider a fixed value of $K$ and use the data to find an appropriate value for $V$. To do this, we consider a small sphere centred on the point $\mathbf{x}$ at which we wish to estimate the
+1811: Figure 2.26 Illustration of $K$-nearest-neighbour density estimation using the same data set as in Figures 2.25 and 2.24. We see that the parameter $K$ governs the degree of smoothing, so that a small value of $K$ leads to a very noisy density model (top panel), whereas a large value (bottom panel) smoothes out the bimodal nature of the true distribution (shown by the green curve) from which the data set was generated.
+1812: 
+1813: ![img-48.jpeg](img-48.jpeg)
+1814: 
+1815: Exercise 2.61
+1816: 
+1817: density $p(\mathbf{x})$, and we allow the radius of the sphere to grow until it contains precisely $K$ data points. The estimate of the density $p(\mathbf{x})$ is then given by (2.246) with $V$ set to the volume of the resulting sphere. This technique is known as $K$ nearest neighbours and is illustrated in Figure 2.26, for various choices of the parameter $K$, using the same data set as used in Figure 2.24 and Figure 2.25. We see that the value of $K$ now governs the degree of smoothing and that again there is an optimum choice for $K$ that is neither too large nor too small. Note that the model produced by $K$ nearest neighbours is not a true density model because the integral over all space diverges.
+1818: 
+1819: We close this chapter by showing how the $K$-nearest-neighbour technique for density estimation can be extended to the problem of classification. To do this, we apply the $K$-nearest-neighbour density estimation technique to each class separately and then make use of Bayes' theorem. Let us suppose that we have a data set comprising $N_k$ points in class $\mathcal{C}_k$ with $N$ points in total, so that $\sum_k N_k = N$. If we wish to classify a new point $\mathbf{x}$, we draw a sphere centred on $\mathbf{x}$ containing precisely $K$ points irrespective of their class. Suppose this sphere has volume $V$ and contains $K_k$ points from class $\mathcal{C}_k$. Then (2.246) provides an estimate of the density associated with each class
+1820: 
+1821: $$
+1822: p(\mathbf{x}|\mathcal{C}_k) = \frac{K_k}{N_k V}. \tag{2.253}
+1823: $$
+1824: 
+1825: Similarly, the unconditional density is given by
+1826: 
+1827: $$
+1828: p(\mathbf{x}) = \frac{K}{NV} \tag{2.254}
+1829: $$
+1830: 
+1831: while the class priors are given by
+1832: 
+1833: $$
+1834: p(\mathcal{C}_k) = \frac{N_k}{N}. \tag{2.255}
+1835: $$
+1836: 
+1837: We can now combine (2.253), (2.254), and (2.255) using Bayes' theorem to obtain the posterior probability of class membership
+1838: 
+1839: $$
+1840: p(\mathcal{C}_k|\mathbf{x}) = \frac{p(\mathbf{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{p(\mathbf{x})} = \frac{K_k}{K}. \tag{2.256}
+1841: $$
+1842: Figure 2.27 (a) In the $K$-nearest-neighbour classifier, a new point, shown by the black diamond, is classified according to the majority class membership of the $K$ closest training data points, in this case $K = 3$. (b) In the nearest-neighbour ($K = 1$) approach to classification, the resulting decision boundary is composed of hyperplanes that form perpendicular bisectors of pairs of points from different classes.
+1843: 
+1844: ![img-49.jpeg](img-49.jpeg)
+1845: 
+1846: (a)
+1847: 
+1848: ![img-50.jpeg](img-50.jpeg)
+1849: 
+1850: (b)
+1851: 
+1852: If we wish to minimize the probability of misclassification, this is done by assigning the test point $\mathbf{x}$ to the class having the largest posterior probability, corresponding to the largest value of $K_{k} / K$. Thus to classify a new point, we identify the $K$ nearest points from the training data set and then assign the new point to the class having the largest number of representatives amongst this set. Ties can be broken at random. The particular case of $K = 1$ is called the *nearest-neighbour* rule, because a test point is simply assigned to the same class as the nearest point from the training set. These concepts are illustrated in Figure 2.27.
+1853: 
+1854: In Figure 2.28, we show the results of applying the $K$-nearest-neighbour algorithm to the oil flow data, introduced in Chapter 1, for various values of $K$. As expected, we see that $K$ controls the degree of smoothing, so that small $K$ produces many small regions of each class, whereas large $K$ leads to fewer larger regions.
+1855: 
+1856: ![img-51.jpeg](img-51.jpeg)
+1857: 
+1858: ![img-52.jpeg](img-52.jpeg)
+1859: 
+1860: ![img-53.jpeg](img-53.jpeg)
+1861: 
+1862: Figure 2.28 Plot of 200 data points from the oil data set showing values of \( x_{6} \) plotted against \( x_{7} \), where the red, green, and blue points correspond to the 'laminar', 'annular', and 'homogeneous' classes, respectively. Also shown are the classifications of the input space given by the \( K \)-nearest-neighbour algorithm for various values of \( K \).
+1863: An interesting property of the nearest-neighbour ($K = 1$) classifier is that, in the limit $N \to \infty$, the error rate is never more than twice the minimum achievable error rate of an optimal classifier, i.e., one that uses the true class distributions (Cover and Hart, 1967).
+1864: 
+1865: As discussed so far, both the $K$-nearest-neighbour method, and the kernel density estimator, require the entire training data set to be stored, leading to expensive computation if the data set is large. This effect can be offset, at the expense of some additional one-off computation, by constructing tree-based search structures to allow (approximate) near neighbours to be found efficiently without doing an exhaustive search of the data set. Nevertheless, these nonparametric methods are still severely limited. On the other hand, we have seen that simple parametric models are very restricted in terms of the forms of distribution that they can represent. We therefore need to find density models that are very flexible and yet for which the complexity of the models can be controlled independently of the size of the training set, and we shall see in subsequent chapters how to achieve this.
+1866: 
+1867: ## Exercises
+1868: 
+1869: **2.1** $(\star)$ **www** Verify that the Bernoulli distribution (2.2) satisfies the following properties
+1870: 
+1871: $$
+1872: \sum_{x=0}^{1} p(x|\mu) = 1 \tag{2.257}
+1873: $$
+1874: 
+1875: $$
+1876: \mathbb{E}[x] = \mu \tag{2.258}
+1877: $$
+1878: 
+1879: $$
+1880: \operatorname{var}[x] = \mu(1 - \mu). \tag{2.259}
+1881: $$
+1882: 
+1883: Show that the entropy $\mathrm{H}[x]$ of a Bernoulli distributed random binary variable $x$ is given by
+1884: 
+1885: $$
+1886: \mathrm{H}[x] = -\mu \ln \mu - (1 - \mu) \ln(1 - \mu). \tag{2.260}
+1887: $$
+1888: 
+1889: **2.2** $(\star\star)$ The form of the Bernoulli distribution given by (2.2) is not symmetric between the two values of $x$. In some situations, it will be more convenient to use an equivalent formulation for which $x \in \{-1, 1\}$, in which case the distribution can be written
+1890: 
+1891: $$
+1892: p(x|\mu) = \left(\frac{1 - \mu}{2}\right)^{(1-x)/2} \left(\frac{1 + \mu}{2}\right)^{(1+x)/2} \tag{2.261}
+1893: $$
+1894: 
+1895: where $\mu \in [-1, 1]$. Show that the distribution (2.261) is normalized, and evaluate its mean, variance, and entropy.
+1896: 
+1897: **2.3** $(\star\star)$ **www** In this exercise, we prove that the binomial distribution (2.9) is normalized. First use the definition (2.10) of the number of combinations of $m$ identical objects chosen from a total of $N$ to show that
+1898: 
+1899: $$
+1900: \binom{N}{m} + \binom{N}{m - 1} = \binom{N + 1}{m}. \tag{2.262}
+1901: $$
+1902: Use this result to prove by induction the following result
+1903: 
+1904: $$
+1905: (1 + x)^N = \sum_{m=0}^{N} \binom{N}{m} x^m \tag{2.263}
+1906: $$
+1907: 
+1908: which is known as the *binomial theorem*, and which is valid for all real values of $x$. Finally, show that the binomial distribution is normalized, so that
+1909: 
+1910: $$
+1911: \sum_{m=0}^{N} \binom{N}{m} \mu^m (1 - \mu)^{N-m} = 1 \tag{2.264}
+1912: $$
+1913: 
+1914: which can be done by first pulling out a factor $(1 - \mu)^N$ out of the summation and then making use of the binomial theorem.
+1915: 
+1916: **2.4** $(\star \star)$ Show that the mean of the binomial distribution is given by (2.11). To do this, differentiate both sides of the normalization condition (2.264) with respect to $\mu$ and then rearrange to obtain an expression for the mean of $n$. Similarly, by differentiating (2.264) twice with respect to $\mu$ and making use of the result (2.11) for the mean of the binomial distribution prove the result (2.12) for the variance of the binomial.
+1917: 
+1918: **2.5** $(\star \star)$ **www** In this exercise, we prove that the beta distribution, given by (2.13), is correctly normalized, so that (2.14) holds. This is equivalent to showing that
+1919: 
+1920: $$
+1921: \int_0^1 \mu^{a-1} (1 - \mu)^{b-1} \, \mathrm{d}\mu = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a + b)}. \tag{2.265}
+1922: $$
+1923: 
+1924: From the definition (1.141) of the gamma function, we have
+1925: 
+1926: $$
+1927: \Gamma(a)\Gamma(b) = \int_0^\infty \exp(-x) x^{a-1} \, \mathrm{d}x \int_0^\infty \exp(-y) y^{b-1} \, \mathrm{d}y. \tag{2.266}
+1928: $$
+1929: 
+1930: Use this expression to prove (2.265) as follows. First bring the integral over $y$ inside the integrand of the integral over $x$, next make the change of variable $t = y + x$ where $x$ is fixed, then interchange the order of the $x$ and $t$ integrations, and finally make the change of variable $x = t\mu$ where $t$ is fixed.
+1931: 
+1932: **2.6** $(\star)$ Make use of the result (2.265) to show that the mean, variance, and mode of the beta distribution (2.13) are given respectively by
+1933: 
+1934: $$
+1935: \mathbb{E}[\mu] = \frac{a}{a + b} \tag{2.267}
+1936: $$
+1937: 
+1938: $$
+1939: \operatorname{var}[\mu] = \frac{ab}{(a + b)^2(a + b + 1)} \tag{2.268}
+1940: $$
+1941: 
+1942: $$
+1943: \operatorname{mode}[\mu] = \frac{a - 1}{a + b - 2}. \tag{2.269}
+1944: $$
+1945: 2.7 (★★) Consider a binomial random variable $x$ given by (2.9), with prior distribution for $\mu$ given by the beta distribution (2.13), and suppose we have observed $m$ occurrences of $x = 1$ and $l$ occurrences of $x = 0$. Show that the posterior mean value of $x$ lies between the prior mean and the maximum likelihood estimate for $\mu$. To do this, show that the posterior mean can be written as $\lambda$ times the prior mean plus $(1 - \lambda)$ times the maximum likelihood estimate, where $0 \leqslant \lambda \leqslant 1$. This illustrates the concept of the posterior distribution being a compromise between the prior distribution and the maximum likelihood solution.
+1946: 
+1947: 2.8 (★) Consider two variables $x$ and $y$ with joint distribution $p(x, y)$. Prove the following two results
+1948: 
+1949: $$
+1950: \mathbb{E}[x] = \mathbb{E}_y [\mathbb{E}_x[x|y]] \tag{2.270}
+1951: $$
+1952: 
+1953: $$
+1954: \operatorname{var}[x] = \mathbb{E}_y [\operatorname{var}_x[x|y]] + \operatorname{var}_y [\mathbb{E}_x[x|y]] \tag{2.271}
+1955: $$
+1956: 
+1957: Here $\mathbb{E}_x[x|y]$ denotes the expectation of $x$ under the conditional distribution $p(x|y)$, with a similar notation for the conditional variance.
+1958: 
+1959: 2.9 (★★★) **WWW**. In this exercise, we prove the normalization of the Dirichlet distribution (2.38) using induction. We have already shown in Exercise 2.5 that the beta distribution, which is a special case of the Dirichlet for $M = 2$, is normalized. We now assume that the Dirichlet distribution is normalized for $M - 1$ variables and prove that it is normalized for $M$ variables. To do this, consider the Dirichlet distribution over $M$ variables, and take account of the constraint $\sum_{k=1}^{M} \mu_k = 1$ by eliminating $\mu_M$, so that the Dirichlet is written
+1960: 
+1961: $$
+1962: p_M(\mu_1, \dots, \mu_{M-1}) = C_M \prod_{k=1}^{M-1} \mu_k^{\alpha_k - 1} \left(1 - \sum_{j=1}^{M-1} \mu_j\right)^{\alpha_M - 1} \tag{2.272}
+1963: $$
+1964: 
+1965: and our goal is to find an expression for $C_M$. To do this, integrate over $\mu_{M-1}$, taking care over the limits of integration, and then make a change of variable so that this integral has limits 0 and 1. By assuming the correct result for $C_{M-1}$ and making use of (2.265), derive the expression for $C_M$.
+1966: 
+1967: 2.10 (★★) Using the property $\Gamma(x + 1) = x\Gamma(x)$ of the gamma function, derive the following results for the mean, variance, and covariance of the Dirichlet distribution given by (2.38)
+1968: 
+1969: $$
+1970: \mathbb{E}[\mu_j] = \frac{\alpha_j}{\alpha_0} \tag{2.273}
+1971: $$
+1972: 
+1973: $$
+1974: \operatorname{var}[\mu_j] = \frac{\alpha_j(\alpha_0 - \alpha_j)}{\alpha_0^2(\alpha_0 + 1)} \tag{2.274}
+1975: $$
+1976: 
+1977: $$
+1978: \operatorname{cov}[\mu_j \mu_l] = -\frac{\alpha_j \alpha_l}{\alpha_0^2(\alpha_0 + 1)}, \quad j \neq l \tag{2.275}
+1979: $$
+1980: 
+1981: where $\alpha_0$ is defined by (2.39).
+1982: **2.11** $(\star)$ **www** By expressing the expectation of $\ln \mu_j$ under the Dirichlet distribution (2.38) as a derivative with respect to $\alpha_j$, show that
+1983: 
+1984: $$
+1985: \mathbb{E}[\ln \mu_j] = \psi(\alpha_j) - \psi(\alpha_0) \tag{2.276}
+1986: $$
+1987: 
+1988: where $\alpha_0$ is given by (2.39) and
+1989: 
+1990: $$
+1991: \psi(a) \equiv \frac{d}{da} \ln \Gamma(a) \tag{2.277}
+1992: $$
+1993: 
+1994: is the *digamma* function.
+1995: 
+1996: **2.12** $(\star)$ The uniform distribution for a continuous variable $x$ is defined by
+1997: 
+1998: $$
+1999: \mathrm{U}(x|a,b) = \frac{1}{b-a}, \quad a \leqslant x \leqslant b. \tag{2.278}
+2000: $$
+2001: 
+2002: Verify that this distribution is normalized, and find expressions for its mean and variance.
+2003: 
+2004: 2.13 \((\star \star)\) Evaluate the Kullback-Leibler divergence (1.113) between two Gaussians \(p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\pmb {\mu},\pmb {\Sigma})\) and \(q(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\mathbf{m},\mathbf{L})\)
+2005: 2.14 \((\star \star)\) www This exercise demonstrates that the multivariate distribution with maximum entropy, for a given covariance, is a Gaussian. The entropy of a distribution \(p(\mathbf{x})\) is given by
+2006: 
+2007: $$
+2008: \mathrm{H}[\mathbf{x}] = - \int p(\mathbf{x}) \ln p(\mathbf{x}) \, \mathrm{d}\mathbf{x}. \tag{2.279}
+2009: $$
+2010: 
+2011: We wish to maximize $\mathrm{H}[\mathbf{x}]$ over all distributions $p(\mathbf{x})$ subject to the constraints that $p(\mathbf{x})$ be normalized and that it have a specific mean and covariance, so that
+2012: 
+2013: $$
+2014: \int p(\mathbf{x}) \, \mathrm{d}\mathbf{x} = 1 \tag{2.280}
+2015: $$
+2016: 
+2017: $$
+2018: \int p(\mathbf{x}) \mathbf{x} \, \mathrm{d}\mathbf{x} = \boldsymbol{\mu} \tag{2.281}
+2019: $$
+2020: 
+2021: $$
+2022: \int p(\mathbf{x})(\mathbf{x} - \boldsymbol{\mu})(\mathbf{x} - \boldsymbol{\mu})^{\mathrm{T}} \, \mathrm{d}\mathbf{x} = \boldsymbol{\Sigma}. \tag{2.282}
+2023: $$
+2024: 
+2025: By performing a variational maximization of (2.279) and using Lagrange multipliers to enforce the constraints (2.280), (2.281), and (2.282), show that the maximum likelihood distribution is given by the Gaussian (2.43).
+2026: 
+2027: **2.15** $(\star \star)$ Show that the entropy of the multivariate Gaussian $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Sigma})$ is given by
+2028: 
+2029: $$
+2030: \mathrm{H}[\mathbf{x}] = \frac{1}{2} \ln |\boldsymbol{\Sigma}| + \frac{D}{2} (1 + \ln(2\pi)) \tag{2.283}
+2031: $$
+2032: 
+2033: where $D$ is the dimensionality of $\mathbf{x}$.
+2034: 2.16 $(\star \star \star)$ **www** Consider two random variables $x_{1}$ and $x_{2}$ having Gaussian distributions with means $\mu_{1}, \mu_{2}$ and precisions $\tau_{1}, \tau_{2}$ respectively. Derive an expression for the differential entropy of the variable $x = x_{1} + x_{2}$. To do this, first find the distribution of $x$ by using the relation
+2035: 
+2036: $$
+2037: p(x) = \int_{-\infty}^{\infty} p(x|x_{2})p(x_{2}) \, \mathrm{d}x_{2} \tag{2.284}
+2038: $$
+2039: 
+2040: and completing the square in the exponent. Then observe that this represents the convolution of two Gaussian distributions, which itself will be Gaussian, and finally make use of the result (1.110) for the entropy of the univariate Gaussian.
+2041: 
+2042: 2.17 \((\star)\) www Consider the multivariate Gaussian distribution given by (2.43). By writing the precision matrix (inverse covariance matrix) \(\Sigma^{-1}\) as the sum of a symmetric and an anti-symmetric matrix, show that the anti-symmetric term does not appear in the exponent of the Gaussian, and hence that the precision matrix may be taken to be symmetric without loss of generality. Because the inverse of a symmetric matrix is also symmetric (see Exercise 2.22), it follows that the covariance matrix may also be chosen to be symmetric without loss of generality.
+2043: 2.18 \((\star \star \star)\) Consider a real, symmetric matrix \(\Sigma\) whose eigenvalue equation is given by (2.45). By taking the complex conjugate of this equation and subtracting the original equation, and then forming the inner product with eigenvector \(\mathbf{u}_i\), show that the eigenvalues \(\lambda_{i}\) are real. Similarly, use the symmetry property of \(\Sigma\) to show that two eigenvectors \(\mathbf{u}_i\) and \(\mathbf{u}_j\) will be orthogonal provided \(\lambda_{j} \neq \lambda_{i}\). Finally, show that without loss of generality, the set of eigenvectors can be chosen to be orthonormal, so that they satisfy (2.46), even if some of the eigenvalues are zero.
+2044: 2.19 \((\star \star)\) Show that a real, symmetric matrix \(\Sigma\) having the eigenvector equation (2.45) can be expressed as an expansion in the eigenvectors, with coefficients given by the eigenvalues, of the form (2.48). Similarly, show that the inverse matrix \(\Sigma^{-1}\) has a representation of the form (2.49).
+2045: 2.20 \((\star \star)\) www A positive definite matrix \(\Sigma\) can be defined as one for which the quadratic form
+2046: 
+2047: $$
+2048: \mathbf{a}^{\mathrm{T}} \boldsymbol{\Sigma} \mathbf{a} \tag{2.285}
+2049: $$
+2050: 
+2051: is positive for any real value of the vector $\mathbf{a}$. Show that a necessary and sufficient condition for $\boldsymbol{\Sigma}$ to be positive definite is that all of the eigenvalues $\lambda_{i}$ of $\boldsymbol{\Sigma}$, defined by (2.45), are positive.
+2052: 
+2053: 2.21 \((\star)\) Show that a real, symmetric matrix of size \(D\times D\) has \(D(D + 1) / 2\) independent parameters.
+2054: 2.22 \((\star)\) www Show that the inverse of a symmetric matrix is itself symmetric.
+2055: 2.23 \((\star \star)\) By diagonalizing the coordinate system using the eigenvector expansion (2.45), show that the volume contained within the hyperellipsoid corresponding to a constant
+2056: Mahalanobis distance $\Delta$ is given by
+2057: 
+2058: $$
+2059: V_D |\boldsymbol{\Sigma}|^{1/2} \Delta^D \tag{2.286}
+2060: $$
+2061: 
+2062: where $V_D$ is the volume of the unit sphere in $D$ dimensions, and the Mahalanobis distance is defined by (2.44).
+2063: 
+2064: **2.24** $(\star\star)$ **www** Prove the identity (2.76) by multiplying both sides by the matrix
+2065: 
+2066: $$
+2067: \begin{pmatrix}
+2068: \mathbf{A} & \mathbf{B} \\
+2069: \mathbf{C} & \mathbf{D}
+2070: \end{pmatrix} \tag{2.287}
+2071: $$
+2072: 
+2073: and making use of the definition (2.77).
+2074: 
+2075: **2.25** $(\star\star)$ In Sections 2.3.1 and 2.3.2, we considered the conditional and marginal distributions for a multivariate Gaussian. More generally, we can consider a partitioning of the components of $\mathbf{x}$ into three groups $\mathbf{x}_a$, $\mathbf{x}_b$, and $\mathbf{x}_c$, with a corresponding partitioning of the mean vector $\boldsymbol{\mu}$ and of the covariance matrix $\boldsymbol{\Sigma}$ in the form
+2076: 
+2077: $$
+2078: \boldsymbol{\mu} = \begin{pmatrix}
+2079: \boldsymbol{\mu}_a \\
+2080: \boldsymbol{\mu}_b \\
+2081: \boldsymbol{\mu}_c
+2082: \end{pmatrix}, \quad
+2083: \boldsymbol{\Sigma} = \begin{pmatrix}
+2084: \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} & \boldsymbol{\Sigma}_{ac} \\
+2085: \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} & \boldsymbol{\Sigma}_{bc} \\
+2086: \boldsymbol{\Sigma}_{ca} & \boldsymbol{\Sigma}_{cb} & \boldsymbol{\Sigma}_{cc}
+2087: \end{pmatrix}. \tag{2.288}
+2088: $$
+2089: 
+2090: By making use of the results of Section 2.3, find an expression for the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ in which $\mathbf{x}_c$ has been marginalized out.
+2091: 
+2092: **2.26** $(\star\star)$ A very useful result from linear algebra is the *Woodbury* matrix inversion formula given by
+2093: 
+2094: $$
+2095: (\mathbf{A} + \mathbf{BCD})^{-1} = \mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{B}(\mathbf{C}^{-1} + \mathbf{DA}^{-1}\mathbf{B})^{-1}\mathbf{DA}^{-1}. \tag{2.289}
+2096: $$
+2097: 
+2098: By multiplying both sides by $(\mathbf{A} + \mathbf{BCD})$ prove the correctness of this result.
+2099: 
+2100: **2.27** $(\star)$ Let $\mathbf{x}$ and $\mathbf{z}$ be two independent random vectors, so that $p(\mathbf{x}, \mathbf{z}) = p(\mathbf{x})p(\mathbf{z})$. Show that the mean of their sum $\mathbf{y} = \mathbf{x} + \mathbf{z}$ is given by the sum of the means of each of the variable separately. Similarly, show that the covariance matrix of $\mathbf{y}$ is given by the sum of the covariance matrices of $\mathbf{x}$ and $\mathbf{z}$. Confirm that this result agrees with that of Exercise 1.10.
+2101: 
+2102: **2.28** $(\star\star\star)$ **www** Consider a joint distribution over the variable
+2103: 
+2104: $$
+2105: \mathbf{z} = \begin{pmatrix}
+2106: \mathbf{x} \\
+2107: \mathbf{y}
+2108: \end{pmatrix} \tag{2.290}
+2109: $$
+2110: 
+2111: whose mean and covariance are given by (2.108) and (2.105) respectively. By making use of the results (2.92) and (2.93) show that the marginal distribution $p(\mathbf{x})$ is given (2.99). Similarly, by making use of the results (2.81) and (2.82) show that the conditional distribution $p(\mathbf{y}|\mathbf{x})$ is given by (2.100).
+2112: 2.29 $(\star \star)$ Using the partitioned matrix inversion formula (2.76), show that the inverse of the precision matrix (2.104) is given by the covariance matrix (2.105).
+2113: 
+2114: 2.30 $(\star)$ By starting from (2.107) and making use of the result (2.105), verify the result (2.108).
+2115: 
+2116: 2.31 $(\star \star)$ Consider two multidimensional random vectors $\mathbf{x}$ and $\mathbf{z}$ having Gaussian distributions $p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_{\mathbf{x}},\boldsymbol{\Sigma}_{\mathbf{x}})$ and $p(\mathbf{z}) = \mathcal{N}(\mathbf{z}|\boldsymbol{\mu}_{\mathbf{z}},\boldsymbol{\Sigma}_{\mathbf{z}})$ respectively, together with their sum $\mathbf{y} = \mathbf{x} + \mathbf{z}$. Use the results (2.109) and (2.110) to find an expression for the marginal distribution $p(\mathbf{y})$ by considering the linear-Gaussian model comprising the product of the marginal distribution $p(\mathbf{x})$ and the conditional distribution $p(\mathbf{y}|\mathbf{x})$.
+2117: 
+2118: 2.32 $(\star \star \star)$ **www** This exercise and the next provide practice at manipulating the quadratic forms that arise in linear-Gaussian models, as well as giving an independent check of results derived in the main text. Consider a joint distribution $p(\mathbf{x},\mathbf{y})$ defined by the marginal and conditional distributions given by (2.99) and (2.100). By examining the quadratic form in the exponent of the joint distribution, and using the technique of 'completing the square' discussed in Section 2.3, find expressions for the mean and covariance of the marginal distribution $p(\mathbf{y})$ in which the variable $\mathbf{x}$ has been integrated out. To do this, make use of the Woodbury matrix inversion formula (2.289). Verify that these results agree with (2.109) and (2.110) obtained using the results of Chapter 2.
+2119: 
+2120: 2.33 $(\star \star \star)$ Consider the same joint distribution as in Exercise 2.32, but now use the technique of completing the square to find expressions for the mean and covariance of the conditional distribution $p(\mathbf{x}|\mathbf{y})$. Again, verify that these agree with the corresponding expressions (2.111) and (2.112).
+2121: 
+2122: 2.34 $(\star \star)$ **www** To find the maximum likelihood solution for the covariance matrix of a multivariate Gaussian, we need to maximize the log likelihood function (2.118) with respect to $\Sigma$, noting that the covariance matrix must be symmetric and positive definite. Here we proceed by ignoring these constraints and doing a straightforward maximization. Using the results (C.21), (C.26), and (C.28) from Appendix C, show that the covariance matrix $\Sigma$ that maximizes the log likelihood function (2.118) is given by the sample covariance (2.122). We note that the final result is necessarily symmetric and positive definite (provided the sample covariance is nonsingular).
+2123: 
+2124: 2.35 $(\star \star)$ Use the result (2.59) to prove (2.62). Now, using the results (2.59), and (2.62), show that
+2125: 
+2126: $$
+2127: \mathbb{E}[\mathbf{x}_n\mathbf{x}_m] = \boldsymbol{\mu}\boldsymbol{\mu}^{\mathrm{T}} + I_{nm}\boldsymbol{\Sigma} \tag{2.291}
+2128: $$
+2129: 
+2130: where $\mathbf{x}_n$ denotes a data point sampled from a Gaussian distribution with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$, and $I_{nm}$ denotes the $(n,m)$ element of the identity matrix. Hence prove the result (2.124).
+2131: 
+2132: 2.36 $(\star \star)$ **www** Using an analogous procedure to that used to obtain (2.126), derive an expression for the sequential estimation of the variance of a univariate Gaussian
+2133: distribution, by starting with the maximum likelihood expression
+2134: 
+2135: $$\sigma_{\mathrm{ML}}^{2}=\frac{1}{N}\sum_{n=1}^{N}(x_{n}-\mu)^{2}.$$ (2.292)
+2136: 
+2137: Verify that substituting the expression for a Gaussian distribution into the Robbins-Monro sequential estimation formula (2.135) gives a result of the same form, and hence obtain an expression for the corresponding coefficients $a_{N}$.
+2138: 
+2139: 2.37 (★★) Using an analogous procedure to that used to obtain (2.126), derive an expression for the sequential estimation of the covariance of a multivariate Gaussian distribution, by starting with the maximum likelihood expression (2.122). Verify that substituting the expression for a Gaussian distribution into the Robbins-Monro sequential estimation formula (2.135) gives a result of the same form, and hence obtain an expression for the corresponding coefficients $a_{N}$.
+2140: 2.38 (★) Use the technique of completing the square for the quadratic form in the exponent to derive the results (2.141) and (2.142).
+2141: 2.39 (★★) Starting from the results (2.141) and (2.142) for the posterior distribution of the mean of a Gaussian random variable, dissect out the contributions from the first $N-1$ data points and hence obtain expressions for the sequential update of $\mu_{N}$ and $\sigma_{N}^{2}$. Now derive the same results starting from the posterior distribution $p(\mu|x_{1},\ldots,x_{N-1})=\mathcal{N}(\mu|\mu_{N-1},\sigma_{N-1}^{2})$ and multiplying by the likelihood function $p(x_{N}|\mu)=\mathcal{N}(x_{N}|\mu,\sigma^{2})$ and then completing the square and normalizing to obtain the posterior distribution after $N$ observations.
+2142: 2.40 (★★) WWW Consider a $D$-dimensional Gaussian random variable $\mathbf{x}$ with distribution $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Sigma})$ in which the covariance $\boldsymbol{\Sigma}$ is known and for which we wish to infer the mean $\boldsymbol{\mu}$ from a set of observations $\mathbf{X}=\{\mathbf{x}_{1},\ldots,\mathbf{x}_{N}\}$. Given a prior distribution $p(\boldsymbol{\mu})=\mathcal{N}(\boldsymbol{\mu}|\boldsymbol{\mu}_{0},\boldsymbol{\Sigma}_{0})$, find the corresponding posterior distribution $p(\boldsymbol{\mu}|\mathbf{X})$.
+2143: 2.41 (★) Use the definition of the gamma function (1.141) to show that the gamma distribution (2.146) is normalized.
+2144: 2.42 (★★) Evaluate the mean, variance, and mode of the gamma distribution (2.146).
+2145: 2.43 (★) The following distribution
+2146: 
+2147: $$p(x|\sigma^{2},q)=\frac{q}{2(2\sigma^{2})^{1/q}\Gamma(1/q)}\exp\left(-\frac{|x|^{q}}{2\sigma^{2}}\right)$$ (2.293)
+2148: 
+2149: is a generalization of the univariate Gaussian distribution. Show that this distribution is normalized so that
+2150: 
+2151: $$\int_{-\infty}^{\infty}p(x|\sigma^{2},q)\,\mathrm{d}x=1$$ (2.294)
+2152: 
+2153: and that it reduces to the Gaussian when $q=2$. Consider a regression model in which the target variable is given by $t=y(\mathbf{x},\mathbf{w})+\epsilon$ and $\epsilon$ is a random noise
+2154: variable drawn from the distribution (2.293). Show that the log likelihood function over $\mathbf{w}$ and $\sigma^2$, for an observed data set of input vectors $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$ and corresponding target variables $\mathbf{t} = (t_1, \dots, t_N)^\mathrm{T}$, is given by
+2155: 
+2156: $$
+2157: \ln p(\mathbf{t}|\mathbf{X}, \mathbf{w}, \sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^N |y(\mathbf{x}_n, \mathbf{w}) - t_n|^q - \frac{N}{q} \ln(2\sigma^2) + \text{const} \tag{2.295}
+2158: $$
+2159: 
+2160: where ‘const’ denotes terms independent of both $\mathbf{w}$ and $\sigma^2$. Note that, as a function of $\mathbf{w}$, this is the $L_q$ error function considered in Section 1.5.5.
+2161: 
+2162: 2.44 \((\star \star)\) Consider a univariate Gaussian distribution \(\mathcal{N}(x|\mu ,\tau^{-1})\) having conjugate Gaussian-gamma prior given by (2.154), and a data set \(\mathbf{x} = \{x_{1},\ldots ,x_{N}\}\) of i.i.d. observations. Show that the posterior distribution is also a Gaussian-gamma distribution of the same functional form as the prior, and write down expressions for the parameters of this posterior distribution.
+2163: 2.45 \((\star)\) Verify that the Wishart distribution defined by (2.155) is indeed a conjugate prior for the precision matrix of a multivariate Gaussian.
+2164: 2.46 \((\star)\) www Verify that evaluating the integral in (2.158) leads to the result (2.159).
+2165: 2.47 \((\star)\) www Show that in the limit \(\nu \to \infty\), the t-distribution (2.159) becomes a Gaussian. Hint: ignore the normalization coefficient, and simply look at the dependence on \(x\).
+2166: 2.48 \((\star)\) By following analogous steps to those used to derive the univariate Student's t-distribution (2.159), verify the result (2.162) for the multivariate form of the Student's t-distribution, by marginalizing over the variable \(\eta\) in (2.161). Using the definition (2.161), show by exchanging integration variables that the multivariate t-distribution is correctly normalized.
+2167: 2.49 \((\star \star)\) By using the definition (2.161) of the multivariate Student's t-distribution as a convolution of a Gaussian with a gamma distribution, verify the properties (2.164), (2.165), and (2.166) for the multivariate t-distribution defined by (2.162).
+2168: 2.50 \((\star)\) Show that in the limit \(\nu \to \infty\), the multivariate Student's t-distribution (2.162) reduces to a Gaussian with mean \(\mu\) and precision \(\Lambda\).
+2169: 2.51 \((\star)\) www The various trigonometric identities used in the discussion of periodic variables in this chapter can be proven easily from the relation
+2170: 
+2171: $$
+2172: \exp(iA) = \cos A + i \sin A \tag{2.296}
+2173: $$
+2174: 
+2175: in which $i$ is the square root of minus one. By considering the identity
+2176: 
+2177: $$
+2178: \exp(iA) \exp(-iA) = 1 \tag{2.297}
+2179: $$
+2180: 
+2181: prove the result (2.177). Similarly, using the identity
+2182: 
+2183: $$
+2184: \cos(A - B) = \Re \exp\{i(A - B)\} \tag{2.298}
+2185: $$
+2186: where $\Re$ denotes the real part, prove (2.178). Finally, by using $\sin(A - B) = \Im \exp\{i(A - B)\}$, where $\Im$ denotes the imaginary part, prove the result (2.183).
+2187: 
+2188: **2.52** $(\star \star)$ For large $m$, the von Mises distribution (2.179) becomes sharply peaked around the mode $\theta_0$. By defining $\xi = m^{1/2}(\theta - \theta_0)$ and making the Taylor expansion of the cosine function given by
+2189: 
+2190: $$
+2191: \cos \alpha = 1 - \frac{\alpha^2}{2} + O(\alpha^4) \tag{2.299}
+2192: $$
+2193: 
+2194: show that as $m \to \infty$, the von Mises distribution tends to a Gaussian.
+2195: 
+2196: 2.53 \((\star)\) Using the trigonometric identity (2.183), show that solution of (2.182) for \(\theta_0\) is given by (2.184).
+2197: 2.54 \((\star)\) By computing first and second derivatives of the von Mises distribution (2.179), and using \(I_0(m) > 0\) for \(m > 0\), show that the maximum of the distribution occurs when \(\theta = \theta_0\) and that the minimum occurs when \(\theta = \theta_0 + \pi (\mathrm{mod} 2\pi)\).
+2198: 2.55 \((\star)\) By making use of the result (2.168), together with (2.184) and the trigonometric identity (2.178), show that the maximum likelihood solution \(m_{\mathrm{ML}}\) for the concentration of the von Mises distribution satisfies \(A(m_{\mathrm{ML}}) = \overline{r}\) where \(\overline{r}\) is the radius of the mean of the observations viewed as unit vectors in the two-dimensional Euclidean plane, as illustrated in Figure 2.17.
+2199: 2.56 (★★) www Express the beta distribution (2.13), the gamma distribution (2.146), and the von Mises distribution (2.179) as members of the exponential family (2.194) and thereby identify their natural parameters.
+2200: 2.57 \((\star)\) Verify that the multivariate Gaussian distribution can be cast in exponential family form (2.194) and derive expressions for \(\pmb{\eta}\), \(\mathbf{u}(\mathbf{x})\), \(h(\mathbf{x})\) and \(g(\pmb{\eta})\) analogous to (2.220)-(2.223).
+2201: 2.58 \((\star)\) The result (2.226) showed that the negative gradient of \(\ln g(\pmb{\eta})\) for the exponential family is given by the expectation of \(\mathbf{u}(\mathbf{x})\). By taking the second derivatives of (2.195), show that
+2202: 
+2203: $$
+2204: -\nabla \nabla \ln g(\boldsymbol{\eta}) = \mathbb{E}[\mathbf{u}(\mathbf{x})\mathbf{u}(\mathbf{x})^{\mathrm{T}}] - \mathbb{E}[\mathbf{u}(\mathbf{x})]\mathbb{E}[\mathbf{u}(\mathbf{x})^{\mathrm{T}}] = \operatorname{cov}[\mathbf{u}(\mathbf{x})]. \tag{2.300}
+2205: $$
+2206: 
+2207: 2.59 \((\star)\) By changing variables using \(y = x / \sigma\), show that the density (2.236) will be correctly normalized, provided \(f(x)\) is correctly normalized.
+2208: 2.60 (★★) www Consider a histogram-like density model in which the space \(\mathbf{x}\) is divided into fixed regions for which the density \(p(\mathbf{x})\) takes the constant value \(h_i\) over the \(i^{\mathrm{th}}\) region, and that the volume of region \(i\) is denoted \(\Delta_{i}\). Suppose we have a set of \(N\) observations of \(\mathbf{x}\) such that \(n_i\) of these observations fall in region \(i\). Using a Lagrange multiplier to enforce the normalization constraint on the density, derive an expression for the maximum likelihood estimator for the \(\{h_i\}\).
+2209: 2.61 \((\star)\) Show that the \(K\)-nearest-neighbour density model defines an improper distribution whose integral over all space is divergent.

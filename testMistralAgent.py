@@ -66,9 +66,9 @@ client = Mistral(api_key=api_key)
 #================================================
 # AGENT 1 : MainNodeParserAgent (Le Squelette)
 #================================================
-from AnkiGeneratorRobustV1_3.py import split_markdown_into_chunks, semantic_split_with_ai
+#from AnkiGeneratorRobustV1_3 import split_markdown_into_chunks, semantic_split_with_ai
 
-chunks = semantic_split_with_ai(client, markdown_file)
+#chunks = semantic_split_with_ai(client, markdown_file)
 
 sys_prompt = r"""
 ROLE
@@ -80,9 +80,9 @@ Segment every single line of the document into pedagogical concepts (nodes). Eac
 
 STRICT RULES:
 1. WHAT IS A NODE:
-   - A node is ONLY created when introducing a formal concept: "Definition", "Théorème", "Proposition", "Lemme", "Corollaire", or "Contexte".
+   - A node is ONLY created when introducing a formal concept: "Definition", "Theorem", "Proposition", "Corollary", "Lemma", "Definition" or "Context".
    - "main" MUST be strictly one of: ["Theorem", "Proposition","Property", "Definition", "Lemma", "Corollary", "Context"].
-   - COMPLETELY FORBIDDEN: You must NEVER use "Exemple_XX", "Remarque_XX", "Démonstration_XX", or "Exercice_XX" as a main node.
+   - COMPLETELY FORBIDDEN: You must NEVER use "Example_XX", "Remark_XX", "Proof_XX", or "Exercise_XX" as a main node.
    - "name": The explicit name of the concept if stated (e.g., "Concept Alpha", "Theorem Beta"), otherwise "None".
 
 2. STRICT SUB-ELEMENT AGGREGATION (NO STANDALONE EXAMPLES/REMARKS):
@@ -106,7 +106,7 @@ STRICT RULES:
    - Do NOT fragment intervals unnecessarily. A block of text should be one continuous interval `[[start, end]]` unless explicitly interrupted by a new Theorem/Definition.
 
 6. CORRECTION PHASE (HANDLING MISSING LINES):
-   - If the `exhaustivity_check` tool reports that you missed some lines, DO NOT blindly create new "Contexte" or "Definition" nodes at the end of the document just to patch the holes. This breaks chronological order and logic.
+   - If the `exhaustivity_check` tool reports that you missed some lines, DO NOT blindly create new "Context" or "Definition" nodes at the end of the document just to patch the holes. This breaks chronological order and logic.
    - You MUST evaluate if the missing lines belong to a concept you ALREADY created.
    - If they are examples, remarks, or exercises belonging to an existing concept, use the list of existing main nodes provided in the error message and call `add_sub_node` to attach the missing lines to the CORRECT EXISTING parent node.
    - ONLY create a new main node during the correction phase if the missing lines genuinely represent a completely forgotten primary concept.
@@ -121,7 +121,6 @@ Write 0 text, only call function.
 You must call these functions multiple times in a row to process the entire document from line 1 to the end.
 """
 
-print("🧠 Agent 1 en cours d'exécution (Squelette)...")
 import json
 from mistralai.client import Mistral
 
@@ -237,7 +236,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "search_for_reference",
-            "description": "send a reference to search for in the document, about blind mention of a figure an exercice or anything else",
+            "description": "send a reference to search for in the document, about blind mention of a figure an exercise or anything else",
             "strict": True,
             "parameters": {
                 "type": "object",
@@ -276,7 +275,7 @@ tools = [
                 "properties": {
                     "node_id": {
                         "type": "string",
-                        "pattern": "^(Théorème|Proposition|Corollaire|Lemme|Définition|Contexte)_[0-9]{2}$",
+                        "pattern": "^(Theorem|Proposition|Corollary|Lemma|Definition|Context)_[0-9]{2}$",
                         "description": "Unique identifier of the parent node to read"
                     }
                 }
@@ -302,7 +301,8 @@ from mistralai.client import Mistral
 
 def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
     print("🤖 Démarrage de l'agent...")
-    
+    #indicage des chunks
+    i= 0
     # 1. Initialisation du graphe et des variables
     G = nx.DiGraph()
     previous_main_node = None
@@ -326,13 +326,13 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
             },
             {
                 "role": "user",
-                "content": chunks[0]
+                "content": markdown_lines_str
             }
             ]
     # 2. La boucle infinie agentique
     while True:
         response = client.chat.complete(
-            model="mistral-medium-latest",
+            model="mistral-large-latest",
             messages=input,
             tools=tools,
             temperature=0.0
@@ -473,11 +473,15 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
                     )
                 print("=" * 50 + "\n")
 
+            elif nom_fonction == "read_next_chunk":
+                i+=1
+                resultat_outil = f"next_chunk is : \n {chunks[i]}"
+
             else:
                 resultat_outil = f"Erreur : Fonction '{nom_fonction}' non reconnue."
 
             # 4. On renvoie le résultat à Mistral en tant que "tool"
-            inputs.append({
+            input.append({
                 "role": "tool",
                 "tool_call_id": tool_call.id,
                 "name": nom_fonction,
@@ -489,7 +493,7 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
     return G
 
 
-G = agent_builder_loop(markdown_lines, tools, inputs, client)
+G = agent_builder_loop(markdown_lines, tools, sys_prompt, client)
 
 
 # Dessin du graphe final
@@ -770,6 +774,20 @@ pre{
 pre code{ background:none; padding:0; color:inherit; box-shadow:none; }
  
 /* equations LaTeX trop larges (cases, matrices...) : defilement horizontal plutot que debordement */
+/* Anki Desktop moderne rend le LaTeX dans <anki-mathjax>, un web component a Shadow DOM :
+   on ne peut pas cibler son contenu interne (mjx-container/svg) depuis le CSS de la carte,
+   seul l'element hote lui-meme est accessible depuis l'exterieur. */
+.card anki-mathjax{
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+.card anki-mathjax[block="true"]{
+  display:block;
+  margin:14px 0;
+  padding-bottom:2px; /* evite que la scrollbar colle au texte */
+}
+/* secours : rendus sans Shadow DOM (anciennes versions, autres plateformes) */
 .card mjx-container{
   max-width:100%;
   overflow-x:auto;
@@ -778,10 +796,9 @@ pre code{ background:none; padding:0; color:inherit; box-shadow:none; }
 .card mjx-container[display="true"]{
   display:block;
   margin:14px 0;
-  padding-bottom:2px; /* evite que la scrollbar colle au texte */
+  padding-bottom:2px;
 }
-/* anciens rendus MathJax (v2) et rendu image legacy, par securite */
-.card .MathJax_Display, .card .MJXc-display{
+.card .MathJax_Display, .card .MJXc-display, .card .MathJax_SVG_Display{
   overflow-x:auto;
   overflow-y:hidden;
   max-width:100%;
@@ -899,6 +916,7 @@ model_cloze = genanki.Model(
     ],
     css=CSS,
 )
+
 
 
 import hashlib

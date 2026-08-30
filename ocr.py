@@ -1,3 +1,4 @@
+import json
 import base64
 import os
 from mistralai.client import Mistral
@@ -33,6 +34,24 @@ def select_file():
     return g_file
 
 def traiter_pdf_vers_markdown():
+
+    cache_file = "ocr_cache.json"
+
+    # ==========================================
+    # 1. VÉRIFICATION DU CACHE
+    # ==========================================
+    if os.path.exists(cache_file):
+        print("📁 Cache trouvé ! Chargement du Markdown et des images (OCR ignoré)...")
+        with open(cache_file, "r", encoding="utf-8") as f:
+            cache_data = json.load(f)
+            
+        # On retourne directement les données sauvegardées
+        return cache_data["markdown_file"], cache_data["media_files"]
+
+    # ==========================================
+    # 2. SI AUCUN CACHE, LANCEMENT DE L'OCR
+    # ==========================================
+
     load_dotenv()  # reads variables from a .env file and sets them in os.environ
 
     api_key = os.environ["MISTRAL_API_KEY"]
@@ -135,5 +154,15 @@ def traiter_pdf_vers_markdown():
 
     print(f"✅ Le document Markdown a été sauvegardé avec succès sous le nom : {output_filename}")
 
+    # ==========================================
+    # 3. CRÉATION DU CACHE POUR LA PROCHAINE FOIS
+    # ==========================================
+    with open(cache_file, "w", encoding="utf-8") as f:
+        json.dump({
+            "markdown_file": output_filename,
+            "media_files": media_files
+        }, f, indent=4, ensure_ascii=False)
+        
+    print("💾 Résultats enregistrés dans le cache (ocr_cache.json).")
 
     return output_filename, media_files
