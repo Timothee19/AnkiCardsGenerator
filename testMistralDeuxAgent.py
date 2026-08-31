@@ -227,6 +227,8 @@ Output MUST be strictly valid JSON matching this schema:
                 elementType = node_info.get("element_type")
                 pos = node_info.get("lines")
                 node_name = main_node_id + " : " + name if name and name != "None" else main_node_id
+                sub_node_id = f"{main_node_id}_{elementType}_{pos[0]}_{pos[1]}"
+
 
                 if main_node_id not in main_nodes_for_code :
 
@@ -235,7 +237,14 @@ Output MUST be strictly valid JSON matching this schema:
                     extracted_text = ""
                     extracted_text += "".join(self.original_lines[pos[0]-1:pos[1]]) + "\n"
                     self.G.add_node(main_node_id, label=node_name, text = extracted_text)
-
+                    self.G.add_node(
+                        sub_node_id,
+                        label=elementType,
+                        text = extracted_text,
+                        pos=pos,
+                        is_main=False
+                    )
+                    self.G.add_edge(main_node_id, sub_node_id, link="link")
                     if i >= 1:
                         self.G.add_edge(previous_node, main_node_id, label=i-1, link="next_topic")
                     
@@ -245,7 +254,6 @@ Output MUST be strictly valid JSON matching this schema:
 
                 else:
 
-                    sub_node_id = f"{main_node_id}_{elementType}_{pos[0]}_{pos[1]}"
                     extracted_text = ""
                     extracted_text += "".join(self.original_lines[pos[0]-1:pos[1]]) + "\n"
                     self.G.add_node(
@@ -316,7 +324,7 @@ Output MUST be strictly valid JSON matching this schema:
                                 
                         #covered_lines.update(range(start_line, idx_end))
                         
-                        raw_slice = markdown_lines[start_line:end_line]
+                        raw_slice = markdown_lines[start_line-1:end_line]
                         cleaned_lines = [line_number_regex.sub("", line) for line in raw_slice]
                         extracted_text = "".join(cleaned_lines).strip()
                     
