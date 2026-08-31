@@ -302,20 +302,21 @@ Output MUST be strictly valid JSON matching this schema:
                         start_line, end_line = pos[0], pos[1]
                         covered_lines.update(range(start_line, end_line))
                         
-                        idx_start = max(0, start_line - 1)
-                        idx_end = min(len(markdown_lines), end_line)
+                        #idx_start = max(0, start_line - 1)
+                        #idx_end = min(len(markdown_lines), end_line)
 
                         # --- SMART EXPAND ---
+                        """
                         while idx_end < len(markdown_lines):
                             next_line_clean = line_number_regex.sub("", markdown_lines[idx_end]).strip()
                             if next_line_clean == "" or next_line_clean in ["\\]", "$$", "]", "\\)"]:
                                 idx_end += 1
                             else:
-                                break
+                                break"""
                                 
-                        covered_lines.update(range(start_line, idx_end))
+                        #covered_lines.update(range(start_line, idx_end))
                         
-                        raw_slice = markdown_lines[idx_start:idx_end]
+                        raw_slice = markdown_lines[start_line:end_line]
                         cleaned_lines = [line_number_regex.sub("", line) for line in raw_slice]
                         extracted_text = "".join(cleaned_lines).strip()
                     
@@ -401,7 +402,7 @@ def main():
     pipeline = AnkiPipeline(API_KEY, markdown_file, media_files)
     
     print("1. Découpage du document...")
-    chunks = pipeline.markdown_into_chunk("markdownCourse.md")
+    chunks = pipeline.markdown_into_chunk(markdown_file)
     
     print(f"2. Analyse locale de {len(chunks)} chunks via LLM...")
     all_results = []
