@@ -755,8 +755,17 @@ def main():
 
 
     my_deck = genanki.Deck(
-    generer_id_deterministe('Lebesgue'),
-    'Lebesgue')
+    generer_id_deterministe('AI_Chap2'),
+    'AI_Chap2')
+    context_deck = genanki.Deck(generer_id_deterministe('AI_Chap2::Contexts'),'AI_Chap2::Contexts')
+    theorem_deck = genanki.Deck(generer_id_deterministe('AI_Chap2::Theorems'), 'AI_Chap2::Theorems')
+    property_deck = genanki.Deck(generer_id_deterministe('AI_Chap2::Properties'),'AI_Chap2::Properties')
+    lemma_deck = genanki.Deck(generer_id_deterministe('AI_Chap2::Lemma'), 'AI_Chap2::Lemma')
+    definition_deck = genanki.Deck(generer_id_deterministe('AI_Chap2::Definitions'), 'AI_Chap2::Definitions')
+    corollary_deck = genanki.Deck(generer_id_deterministe('AI_Chap2::Corollary'), 'AI_Chap2::Corollary')
+
+    deck_dict = {"Theorem":theorem_deck, "Proposition": property_deck,"Property": property_deck,"Definition" : definition_deck,
+                 "Lemma": lemma_deck,"Corollary": corollary_deck, "Context": context_deck}
 
     j=0
     for card in concept_list:
@@ -802,9 +811,9 @@ def main():
             model=model_basic,
             fields=[front, back, str(j)])
         j += 1
-        my_deck.add_note(my_note)
+        deck_dict[card["main_id"].split("_")[0]].add_note(my_note)
 
-    my_package = genanki.Package(my_deck)
+    my_package = genanki.Package([my_deck] + list(deck_dict.values()))
     my_package.media_files = media_files 
     my_package.write_to_file('AI_Chap2Test.apkg')
     print("✅ Génération du paquet Anki terminée !")
