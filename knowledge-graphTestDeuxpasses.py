@@ -1,15 +1,14 @@
-import networkx as nx
-import pygraphviz as pgv
-import pydot
-import os
 import json
+import os
 import re
-import markdown
 
+import markdown
+import networkx as nx
+import pydot
+import pygraphviz as pgv
+from dotenv import load_dotenv
 
 from ocr import traiter_pdf_vers_markdown
-
-from dotenv import load_dotenv
 
 load_dotenv()  # reads variables from a .env file and sets them in os.environ
 
@@ -19,16 +18,16 @@ labels_en = ["Theorem", "Proposition", "Corollary", "Lemma", "Definition", "Cont
 sub_labels_en = ["Proof", "Example", "Remark", "Exercise"]
 
 
-
-#==========================
+# ==========================
 # Numérotation du markdown
-#==========================
+# ==========================
 
 markdown_file, media_files = traiter_pdf_vers_markdown()
 
+
 def numeroter_fichier_markdown(input_path: str, output_path: str = None) -> str:
     """
-    Lit un fichier Markdown et génère un nouveau fichier où chaque ligne 
+    Lit un fichier Markdown et génère un nouveau fichier où chaque ligne
     est précédée de son numéro de ligne (1-based).
     """
     if not os.path.exists(input_path):
@@ -40,19 +39,19 @@ def numeroter_fichier_markdown(input_path: str, output_path: str = None) -> str:
         output_path = f"{base}_numerote{ext}"
 
     # Lecture du fichier original
-    with open(input_path, 'r', encoding='utf-8') as f:
+    with open(input_path, "r", encoding="utf-8") as f:
         lignes = f.readlines()
 
     lignes_numerotees = []
-    
+
     # enumerate(..., 1) permet de faire commencer le compteur à 1
     for i, ligne in enumerate(lignes, 1):
         # On retire le saut de ligne de fin pour construire notre chaîne proprement
-        ligne_propre = ligne.rstrip('\n')
+        ligne_propre = ligne.rstrip("\n")
         lignes_numerotees.append(f"{i}: {ligne_propre}\n")
 
     # Écriture dans le nouveau fichier
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         f.writelines(lignes_numerotees)
 
     print(f"✅ Fichier numéroté avec succès : {output_path}")
@@ -67,22 +66,27 @@ def numeroter_texte_en_memoire(texte_markdown: str) -> str:
     lignes_numerotees = [f"{i}: {ligne}" for i, ligne in enumerate(lignes, 1)]
     return "\n".join(lignes_numerotees)
 
-numbered_markdown_output = numeroter_fichier_markdown(markdown_file,"markown_numerote.md")
+
+numbered_markdown_output = numeroter_fichier_markdown(
+    markdown_file, "markown_numerote.md"
+)
 
 if os.path.exists(numbered_markdown_output):
-        with open(numbered_markdown_output, "r", encoding="utf-8") as f:
-            markdown_lines = f.read()
+    with open(numbered_markdown_output, "r", encoding="utf-8") as f:
+        markdown_lines = f.read()
 
 from mistralai.client import Mistral
 
 client = Mistral(api_key=os.environ.get("MISTRAL_API_KEY"))
 
-#==================
+# ==================
 # MainNodeParserAgent
-#================================
+# ================================
 
 inputs = [
-    {"role":"system", "content":r"""
+    {
+        "role": "system",
+        "content": r"""
 ROLE
 You are a structural parser and semantic extraction agent for academic course notes.
 Your task is to parse a markdown text provided with line numbers (format "LineNumber: Text") and extract the sequence of primary concepts into a structured list.
@@ -145,8 +149,9 @@ Output MUST be strictly valid JSON matching this schema:
         }
     ]
 }
-    """},
-    {"role":"user","content":markdown_lines}
+    """,
+    },
+    {"role": "user", "content": markdown_lines},
 ]
 
 
@@ -156,50 +161,39 @@ model = "mistral-large-latest"
 client = Mistral(api_key=api_key)
 
 chat_response = client.chat.complete(
-    model = "mistral-medium-latest",
-    messages = inputs,
+    model="mistral-medium-latest",
+    messages=inputs,
     temperature=0.0,
     top_p=1.0,
-    response_format = {
-          "type": "json_schema",
-          "json_schema":{
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
             "description": "Extraction des concepts du cours pour création d'un graphe",
             "name": "extraction_concepts",
-            "schema_definition":{
-  "type": "object",
-  "required": [
-    "node"
-  ],
-  "properties": {
-    "node": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "main",
-          "first_line"
-        ],
-        "properties": {
-          "main": {
-            "type": "string",
-            "pattern": "^(Théorème|Propriété|Corollaire|Lemme|Définition|Contexte)_[0-9]{2}$"
-          },
-          "name": {
-            "type": "string",
-            "default": "None"
-          },
-          "first_line": {
-            "type": "integer",
-            "minimum": 1
-          }
-        }
-      }
-    }
-  }
-},
-"strict":True
-}
-      }
+            "schema_definition": {
+                "type": "object",
+                "required": ["node"],
+                "properties": {
+                    "node": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["main", "first_line"],
+                            "properties": {
+                                "main": {
+                                    "type": "string",
+                                    "pattern": "^(Théorème|Propriété|Corollaire|Lemme|Définition|Contexte)_[0-9]{2}$",
+                                },
+                                "name": {"type": "string", "default": "None"},
+                                "first_line": {"type": "integer", "minimum": 1},
+                            },
+                        },
+                    }
+                },
+            },
+            "strict": True,
+        },
+    },
 )
 mistral_output = chat_response
 print(chat_response)
@@ -211,47 +205,68 @@ parsed_data = json.loads(json_string)
 
 # 3. Création d'un dictionnaire qui contient {main_node:name} pour chaque noeud renvoyé
 # On utilise maintenant parsed_data au lieu de mistral_output
-main_node = { node_info.get("main") : node_info.get("name") for node_info in parsed_data.get("node", []) }
+main_node = {
+    node_info.get("main"): node_info.get("name")
+    for node_info in parsed_data.get("node", [])
+}
 
 print("Main Node dict : ", main_node)
 
+
 def create_graph_from_mistral_output(main_node):
     G = nx.DiGraph()
-    i=0
+    i = 0
     for key in main_node.keys():
-        i+=1
+        i += 1
         main = key
         print(main)
-        node_name = f"{key} : {main_node[key]}" if main_node[key] != "None" else key  # Use the name if available, otherwise use the main node
+        node_name = (
+            f"{key} : {main_node[key]}" if main_node[key] != "None" else key
+        )  # Use the name if available, otherwise use the main node
 
         G.add_node(main, label=node_name)
-        
+
         if i >= 2:
-            G.add_edge(previous_node,key, label=i-1, link= "next_topic")
-        
+            G.add_edge(previous_node, key, label=i - 1, link="next_topic")
+
         previous_node = key
-    
+
     return G
+
 
 G = create_graph_from_mistral_output(main_node)
 A = nx.nx_agraph.to_agraph(G)
-A.draw('GraphMainLebesgue.png', prog='dot')
+A.draw("GraphMainLebesgue.png", prog="dot")
 
 
-#==============================
+# ==============================
 # Création des sous noeuds
-#==============================
+# ==============================
 
-labels = {f'{node_info.get("main")} : {node_info.get("name")}' if node_info.get("name") != "None" else f'{node_info.get("main")}' : f' - Starts at line {node_info.get("first_line")}' for node_info in parsed_data.get("node",[])}
+labels = {
+    (
+        f'{node_info.get("main")} : {node_info.get("name")}'
+        if node_info.get("name") != "None"
+        else f'{node_info.get("main")}'
+    ): f' - Starts at line {node_info.get("first_line")}'
+    for node_info in parsed_data.get("node", [])
+}
 
-for node_info in parsed_data.get("node",[]):
+for node_info in parsed_data.get("node", []):
 
     parent_id = node_info.get("main")
     name = node_info.get("name", "None")
     first_line = node_info.get("first_line", 1)
 
-    label = (f"{parent_id} - {name} - Starts at line: {first_line}" if name != "None" else f"{parent_id} - Starts at line: {first_line}")
-    sub_nodes_inputs = [{"role":"system", "content": fr"""
+    label = (
+        f"{parent_id} - {name} - Starts at line: {first_line}"
+        if name != "None"
+        else f"{parent_id} - Starts at line: {first_line}"
+    )
+    sub_nodes_inputs = [
+        {
+            "role": "system",
+            "content": rf"""
     ROLE
     You are a targeted semantic extraction agent for academic course notes. You are the SECOND agent in a parsing pipeline.
     You will be provided with a specific TARGET CONCEPT (its ID, Name, and Starting Line) and a markdown text with numbered lines (format "LineNumber: Text").
@@ -305,70 +320,65 @@ for node_info in parsed_data.get("node",[]):
             }}
         ]
     }}
-    """
-                        }, {"role":"user", "content": markdown_lines}]
+    """,
+        },
+        {"role": "user", "content": markdown_lines},
+    ]
     sub_node_mistral = client.chat.complete(
-        model = "mistral-large-latest",
-        messages = sub_nodes_inputs,
+        model="mistral-large-latest",
+        messages=sub_nodes_inputs,
         temperature=0.0,
-        top_p = 1.0,
-        response_format = {
+        top_p=1.0,
+        response_format={
             "type": "json_schema",
-            "json_schema":{
+            "json_schema": {
                 "description": "Extraction des sous catégorie du cours pour compléter le graphe de concept",
                 "name": "extraction_sémantique",
-                "schema_definition":{
-    "type": "object",
-    "title": "Extraction sémantique des sous-nœuds de concept",
-    "required": [
-        "sub_nodes"
-    ],
-    "properties": {
-        "sub_nodes": {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "required": [
-            "type",
-            "startEndListPositions"
-            ],
-            "properties": {
-            "type": {
-                "enum": [
-                "Enoncé",
-                "Démonstration",
-                "Exemple",
-                "Remarque",
-                "Exercice"
-                ],
-                "type": "string",
-                "description": "Type de sous-nœud parmi les valeurs autorisées"
-            },
-            "startEndListPositions": {
-                "type": "array",
-                "items": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
+                "schema_definition": {
+                    "type": "object",
+                    "title": "Extraction sémantique des sous-nœuds de concept",
+                    "required": ["sub_nodes"],
+                    "properties": {
+                        "sub_nodes": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": ["type", "startEndListPositions"],
+                                "properties": {
+                                    "type": {
+                                        "enum": [
+                                            "Enoncé",
+                                            "Démonstration",
+                                            "Exemple",
+                                            "Remarque",
+                                            "Exercice",
+                                        ],
+                                        "type": "string",
+                                        "description": "Type de sous-nœud parmi les valeurs autorisées",
+                                    },
+                                    "startEndListPositions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {"type": "integer"},
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                        },
+                                        "description": "Liste des intervalles de lignes (début, fin) pour ce type de sous-nœud",
+                                    },
+                                },
+                                "additionalProperties": False,
+                            },
+                            "minItems": 1,
+                            "description": "Liste des sous-nœuds extraits pour le concept cible",
+                        }
+                    },
+                    "description": "Schéma pour l'extraction ciblée de blocs textuels liés à un concept académique spécifique",
+                    "additionalProperties": False,
                 },
-                "maxItems": 2,
-                "minItems": 2
-                },
-                "description": "Liste des intervalles de lignes (début, fin) pour ce type de sous-nœud"
-            }
+                "strict": True,
             },
-            "additionalProperties": False
         },
-        "minItems": 1,
-        "description": "Liste des sous-nœuds extraits pour le concept cible"
-        }
-    },
-    "description": "Schéma pour l'extraction ciblée de blocs textuels liés à un concept académique spécifique",
-    "additionalProperties": False
-    },
-    "strict":True
-    }
-        }
     )
 
     # ==========================================================
@@ -389,25 +399,25 @@ for node_info in parsed_data.get("node",[]):
             G.add_node(
                 sub_node_id,
                 label=sub_type,
-                pos=pos,            # [start_line, end_line]
-                is_main=False
+                pos=pos,  # [start_line, end_line]
+                is_main=False,
             )
 
             # 2. Liaison orientée entre le parent et son sous-nœud
             G.add_edge(parent_id, sub_node_id, link="link")
 
 A = nx.nx_agraph.to_agraph(G)
-A.draw('GraphMainLebesgue.png', prog='dot')
+A.draw("GraphMainLebesgue.png", prog="dot")
 
 
-#====================================================
+# ====================================================
 # Création du paquet ANKI
-#==========================================
+# ==========================================
 
 
-
-
-def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: str = None):
+def extraire_blocs_pour_anki(
+    G: nx.DiGraph, markdown_source: str, start_node: str = None
+):
     # 1. Charger les lignes brutes du Markdown
     if os.path.exists(markdown_source):
         with open(markdown_source, "r", encoding="utf-8") as f:
@@ -416,9 +426,9 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
         markdown_lines = markdown_source.splitlines(keepends=True)
 
     total_lines_count = len(markdown_lines)
-    all_lines = set(range(1, total_lines_count+1))
+    all_lines = set(range(1, total_lines_count + 1))
     covered_lines = set()
-    
+
     # Expression régulière pour matcher les préfixes de type "1291: ", "1291 | ", etc.
     line_number_regex = re.compile(r"^\s*\d+[\s\|\:\.\-\)]\s*")
 
@@ -426,7 +436,10 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
     if start_node is None:
         for node in G.nodes():
             in_links = [data.get("link") for _, _, data in G.in_edges(node, data=True)]
-            if "next_topic" not in in_links and any(data.get("link") == "next_topic" for _, _, data in G.out_edges(node, data=True)):
+            if "next_topic" not in in_links and any(
+                data.get("link") == "next_topic"
+                for _, _, data in G.out_edges(node, data=True)
+            ):
                 start_node = node
                 break
 
@@ -441,7 +454,7 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
         main_data = {
             "main_id": current_main,
             "label": G.nodes[current_main].get("label", current_main),
-            "sub_nodes": []
+            "sub_nodes": [],
         }
 
         next_main = None
@@ -456,17 +469,21 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
                     # Conversion en index 0-based
                     idx_start = max(0, start_line - 1)
                     idx_end = min(len(markdown_lines), end_line)
-                    
+
                     # Découpage puis suppression du préfixe numérique sur chaque ligne
                     raw_slice = markdown_lines[idx_start:idx_end]
-                    cleaned_lines = [line_number_regex.sub("", line) for line in raw_slice]
+                    cleaned_lines = [
+                        line_number_regex.sub("", line) for line in raw_slice
+                    ]
                     extracted_text = "".join(cleaned_lines).strip()
 
-                main_data["sub_nodes"].append({
-                    "sub_id": neighbor,
-                    "type": G.nodes[neighbor].get("label"),
-                    "text": extracted_text
-                })
+                main_data["sub_nodes"].append(
+                    {
+                        "sub_id": neighbor,
+                        "type": G.nodes[neighbor].get("label"),
+                        "text": extracted_text,
+                    }
+                )
 
             elif edge_data.get("link") == "next_topic":
                 next_main = neighbor
@@ -476,7 +493,7 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
 
         # 4. Vérification de la complétude
         missing_lines = sorted(all_lines - covered_lines)
-        
+
         print("\n" + "=" * 50)
         if not missing_lines:
             print("✅ Intégralité respectée : 100% du Markdown a été retranscrit !")
@@ -484,36 +501,37 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
             taux = ((total_lines_count - len(missing_lines)) / total_lines_count) * 100
             print(f"⚠️ Retranscription incomplète : {taux:.1f}% des lignes couvertes.")
             print(f"❌ {len(missing_lines)} ligne(s) non retranscrite(s).")
-        
+
             # 1. Sauvegarde détaillée dans un fichier texte
             report_file = "lignes_manquantes_rapport.txt"
             with open(report_file, "w", encoding="utf-8") as f:
-                f.write(f"=== RAPPORT DES {len(missing_lines)} LIGNES MANQUANTES ===\n\n")
+                f.write(
+                    f"=== RAPPORT DES {len(missing_lines)} LIGNES MANQUANTES ===\n\n"
+                )
                 for line_num in missing_lines:
                     raw_content = markdown_lines[line_num - 1].rstrip("\n")
                     f.write(f"[Ligne {line_num:4d}] : {raw_content}\n")
-        
-            print(f"📁 Le détail complet a été sauvegardé dans le fichier : {report_file}")
-        
+
+            print(
+                f"📁 Le détail complet a été sauvegardé dans le fichier : {report_file}"
+            )
+
             # 2. Aperçu restreint dans la console (seulement les 10 premières)
             print("\n🔍 Aperçu des 10 premières lignes manquantes :")
             for line_num in missing_lines[:10]:
                 raw_content = markdown_lines[line_num - 1].rstrip("\n")
                 print(f"   [Ligne {line_num:4d}] : {raw_content}")
-        
+
         print("=" * 50 + "\n")
 
     return concepts_list
 
+
 anki_source = extraire_blocs_pour_anki(G, "markown_numerote.md")
 import json
 
-
 # Affiche le dictionnaire formaté sur plusieurs lignes avec encodage UTF-8 respecté
-#print(json.dumps(anki_source, indent=4, ensure_ascii=False))
-
-
-
+# print(json.dumps(anki_source, indent=4, ensure_ascii=False))
 
 
 def markdown_to_anki_html(text: str) -> str:
@@ -525,7 +543,7 @@ def markdown_to_anki_html(text: str) -> str:
     """
     if not text:
         return ""
-    
+
     # 1. Échapper les chevrons isolés pour qu'Anki ne les prenne pas pour du HTML
     # On n'échappe que les chevrons de mathématiques.
     text = text.replace("< ", "&lt; ").replace(" <", " &lt;").replace(">\n", "&gt;\n")
@@ -545,10 +563,10 @@ def markdown_to_anki_html(text: str) -> str:
         counter += 1
         return f"\n\n{key}\n\n"
 
-    # Capture \[ ... \] ou $$ ... $$ 
+    # Capture \[ ... \] ou $$ ... $$
     # Le |\Z permet de capturer même si le texte s'arrête net (LLM qui a mal compté les lignes)
-    text = re.sub(r'\\+\[(.*?)(?:\\+\]|\Z)', protect_block, text, flags=re.DOTALL)
-    text = re.sub(r'\$\$(.*?)(?:\$\$|\Z)', protect_block, text, flags=re.DOTALL)
+    text = re.sub(r"\\+\[(.*?)(?:\\+\]|\Z)", protect_block, text, flags=re.DOTALL)
+    text = re.sub(r"\$\$(.*?)(?:\$\$|\Z)", protect_block, text, flags=re.DOTALL)
 
     # ==========================================
     # 2. PROTECTION DES MATHS EN LIGNE
@@ -562,8 +580,8 @@ def markdown_to_anki_html(text: str) -> str:
         counter += 1
         return key
 
-    text = re.sub(r'\\+\((.*?)\\+\)', protect_inline, text, flags=re.DOTALL)
-    text = re.sub(r'(?<!\\)\$([^\$\n]+?)(?<!\\)\$', protect_inline, text)
+    text = re.sub(r"\\+\((.*?)\\+\)", protect_inline, text, flags=re.DOTALL)
+    text = re.sub(r"(?<!\\)\$([^\$\n]+?)(?<!\\)\$", protect_inline, text)
 
     # ==========================================
     # 3. CONVERSION MARKDOWN -> HTML
@@ -571,10 +589,10 @@ def markdown_to_anki_html(text: str) -> str:
     html_output = markdown.markdown(
         text,
         extensions=[
-            'markdown.extensions.tables',
-            'markdown.extensions.nl2br' # Conserve les sauts de ligne simples
+            "markdown.extensions.tables",
+            "markdown.extensions.nl2br",  # Conserve les sauts de ligne simples
         ],
-        output_format='html5'
+        output_format="html5",
     )
 
     # ==========================================
@@ -591,12 +609,13 @@ def markdown_to_anki_html(text: str) -> str:
     # ==========================================
     html_output = html_output.replace("<p>", "")
     html_output = html_output.replace("</p>", "<br><br>")
-    
+
     # On retire les <br> superflus tout à la fin pour un rendu propre
     while html_output.endswith("<br>"):
         html_output = html_output[:-4]
 
     return html_output.strip()
+
 
 print(len(anki_source))
 
@@ -607,7 +626,7 @@ example = []
 sub_labels_fr = ["Enoncé", "Démonstration", "Exemple", "Remarque", "Exercice"]
 
 for card in anki_source:
-    #print(card["label"])
+    # print(card["label"])
     for i in range(len(card["sub_nodes"])):
         if card["sub_nodes"][i]["type"] == "Enoncé":
             enonce.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
@@ -617,19 +636,20 @@ for card in anki_source:
             remark.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
         elif card["sub_nodes"][i]["type"] == "Exemple":
             example.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
-    #print(enonce[0] + "\n")
-    #if len(proof)>=1:
-        #print(proof[0] + "\n")
-    #if len(remark) >= 1:
-        #print("\n".join(remark))
-    #if len(example)>=1:
-        #print("\n".join(example))
-    
-#========================================
-# Création d'un paquet Anki intermédiaire
-#========================================
-import genanki
+    # print(enonce[0] + "\n")
+    # if len(proof)>=1:
+    # print(proof[0] + "\n")
+    # if len(remark) >= 1:
+    # print("\n".join(remark))
+    # if len(example)>=1:
+    # print("\n".join(example))
+
 import random
+
+# ========================================
+# Création d'un paquet Anki intermédiaire
+# ========================================
+import genanki
 
 CSS = r"""
 :root{
@@ -812,77 +832,73 @@ th{ background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%); col
 .night_mode code, .nightMode code{ background:linear-gradient(160deg, #3a352c 0%, var(--code-bg) 100%); box-shadow:0 2px 5px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
 .night_mode th, .nightMode th{ background:linear-gradient(160deg, #3a352c 0%, var(--accent-soft) 100%); box-shadow:inset 0 -1px 0 rgba(0,0,0,.2); }
 """
- 
+
 MODEL_BASIC_ID = 1875392046
 model_basic = genanki.Model(
     MODEL_BASIC_ID,
-    'Basique (Claude)',
-    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
+    "Basique (Claude)",
+    fields=[{"name": "Front"}, {"name": "Back"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Card 1',
-            'qfmt': '<div class="note">{{Front}}</div>',
-            'afmt': '<div class="note">{{Front}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Back}}</div>',
+            "name": "Card 1",
+            "qfmt": '<div class="note">{{Front}}</div>',
+            "afmt": '<div class="note">{{Front}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Back}}</div>',
         },
     ],
     css=CSS,
 )
- 
+
 MODEL_GENERALITES_ID = 1875392091
 model_generalites = genanki.Model(
     MODEL_GENERALITES_ID,
-    'Generalites deux sens (Claude)',
-    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
+    "Generalites deux sens (Claude)",
+    fields=[{"name": "Front"}, {"name": "Back"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Sens 1',
-            'qfmt': '<div class="note">{{Front}}</div>',
-            'afmt': '<div class="note">{{Front}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Back}}</div>',
+            "name": "Sens 1",
+            "qfmt": '<div class="note">{{Front}}</div>',
+            "afmt": '<div class="note">{{Front}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Back}}</div>',
         },
         {
-            'name': 'Sens 2',
-            'qfmt': '<div class="note">{{Back}}</div>',
-            'afmt': '<div class="note">{{Back}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Front}}</div>',
+            "name": "Sens 2",
+            "qfmt": '<div class="note">{{Back}}</div>',
+            "afmt": '<div class="note">{{Back}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Front}}</div>',
         },
     ],
     css=CSS,
 )
- 
+
 MODEL_CLOZE_ID = 1875392177
 model_cloze = genanki.Model(
     MODEL_CLOZE_ID,
-    'Cloze (Claude)',
+    "Cloze (Claude)",
     model_type=genanki.Model.CLOZE,
-    fields=[{'name': 'Text'}, {'name': 'Extra'}, {'name': 'Sequence'}],
+    fields=[{"name": "Text"}, {"name": "Extra"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Cloze',
-            'qfmt': '<div class="note">{{cloze:Text}}</div>',
-            'afmt': '<div class="note">{{cloze:Text}}</div>'
-                    '{{#Extra}}<div class="divider"><span>Info</span></div>'
-                    '<div class="note answer">{{Extra}}</div>{{/Extra}}',
+            "name": "Cloze",
+            "qfmt": '<div class="note">{{cloze:Text}}</div>',
+            "afmt": '<div class="note">{{cloze:Text}}</div>'
+            '{{#Extra}}<div class="divider"><span>Info</span></div>'
+            '<div class="note answer">{{Extra}}</div>{{/Extra}}',
         },
     ],
     css=CSS,
 )
 
 
+my_deck = genanki.Deck(2059400111, "AI_Chap2Test")
 
-
-my_deck = genanki.Deck(
-  2059400111,
-  'AI_Chap2Test')
-
-j=0
+j = 0
 for card in anki_source:
     enonce = []
     proof = []
@@ -900,25 +916,16 @@ for card in anki_source:
             remark.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
         elif card["sub_nodes"][i]["type"] == "Exemple":
             example.append(markdown_to_anki_html(card["sub_nodes"][i]["text"]))
-    if len(enonce)>=1:
-        back+=enonce[0] + "<br><br>"
-    if len(proof)>=1:
-        back+=proof[0] + "<br><br>"
+    if len(enonce) >= 1:
+        back += enonce[0] + "<br><br>"
+    if len(proof) >= 1:
+        back += proof[0] + "<br><br>"
     if len(remark) >= 1:
-        back+="<br><br>".join(remark)
-    if len(example)>=1:
-        back+="<br><br>".join(example)
-    my_note = genanki.Note(
-    model=model_basic,
-    fields=[front, back,str(j)])
-    j+=1
+        back += "<br><br>".join(remark)
+    if len(example) >= 1:
+        back += "<br><br>".join(example)
+    my_note = genanki.Note(model=model_basic, fields=[front, back, str(j)])
+    j += 1
     my_deck.add_note(my_note)
 
-genanki.Package(my_deck).write_to_file('AI_Chap2Test.apkg')
-
-
-
-
-
-
-
+genanki.Package(my_deck).write_to_file("AI_Chap2Test.apkg")

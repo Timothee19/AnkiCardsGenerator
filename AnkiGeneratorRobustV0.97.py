@@ -1,10 +1,10 @@
-import tkinter as tk
-from tkinter import filedialog
-import time
-import os
 import json
+import os
 import random
 import re
+import time
+import tkinter as tk
+from tkinter import filedialog
 
 try:
     from pydantic import BaseModel, Field
@@ -38,14 +38,26 @@ except ImportError:
 # MODÈLE D'ANNOTATION D'IMAGES (OCR)
 # ==========================================
 
+
 class ImageAnnotation(BaseModel):
-    image_type: str = Field(..., description="Type of image: 'diagram', 'graph', 'equation', 'photo', 'schema', 'table', 'screenshot', 'illustration'")
-    short_description: str = Field(..., description="A concise description of what the image shows, in the same language as the document.")
-    key_concepts: str = Field(..., description="Comma-separated list of key academic concepts/topics illustrated by this image.")
+    image_type: str = Field(
+        ...,
+        description="Type of image: 'diagram', 'graph', 'equation', 'photo', 'schema', 'table', 'screenshot', 'illustration'",
+    )
+    short_description: str = Field(
+        ...,
+        description="A concise description of what the image shows, in the same language as the document.",
+    )
+    key_concepts: str = Field(
+        ...,
+        description="Comma-separated list of key academic concepts/topics illustrated by this image.",
+    )
+
 
 # ==========================================
 # FIX JSON ESCAPE POUR LES RÉPONSES LLM
 # ==========================================
+
 
 def fix_llm_json_escaping(raw_content):
     r"""Corrige les sequences d'echappement JSON invalides dans les reponses LLM.
@@ -55,26 +67,26 @@ def fix_llm_json_escaping(raw_content):
     VALID_JSON_ESCAPES = set('"\\/bfnrtu')
     # Les commandes LaTeX qui commencent par une lettre d'echappement JSON valide
     LATEX_KEYWORDS = {
-        't': ['ext', 'heta', 'au', 'an', 'imes'],
-        'f': ['rac'],
-        'n': ['u', 'abla', 'e'],
-        'r': ['ho', 'ight'],
-        'b': ['eta', 'egin', 'oldsymbol']
+        "t": ["ext", "heta", "au", "an", "imes"],
+        "f": ["rac"],
+        "n": ["u", "abla", "e"],
+        "r": ["ho", "ight"],
+        "b": ["eta", "egin", "oldsymbol"],
     }
-    
+
     result = []
     i = 0
     in_string = False
     while i < len(raw_content):
         ch = raw_content[i]
-        if ch == '"' and (i == 0 or raw_content[i-1] != '\\'):
+        if ch == '"' and (i == 0 or raw_content[i - 1] != "\\"):
             in_string = not in_string
             result.append(ch)
             i += 1
-        elif ch == '\\' and in_string:
+        elif ch == "\\" and in_string:
             if i + 1 < len(raw_content):
                 next_ch = raw_content[i + 1]
-                
+
                 # Verifier si c'est une fausse sequence JSON (ex: \text)
                 is_latex_command = False
                 if next_ch in LATEX_KEYWORDS:
@@ -82,7 +94,7 @@ def fix_llm_json_escaping(raw_content):
                         if raw_content.startswith(keyword, i + 2):
                             is_latex_command = True
                             break
-                            
+
                 if next_ch in VALID_JSON_ESCAPES and not is_latex_command:
                     # Sequence valide et pas une commande LaTeX
                     result.append(ch)
@@ -90,7 +102,7 @@ def fix_llm_json_escaping(raw_content):
                     i += 2
                 else:
                     # Sequence invalide ou commande LaTeX, on double le backslash
-                    result.append('\\\\')
+                    result.append("\\\\")
                     result.append(next_ch)
                     i += 2
             else:
@@ -99,7 +111,8 @@ def fix_llm_json_escaping(raw_content):
         else:
             result.append(ch)
             i += 1
-    return ''.join(result)
+    return "".join(result)
+
 
 # ==========================================
 # CONFIGURATION DES MODELES ANKI (genanki)
@@ -121,99 +134,110 @@ CSS = """
 
 MODEL_BASIC_ID = 1593820471
 model_basic = genanki.Model(
-  MODEL_BASIC_ID,
-  'Basique (Mistral)',
-  fields=[
-    {'name': 'Front'},
-    {'name': 'Back'},
-  ],
-  templates=[
-    {
-      'name': 'Card 1',
-      'qfmt': '{{Front}}',
-      'afmt': '{{Front}}<hr id="answer">{{Back}}',
-    },
-  ],
-  css=CSS
+    MODEL_BASIC_ID,
+    "Basique (Mistral)",
+    fields=[
+        {"name": "Front"},
+        {"name": "Back"},
+    ],
+    templates=[
+        {
+            "name": "Card 1",
+            "qfmt": "{{Front}}",
+            "afmt": '{{Front}}<hr id="answer">{{Back}}',
+        },
+    ],
+    css=CSS,
 )
 
 MODEL_GENERALITES_ID = 1593820473
 model_generalites = genanki.Model(
-  MODEL_GENERALITES_ID,
-  'Généralités deux sens (Mistral)',
-  fields=[
-    {'name': 'Front'},
-    {'name': 'Back'},
-  ],
-  templates=[
-    {
-      'name': 'Sens 1',
-      'qfmt': '{{Front}}',
-      'afmt': '{{Front}}<hr id="answer">{{Back}}',
-    },
-    {
-      'name': 'Sens 2',
-      'qfmt': '{{Back}}',
-      'afmt': '{{Back}}<hr id="answer">{{Front}}',
-    },
-  ],
-  css=CSS
+    MODEL_GENERALITES_ID,
+    "Généralités deux sens (Mistral)",
+    fields=[
+        {"name": "Front"},
+        {"name": "Back"},
+    ],
+    templates=[
+        {
+            "name": "Sens 1",
+            "qfmt": "{{Front}}",
+            "afmt": '{{Front}}<hr id="answer">{{Back}}',
+        },
+        {
+            "name": "Sens 2",
+            "qfmt": "{{Back}}",
+            "afmt": '{{Back}}<hr id="answer">{{Front}}',
+        },
+    ],
+    css=CSS,
 )
 
 MODEL_CLOZE_ID = 1593820474
 model_cloze = genanki.Model(
-  MODEL_CLOZE_ID,
-  'Texte à trous V2 (Mistral)',
-  model_type=genanki.Model.CLOZE,
-  fields=[
-    {'name': 'Text'},
-    {'name': 'Back Extra'},
-  ],
-  templates=[
-    {
-      'name': 'Cloze',
-      'qfmt': '{{cloze:Text}}',
-      'afmt': '{{cloze:Text}}<br><hr><br>{{Back Extra}}',
-    },
-  ],
-  css=CSS
+    MODEL_CLOZE_ID,
+    "Texte à trous V2 (Mistral)",
+    model_type=genanki.Model.CLOZE,
+    fields=[
+        {"name": "Text"},
+        {"name": "Back Extra"},
+    ],
+    templates=[
+        {
+            "name": "Cloze",
+            "qfmt": "{{cloze:Text}}",
+            "afmt": "{{cloze:Text}}<br><hr><br>{{Back Extra}}",
+        },
+    ],
+    css=CSS,
 )
 
 MODEL_CLOZE_SIBLINGS_ID = 1593820475
 model_cloze_siblings = genanki.Model(
-  MODEL_CLOZE_SIBLINGS_ID,
-  'Texte à trous (Cartes Soeurs)',
-  fields=[
-    {'name': 'Front1'}, {'name': 'Front2'}, {'name': 'Front3'}, {'name': 'Front4'}, {'name': 'Front5'},
-    {'name': 'Front6'}, {'name': 'Front7'}, {'name': 'Front8'}, {'name': 'Front9'}, {'name': 'Front10'},
-    {'name': 'Back'}
-  ],
-  templates=[
-    {
-      'name': f'Card {i}',
-      'qfmt': '{{Front' + str(i) + '}}',
-      'afmt': '{{Front' + str(i) + '}}<hr id="answer">{{Back}}',
-    } for i in range(1, 11)
-  ],
-  css=CSS
+    MODEL_CLOZE_SIBLINGS_ID,
+    "Texte à trous (Cartes Soeurs)",
+    fields=[
+        {"name": "Front1"},
+        {"name": "Front2"},
+        {"name": "Front3"},
+        {"name": "Front4"},
+        {"name": "Front5"},
+        {"name": "Front6"},
+        {"name": "Front7"},
+        {"name": "Front8"},
+        {"name": "Front9"},
+        {"name": "Front10"},
+        {"name": "Back"},
+    ],
+    templates=[
+        {
+            "name": f"Card {i}",
+            "qfmt": "{{Front" + str(i) + "}}",
+            "afmt": "{{Front" + str(i) + '}}<hr id="answer">{{Back}}',
+        }
+        for i in range(1, 11)
+    ],
+    css=CSS,
 )
 
 # ==========================================
 # LOGIQUE PRINCIPALE
 # ==========================================
 
+
 def select_file():
     root = tk.Tk()
     root.title("Sélection du cours (PDF)")
     root.geometry("400x150")
     print("Veuillez sélectionner votre fichier PDF depuis la fenêtre...")
-    
+
     g_file = filedialog.askopenfilename(
         title="Choisissez le PDF du cours",
-        filetypes=[("Documents PDF", "*.pdf"), ("Tous les fichiers", "*.*")]
+        filetypes=[("Documents PDF", "*.pdf"), ("Tous les fichiers", "*.*")],
     )
     root.destroy()
     return g_file
+
 
 def split_markdown_into_chunks(markdown_text, max_chunk_size=3000):
     lines = markdown_text.split("\n")
@@ -222,8 +246,10 @@ def split_markdown_into_chunks(markdown_text, max_chunk_size=3000):
     current_length = 0
 
     for line in lines:
-        is_header = line.startswith("# ") or line.startswith("## ") or line.startswith("### ")
-        
+        is_header = (
+            line.startswith("# ") or line.startswith("## ") or line.startswith("### ")
+        )
+
         if is_header and current_length > 1000:
             chunks.append("\n".join(current_chunk))
             current_chunk = [line]
@@ -239,10 +265,13 @@ def split_markdown_into_chunks(markdown_text, max_chunk_size=3000):
 
     if current_chunk:
         chunks.append("\n".join(current_chunk))
-        
+
     return chunks
 
-def semantic_split_with_ai(client, markdown_text, model="mistral-large-latest", retries=2):
+
+def semantic_split_with_ai(
+    client, markdown_text, model="mistral-large-latest", retries=2
+):
     lines = markdown_text.split("\n")
     # Numérotation des lignes pour guider l'IA
     numbered_lines = [f"{i+1}: {line}" for i, line in enumerate(lines)]
@@ -274,18 +303,23 @@ Ensure no lines are left out. The first chunk starts at 1, the last chunk ends a
 
     for attempt in range(retries):
         try:
-            print(f"   (Agent Splitter en cours d'analyse - Tentative {attempt+1}/{retries}...)")
+            print(
+                f"   (Agent Splitter en cours d'analyse - Tentative {attempt+1}/{retries}...)"
+            )
             response = client.chat.complete(
                 model=model,
                 response_format={"type": "json_object"},
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"Voici le texte numéroté en entrée, divisez-le en suivant strictement les règles :\n\n{numbered_text}"}
-                ]
+                    {
+                        "role": "user",
+                        "content": f"Voici le texte numéroté en entrée, divisez-le en suivant strictement les règles :\n\n{numbered_text}",
+                    },
+                ],
             )
             content = response.choices[0].message.content
             data = json.loads(content)
-            
+
             if "chunks" in data:
                 chunks = []
                 for chunk_info in data["chunks"]:
@@ -293,26 +327,30 @@ Ensure no lines are left out. The first chunk starts at 1, the last chunk ends a
                     end = min(len(lines), int(chunk_info["end"]))
                     if end > start:
                         chunks.append("\n".join(lines[start:end]))
-                
+
                 if chunks:
                     return chunks
         except Exception as e:
             import time
+
             print(f"   Erreur Agent Splitter: {e}. Nouvel essai...")
             time.sleep(2)
-            
+
     # Fallback
     print("   Fallback: utilisation du découpage heuristique statique.")
     return split_markdown_into_chunks(markdown_text)
 
-def extract_cards_from_chunk(client, chunk_text, filename_tag="Course", model="mistral-large-latest", retries=3):
+
+def extract_cards_from_chunk(
+    client, chunk_text, filename_tag="Course", model="mistral-large-latest", retries=3
+):
     tag_instruction = (
         f"TAGS RULES: Every card MUST have a 'tags' field. "
         f"The first tag MUST always be '{filename_tag}'. "
         f"Then add 1-2 topic tags using the format 'Topic_Subtopic' (underscores, NO spaces). "
         f"Example: '{filename_tag} Pressure_Gradient Hydrostatics'"
     )
-    
+
     system_prompt = r"""
 ROLE
 You are a bulletproof, scholarly Anki Flashcard Generator. 
@@ -412,59 +450,93 @@ JSON OUTPUT ONLY:
                                         "properties": {
                                             "type": {
                                                 "type": "string",
-                                                "enum": ["Texte à trous", "Basique", "Généralités"]
+                                                "enum": [
+                                                    "Texte à trous",
+                                                    "Basique",
+                                                    "Généralités",
+                                                ],
                                             },
                                             "subdeck": {
                                                 "type": "string",
-                                                "enum": ["Par Cœur", "À Refaire"]
+                                                "enum": ["Par Cœur", "À Refaire"],
                                             },
                                             "front": {"type": "string"},
                                             "back": {"type": "string"},
-                                            "tags": {"type": "string"}
+                                            "tags": {"type": "string"},
                                         },
-                                        "required": ["type", "subdeck", "front", "back", "tags"],
-                                        "additionalProperties": False
-                                    }
+                                        "required": [
+                                            "type",
+                                            "subdeck",
+                                            "front",
+                                            "back",
+                                            "tags",
+                                        ],
+                                        "additionalProperties": False,
+                                    },
                                 }
                             },
                             "required": ["cards"],
-                            "additionalProperties": False
-                        }
-                    }
+                            "additionalProperties": False,
+                        },
+                    },
                 },
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"Extract all valuable concepts systematically from this content segment.\nCRUCIAL RULES FOR THIS CHUNK:\n1. KEEP THE EXACT SAME LANGUAGE AS THE TEXT BELOW. ABSOLUTELY NO FRENCH ALLOWED UNLESS THE TEXT ITSELF IS IN FRENCH. IF THE TEXT IS IN ENGLISH, EVERY SINGLE WORD OF YOUR GENERATED JSON MUST BE IN ENGLISH.\n2. Prioritize 'Texte à trous' and 'Basique' cards. ONLY use 'Généralités' sparingly for extremely fundamental, high-level definitions where a double-sided card is strictly necessary.\n3. {tag_instruction}\n\n{chunk_text}"}
-                ]
+                    {
+                        "role": "user",
+                        "content": f"Extract all valuable concepts systematically from this content segment.\nCRUCIAL RULES FOR THIS CHUNK:\n1. KEEP THE EXACT SAME LANGUAGE AS THE TEXT BELOW. ABSOLUTELY NO FRENCH ALLOWED UNLESS THE TEXT ITSELF IS IN FRENCH. IF THE TEXT IS IN ENGLISH, EVERY SINGLE WORD OF YOUR GENERATED JSON MUST BE IN ENGLISH.\n2. Prioritize 'Texte à trous' and 'Basique' cards. ONLY use 'Généralités' sparingly for extremely fundamental, high-level definitions where a double-sided card is strictly necessary.\n3. {tag_instruction}\n\n{chunk_text}",
+                    },
+                ],
             )
-            
+
             content = response.choices[0].message.content
-            
+
             # CRITICAL: fix_llm_json_escaping IS needed even with strict json_schema.
             # Reason: \text -> \t+ext (tab), \frac -> \f+rac (form feed), \nu -> \n+u (newline)
             # These are VALID JSON escapes that destroy LaTeX commands silently.
             content = fix_llm_json_escaping(content)
-            
+
             data = json.loads(content)
-            
+
             if "cards" in data:
                 return data["cards"]
             else:
                 print(f"Format JSON invalide. Tentative {attempt+1}/{retries}...")
         except Exception as e:
-            print(f"Erreur d'API ou de parsing Mistral. Tentative {attempt+1}/{retries}... ({e})")
+            print(
+                f"Erreur d'API ou de parsing Mistral. Tentative {attempt+1}/{retries}... ({e})"
+            )
             time.sleep(2)
-            
-    print("Erreur: Impossible de traiter le chunk après plusieurs tentatives. Sautant ce chunk...")
+
+    print(
+        "Erreur: Impossible de traiter le chunk après plusieurs tentatives. Sautant ce chunk..."
+    )
     return []
 
-def ai_quality_control_cards(client, cards, chunk_text="", image_descriptions=None, model="mistral-small-latest", retries=2):
-    if not cards: return []
-    
+
+def ai_quality_control_cards(
+    client,
+    cards,
+    chunk_text="",
+    image_descriptions=None,
+    model="mistral-small-latest",
+    retries=2,
+):
+    if not cards:
+        return []
+
     print(f"   (Mistral Small : Agent QA actif sur {len(cards)} cartes...)")
-    cards_payload = [{"id": i, "front": c.get("front", ""), "back": c.get("back", ""), "type": c.get("type", "")} for i, c in enumerate(cards)]
+    cards_payload = [
+        {
+            "id": i,
+            "front": c.get("front", ""),
+            "back": c.get("back", ""),
+            "type": c.get("type", ""),
+        }
+        for i, c in enumerate(cards)
+    ]
     payload_json = json.dumps(cards_payload, ensure_ascii=False)
-    
+
     system_prompt = r"""
 ROLE: Flashcard Quality Assurance Agent & Expert Typographe LaTeX.
 Vos flashcards contiennent parfois des références aveugles à un livre ("D'après la proposition 2.14") OU des erreurs de formatage LaTeX (accolades non balancées, texte hors de \text{}).
@@ -564,54 +636,95 @@ OUTPUT JSON PRECIS:
                                         "type": "object",
                                         "properties": {
                                             "id": {"type": "integer"},
-                                            "action": {"type": "string", "enum": ["keep", "reject", "rewrite"]},
+                                            "action": {
+                                                "type": "string",
+                                                "enum": ["keep", "reject", "rewrite"],
+                                            },
                                             "front": {"type": "string"},
                                             "back": {"type": "string"},
-                                            "reasoning": {"type": "string"}
+                                            "reasoning": {"type": "string"},
                                         },
-                                        "required": ["id", "action", "front", "back", "reasoning"],
-                                        "additionalProperties": False
-                                    }
+                                        "required": [
+                                            "id",
+                                            "action",
+                                            "front",
+                                            "back",
+                                            "reasoning",
+                                        ],
+                                        "additionalProperties": False,
+                                    },
                                 }
                             },
                             "required": ["results"],
-                            "additionalProperties": False
-                        }
-                    }
+                            "additionalProperties": False,
+                        },
+                    },
                 },
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"[TEXTE D'ORIGINE DU BLOC POUR REFERENCE IMAGE ET CONTEXTE]\n{chunk_text}\n\n" + (f"[INDEX DES IMAGES ET LEURS DESCRIPTIONS]\n" + "\n".join([f"- {k}: {v}" for k, v in (image_descriptions or {}).items() if v]) + "\n\n" if image_descriptions else "") + f"=======================\nVoici les cartes à évaluer et corriger :\n{payload_json}"}
-                ]
+                    {
+                        "role": "user",
+                        "content": f"[TEXTE D'ORIGINE DU BLOC POUR REFERENCE IMAGE ET CONTEXTE]\n{chunk_text}\n\n"
+                        + (
+                            f"[INDEX DES IMAGES ET LEURS DESCRIPTIONS]\n"
+                            + "\n".join(
+                                [
+                                    f"- {k}: {v}"
+                                    for k, v in (image_descriptions or {}).items()
+                                    if v
+                                ]
+                            )
+                            + "\n\n"
+                            if image_descriptions
+                            else ""
+                        )
+                        + f"=======================\nVoici les cartes à évaluer et corriger :\n{payload_json}",
+                    },
+                ],
             )
             content = response.choices[0].message.content
             # CRITICAL: fix_llm_json_escaping IS needed even with strict json_schema.
             # \text -> \t+ext, \frac -> \f+rac, \nu -> \n+u are valid JSON escapes
             content = fix_llm_json_escaping(content)
             data = json.loads(content)
-            
+
             if "results" in data:
                 valid_cards = []
                 rejected_count = 0
                 rewritten_count = 0
-                
+
                 results_map = {res.get("id"): res for res in data.get("results", [])}
-                
+
                 for i, c in enumerate(cards):
                     res = results_map.get(i)
                     if not res:
                         valid_cards.append(c)
                         continue
-                        
+
                     action = res.get("action", "keep")
                     if action == "reject":
                         rejected_count += 1
-                        print(f"      [QA REJECT] Carte rejetée : {c.get('front', '')[:80]}...")
+                        print(
+                            f"      [QA REJECT] Carte rejetée : {c.get('front', '')[:80]}..."
+                        )
                         try:
                             with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                                 f.write("## [MISTRAL SMALL QA] Carte Rejetée\n\n")
-                                f.write(f"### Raison:\n{res.get('reasoning', 'Non spécifiée')}\n\n")
-                                f.write("### Carte Originale:\n```json\n" + json.dumps({"front": c.get("front", ""), "back": c.get("back", "")}, ensure_ascii=False, indent=2) + "\n```\n\n---\n")
+                                f.write(
+                                    f"### Raison:\n{res.get('reasoning', 'Non spécifiée')}\n\n"
+                                )
+                                f.write(
+                                    "### Carte Originale:\n```json\n"
+                                    + json.dumps(
+                                        {
+                                            "front": c.get("front", ""),
+                                            "back": c.get("back", ""),
+                                        },
+                                        ensure_ascii=False,
+                                        indent=2,
+                                    )
+                                    + "\n```\n\n---\n"
+                                )
                         except Exception as e:
                             print(f"Log Error: {e}")
                     elif action == "rewrite":
@@ -621,27 +734,49 @@ OUTPUT JSON PRECIS:
                         c["front"] = res.get("front", c.get("front"))
                         c["back"] = res.get("back", c.get("back"))
                         valid_cards.append(c)
-                        print(f"      [QA REWRITE] Carte corrigée : {c.get('front', '')[:80]}...")
-                        
+                        print(
+                            f"      [QA REWRITE] Carte corrigée : {c.get('front', '')[:80]}..."
+                        )
+
                         try:
                             with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                                 f.write("## [MISTRAL SMALL QA] Carte Corrigée\n\n")
-                                f.write("### Avant:\n```json\n" + json.dumps({"front": old_front, "back": old_back}, ensure_ascii=False, indent=2) + "\n```\n\n")
-                                f.write("### Après:\n```json\n" + json.dumps({"front": c["front"], "back": c["back"]}, ensure_ascii=False, indent=2) + "\n```\n\n---\n")
+                                f.write(
+                                    "### Avant:\n```json\n"
+                                    + json.dumps(
+                                        {"front": old_front, "back": old_back},
+                                        ensure_ascii=False,
+                                        indent=2,
+                                    )
+                                    + "\n```\n\n"
+                                )
+                                f.write(
+                                    "### Après:\n```json\n"
+                                    + json.dumps(
+                                        {"front": c["front"], "back": c["back"]},
+                                        ensure_ascii=False,
+                                        indent=2,
+                                    )
+                                    + "\n```\n\n---\n"
+                                )
                         except Exception as e:
                             print(f"Log Error: {e}")
                     else:
                         valid_cards.append(c)
-                
-                print(f"   => Contrôle Qualité terminé : {len(valid_cards)} cartes conservées dont {rewritten_count} corrigées. {rejected_count} rejetées.")
+
+                print(
+                    f"   => Contrôle Qualité terminé : {len(valid_cards)} cartes conservées dont {rewritten_count} corrigées. {rejected_count} rejetées."
+                )
                 return valid_cards
         except Exception as e:
             import time
+
             print(f"   Erreur QA Mistral Small (Tentative {attempt+1}/{retries}): {e}")
             time.sleep(2)
-            
+
     print("   QA a échoué. Retour des cartes non filtrées.")
     return cards
+
 
 def filter_image_only_cards(cards):
     """Filtre post-QA : rejette les cartes dont le front ne contient que des images sans texte."""
@@ -650,10 +785,12 @@ def filter_image_only_cards(cards):
     for c in cards:
         front = c.get("front", "")
         # Retirer les images, commandes LaTeX de structure, espaces
-        robust_pattern_img = r'\\*!?\\*\[([^\]]*?)\\*\]\\*\(([^)]+?\.(?:jpeg|jpg|png|gif|webp|svg))\\*\)'
-        text_only = re.sub(robust_pattern_img, '', front, flags=re.IGNORECASE)
-        text_only = re.sub(r'\\text\{\s*\}', '', text_only)
-        text_only = re.sub(r'[&\\{}\s]', '', text_only)
+        robust_pattern_img = (
+            r"\\*!?\\*\[([^\]]*?)\\*\]\\*\(([^)]+?\.(?:jpeg|jpg|png|gif|webp|svg))\\*\)"
+        )
+        text_only = re.sub(robust_pattern_img, "", front, flags=re.IGNORECASE)
+        text_only = re.sub(r"\\text\{\s*\}", "", text_only)
+        text_only = re.sub(r"[&\\{}\s]", "", text_only)
         text_only = text_only.strip()
         if len(text_only) < 5:  # Pas assez de texte pour constituer une question
             rejected_count += 1
@@ -662,58 +799,65 @@ def filter_image_only_cards(cards):
                 with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                     f.write("## [FILTRE IMAGE-SEULE] Carte Rejetée\n\n")
                     f.write(f"### Front:\n```\n{front}\n```\n\n")
-                    f.write(f"### Raison:\nLe front ne contient que des images sans question textuelle (texte résiduel: '{text_only}', {len(text_only)} chars).\n\n---\n")
+                    f.write(
+                        f"### Raison:\nLe front ne contient que des images sans question textuelle (texte résiduel: '{text_only}', {len(text_only)} chars).\n\n---\n"
+                    )
             except Exception as e:
                 print(f"Log Error: {e}")
             continue
         filtered.append(c)
     if rejected_count > 0:
-        print(f"   => Filtre image-seule : {rejected_count} carte(s) rejetée(s), {len(filtered)} conservée(s).")
+        print(
+            f"   => Filtre image-seule : {rejected_count} carte(s) rejetée(s), {len(filtered)} conservée(s)."
+        )
     return filtered
+
 
 def filter_mcq_cards(cards):
     """Post-QA filter: detect and reject cards that still contain MCQ patterns.
     MCQ cards violate the pedagogical rule requiring open-ended conceptual questions."""
     filtered = []
     rejected_count = 0
-    
+
     # MCQ detection patterns
     mcq_front_patterns = [
-        r'(?i)which\s+(?:of\s+the\s+following|statement)',
-        r'(?i)select\s+the\s+(?:correct|incorrect)',
-        r'(?i)identify\s+the\s+(?:correct|incorrect)',
-        r'(?i)laquelle?\s+(?:de\s+ces|des\s+suivant)',
-        r'(?i)choisissez?\s+la\s+(?:bonne|correcte)',
-        r'(?i)(?:true|false|vrai|faux)\s*(?:\?|$)',
+        r"(?i)which\s+(?:of\s+the\s+following|statement)",
+        r"(?i)select\s+the\s+(?:correct|incorrect)",
+        r"(?i)identify\s+the\s+(?:correct|incorrect)",
+        r"(?i)laquelle?\s+(?:de\s+ces|des\s+suivant)",
+        r"(?i)choisissez?\s+la\s+(?:bonne|correcte)",
+        r"(?i)(?:true|false|vrai|faux)\s*(?:\?|$)",
     ]
-    
+
     for c in cards:
         front = c.get("front", "")
         back = c.get("back", "")
         is_mcq = False
         matched_pattern = ""
-        
+
         # Check for MCQ question patterns in front
         for pattern in mcq_front_patterns:
             if re.search(pattern, front):
                 is_mcq = True
                 matched_pattern = pattern
                 break
-        
+
         # Check for multiple (a), (b), (c) style choices
         if not is_mcq:
-            choice_count = len(re.findall(r'\([a-e]\)', front))
+            choice_count = len(re.findall(r"\([a-e]\)", front))
             if choice_count >= 3:
                 is_mcq = True
                 matched_pattern = "Multiple choice options (a)(b)(c)..."
-        
+
         # Check for roman numeral MCQ lists (I. II. III. with question keywords)
         if not is_mcq:
-            roman_count = len(re.findall(r'(?:^|\s)(?:I{1,3}|IV|V)\.\s', front))
-            if roman_count >= 3 and re.search(r'(?i)(?:statement|correct|true|false|affirmation)', front):
+            roman_count = len(re.findall(r"(?:^|\s)(?:I{1,3}|IV|V)\.\s", front))
+            if roman_count >= 3 and re.search(
+                r"(?i)(?:statement|correct|true|false|affirmation)", front
+            ):
                 is_mcq = True
                 matched_pattern = "Roman numeral MCQ (I. II. III.)"
-        
+
         if is_mcq:
             rejected_count += 1
             print(f"      [FILTRE MCQ] Carte rejetée : {front[:80]}...")
@@ -727,10 +871,13 @@ def filter_mcq_cards(cards):
                 print(f"Log Error: {e}")
             continue
         filtered.append(c)
-    
+
     if rejected_count > 0:
-        print(f"   => Filtre MCQ : {rejected_count} carte(s) MCQ rejetée(s), {len(filtered)} conservée(s).")
+        print(
+            f"   => Filtre MCQ : {rejected_count} carte(s) MCQ rejetée(s), {len(filtered)} conservée(s)."
+        )
     return filtered
+
 
 def filter_truncated_cards(cards):
     """Post-QA filter: detect cards with truncated fronts or incomplete backs.
@@ -738,39 +885,43 @@ def filter_truncated_cards(cards):
     - Back ending with ':' without listing the announced items = incomplete back"""
     filtered = []
     rejected_count = 0
-    
+
     for c in cards:
         front = c.get("front", "")
         back = c.get("back", "")
         is_truncated = False
         reason = ""
-        
+
         # Strip LaTeX formatting to analyze the actual text content
-        front_clean = re.sub(r'\\text\{([^}]*)\}', r'\1', front)
-        front_clean = re.sub(r'[\\&{}]', '', front_clean).strip()
-        back_clean = re.sub(r'\\text\{([^}]*)\}', r'\1', back)
-        back_clean = re.sub(r'[\\&{}]', '', back_clean).strip()
-        
+        front_clean = re.sub(r"\\text\{([^}]*)\}", r"\1", front)
+        front_clean = re.sub(r"[\\&{}]", "", front_clean).strip()
+        back_clean = re.sub(r"\\text\{([^}]*)\}", r"\1", back)
+        back_clean = re.sub(r"[\\&{}]", "", back_clean).strip()
+
         # Check: front ends with ':' or 'For example:' (truncated front)
-        if re.search(r'(?:For example|Par exemple)\s*:?\s*$', front_clean, re.IGNORECASE):
+        if re.search(
+            r"(?:For example|Par exemple)\s*:?\s*$", front_clean, re.IGNORECASE
+        ):
             is_truncated = True
             reason = "Front se termine par 'For example:' sans contenu"
-        
+
         # Check: back ends with ':' suggesting an incomplete list
-        if not is_truncated and back_clean.endswith(':'):
+        if not is_truncated and back_clean.endswith(":"):
             # Only flag if the back is very short (likely just the intro sentence)
             if len(back_clean) < 200:
                 is_truncated = True
                 reason = f"Back se termine par ':' sans lister les \u00e9l\u00e9ments annonc\u00e9s ('{back_clean[-60:]}...')"
-        
+
         # Check: back is suspiciously short relative to front
         if not is_truncated and len(back_clean) < 30 and len(front_clean) > 50:
             is_truncated = True
             reason = f"Back anormalement court ({len(back_clean)} chars) pour un front de {len(front_clean)} chars"
-        
+
         if is_truncated:
             rejected_count += 1
-            print(f"      [FILTRE TRONCATURE] Carte rejet\u00e9e : {front_clean[:80]}...")
+            print(
+                f"      [FILTRE TRONCATURE] Carte rejet\u00e9e : {front_clean[:80]}..."
+            )
             try:
                 with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                     f.write("## [FILTRE TRONCATURE] Carte Rejet\u00e9e\n\n")
@@ -781,19 +932,26 @@ def filter_truncated_cards(cards):
                 print(f"Log Error: {e}")
             continue
         filtered.append(c)
-    
+
     if rejected_count > 0:
-        print(f"   => Filtre troncature : {rejected_count} carte(s) tronqu\u00e9e(s) rejet\u00e9e(s), {len(filtered)} conserv\u00e9e(s).")
+        print(
+            f"   => Filtre troncature : {rejected_count} carte(s) tronqu\u00e9e(s) rejet\u00e9e(s), {len(filtered)} conserv\u00e9e(s)."
+        )
     return filtered
 
-def supervisor_deduplicate_cards(client, cards, image_descriptions=None, model="mistral-large-latest", retries=3):
+
+def supervisor_deduplicate_cards(
+    client, cards, image_descriptions=None, model="mistral-large-latest", retries=3
+):
     if len(cards) <= 1:
         return cards
-        
-    print(f"\n   (Agent Superviseur - Étape 1 : Identification sémantique des doublons...)")
+
+    print(
+        f"\n   (Agent Superviseur - Étape 1 : Identification sémantique des doublons...)"
+    )
     # ÉTAPE 1 : Identification (Seulement le 'front' pour économiser des tokens)
     fronts_only = [{"id": i, "front": c.get("front", "")} for i, c in enumerate(cards)]
-    
+
     prompt_id = r"""
 ROLE: Supervisor Agent.
 YOUR TASK: Identify duplicate flashcards that test the exact same concept or ask the exact same question.
@@ -804,9 +962,9 @@ Example: If IDs 0, 2, and 4 ask for Green's Theorem, and 10 and 14 ask for Stoke
 }
 If there are no duplicates, output an empty array for duplicate_groups.
 """
-    
+
     cards_front_json = json.dumps(fronts_only, ensure_ascii=False)
-    
+
     duplicate_groups = []
     for attempt in range(retries):
         try:
@@ -815,14 +973,18 @@ If there are no duplicates, output an empty array for duplicate_groups.
                 response_format={"type": "json_object"},
                 messages=[
                     {"role": "system", "content": prompt_id},
-                    {"role": "user", "content": f"Cartes (rectos) :\n\n{cards_front_json}"}
-                ]
+                    {
+                        "role": "user",
+                        "content": f"Cartes (rectos) :\n\n{cards_front_json}",
+                    },
+                ],
             )
             data = json.loads(response.choices[0].message.content)
             duplicate_groups = data.get("duplicate_groups", [])
             break
         except Exception as e:
             import time
+
             print(f"Erreur d'Identification (Tentative {attempt+1}): {e}")
             time.sleep(2)
 
@@ -832,8 +994,10 @@ If there are no duplicates, output an empty array for duplicate_groups.
 
     # ÉTAPE 2 : Fusion ciblée
     all_deleted_ids = set()
-    print(f"   => {len(duplicate_groups)} groupes de doublons détectés. Lancement de la fusion ciblée...")
-    
+    print(
+        f"   => {len(duplicate_groups)} groupes de doublons détectés. Lancement de la fusion ciblée..."
+    )
+
     prompt_fuse = r"""
 ROLE: Combiner Agent.
 YOUR TASK: You are given a set of POTENTIALLY REDUNDANT Anki flashcards that were flagged as duplicates based ONLY on their fronts.
@@ -921,29 +1085,42 @@ NOTE FOR OUTPUT: If you decide to merge them, return exactly 1 merged card with 
 """
 
     original_len = len(cards)
-    
+
     for group in duplicate_groups:
         if not group or len(group) <= 1:
             continue
-            
-        group_cards = [{"id": i, "front": cards[i].get("front", ""), "back": cards[i].get("back", ""), "type": cards[i].get("type", ""), "subdeck": cards[i].get("subdeck", ""), "tags": cards[i].get("tags", "")} for i in group if i < len(cards)]
+
+        group_cards = [
+            {
+                "id": i,
+                "front": cards[i].get("front", ""),
+                "back": cards[i].get("back", ""),
+                "type": cards[i].get("type", ""),
+                "subdeck": cards[i].get("subdeck", ""),
+                "tags": cards[i].get("tags", ""),
+            }
+            for i in group
+            if i < len(cards)
+        ]
         master_id = group[0]
-        
+
         # Enrichir le message avec les descriptions d'images si disponibles
         image_ctx = ""
         if image_descriptions:
-            image_ctx = "\n\n[INDEX DES IMAGES ET LEURS DESCRIPTIONS]\n" + "\n".join([f"- {k}: {v}" for k, v in image_descriptions.items() if v])
-        
+            image_ctx = "\n\n[INDEX DES IMAGES ET LEURS DESCRIPTIONS]\n" + "\n".join(
+                [f"- {k}: {v}" for k, v in image_descriptions.items() if v]
+            )
+
         group_json = json.dumps(group_cards, ensure_ascii=False)
-        
+
         # --- LOG TERMINAL : Affichage du groupe ---
         print(f"\n      ────────────────────────────────────────")
         print(f"      [FUSION] Groupe Master ID: {master_id} ({len(group)} cartes)")
         for idx, gid in enumerate(group):
             prefix = "└─" if idx == len(group) - 1 else "├─"
             front_preview = cards[gid].get("front", "")[:70].replace("\n", " ")
-            print(f"        {prefix} Carte {gid}: \"{front_preview}...\"")
-        
+            print(f'        {prefix} Carte {gid}: "{front_preview}..."')
+
         for attempt in range(retries):
             try:
                 response = client.chat.complete(
@@ -951,24 +1128,31 @@ NOTE FOR OUTPUT: If you decide to merge them, return exactly 1 merged card with 
                     response_format={"type": "json_object"},
                     messages=[
                         {"role": "system", "content": prompt_fuse},
-                        {"role": "user", "content": f"Cartes à fusionner :{image_ctx}\n\n{group_json}"}
-                    ]
+                        {
+                            "role": "user",
+                            "content": f"Cartes à fusionner :{image_ctx}\n\n{group_json}",
+                        },
+                    ],
                 )
                 content = response.choices[0].message.content
                 content = fix_llm_json_escaping(content)
-                
+
                 DEBUG_SUPERVISOR = os.environ.get("ANKI_DEBUG_SUPERVISOR", "0") == "1"
                 if DEBUG_SUPERVISOR:
-                    with open(f"last_supervisor_fusion_group_{master_id}.txt", "w", encoding="utf-8") as f:
+                    with open(
+                        f"last_supervisor_fusion_group_{master_id}.txt",
+                        "w",
+                        encoding="utf-8",
+                    ) as f:
                         f.write(content)
 
                 data = json.loads(content)
                 final_cards = data.get("final_cards", [])
                 reasoning = data.get("reasoning", "Non spécifié")
-                
+
                 if final_cards:
                     all_deleted_ids.update(group)
-                    
+
                     kept_ids = []
                     for c in final_cards:
                         target_id = c.get("id")
@@ -977,7 +1161,7 @@ NOTE FOR OUTPUT: If you decide to merge them, return exactly 1 merged card with 
                             all_deleted_ids.remove(target_id)
                             kept_ids.append(target_id)
                         else:
-                            # Fallback : placer la carte à la position du master_id (pas en fin de liste) 
+                            # Fallback : placer la carte à la position du master_id (pas en fin de liste)
                             # pour préserver l'ordre chronologique
                             if master_id not in all_deleted_ids:
                                 # master_id déjà sauvé, ajouter après
@@ -986,168 +1170,228 @@ NOTE FOR OUTPUT: If you decide to merge them, return exactly 1 merged card with 
                                 cards[master_id] = c
                                 all_deleted_ids.remove(master_id)
                                 kept_ids.append(master_id)
-                    
+
                     deleted_in_group = [gid for gid in group if gid in all_deleted_ids]
-                    
+
                     # --- LOG TERMINAL : Résultat ---
-                    decision = "FUSION" if len(final_cards) < len(group) else "CONSERVÉES SÉPARÉMENT"
-                    print(f"      → Décision: {decision} ({len(group)} → {len(final_cards)} carte(s))")
+                    decision = (
+                        "FUSION"
+                        if len(final_cards) < len(group)
+                        else "CONSERVÉES SÉPARÉMENT"
+                    )
+                    print(
+                        f"      → Décision: {decision} ({len(group)} → {len(final_cards)} carte(s))"
+                    )
                     for kid in kept_ids:
-                        status = "FUSIONNÉE" if len(final_cards) < len(group) else "CONSERVÉE"
-                        absorbed = [gid for gid in group if gid != kid and gid in all_deleted_ids]
-                        absorb_str = f" (absorbe {absorbed})" if absorbed and status == "FUSIONNÉE" else ""
+                        status = (
+                            "FUSIONNÉE"
+                            if len(final_cards) < len(group)
+                            else "CONSERVÉE"
+                        )
+                        absorbed = [
+                            gid
+                            for gid in group
+                            if gid != kid and gid in all_deleted_ids
+                        ]
+                        absorb_str = (
+                            f" (absorbe {absorbed})"
+                            if absorbed and status == "FUSIONNÉE"
+                            else ""
+                        )
                         print(f"        ✓ Carte {kid}: {status}{absorb_str}")
                     for did in deleted_in_group:
                         print(f"        ✗ Carte {did}: SUPPRIMÉE (fusionnée)")
                     print(f"      Rationnel: {reasoning[:120]}...")
-                    
+
                     # --- LOG FICHIER : Enrichi avec le rationnel ---
                     try:
                         with open("pipeline_logs.md", "a", encoding="utf-8") as f:
-                            f.write(f"## [FUSION SUPERVISEUR] Groupe Master ID: {master_id}\n\n")
-                            f.write(f"**Décision:** {decision} ({len(group)} → {len(final_cards)} carte(s))\n\n")
+                            f.write(
+                                f"## [FUSION SUPERVISEUR] Groupe Master ID: {master_id}\n\n"
+                            )
+                            f.write(
+                                f"**Décision:** {decision} ({len(group)} → {len(final_cards)} carte(s))\n\n"
+                            )
                             f.write(f"**Rationnel du Combiner:**\n> {reasoning}\n\n")
-                            f.write(f"### Cartes Originales:\n```json\n{group_json}\n```\n\n")
-                            f.write(f"### Résultat Combiner:\n```json\n{json.dumps(final_cards, ensure_ascii=False, indent=2)}\n```\n\n")
-                            f.write(f"**IDs conservés:** {kept_ids} | **IDs supprimés:** {deleted_in_group}\n\n---\n")
+                            f.write(
+                                f"### Cartes Originales:\n```json\n{group_json}\n```\n\n"
+                            )
+                            f.write(
+                                f"### Résultat Combiner:\n```json\n{json.dumps(final_cards, ensure_ascii=False, indent=2)}\n```\n\n"
+                            )
+                            f.write(
+                                f"**IDs conservés:** {kept_ids} | **IDs supprimés:** {deleted_in_group}\n\n---\n"
+                            )
                     except Exception as e:
                         print(f"Log Error: {e}")
-                    
+
                     break
                 else:
-                    print(f"      - Échec de parsing JSON Combiner pour le groupe {master_id} (Tentative {attempt+1})...")
+                    print(
+                        f"      - Échec de parsing JSON Combiner pour le groupe {master_id} (Tentative {attempt+1})..."
+                    )
             except Exception as e:
                 import time
-                print(f"      - Erreur Fusion groupe {master_id} (Tentative {attempt+1}): {e}")
+
+                print(
+                    f"      - Erreur Fusion groupe {master_id} (Tentative {attempt+1}): {e}"
+                )
                 time.sleep(2)
-    
+
     print(f"      ────────────────────────────────────────")
-                
+
     # Reconstruction ordonnée : ne garder que les cartes non supprimées, dans l'ordre original
-    deduplicated_cards = [c for i, c in enumerate(cards) if i not in all_deleted_ids and i < original_len]
+    deduplicated_cards = [
+        c for i, c in enumerate(cards) if i not in all_deleted_ids and i < original_len
+    ]
     # Ajouter les éventuelles cartes ajoutées au-delà de la liste originale (fallback rares)
     for i in range(original_len, len(cards)):
         if i not in all_deleted_ids:
             deduplicated_cards.append(cards[i])
-    
+
     try:
         with open("pipeline_logs.md", "a", encoding="utf-8") as f:
             f.write("## [RÉSULTAT DU PROCESSUS DE FUSION / DÉDUPLICATION]\n\n")
             f.write(f"**Nombre de cartes avant déduplication:** {original_len}\n\n")
-            f.write(f"**Nombre de cartes après déduplication:** {len(deduplicated_cards)}\n\n")
+            f.write(
+                f"**Nombre de cartes après déduplication:** {len(deduplicated_cards)}\n\n"
+            )
             f.write(f"**Cartes supprimées (IDs):** {sorted(all_deleted_ids)}\n\n")
             f.write("### Cartes Finales Post-Fusion (Rectos uniquement):\n```json\n")
-            f.write(json.dumps([{"id": j, "front": c.get("front", "")} for j, c in enumerate(deduplicated_cards)], ensure_ascii=False, indent=2))
+            f.write(
+                json.dumps(
+                    [
+                        {"id": j, "front": c.get("front", "")}
+                        for j, c in enumerate(deduplicated_cards)
+                    ],
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
             f.write("\n```\n\n---\n")
     except Exception as e:
         print(f"Log Error: {e}")
 
     return deduplicated_cards
 
+
 class LatexSanitizer:
     @staticmethod
     def fix_double_backslash_text(text):
         """Fix \\\\text -> \\text, \\\\frac -> \\frac etc. caused by QA agent over-escaping."""
-        if not text: return text
+        if not text:
+            return text
         import re
-        # Pattern: double-backslash followed by known LaTeX commands
-        text = re.sub(r'\\\\(text|frac|sqrt|left|right|begin|end|quad|operatorname|mathrm|mathbf|mathit|vec|boldsymbol|max|min|lim|sin|cos|tan|log|ln|exp|det|dim|ker|Im|Re|eta|nu|rho|tau|alpha|beta|gamma|delta|epsilon|lambda|mu|sigma|omega|phi|psi|theta|pi|nabla|partial|infty|sum|prod|int|cup|cap|cdot|times|pm|mp|leq|geq|neq|approx|equiv|propto|forall|exists|in|subset|supset|to|mapsto|circ|otimes|oplus|oint|iint)\b', r'\\\1', text)
-        
-        # FAILSAFE: Supprimer les environnements non supportés (itemize, enumerate, itemsize) et les symboles $
-        text = re.sub(r'\\begin\{(itemize|enumerate|itemsize)\}', '', text)
-        text = re.sub(r'\\end\{(itemize|enumerate|itemsize)\}', '', text)
-        text = re.sub(r'\\item\s*', '- ', text)
-        text = text.replace('$', '')
-        
-        return text
 
+        # Pattern: double-backslash followed by known LaTeX commands
+        text = re.sub(
+            r"\\\\(text|frac|sqrt|left|right|begin|end|quad|operatorname|mathrm|mathbf|mathit|vec|boldsymbol|max|min|lim|sin|cos|tan|log|ln|exp|det|dim|ker|Im|Re|eta|nu|rho|tau|alpha|beta|gamma|delta|epsilon|lambda|mu|sigma|omega|phi|psi|theta|pi|nabla|partial|infty|sum|prod|int|cup|cap|cdot|times|pm|mp|leq|geq|neq|approx|equiv|propto|forall|exists|in|subset|supset|to|mapsto|circ|otimes|oplus|oint|iint)\b",
+            r"\\\1",
+            text,
+        )
+
+        # FAILSAFE: Supprimer les environnements non supportés (itemize, enumerate, itemsize) et les symboles $
+        text = re.sub(r"\\begin\{(itemize|enumerate|itemsize)\}", "", text)
+        text = re.sub(r"\\end\{(itemize|enumerate|itemsize)\}", "", text)
+        text = re.sub(r"\\item\s*", "- ", text)
+        text = text.replace("$", "")
+
+        return text
 
     @staticmethod
     def extract_images_from_text_blocks(text):
         """Rescue image references buried inside \\text{} blocks by extracting them outside."""
-        if not text: return text
+        if not text:
+            return text
         import re
+
         def _fix_text_block_with_image(match):
             full = match.group(0)
             # Find images inside this \text{} block (now they are HTML tags)
-            images = re.findall(r'<img[^>]+>', full)
+            images = re.findall(r"<img[^>]+>", full)
             if not images:
                 return full
             # Remove images from inside the \text{} block
-            cleaned = re.sub(r'<img[^>]+>', ' ', full)
+            cleaned = re.sub(r"<img[^>]+>", " ", full)
             # Remove excessive backslashes/whitespace left behind
-            cleaned = re.sub(r'\\{3,}', '', cleaned)
+            cleaned = re.sub(r"\\{3,}", "", cleaned)
             cleaned = cleaned.strip()
             # Build image references outside \text{}
-            img_strs = [f' \\\\ \\\\ {img}' for img in images]
-            return cleaned + ''.join(img_strs)
-        
+            img_strs = [f" \\\\ \\\\ {img}" for img in images]
+            return cleaned + "".join(img_strs)
+
         # Match \text{...} blocks that contain <img ...> tags
-        pattern = r'\\text\{[^}]*(?:<img[^>]+>)[^}]*\}'
+        pattern = r"\\text\{[^}]*(?:<img[^>]+>)[^}]*\}"
         text = re.sub(pattern, _fix_text_block_with_image, text)
         return text
 
     @staticmethod
     def fix_spaces(text):
-        if not text: return text
+        if not text:
+            return text
         import re
-        text = re.sub(r'\}\s+\\(mathbf|mathit|vec|text|mathrm|boldsymbol)\b', r'} \\\1', text)
-        text = re.sub(r'\}\s+([a-zA-Z0-9])(?![a-zA-Z])', r'} \1', text)
-        text = re.sub(r'\}\s+\{\{c', r'} {{c', text)
+
+        text = re.sub(
+            r"\}\s+\\(mathbf|mathit|vec|text|mathrm|boldsymbol)\b", r"} \\\1", text
+        )
+        text = re.sub(r"\}\s+([a-zA-Z0-9])(?![a-zA-Z])", r"} \1", text)
+        text = re.sub(r"\}\s+\{\{c", r"} {{c", text)
         return text
 
     @staticmethod
     def balance_braces(text):
-        if not text: return text
+        if not text:
+            return text
         result = []
         depth = 0
         i = 0
         while i < len(text):
-            if text[i:i+2] in ['\\{', '\\}']:
-                result.append(text[i:i+2])
+            if text[i : i + 2] in ["\\{", "\\}"]:
+                result.append(text[i : i + 2])
                 i += 2
                 continue
-            if text[i] == '{':
+            if text[i] == "{":
                 depth += 1
-                result.append('{')
+                result.append("{")
                 i += 1
-            elif text[i] == '}':
+            elif text[i] == "}":
                 if depth > 0:
                     depth -= 1
-                    result.append('}')
+                    result.append("}")
                 i += 1
             else:
                 result.append(text[i])
                 i += 1
         while depth > 0:
-            result.append('}')
+            result.append("}")
             depth -= 1
         return "".join(result)
 
     @staticmethod
     def wrap_latex(text, max_len=75):
-        if not text: return text
+        if not text:
+            return text
         import re
-        
+
         # Pass 1: Break long \text{...} blocks
         result_p1 = []
         i = 0
         while i < len(text):
-            if text[i:].startswith(r'\text{'):
-                prefix = r'\text{'
+            if text[i:].startswith(r"\text{"):
+                prefix = r"\text{"
                 j = i + len(prefix)
                 depth = 1
                 inner = []
                 while j < len(text) and depth > 0:
-                    if text[j] == '{':
+                    if text[j] == "{":
                         depth += 1
-                    elif text[j] == '}':
+                    elif text[j] == "}":
                         depth -= 1
                     if depth > 0:
                         inner.append(text[j])
                     j += 1
                 inner_str = "".join(inner)
-                
+
                 # Check if we need to wrap the internal string
                 if len(inner_str) > max_len:
                     words = []
@@ -1155,12 +1399,16 @@ class LatexSanitizer:
                     brace_depth = 0
                     bracket_depth = 0
                     for char in inner_str:
-                        if char == '{': brace_depth += 1
-                        elif char == '}': brace_depth = max(0, brace_depth - 1)
-                        elif char == '[': bracket_depth += 1
-                        elif char == ']': bracket_depth = max(0, bracket_depth - 1)
-                        
-                        if char == ' ' and brace_depth == 0 and bracket_depth == 0:
+                        if char == "{":
+                            brace_depth += 1
+                        elif char == "}":
+                            brace_depth = max(0, brace_depth - 1)
+                        elif char == "[":
+                            bracket_depth += 1
+                        elif char == "]":
+                            bracket_depth = max(0, bracket_depth - 1)
+
+                        if char == " " and brace_depth == 0 and bracket_depth == 0:
                             if curr_word:
                                 words.append("".join(curr_word))
                                 curr_word = []
@@ -1174,7 +1422,11 @@ class LatexSanitizer:
                     cur_len = 0
                     for w in words:
                         # Remove cloze tags to calculate visible length
-                        vis = len(re.sub(r'(\{\{c\d+::|\[\[c\d+::|\[\[|\{\{|\]\]|\}\})', '', w))
+                        vis = len(
+                            re.sub(
+                                r"(\{\{c\d+::|\[\[c\d+::|\[\[|\{\{|\]\]|\}\})", "", w
+                            )
+                        )
                         if cur_len + vis + 1 > max_len and cur_line:
                             lines_out.append(" ".join(cur_line))
                             cur_line = [w]
@@ -1184,7 +1436,7 @@ class LatexSanitizer:
                             cur_len += vis + 1
                     if cur_line:
                         lines_out.append(" ".join(cur_line))
-                    
+
                     wrapped_text = r"} \\\\ & \text{".join(lines_out)
                     result_p1.append(r"\text{" + wrapped_text + r"}")
                 else:
@@ -1193,9 +1445,9 @@ class LatexSanitizer:
             else:
                 result_p1.append(text[i])
                 i += 1
-                
+
         text = "".join(result_p1)
-        
+
         # Pass 2: Math Equation wrapping (Standard)
         words = []
         curr_word = []
@@ -1205,13 +1457,19 @@ class LatexSanitizer:
         i = 0
         while i < len(text):
             char = text[i]
-            if char == '{': depth += 1
-            elif char == '}': depth = max(0, depth - 1)
-            elif char == '[': bracket_depth += 1
-            elif char == ']': bracket_depth = max(0, bracket_depth - 1)
-            elif char == '<': html_depth += 1
-            elif char == '>': html_depth = max(0, html_depth - 1)
-            
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth = max(0, depth - 1)
+            elif char == "[":
+                bracket_depth += 1
+            elif char == "]":
+                bracket_depth = max(0, bracket_depth - 1)
+            elif char == "<":
+                html_depth += 1
+            elif char == ">":
+                html_depth = max(0, html_depth - 1)
+
             if char.isspace() and depth == 0 and html_depth == 0 and bracket_depth == 0:
                 if curr_word:
                     words.append("".join(curr_word))
@@ -1221,15 +1479,15 @@ class LatexSanitizer:
             i += 1
         if curr_word:
             words.append("".join(curr_word))
-            
+
         wrapped_lines = []
         current_chunk = []
         current_len = 0
         left_depth = 0
         env_depth = 0
-        
+
         for w in words:
-            if w == r'\\':
+            if w == r"\\":
                 if env_depth == 0 and left_depth == 0:
                     if current_chunk:
                         wrapped_lines.append(" ".join(current_chunk))
@@ -1240,13 +1498,18 @@ class LatexSanitizer:
                     current_chunk.append(w)
                     current_len += 2
                     continue
-                    
-            env_depth += w.count(r'\begin{') - w.count(r'\end{')
-            left_depth += w.count(r'\left') - w.count(r'\right')
-            
-            vis_len = len(re.sub(r'\\[a-zA-Z]+', '', w))
-            can_break = (left_depth == 0 and env_depth == 0 and w.count(r'\right') == 0 and w.count(r'\end{') == 0)
-            
+
+            env_depth += w.count(r"\begin{") - w.count(r"\end{")
+            left_depth += w.count(r"\left") - w.count(r"\right")
+
+            vis_len = len(re.sub(r"\\[a-zA-Z]+", "", w))
+            can_break = (
+                left_depth == 0
+                and env_depth == 0
+                and w.count(r"\right") == 0
+                and w.count(r"\end{") == 0
+            )
+
             if current_chunk and (current_len + vis_len > max_len) and can_break:
                 wrapped_lines.append(" ".join(current_chunk))
                 current_chunk = [w]
@@ -1254,87 +1517,103 @@ class LatexSanitizer:
             else:
                 current_chunk.append(w)
                 current_len += vis_len + 1
-                
+
         if current_chunk:
             wrapped_lines.append(" ".join(current_chunk))
-            
+
         res = []
         for line in wrapped_lines:
             line = line.strip()
-            if line and not line.startswith('&') and not line.startswith(r'\begin'):
-                line = '& ' + line
+            if line and not line.startswith("&") and not line.startswith(r"\begin"):
+                line = "& " + line
             res.append(line)
         return " \\\\ \n".join(res)
 
     @staticmethod
     def _robust_cloze_replacer(t_str):
         import re
+
         result = []
         i = 0
         while i < len(t_str):
-            match = re.match(r'\{\{c\d+::', t_str[i:])
+            match = re.match(r"\{\{c\d+::", t_str[i:])
             if match:
                 prefix = match.group(0)
                 j = i + len(prefix)
                 depth = 0
                 inner = []
                 while j < len(t_str):
-                    if t_str[j] == '{': depth += 1; inner.append('{')
-                    elif t_str[j] == '}':
+                    if t_str[j] == "{":
+                        depth += 1
+                        inner.append("{")
+                    elif t_str[j] == "}":
                         if depth == 0:
-                            if j + 1 < len(t_str) and t_str[j+1] == '}':
+                            if j + 1 < len(t_str) and t_str[j + 1] == "}":
                                 j += 2
                                 break
-                            else: inner.append('}')
-                        else: depth -= 1; inner.append('}')
-                    else: inner.append(t_str[j])
+                            else:
+                                inner.append("}")
+                        else:
+                            depth -= 1
+                            inner.append("}")
+                    else:
+                        inner.append(t_str[j])
                     j += 1
                 inner_str = "".join(inner).replace("}}", "} }")
                 result.append(prefix + inner_str + "}}")
                 i = j
-            else: result.append(t_str[i]); i += 1
+            else:
+                result.append(t_str[i])
+                i += 1
         return "".join(result)
 
     @staticmethod
     def process_aligned_wrapper(text):
-        if not text: return text
+        if not text:
+            return text
         import re
+
         # Fix double-backslash before LaTeX commands (QA over-escaping)
         text = LatexSanitizer.fix_double_backslash_text(text)
         # Rescue images buried inside \text{} blocks
         text = LatexSanitizer.extract_images_from_text_blocks(text)
         text = LatexSanitizer.wrap_latex(text)
         text = LatexSanitizer._robust_cloze_replacer(text)
-        
+
         # Cleanup empty text artifacts from aggressive regexes
-        text = text.replace(r'\text{}', '')
+        text = text.replace(r"\text{}", "")
         # Clean up stray "]." or "].]" artifacts
-        text = re.sub(r'\]\.\]', '', text)
-        text = re.sub(r'\]\.$', '', text)
-        
+        text = re.sub(r"\]\.\]", "", text)
+        text = re.sub(r"\]\.$", "", text)
+
         res = "\\( \\begin{aligned} \n" + text + "\n \\end{aligned} \\)"
         res = res.replace("\n", " ")
         # Nettoyer les sauts de ligne parasites (doubles \\ consécutifs)
-        res = re.sub(r'(\\\\\s*){2,}', r'\\\\ ', res)
+        res = re.sub(r"(\\\\\s*){2,}", r"\\\\ ", res)
         # Supprimer les lignes vides d'alignement (& suivi immédiatement de \\)
-        res = re.sub(r'\\\\\s*&\s*\\\\', r'\\\\', res)
-        res = re.sub(r'(<img[^>]+>)', r'\\end{aligned}\\)<br>\1<br>\\(\\begin{aligned} & ', res)
+        res = re.sub(r"\\\\\s*&\s*\\\\", r"\\\\", res)
+        res = re.sub(
+            r"(<img[^>]+>)", r"\\end{aligned}\\)<br>\1<br>\\(\\begin{aligned} & ", res
+        )
         # Nettoyage robuste des blocs aligned vides (plusieurs patterns possibles)
         res = res.replace("\\( \\begin{aligned}   \\end{aligned} \\)", "")
         res = res.replace("\\(\\begin{aligned} &  \\end{aligned} \\)", "")
-        res = re.sub(r'\\\(\s*\\begin\{aligned\}\s*[&\s]*\\end\{aligned\}\s*\\\)', '', res)
+        res = re.sub(
+            r"\\\(\s*\\begin\{aligned\}\s*[&\s]*\\end\{aligned\}\s*\\\)", "", res
+        )
         # Supprimer les <br> orphelins en début/fin
-        res = re.sub(r'^(<br>\s*)+', '', res)
-        res = re.sub(r'(<br>\s*)+$', '', res)
+        res = re.sub(r"^(<br>\s*)+", "", res)
+        res = re.sub(r"(<br>\s*)+$", "", res)
         return res
 
     @staticmethod
     def extract_clozes(t_str, target_cloze_num=None):
         import re
+
         result = []
         i = 0
         while i < len(t_str):
-            match = re.match(r'\{\{c(\d+)::', t_str[i:])
+            match = re.match(r"\{\{c(\d+)::", t_str[i:])
             if match:
                 c_num = match.group(1)
                 prefix = match.group(0)
@@ -1342,15 +1621,21 @@ class LatexSanitizer:
                 depth = 0
                 inner = []
                 while j < len(t_str):
-                    if t_str[j] == '{': depth += 1; inner.append('{')
-                    elif t_str[j] == '}':
+                    if t_str[j] == "{":
+                        depth += 1
+                        inner.append("{")
+                    elif t_str[j] == "}":
                         if depth == 0:
-                            if j + 1 < len(t_str) and t_str[j+1] == '}':
+                            if j + 1 < len(t_str) and t_str[j + 1] == "}":
                                 j += 2
                                 break
-                            else: inner.append('}')
-                        else: depth -= 1; inner.append('}')
-                    else: inner.append(t_str[j])
+                            else:
+                                inner.append("}")
+                        else:
+                            depth -= 1
+                            inner.append("}")
+                    else:
+                        inner.append(t_str[j])
                     j += 1
                 inner_str = "".join(inner)
                 if target_cloze_num is None:
@@ -1364,65 +1649,88 @@ class LatexSanitizer:
                         # Reveal OTHER clozes
                         result.append(inner_str)
                 i = j
-            else: 
+            else:
                 result.append(t_str[i])
                 i += 1
         return "".join(result)
+
 
 def add_card_to_decks(deck_par_coeur, deck_a_refaire, card):
     card_type = card.get("type", "Basique").strip()
     subdeck_choice = card.get("subdeck", "Par Cœur").strip()
     mapped_tag = "Catégorie::" + subdeck_choice.replace(" ", "_").replace(",", "")
-    
+
     import re
+
     raw_front = card.get("front", "").strip()
-    raw_front = re.sub(r'\[\[c(\d+)::(.*?)]]', r'{{c\1::\2}}', raw_front, flags=re.DOTALL)
+    raw_front = re.sub(
+        r"\[\[c(\d+)::(.*?)]]", r"{{c\1::\2}}", raw_front, flags=re.DOTALL
+    )
     raw_front_lower = raw_front.lower()
-    
+
     is_a_refaire = "refaire" in subdeck_choice.lower()
-    a_refaire_keywords = ["théorème", "theorem", "proposition", "corollaire", "propriété", "lemme", "exemple", "exercice", "demonstration", "démonstration"]
+    a_refaire_keywords = [
+        "théorème",
+        "theorem",
+        "proposition",
+        "corollaire",
+        "propriété",
+        "lemme",
+        "exemple",
+        "exercice",
+        "demonstration",
+        "démonstration",
+    ]
     if any(kw in raw_front_lower for kw in a_refaire_keywords):
         is_a_refaire = True
     elif "définition" in raw_front_lower or "definition" in raw_front_lower:
         is_a_refaire = False
-        
+
     deck = deck_a_refaire if is_a_refaire else deck_par_coeur
     raw_back = card.get("back", "").strip()
-    raw_back = re.sub(r'\[\[c(\d+)::(.*?)]]', r'{{c\1::\2}}', raw_back, flags=re.DOTALL)
-    
-    raw_front = re.sub(r'\\n(?![a-zA-Z])', ' ', raw_front)
-    raw_back = re.sub(r'\\n(?![a-zA-Z])', ' ', raw_back)
-    
+    raw_back = re.sub(r"\[\[c(\d+)::(.*?)]]", r"{{c\1::\2}}", raw_back, flags=re.DOTALL)
+
+    raw_front = re.sub(r"\\n(?![a-zA-Z])", " ", raw_front)
+    raw_back = re.sub(r"\\n(?![a-zA-Z])", " ", raw_back)
+
     # Échappement HTML ciblé : seulement < et > pour la sécurité HTML
     # Ne PAS échapper & (utilisé par LaTeX pour l'alignement dans \begin{aligned})
     front_escaped = raw_front.replace("<", "&lt;").replace(">", "&gt;")
     back_escaped = raw_back.replace("<", "&lt;").replace(">", "&gt;")
-    
-    robust_img_pattern = r'\\*!?\\*\[([^\]]*?)\\*\]\\*\(([^)]+?\.(?:jpeg|jpg|png|gif|webp|svg))\\*\)'
-    front_escaped = re.sub(robust_img_pattern, r'<img src="\2">', front_escaped, flags=re.IGNORECASE)
-    back_escaped = re.sub(robust_img_pattern, r'<img src="\2">', back_escaped, flags=re.IGNORECASE)
-    
+
+    robust_img_pattern = (
+        r"\\*!?\\*\[([^\]]*?)\\*\]\\*\(([^)]+?\.(?:jpeg|jpg|png|gif|webp|svg))\\*\)"
+    )
+    front_escaped = re.sub(
+        robust_img_pattern, r'<img src="\2">', front_escaped, flags=re.IGNORECASE
+    )
+    back_escaped = re.sub(
+        robust_img_pattern, r'<img src="\2">', back_escaped, flags=re.IGNORECASE
+    )
+
     # Fix double-quotes artefacts dans les img src
     front_escaped = front_escaped.replace('""', '"')
     back_escaped = back_escaped.replace('""', '"')
 
     # RESTORE ORDER: Strip alignment BEFORE balancing braces to fix hallucinated \end{aligned} inside \text{...}
-    front_escaped = re.sub(r'\\begin\{(aligned|align\*?)\}', '', front_escaped)
-    front_escaped = re.sub(r'\\end\{(aligned|align\*?)\}', '', front_escaped)
-    back_escaped = re.sub(r'\\begin\{(aligned|align\*?)\}', '', back_escaped)
-    back_escaped = re.sub(r'\\end\{(aligned|align\*?)\}', '', back_escaped)
-    front_escaped = re.sub(r'(?<!\\)\\\[', '', front_escaped)
-    front_escaped = re.sub(r'(?<!\\)\\\]', '', front_escaped)
-    back_escaped = re.sub(r'(?<!\\)\\\[', '', back_escaped)
-    back_escaped = re.sub(r'(?<!\\)\\\]', '', back_escaped)
-    front_escaped = front_escaped.replace(r'\(', '').replace(r'\)', '')
-    back_escaped = back_escaped.replace(r'\(', '').replace(r'\)', '')
+    front_escaped = re.sub(r"\\begin\{(aligned|align\*?)\}", "", front_escaped)
+    front_escaped = re.sub(r"\\end\{(aligned|align\*?)\}", "", front_escaped)
+    back_escaped = re.sub(r"\\begin\{(aligned|align\*?)\}", "", back_escaped)
+    back_escaped = re.sub(r"\\end\{(aligned|align\*?)\}", "", back_escaped)
+    front_escaped = re.sub(r"(?<!\\)\\\[", "", front_escaped)
+    front_escaped = re.sub(r"(?<!\\)\\\]", "", front_escaped)
+    back_escaped = re.sub(r"(?<!\\)\\\[", "", back_escaped)
+    back_escaped = re.sub(r"(?<!\\)\\\]", "", back_escaped)
+    front_escaped = front_escaped.replace(r"\(", "").replace(r"\)", "")
+    back_escaped = back_escaped.replace(r"\(", "").replace(r"\)", "")
 
     pre_sanitizer_front = front_escaped
     pre_sanitizer_back = back_escaped
-    
+
     is_cloze = "trous" in card_type.lower() and "{{c" in front_escaped
-    is_generalite = "Généralités" in card_type or "G\u00e9n\u00e9ralit\u00e9s" in card_type
+    is_generalite = (
+        "Généralités" in card_type or "G\u00e9n\u00e9ralit\u00e9s" in card_type
+    )
     if "{{c" in front_escaped or "{{c" in back_escaped:
         is_cloze = True
 
@@ -1437,16 +1745,23 @@ def add_card_to_decks(deck_par_coeur, deck_a_refaire, card):
         tags.append(mapped_tag)
 
     if is_cloze:
-        cloze_numbers = set(re.findall(r'\{\{c(\d+)::', front_escaped + back_escaped))
+        cloze_numbers = set(re.findall(r"\{\{c(\d+)::", front_escaped + back_escaped))
         if not cloze_numbers:
             front = LatexSanitizer.process_aligned_wrapper(front_escaped)
             back = LatexSanitizer.process_aligned_wrapper(back_escaped)
             try:
                 with open("pipeline_logs.md", "a", encoding="utf-8") as f:
-                    f.write("## [LATEX SANITIZER] Basique/Généralités (Trous Vides)\n\n")
-                    f.write(f"### Avant:\n**Front:**\n```\n{pre_sanitizer_front}\n```\n\n**Back:**\n```\n{pre_sanitizer_back}\n```\n\n")
-                    f.write(f"### Après:\n**Front:**\n```\n{front}\n```\n\n**Back:**\n```\n{back}\n```\n\n---\n")
-            except: pass
+                    f.write(
+                        "## [LATEX SANITIZER] Basique/Généralités (Trous Vides)\n\n"
+                    )
+                    f.write(
+                        f"### Avant:\n**Front:**\n```\n{pre_sanitizer_front}\n```\n\n**Back:**\n```\n{pre_sanitizer_back}\n```\n\n"
+                    )
+                    f.write(
+                        f"### Après:\n**Front:**\n```\n{front}\n```\n\n**Back:**\n```\n{back}\n```\n\n---\n"
+                    )
+            except:
+                pass
             my_note = genanki.Note(model=model_basic, fields=[front, back], tags=tags)
             deck.add_note(my_note)
         else:
@@ -1454,30 +1769,42 @@ def add_card_to_decks(deck_par_coeur, deck_a_refaire, card):
             fields = [""] * 10
             final_back = ""
             for idx, cloze_num in enumerate(sorted_clozes):
-                if idx >= 10: break
+                if idx >= 10:
+                    break
                 current_front = LatexSanitizer.extract_clozes(front_escaped, cloze_num)
-                current_front_revealed = LatexSanitizer.extract_clozes(front_escaped, None)
-                current_back_revealed = LatexSanitizer.extract_clozes(back_escaped, None)
-                
+                current_front_revealed = LatexSanitizer.extract_clozes(
+                    front_escaped, None
+                )
+                current_back_revealed = LatexSanitizer.extract_clozes(
+                    back_escaped, None
+                )
+
                 final_front = LatexSanitizer.process_aligned_wrapper(current_front)
-                final_front_revealed = LatexSanitizer.process_aligned_wrapper(current_front_revealed)
-                
+                final_front_revealed = LatexSanitizer.process_aligned_wrapper(
+                    current_front_revealed
+                )
+
                 if current_back_revealed.strip():
-                    final_back_extra = LatexSanitizer.process_aligned_wrapper(current_back_revealed)
+                    final_back_extra = LatexSanitizer.process_aligned_wrapper(
+                        current_back_revealed
+                    )
                     final_back = f"{final_front_revealed}<br><hr><br>{final_back_extra}"
                 else:
                     final_back = final_front_revealed
                 fields[idx] = final_front
-                
+
             fields.append(final_back)
             try:
                 with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                     f.write("## [LATEX SANITIZER] Carte à Trous\n\n")
-                    f.write(f"### Avant:\n**Front:**\n```\n{pre_sanitizer_front}\n```\n\n**Back:**\n```\n{pre_sanitizer_back}\n```\n\n### Après (Cartes Sœurs):\n")
+                    f.write(
+                        f"### Avant:\n**Front:**\n```\n{pre_sanitizer_front}\n```\n\n**Back:**\n```\n{pre_sanitizer_back}\n```\n\n### Après (Cartes Sœurs):\n"
+                    )
                     for i in range(min(10, len(sorted_clozes))):
                         f.write(f"**Front {i+1}:**\n```\n{fields[i]}\n```\n\n")
                     f.write(f"**Back Final:**\n```\n{final_back}\n```\n\n---\n")
-            except: pass
+            except:
+                pass
             my_note = genanki.Note(model=model_cloze_siblings, fields=fields, tags=tags)
             deck.add_note(my_note)
     else:
@@ -1486,23 +1813,33 @@ def add_card_to_decks(deck_par_coeur, deck_a_refaire, card):
         try:
             with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                 f.write("## [LATEX SANITIZER] Basique/Généralités\n\n")
-                f.write(f"### Avant:\n**Front:**\n```\n{pre_sanitizer_front}\n```\n\n**Back:**\n```\n{pre_sanitizer_back}\n```\n\n")
-                f.write(f"### Après:\n**Front:**\n```\n{front}\n```\n\n**Back:**\n```\n{back}\n```\n\n---\n")
-        except: pass
+                f.write(
+                    f"### Avant:\n**Front:**\n```\n{pre_sanitizer_front}\n```\n\n**Back:**\n```\n{pre_sanitizer_back}\n```\n\n"
+                )
+                f.write(
+                    f"### Après:\n**Front:**\n```\n{front}\n```\n\n**Back:**\n```\n{back}\n```\n\n---\n"
+                )
+        except:
+            pass
         if is_generalite:
-            my_note = genanki.Note(model=model_generalites, fields=[front, back], tags=tags)
+            my_note = genanki.Note(
+                model=model_generalites, fields=[front, back], tags=tags
+            )
         else:
             my_note = genanki.Note(model=model_basic, fields=[front, back], tags=tags)
         deck.add_note(my_note)
 
+
 def process_course():
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("GÉNÉRATEUR DE CARTES ANKI INFAILLIBLE (Mistral AI + Genanki)")
-    print("="*50 + "\n")
-    
+    print("=" * 50 + "\n")
+
     api_key = os.environ.get("MISTRAL_API_KEY")
     if not api_key:
-        print("ERREUR CRITIQUE: La variable d'environnement MISTRAL_API_KEY est introuvable.")
+        print(
+            "ERREUR CRITIQUE: La variable d'environnement MISTRAL_API_KEY est introuvable."
+        )
         print("Vérifiez votre fichier .env")
         return
 
@@ -1510,19 +1847,22 @@ def process_course():
     if not g_file:
         print("Opération annulée : Aucun fichier selectionné.")
         return
-        
+
     client = Mistral(api_key=api_key)
     filename = os.path.basename(g_file)
     filename_without_ext = os.path.splitext(filename)[0]
 
     import datetime
+
     timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     run_folder_name = f"{filename_without_ext}_{timestamp_str}"
-    
+
     try:
         os.makedirs(run_folder_name, exist_ok=True)
         os.chdir(run_folder_name)
-        print(f"--> Environnement isolé : tous les fichiers (logs, images, deck) seront dans `{run_folder_name}`\n")
+        print(
+            f"--> Environnement isolé : tous les fichiers (logs, images, deck) seront dans `{run_folder_name}`\n"
+        )
     except Exception as e:
         print(f"Erreur de création de dossier isolé : {e}")
         return
@@ -1535,10 +1875,12 @@ def process_course():
                     "file_name": filename,
                     "content": f,
                 },
-                purpose="ocr"
+                purpose="ocr",
             )
 
-        print("2) Traitement OCR en cours avec annotation d'images... (patientez plusieurs secondes)")
+        print(
+            "2) Traitement OCR en cours avec annotation d'images... (patientez plusieurs secondes)"
+        )
         signed_url = client.files.get_signed_url(file_id=uploaded_pdf.id)
         ocr_response = client.ocr.process(
             model="mistral-ocr-latest",
@@ -1548,35 +1890,36 @@ def process_course():
             },
             table_format="markdown",
             include_image_base64=True,
-            bbox_annotation_format=response_format_from_pydantic_model(ImageAnnotation)
+            bbox_annotation_format=response_format_from_pydantic_model(ImageAnnotation),
         )
-        
+
         client.files.delete(file_id=uploaded_pdf.id)
 
         import base64
+
         full_markdown = ""
         media_files = []
         image_descriptions = {}  # Dict: img_filename -> description string
         for page in ocr_response.pages:
             page_md = page.markdown
-            if hasattr(page, 'images') and page.images:
+            if hasattr(page, "images") and page.images:
                 for img in page.images:
                     b64_str = img.image_base64
                     if b64_str.startswith("data:"):
                         b64_str = b64_str.split(",", 1)[1]
-                    
+
                     img_filename = img.id
-                    if not img_filename.endswith(('.jpg', '.jpeg', '.png')):
+                    if not img_filename.endswith((".jpg", ".jpeg", ".png")):
                         img_filename += ".jpg"
-                        
+
                     with open(img_filename, "wb") as f_img:
                         f_img.write(base64.b64decode(b64_str))
                     media_files.append(img_filename)
-                    
+
                     # Extraire l'annotation d'image (description) si disponible
                     # L'API Mistral OCR retourne les annotations dans img.image_annotation sous forme de string JSON
                     annotation_str = ""
-                    if hasattr(img, 'image_annotation') and img.image_annotation:
+                    if hasattr(img, "image_annotation") and img.image_annotation:
                         try:
                             ann_raw = img.image_annotation
                             if isinstance(ann_raw, str):
@@ -1584,19 +1927,21 @@ def process_course():
                                 annotation_str = f"[{parsed.get('image_type', 'unknown')}] {parsed.get('short_description', '')} (Concepts: {parsed.get('key_concepts', '')})"
                             elif isinstance(ann_raw, dict):
                                 annotation_str = f"[{ann_raw.get('image_type', 'unknown')}] {ann_raw.get('short_description', '')} (Concepts: {ann_raw.get('key_concepts', '')})"
-                            elif hasattr(ann_raw, 'image_type'):
+                            elif hasattr(ann_raw, "image_type"):
                                 annotation_str = f"[{ann_raw.image_type}] {ann_raw.short_description} (Concepts: {ann_raw.key_concepts})"
                         except Exception as e:
-                            print(f"   Avertissement : impossible de parser l'annotation pour {img_filename}: {e}")
+                            print(
+                                f"   Avertissement : impossible de parser l'annotation pour {img_filename}: {e}"
+                            )
                     image_descriptions[img_filename] = annotation_str
-                    
+
                     # Remplacement de l'ID d'image par le nom du fichier effectif dans le markdown
                     page_md = page_md.replace(f"({img.id})", f"({img_filename})")
             full_markdown += page_md + "\n\n"
-            
+
         with open("extracted_course_text.md", "w", encoding="utf-8") as f:
             f.write(full_markdown)
-        
+
         # Enrichir les annotations d'images avec les légendes/captions du texte source
         md_lines = full_markdown.split("\n")
         for img_name in list(image_descriptions.keys()):
@@ -1617,16 +1962,26 @@ def process_course():
                         break
                     next_line = md_lines[next_idx].strip()
                     # Arrêter si on rencontre une autre image, un header, ou une ligne vide longue
-                    if next_line.startswith('![') or next_line.startswith('#') or not next_line:
+                    if (
+                        next_line.startswith("![")
+                        or next_line.startswith("#")
+                        or not next_line
+                    ):
                         break
                     if len(next_line) > 3:
                         caption_parts.append(next_line)
                 if caption_parts:
                     caption_text = " — ".join(caption_parts)
                     existing = image_descriptions[img_name]
-                    image_descriptions[img_name] = f"{existing} | Caption: {caption_text}" if existing else f"Caption: {caption_text}"
-                    print(f"   [IMAGE] {img_name}: légende enrichie avec '{caption_text[:60]}...'")
-        
+                    image_descriptions[img_name] = (
+                        f"{existing} | Caption: {caption_text}"
+                        if existing
+                        else f"Caption: {caption_text}"
+                    )
+                    print(
+                        f"   [IMAGE] {img_name}: légende enrichie avec '{caption_text[:60]}...'"
+                    )
+
         # Sauvegarder les annotations d'images pour traçabilité
         annotated_count = sum(1 for v in image_descriptions.values() if v)
         if image_descriptions:
@@ -1636,56 +1991,82 @@ def process_course():
                 with open("pipeline_logs.md", "a", encoding="utf-8") as f:
                     f.write("## [OCR] Annotations d'images extraites\n\n")
                     for img_name, desc in image_descriptions.items():
-                        f.write(f"- **{img_name}**: {desc if desc else '(aucune annotation)'}\n")
-                    f.write(f"\n**Total:** {len(image_descriptions)} images, {annotated_count} annotées.\n\n---\n")
-            except: pass
-            
-        print(f"3) OCR terminé avec succès ! ({len(full_markdown)} caractères extraits, {annotated_count}/{len(image_descriptions)} images annotées)")
-        
-        print("4) Découpage intelligent du cours en blocs sémantiques (Agent Splitter)...")
+                        f.write(
+                            f"- **{img_name}**: {desc if desc else '(aucune annotation)'}\n"
+                        )
+                    f.write(
+                        f"\n**Total:** {len(image_descriptions)} images, {annotated_count} annotées.\n\n---\n"
+                    )
+            except:
+                pass
+
+        print(
+            f"3) OCR terminé avec succès ! ({len(full_markdown)} caractères extraits, {annotated_count}/{len(image_descriptions)} images annotées)"
+        )
+
+        print(
+            "4) Découpage intelligent du cours en blocs sémantiques (Agent Splitter)..."
+        )
         chunks = semantic_split_with_ai(client, full_markdown)
         print(f"   => Cours découpé en {len(chunks)} blocs parfaits.")
 
         all_cards = []
-        
-        print("\n5) Analyse AI et génération JSON des cartes en cours (Mistral Large) :")
+
+        print(
+            "\n5) Analyse AI et génération JSON des cartes en cours (Mistral Large) :"
+        )
         for idx, chunk in enumerate(chunks):
             if not chunk.strip():
                 continue
-            print(f"   -> Traitement du bloc {idx+1}/{len(chunks)} (taille: {len(chunk)} chars)...")
-            cards = extract_cards_from_chunk(client, chunk, filename_tag=filename_without_ext)
-            cards = ai_quality_control_cards(client, cards, chunk_text=chunk, image_descriptions=image_descriptions)
+            print(
+                f"   -> Traitement du bloc {idx+1}/{len(chunks)} (taille: {len(chunk)} chars)..."
+            )
+            cards = extract_cards_from_chunk(
+                client, chunk, filename_tag=filename_without_ext
+            )
+            cards = ai_quality_control_cards(
+                client, cards, chunk_text=chunk, image_descriptions=image_descriptions
+            )
             cards = filter_image_only_cards(cards)
             cards = filter_mcq_cards(cards)
             cards = filter_truncated_cards(cards)
             all_cards.extend(cards)
-            
+
         print(f"\n5.5) Déduplication sémantique : {len(all_cards)} cartes en revue...")
-        all_cards = supervisor_deduplicate_cards(client, all_cards, image_descriptions=image_descriptions)
-        
-        print(f"\n5.6) Assemblage final : {len(all_cards)} cartes générées, compilation du paquet Anki...")
-        
+        all_cards = supervisor_deduplicate_cards(
+            client, all_cards, image_descriptions=image_descriptions
+        )
+
+        print(
+            f"\n5.6) Assemblage final : {len(all_cards)} cartes générées, compilation du paquet Anki..."
+        )
+
         # Génération déterministe / pseudo-aléatoire des Deck IDs
         deck_id_1 = random.randrange(1 << 30, 1 << 31)
         deck_id_2 = random.randrange(1 << 30, 1 << 31)
         deck_name = f"{filename_without_ext}"
-        
+
         deck_par_coeur = genanki.Deck(deck_id_1, f"{deck_name}::Par Cœur (Définitions)")
-        deck_a_refaire = genanki.Deck(deck_id_2, f"{deck_name}::À Refaire (Théorèmes et Concepts)")
-        
+        deck_a_refaire = genanki.Deck(
+            deck_id_2, f"{deck_name}::À Refaire (Théorèmes et Concepts)"
+        )
+
         for card in all_cards:
             add_card_to_decks(deck_par_coeur, deck_a_refaire, card)
-            
+
         output_filename = f"{filename_without_ext}_Infaillible.apkg"
         my_package = genanki.Package([deck_par_coeur, deck_a_refaire])
         my_package.media_files = media_files
         my_package.write_to_file(output_filename)
-                
+
         print(f"\n[SUCCÈS TOTAL] Votre deck Anki est prêt : {output_filename}")
-        print("Vous pouvez double-cliquer dessus pour l'importer directement et parfaitement dans Anki !")
+        print(
+            "Vous pouvez double-cliquer dessus pour l'importer directement et parfaitement dans Anki !"
+        )
 
     except Exception as e:
         print(f"\n/!\\ UTILITAIRE INTERROMPU PAR UNE ERREUR /!\\ \n{e}")
+
 
 if __name__ == "__main__":
     process_course()

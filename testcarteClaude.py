@@ -1,5 +1,6 @@
-import genanki
 import random
+
+import genanki
 
 CSS = r"""
 :root{
@@ -165,16 +166,16 @@ th{ background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%); col
 MODEL_BASIC_ID = 1875392046
 model_basic = genanki.Model(
     MODEL_BASIC_ID,
-    'Basique (Claude)',
-    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
+    "Basique (Claude)",
+    fields=[{"name": "Front"}, {"name": "Back"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Card 1',
-            'qfmt': '<div class="note">{{Front}}</div>',
-            'afmt': '<div class="note">{{Front}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Back}}</div>',
+            "name": "Card 1",
+            "qfmt": '<div class="note">{{Front}}</div>',
+            "afmt": '<div class="note">{{Front}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Back}}</div>',
         },
     ],
     css=CSS,
@@ -183,23 +184,23 @@ model_basic = genanki.Model(
 MODEL_GENERALITES_ID = 1875392091
 model_generalites = genanki.Model(
     MODEL_GENERALITES_ID,
-    'Generalites deux sens (Claude)',
-    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
+    "Generalites deux sens (Claude)",
+    fields=[{"name": "Front"}, {"name": "Back"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Sens 1',
-            'qfmt': '<div class="note">{{Front}}</div>',
-            'afmt': '<div class="note">{{Front}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Back}}</div>',
+            "name": "Sens 1",
+            "qfmt": '<div class="note">{{Front}}</div>',
+            "afmt": '<div class="note">{{Front}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Back}}</div>',
         },
         {
-            'name': 'Sens 2',
-            'qfmt': '<div class="note">{{Back}}</div>',
-            'afmt': '<div class="note">{{Back}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Front}}</div>',
+            "name": "Sens 2",
+            "qfmt": '<div class="note">{{Back}}</div>',
+            "afmt": '<div class="note">{{Back}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Front}}</div>',
         },
     ],
     css=CSS,
@@ -208,23 +209,23 @@ model_generalites = genanki.Model(
 MODEL_CLOZE_ID = 1875392177
 model_cloze = genanki.Model(
     MODEL_CLOZE_ID,
-    'Cloze (Claude)',
+    "Cloze (Claude)",
     model_type=genanki.Model.CLOZE,
-    fields=[{'name': 'Text'}, {'name': 'Extra'}, {'name': 'Sequence'}],
+    fields=[{"name": "Text"}, {"name": "Extra"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Cloze',
-            'qfmt': '<div class="note">{{cloze:Text}}</div>',
-            'afmt': '<div class="note">{{cloze:Text}}</div>'
-                    '{{#Extra}}<div class="divider"><span>Info</span></div>'
-                    '<div class="note answer">{{Extra}}</div>{{/Extra}}',
+            "name": "Cloze",
+            "qfmt": '<div class="note">{{cloze:Text}}</div>',
+            "afmt": '<div class="note">{{cloze:Text}}</div>'
+            '{{#Extra}}<div class="divider"><span>Info</span></div>'
+            '<div class="note answer">{{Extra}}</div>{{/Extra}}',
         },
     ],
     css=CSS,
 )
 
-deck = genanki.Deck(2059400111, 'Demo - Nouveau design (Sciences)')
+deck = genanki.Deck(2059400111, "Demo - Nouveau design (Sciences)")
 
 note1 = genanki.Note(
     model=model_basic,
@@ -242,7 +243,7 @@ note2 = genanki.Note(
         "En Python, quelle est la complexite temporelle moyenne d'une recherche "
         "dans un dictionnaire (<code>dict</code>) ?",
         "<code>O(1)</code> en moyenne, grace au hachage.<br><br>"
-        "<pre><code>d = {\"a\": 1, \"b\": 2}\nprint(d[\"a\"])  # O(1)</code></pre>",
+        '<pre><code>d = {"a": 1, "b": 2}\nprint(d["a"])  # O(1)</code></pre>',
         "2",
     ],
 )
@@ -250,7 +251,7 @@ note2 = genanki.Note(
 note3 = genanki.Note(
     model=model_basic,
     fields=[
-        "Que represente ce graphe ?<br><img src=\"sinusoide.png\">",
+        'Que represente ce graphe ?<br><img src="sinusoide.png">',
         "La fonction \\(y = \\sin(x)\\), une oscillation periodique de periode "
         "\\(2\\pi\\) et d'amplitude 1.",
         "3",
@@ -282,6 +283,6 @@ for n in (note1, note2, note3, note4, note5):
     deck.add_note(n)
 
 pkg = genanki.Package(deck)
-#pkg.media_files = ['sinusoide.png']
-pkg.write_to_file('Demo_Nouveau_Design.apkg')
+# pkg.media_files = ['sinusoide.png']
+pkg.write_to_file("Demo_Nouveau_Design.apkg")
 print("apkg cree")

@@ -1,21 +1,23 @@
-import json
 import base64
+import json
 import os
-from mistralai.client import Mistral
-from mistralai.client.models import ResponseFormat, JSONSchema
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
+from mistralai.client import Mistral
+from mistralai.client.models import JSONSchema, ResponseFormat
 
 
 def encode_file(file_path):
     with open(file_path, "rb") as pdf_file:
-        return base64.b64encode(pdf_file.read()).decode('utf-8')
+        return base64.b64encode(pdf_file.read()).decode("utf-8")
 
-import tkinter as tk
-from tkinter import filedialog
+
 import base64
 import json
 import os
+import tkinter as tk
+from tkinter import filedialog
+
 
 # ==========================================
 # 1. SÉLECTION DU FICHIER PDF
@@ -25,13 +27,14 @@ def select_file():
     root.title("Sélection du cours (PDF)")
     root.geometry("400x150")
     print("Veuillez sélectionner votre fichier PDF depuis la fenêtre...")
-    
+
     g_file = filedialog.askopenfilename(
         title="Choisissez le PDF du cours",
-        filetypes=[("Documents PDF", "*.pdf"), ("Tous les fichiers", "*.*")]
+        filetypes=[("Documents PDF", "*.pdf"), ("Tous les fichiers", "*.*")],
     )
     root.destroy()
     return g_file
+
 
 def traiter_pdf_vers_markdown():
 
@@ -44,7 +47,7 @@ def traiter_pdf_vers_markdown():
         print("📁 Cache trouvé ! Chargement du Markdown et des images (OCR ignoré)...")
         with open(cache_file, "r", encoding="utf-8") as f:
             cache_data = json.load(f)
-            
+
         # On retourne directement les données sauvegardées
         return cache_data["markdown_file"], cache_data["media_files"]
 
@@ -63,8 +66,8 @@ def traiter_pdf_vers_markdown():
 
     ocr_response = client.ocr.process(
         document={
-        "type": "document_url",
-        "document_url": f"data:application/pdf;base64,{base64_file}"
+            "type": "document_url",
+            "document_url": f"data:application/pdf;base64,{base64_file}",
         },
         model="mistral-ocr-latest",
         include_image_base64=True,
@@ -76,11 +79,11 @@ def traiter_pdf_vers_markdown():
                     "properties": {
                         "caption": {
                             "description": "caption written below the image if it has one",
-                            "type": "string"
+                            "type": "string",
                         },
                         "figure-index": {
-                            "description": "if the figure has an index, for example \"figure 2.8\", you should write \"2.8\"",
-                            "type": "string"
+                            "description": 'if the figure has an index, for example "figure 2.8", you should write "2.8"',
+                            "type": "string",
                         },
                         "image_type": {
                             "description": "\"Type of image: 'diagram', 'graph', 'equation', 'photo', 'schema', 'table', 'screenshot', 'illustration'\"",
@@ -92,57 +95,57 @@ def traiter_pdf_vers_markdown():
                                 "schema",
                                 "table",
                                 "screenshot",
-                                "illustration"
+                                "illustration",
                             ],
-                            "type": "string"
+                            "type": "string",
                         },
                         "key_concepts": {
                             "description": "Comma-separated list of key academic concepts/topics illustrated by this image.",
-                            "type": "array"
-                        }
+                            "type": "array",
+                        },
                     },
                     "required": [],
-                    "type": "object"
+                    "type": "object",
                 },
                 strict=True,
             ),
         ),
         extract_header=True,
         extract_footer=True,
-        include_blocks=False
+        include_blocks=False,
     )
 
     print("Extraction et sauvegarde des images en cours...")
 
-    media_files=[]
-    full_markdown=""
+    media_files = []
+    full_markdown = ""
     # Parcours des pages de la réponse OCR
     for page in ocr_response.pages:
         # On vérifie si des images sont attachées à cette page
-        if hasattr(page, 'images') and page.images:
+        if hasattr(page, "images") and page.images:
             for img in page.images:
                 b64_str = img.image_base64
-                
+
                 # Nettoyage de l'en-tête "data:..." si présent dans la chaîne retournée
                 if b64_str.startswith("data:"):
                     b64_str = b64_str.split(",", 1)[1]
-                
+
                 # Utilisation de l'ID fourni par Mistral comme nom de fichier
                 img_filename = img.id
-                if not img_filename.endswith(('.jpg', '.jpeg', '.png')):
+                if not img_filename.endswith((".jpg", ".jpeg", ".png")):
                     img_filename += ".jpg"
-                    
+
                 # Sauvegarde physique de l'image (écriture binaire)
                 with open(img_filename, "wb") as f_img:
                     f_img.write(base64.b64decode(b64_str))
-                
+
                 # 2. AJOUT À LA LISTE DES MÉDIAS POUR ANKI
                 # Utilise le chemin absolu (recommandé pour éviter les bugs avec genanki)
                 media_files.append(os.path.abspath(img_filename))
                 print(f"✅ Image sauvegardée localement : {img_filename}")
 
         # On ajoute le markdown de la page (le texte principal sans les en-têtes/pieds de page)
-        if hasattr(page, 'markdown') and page.markdown:
+        if hasattr(page, "markdown") and page.markdown:
             full_markdown += page.markdown + "\n"
 
     # 3. Définition du nom du fichier de sortie
@@ -152,17 +155,21 @@ def traiter_pdf_vers_markdown():
     with open(output_filename, "w", encoding="utf-8") as md_file:
         md_file.write(full_markdown)
 
-    print(f"✅ Le document Markdown a été sauvegardé avec succès sous le nom : {output_filename}")
+    print(
+        f"✅ Le document Markdown a été sauvegardé avec succès sous le nom : {output_filename}"
+    )
 
     # ==========================================
     # 3. CRÉATION DU CACHE POUR LA PROCHAINE FOIS
     # ==========================================
     with open(cache_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "markdown_file": output_filename,
-            "media_files": media_files
-        }, f, indent=4, ensure_ascii=False)
-        
+        json.dump(
+            {"markdown_file": output_filename, "media_files": media_files},
+            f,
+            indent=4,
+            ensure_ascii=False,
+        )
+
     print("💾 Résultats enregistrés dans le cache (ocr_cache.json).")
 
     return output_filename, media_files

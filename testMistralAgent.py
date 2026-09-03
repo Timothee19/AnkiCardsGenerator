@@ -1,14 +1,15 @@
-import networkx as nx
-import pygraphviz as pgv
-import pydot
-import os
 import json
+import os
 import re
-import markdown
+
 import genanki
+import markdown
+import networkx as nx
+import pydot
+import pygraphviz as pgv
+from dotenv import load_dotenv
 
 from ocr import traiter_pdf_vers_markdown
-from dotenv import load_dotenv
 
 load_dotenv()  # reads variables from a .env file and sets them in os.environ
 
@@ -17,17 +18,18 @@ sub_labels_fr = ["Enoncé", "Démonstration", "Exemple", "Remarque", "Exercice"]
 labels_en = ["Theorem", "Proposition", "Corollary", "Lemma", "Definition", "Context"]
 sub_labels_en = ["Proof", "Example", "Remark", "Exercise"]
 
-#==========================
+# ==========================
 # Numérotation du markdown
-#==========================
+# ==========================
 
 markdown_file, media_files = traiter_pdf_vers_markdown()
 
+
 def numeroter_fichier_markdown(input_path: str, output_path: str = None) -> str:
-    
-    #Lit un fichier Markdown et génère un nouveau fichier où chaque ligne 
-    #est précédée de son numéro de ligne (1-based).
-    
+
+    # Lit un fichier Markdown et génère un nouveau fichier où chaque ligne
+    # est précédée de son numéro de ligne (1-based).
+
     if not os.path.exists(input_path):
         raise FileNotFoundError(f"Le fichier '{input_path}' n'existe pas.")
 
@@ -35,23 +37,26 @@ def numeroter_fichier_markdown(input_path: str, output_path: str = None) -> str:
         base, ext = os.path.splitext(input_path)
         output_path = f"{base}_numerote{ext}"
 
-    with open(input_path, 'r', encoding='utf-8') as f:
+    with open(input_path, "r", encoding="utf-8") as f:
         lignes = f.readlines()
 
     lignes_numerotees = []
-    
+
     for i, ligne in enumerate(lignes, 1):
-        ligne_propre = ligne.rstrip('\n')
+        ligne_propre = ligne.rstrip("\n")
         lignes_numerotees.append(f"{i}: {ligne_propre}\n")
 
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         f.writelines(lignes_numerotees)
 
     print(f"✅ Fichier numéroté avec succès : {output_path}")
     return output_path
 
+
 # Utilisation de la variable dynamique au lieu du chemin en dur
-numbered_markdown_output = numeroter_fichier_markdown(markdown_file, "markdown_numerote.md")
+numbered_markdown_output = numeroter_fichier_markdown(
+    markdown_file, "markdown_numerote.md"
+)
 
 if os.path.exists("markdown_numerote.md"):
     with open("markdown_numerote.md", "r", encoding="utf-8") as f:
@@ -63,12 +68,12 @@ api_key = os.environ.get("MISTRAL_API_KEY")
 model = "mistral-large-latest"
 client = Mistral(api_key=api_key)
 
-#================================================
+# ================================================
 # AGENT 1 : MainNodeParserAgent (Le Squelette)
-#================================================
-#from AnkiGeneratorRobustV1_3 import split_markdown_into_chunks, semantic_split_with_ai
+# ================================================
+# from AnkiGeneratorRobustV1_3 import split_markdown_into_chunks, semantic_split_with_ai
 
-#chunks = semantic_split_with_ai(client, markdown_file)
+# chunks = semantic_split_with_ai(client, markdown_file)
 
 sys_prompt = r"""
 ROLE
@@ -122,6 +127,7 @@ You must call these functions multiple times in a row to process the entire docu
 """
 
 import json
+
 from mistralai.client import Mistral
 
 tools = [
@@ -129,42 +135,30 @@ tools = [
         "type": "function",
         "function": {
             "name": "add_main_node",
-            "description": "add a main concept node in the graph from the exact labels list : [\"Theorem\",\"Proposition\",\"Property\",\"Corollary\",\"Lemma\",\"Definition\",\"Context\"], indexed with a 2-digit number",
+            "description": 'add a main concept node in the graph from the exact labels list : ["Theorem","Proposition","Property","Corollary","Lemma","Definition","Context"], indexed with a 2-digit number',
             "strict": True,
             "parameters": {
                 "type": "object",
-                "required": [
-                    "node"
-                ],
+                "required": ["node"],
                 "properties": {
                     "node": {
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "required": [
-                                "main",
-                                "first_line",
-                                "name"
-                            ],
+                            "required": ["main", "first_line", "name"],
                             "properties": {
                                 "main": {
                                     "type": "string",
-                                    "pattern": "^(Theorem|Proposition|Property|Corollary|Lemma|Definition|Context)_[0-9]{2}$"
+                                    "pattern": "^(Theorem|Proposition|Property|Corollary|Lemma|Definition|Context)_[0-9]{2}$",
                                 },
-                                "name": {
-                                    "type": "string",
-                                    "default": "None"
-                                },
-                                "first_line": {
-                                    "type": "integer",
-                                    "minimum": 1
-                                }
-                            }
-                        }
+                                "name": {"type": "string", "default": "None"},
+                                "first_line": {"type": "integer", "minimum": 1},
+                            },
+                        },
                     }
-                }
-            }
-        }
+                },
+            },
+        },
     },
     {
         "type": "function",
@@ -175,20 +169,13 @@ tools = [
             "parameters": {
                 "type": "object",
                 "title": "Semantic extraction of concept sub-nodes",
-                "required": [
-                    "sub_nodes",
-                    "parent_node"
-                ],
+                "required": ["sub_nodes", "parent_node"],
                 "properties": {
                     "sub_nodes": {
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "required": [
-                                "type",
-                                "reason",
-                                "startEndListPositions"
-                            ],
+                            "required": ["type", "reason", "startEndListPositions"],
                             "properties": {
                                 "type": {
                                     "enum": [
@@ -196,41 +183,39 @@ tools = [
                                         "Proof",
                                         "Example",
                                         "Remark",
-                                        "Exercise"
+                                        "Exercise",
                                     ],
                                     "type": "string",
-                                    "description": "Type of sub-node from the allowed values"
+                                    "description": "Type of sub-node from the allowed values",
                                 },
                                 "reason": {
                                     "type": "string",
-                                    "description": "Small justification explaining why these lines belong to the target concept"
+                                    "description": "Small justification explaining why these lines belong to the target concept",
                                 },
                                 "startEndListPositions": {
                                     "type": "array",
                                     "items": {
                                         "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        },
+                                        "items": {"type": "integer"},
                                         "maxItems": 2,
-                                        "minItems": 2
+                                        "minItems": 2,
                                     },
-                                    "description": "List of line intervals (start, end) for this sub-node type"
-                                }
-                            }
+                                    "description": "List of line intervals (start, end) for this sub-node type",
+                                },
+                            },
                         },
                         "minItems": 1,
-                        "description": "List of sub-nodes extracted for the target concept"
+                        "description": "List of sub-nodes extracted for the target concept",
                     },
                     "parent_node": {
                         "type": "string",
                         "pattern": "^(Theorem|Proposition|Property|Corolarry|Lemma|Definition|Context)_[0-9]{2}$",
-                        "description": "Unique identifier of the parent node where the sub-node should be added"
-                    }
+                        "description": "Unique identifier of the parent node where the sub-node should be added",
+                    },
                 },
-                "additionalProperties": False
-            }
-        }
+                "additionalProperties": False,
+            },
+        },
     },
     {
         "type": "function",
@@ -240,17 +225,15 @@ tools = [
             "strict": True,
             "parameters": {
                 "type": "object",
-                "required": [
-                    "blind_reference"
-                ],
+                "required": ["blind_reference"],
                 "properties": {
                     "blind_reference": {
                         "type": "string",
-                        "description": "exact blind reference mentionned, to search it with regex tools"
+                        "description": "exact blind reference mentionned, to search it with regex tools",
                     }
-                }
-            }
-        }
+                },
+            },
+        },
     },
     {
         "type": "function",
@@ -258,8 +241,8 @@ tools = [
             "name": "read_graph_main_nodes",
             "description": "return all the main nodes of the graph, to get a backbone visualisation if needed for exploration",
             "strict": True,
-            "parameters": {}
-        }
+            "parameters": {},
+        },
     },
     {
         "type": "function",
@@ -269,40 +252,39 @@ tools = [
             "strict": True,
             "parameters": {
                 "type": "object",
-                "required": [
-                    "parent_node"
-                ],
+                "required": ["parent_node"],
                 "properties": {
                     "node_id": {
                         "type": "string",
                         "pattern": "^(Theorem|Proposition|Corollary|Lemma|Definition|Context)_[0-9]{2}$",
-                        "description": "Unique identifier of the parent node to read"
+                        "description": "Unique identifier of the parent node to read",
                     }
-                }
-            }
-        }
+                },
+            },
+        },
     },
     {
         "type": "function",
         "function": {
-            "name" : "exhaustivity_check",
+            "name": "exhaustivity_check",
             "description": "when you're over with the current file processing, call this function, that will check if all the lines of the course have been processed into the graph",
             "strict": True,
-            "parameters": {}
-        }
-    }
+            "parameters": {},
+        },
+    },
 ]
 
 import json
 import re
+
 import networkx as nx
 from mistralai.client import Mistral
 
 
 def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
     print("🤖 Démarrage de l'agent...")
-    #indicage des chunks
-    i= 0
+    # indicage des chunks
+    i = 0
     # 1. Initialisation du graphe et des variables
     G = nx.DiGraph()
     previous_main_node = None
@@ -320,42 +302,39 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
         if not line_clean:  # Si la ligne est totalement vide après nettoyage
             blank_lines.add(i)
 
-    input = [{
-                "role": "system",
-                "content": sys_prompt
-            },
-            {
-                "role": "user",
-                "content": markdown_lines_str
-            }
-            ]
+    input = [
+        {"role": "system", "content": sys_prompt},
+        {"role": "user", "content": markdown_lines_str},
+    ]
     # 2. La boucle infinie agentique
     while True:
         response = client.chat.complete(
-            model="mistral-large-latest",
-            messages=input,
-            tools=tools,
-            temperature=0.0
+            model="mistral-large-latest", messages=input, tools=tools, temperature=0.0
         )
-        
+
         assistant_message = response.choices[0].message
-        print(assistant_message, end="\n===========================================================\n")
+        print(
+            assistant_message,
+            end="\n===========================================================\n",
+        )
         input.append(assistant_message)
-        
+
         if not assistant_message.tool_calls:
-            print("✅ L'agent a terminé son travail de construction et de vérification !")
+            print(
+                "✅ L'agent a terminé son travail de construction et de vérification !"
+            )
             break
-            
+
         # 3. Traitement de CHAQUE appel de fonction demandé par l'agent
         for tool_call in assistant_message.tool_calls:
             nom_fonction = tool_call.function.name
             arguments = json.loads(tool_call.function.arguments)
-            
+
             print(f"⚙️ L'agent utilise l'outil en live : {nom_fonction}")
             resultat_outil = ""
-            
+
             # --- ROUTAGE DES OUTILS ---
-            
+
             if nom_fonction == "add_main_node":
                 nodes = arguments.get("node", [])
                 for node_data in nodes:
@@ -367,46 +346,57 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
                         label = f"{main_id} : {name}"
                     else:
                         label = f"{main_id}"
-                    
-                    G.add_node(main_id, label=label, is_main=True, first_line=first_line)
-                    covered_lines.add(first_line) # On déclare cette ligne comme couverte
-                    
+
+                    G.add_node(
+                        main_id, label=label, is_main=True, first_line=first_line
+                    )
+                    covered_lines.add(
+                        first_line
+                    )  # On déclare cette ligne comme couverte
+
                     if previous_main_node:
                         G.add_edge(previous_main_node, main_id, link="next_topic")
                     previous_main_node = main_id
-                    
+
                 resultat_outil = f"Succès : {len(nodes)} main node(s) ajouté(s)."
                 print(f"   └── {resultat_outil}")
 
             elif nom_fonction == "add_sub_node":
                 parent_node = arguments.get("parent_node")
                 sub_nodes = arguments.get("sub_nodes", [])
-                
+
                 if not G.has_node(parent_node):
-                    resultat_outil = f"Erreur : Le parent_node '{parent_node}' n'existe pas."
+                    resultat_outil = (
+                        f"Erreur : Le parent_node '{parent_node}' n'existe pas."
+                    )
                 else:
                     for sub in sub_nodes:
                         sub_type = sub.get("type")
                         reason = sub.get("reason")
                         positions = sub.get("startEndListPositions", [])
-                        
+
                         for pos in positions:
                             sub_id = f"{parent_node}_{sub_type}_{pos[0]}_{pos[1]}"
-                            G.add_node(sub_id, label=sub_type, reason=reason, pos=pos, is_main=False)
+                            G.add_node(
+                                sub_id,
+                                label=sub_type,
+                                reason=reason,
+                                pos=pos,
+                                is_main=False,
+                            )
                             G.add_edge(parent_node, sub_id, link="link")
-                            
+
                             # On ajoute la totalité de l'intervalle dans nos lignes couvertes
                             if len(pos) == 2:
                                 covered_lines.update(range(pos[0], pos[1] + 1))
-                                
-                                
+
                     resultat_outil = f"Succès : {len(sub_nodes)} sous-noeud(s) rattaché(s) à {parent_node}."
                 print(f"   └── {resultat_outil}")
-                
+
             elif nom_fonction == "search_for_reference":
                 blind_ref = arguments.get("blind_reference", "")
                 print(f"   └── Recherche demandée par l'agent : {blind_ref}")
-                
+
                 matches = []
                 try:
                     # Recherche insensible à la casse dans tout le document
@@ -419,51 +409,82 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
 
                 if matches:
                     # On ne lui renvoie que les premières occurrences pour économiser son contexte
-                    resultat_outil = f"Résultat(s) trouvé(s) pour '{blind_ref}' :\n" + "\n".join(matches[:10])
+                    resultat_outil = (
+                        f"Résultat(s) trouvé(s) pour '{blind_ref}' :\n"
+                        + "\n".join(matches[:10])
+                    )
                     if len(matches) > 10:
-                        resultat_outil += f"\n... et {len(matches)-10} autres occurrences."
+                        resultat_outil += (
+                            f"\n... et {len(matches)-10} autres occurrences."
+                        )
                 else:
-                    resultat_outil = f"Aucun résultat trouvé pour la référence '{blind_ref}'."
+                    resultat_outil = (
+                        f"Aucun résultat trouvé pour la référence '{blind_ref}'."
+                    )
 
             elif nom_fonction == "read_graph_main_nodes":
-                main_nodes_info = [f"{n} (Ligne {d.get('first_line', '?')})" for n, d in G.nodes(data=True) if d.get("is_main")]
+                main_nodes_info = [
+                    f"{n} (Ligne {d.get('first_line', '?')})"
+                    for n, d in G.nodes(data=True)
+                    if d.get("is_main")
+                ]
                 resultat_outil = f"Voici les main_nodes actuels et leur ligne de départ : {main_nodes_info}"
-                
+
             elif nom_fonction == "read_node_content":
-                node_id = arguments.get("node_id") 
+                node_id = arguments.get("node_id")
                 if G.has_node(node_id):
-                    sub_nodes = [v for u, v in G.out_edges(node_id) if G.nodes[v].get("is_main") is False]
+                    sub_nodes = [
+                        v
+                        for u, v in G.out_edges(node_id)
+                        if G.nodes[v].get("is_main") is False
+                    ]
                     resultat_outil = f"Contenu du noeud {node_id} : {G.nodes[node_id]}. Sous-noeuds attachés : {sub_nodes}"
                 else:
-                    resultat_outil = f"Erreur : Le noeud {node_id} n'est pas dans le graphe."
+                    resultat_outil = (
+                        f"Erreur : Le noeud {node_id} n'est pas dans le graphe."
+                    )
 
             elif nom_fonction == "exhaustivity_check":
                 missing_lines = sorted(all_lines - covered_lines)
-                
+
                 print("\n" + "=" * 50)
                 if not missing_lines:
-                    resultat_outil = "Exhaustivity Check success : 100% du document est couvert."
-                    print("✅ Intégralité respectée : 100% du Markdown a été retranscrit !")
+                    resultat_outil = (
+                        "Exhaustivity Check success : 100% du document est couvert."
+                    )
+                    print(
+                        "✅ Intégralité respectée : 100% du Markdown a été retranscrit !"
+                    )
                 else:
-                    taux = ((total_lines_count - len(missing_lines)) / total_lines_count) * 100
-                    print(f"⚠️ Retranscription incomplète : {taux:.1f}% des lignes couvertes.")
+                    taux = (
+                        (total_lines_count - len(missing_lines)) / total_lines_count
+                    ) * 100
+                    print(
+                        f"⚠️ Retranscription incomplète : {taux:.1f}% des lignes couvertes."
+                    )
                     print(f"❌ {len(missing_lines)} ligne(s) non retranscrite(s).\n")
-                    
+
                     report_file = "lignes_manquantes_rapport.txt"
                     with open(report_file, "w", encoding="utf-8") as f:
-                        f.write(f"=== RAPPORT DES {len(missing_lines)} LIGNES MANQUANTES ===\n\n")
+                        f.write(
+                            f"=== RAPPORT DES {len(missing_lines)} LIGNES MANQUANTES ===\n\n"
+                        )
                         for line_num in missing_lines:
                             raw_content = markdown_lines[line_num - 1].rstrip("\n")
                             f.write(f"[Ligne {line_num:4d}] : {raw_content}\n")
-                    
-                    print(f"📁 Le détail complet a été sauvegardé dans le fichier : {report_file}")
-                    
+
+                    print(
+                        f"📁 Le détail complet a été sauvegardé dans le fichier : {report_file}"
+                    )
+
                     print("\n🔍 Aperçu des 10 premières lignes manquantes :")
                     for line_num in missing_lines[:10]:
                         raw_content = markdown_lines[line_num - 1].rstrip("\n")
                         print(f"   [Ligne {line_num:4d}] : {raw_content}")
 
-                    main_nodes_list = [n for n, d in G.nodes(data=True) if d.get('is_main')]
+                    main_nodes_list = [
+                        n for n, d in G.nodes(data=True) if d.get("is_main")
+                    ]
                     # Ce qu'on renvoie réellement à l'agent pour qu'il puisse réagir !
                     resultat_outil = (
                         f"Exhaustivity Check failed : Only {taux:.1f}% coverage. Missing {len(missing_lines)} lines out of {total_lines_count}. "
@@ -474,20 +495,22 @@ def agent_builder_loop(markdown_lines_str, tools, sys_prompt, client):
                 print("=" * 50 + "\n")
 
             elif nom_fonction == "read_next_chunk":
-                i+=1
+                i += 1
                 resultat_outil = f"next_chunk is : \n {chunks[i]}"
 
             else:
                 resultat_outil = f"Erreur : Fonction '{nom_fonction}' non reconnue."
 
             # 4. On renvoie le résultat à Mistral en tant que "tool"
-            input.append({
-                "role": "tool",
-                "tool_call_id": tool_call.id,
-                "name": nom_fonction,
-                "content": json.dumps(resultat_outil)
-            })
-            
+            input.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "name": nom_fonction,
+                    "content": json.dumps(resultat_outil),
+                }
+            )
+
         print("🔄 Renvoi des résultats à Mistral pour la prochaine étape...")
 
     return G
@@ -498,13 +521,16 @@ G = agent_builder_loop(markdown_lines, tools, sys_prompt, client)
 
 # Dessin du graphe final
 A = nx.nx_agraph.to_agraph(G)
-A.draw('GraphMainLebesgue.png', prog='dot')
+A.draw("GraphMainLebesgue.png", prog="dot")
 
-#====================================================
+# ====================================================
 # Création du paquet ANKI
-#====================================================
+# ====================================================
 
-def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: str = None):
+
+def extraire_blocs_pour_anki(
+    G: nx.DiGraph, markdown_source: str, start_node: str = None
+):
     if os.path.exists(markdown_source):
         with open(markdown_source, "r", encoding="utf-8") as f:
             markdown_lines = f.readlines()
@@ -512,15 +538,18 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
         markdown_lines = markdown_source.splitlines(keepends=True)
 
     total_lines_count = len(markdown_lines)
-    all_lines = set(range(1, total_lines_count+1))
+    all_lines = set(range(1, total_lines_count + 1))
     covered_lines = set()
-    
+
     line_number_regex = re.compile(r"^\s*\d+[\s\|\:\.\-\)]\s*")
-    
+
     if start_node is None:
         for node in G.nodes():
             in_links = [data.get("link") for _, _, data in G.in_edges(node, data=True)]
-            if "next_topic" not in in_links and any(data.get("link") == "next_topic" for _, _, data in G.out_edges(node, data=True)):
+            if "next_topic" not in in_links and any(
+                data.get("link") == "next_topic"
+                for _, _, data in G.out_edges(node, data=True)
+            ):
                 start_node = node
                 break
 
@@ -534,7 +563,7 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
         main_data = {
             "main_id": current_main,
             "label": G.nodes[current_main].get("label", current_main),
-            "sub_nodes": []
+            "sub_nodes": [],
         }
 
         next_main = None
@@ -547,29 +576,40 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
                 if pos and len(pos) == 2:
                     start_line, end_line = pos[0], pos[1]
                     covered_lines.update(range(start_line, end_line))
-                    
+
                     idx_start = max(0, start_line - 1)
                     idx_end = min(len(markdown_lines), end_line)
 
                     # --- SMART EXPAND ---
                     while idx_end < len(markdown_lines):
-                        next_line_clean = line_number_regex.sub("", markdown_lines[idx_end]).strip()
-                        if next_line_clean == "" or next_line_clean in ["\\]", "$$", "]", "\\)"]:
+                        next_line_clean = line_number_regex.sub(
+                            "", markdown_lines[idx_end]
+                        ).strip()
+                        if next_line_clean == "" or next_line_clean in [
+                            "\\]",
+                            "$$",
+                            "]",
+                            "\\)",
+                        ]:
                             idx_end += 1
                         else:
                             break
-                            
+
                     covered_lines.update(range(start_line, idx_end))
-                    
+
                     raw_slice = markdown_lines[idx_start:idx_end]
-                    cleaned_lines = [line_number_regex.sub("", line) for line in raw_slice]
+                    cleaned_lines = [
+                        line_number_regex.sub("", line) for line in raw_slice
+                    ]
                     extracted_text = "".join(cleaned_lines).strip()
 
-                main_data["sub_nodes"].append({
-                    "sub_id": neighbor,
-                    "type": G.nodes[neighbor].get("label"),
-                    "text": extracted_text
-                })
+                main_data["sub_nodes"].append(
+                    {
+                        "sub_id": neighbor,
+                        "type": G.nodes[neighbor].get("label"),
+                        "text": extracted_text,
+                    }
+                )
 
             elif edge_data.get("link") == "next_topic":
                 next_main = neighbor
@@ -579,7 +619,7 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
 
     # 4. Vérification de la complétude (Désindentée pour s'exécuter 1 seule fois !)
     missing_lines = sorted(all_lines - (covered_lines))
-        
+
     print("\n" + "=" * 50)
     if not missing_lines:
         print("✅ Intégralité respectée : 100% du Markdown a été retranscrit !")
@@ -587,32 +627,34 @@ def extraire_blocs_pour_anki(G: nx.DiGraph, markdown_source: str, start_node: st
         taux = ((total_lines_count - len(missing_lines)) / total_lines_count) * 100
         print(f"⚠️ Retranscription incomplète : {taux:.1f}% des lignes couvertes.")
         print(f"❌ {len(missing_lines)} ligne(s) non retranscrite(s) :\n")
-        
+
         report_file = "lignes_manquantes_rapport.txt"
         with open(report_file, "w", encoding="utf-8") as f:
             f.write(f"=== RAPPORT DES {len(missing_lines)} LIGNES MANQUANTES ===\n\n")
             for line_num in missing_lines:
                 raw_content = markdown_lines[line_num - 1].rstrip("\n")
                 f.write(f"[Ligne {line_num:4d}] : {raw_content}\n")
-        
+
         print(f"📁 Le détail complet a été sauvegardé dans le fichier : {report_file}")
-        
+
         print("\n🔍 Aperçu des 10 premières lignes manquantes :")
         for line_num in missing_lines[:10]:
             raw_content = markdown_lines[line_num - 1].rstrip("\n")
             print(f"   [Ligne {line_num:4d}] : {raw_content}")
-            
+
     print("=" * 50 + "\n")
 
     return concepts_list
 
+
 # Utilisation de la variable markdown_numerote.md
 anki_source = extraire_blocs_pour_anki(G, "markdown_numerote.md")
+
 
 def markdown_to_anki_html(text: str) -> str:
     if not text:
         return ""
-    
+
     placeholders = {}
     counter = 0
 
@@ -624,8 +666,8 @@ def markdown_to_anki_html(text: str) -> str:
         counter += 1
         return f"\n\n{key}\n\n"
 
-    text = re.sub(r'\\+\[(.*?)(?:\\+\]|\Z)', protect_block, text, flags=re.DOTALL)
-    text = re.sub(r'\$\$(.*?)(?:\$\$|\Z)', protect_block, text, flags=re.DOTALL)
+    text = re.sub(r"\\+\[(.*?)(?:\\+\]|\Z)", protect_block, text, flags=re.DOTALL)
+    text = re.sub(r"\$\$(.*?)(?:\$\$|\Z)", protect_block, text, flags=re.DOTALL)
 
     def protect_inline(match):
         nonlocal counter
@@ -635,13 +677,13 @@ def markdown_to_anki_html(text: str) -> str:
         counter += 1
         return key
 
-    text = re.sub(r'\\+\((.*?)\\+\)', protect_inline, text, flags=re.DOTALL)
-    text = re.sub(r'(?<!\\)\$([^\$\n]+?)(?<!\\)\$', protect_inline, text)
+    text = re.sub(r"\\+\((.*?)\\+\)", protect_inline, text, flags=re.DOTALL)
+    text = re.sub(r"(?<!\\)\$([^\$\n]+?)(?<!\\)\$", protect_inline, text)
 
     html_output = markdown.markdown(
         text,
-        extensions=['markdown.extensions.tables', 'markdown.extensions.nl2br'],
-        output_format='html5'
+        extensions=["markdown.extensions.tables", "markdown.extensions.nl2br"],
+        output_format="html5",
     )
 
     for key, math_str in placeholders.items():
@@ -651,15 +693,17 @@ def markdown_to_anki_html(text: str) -> str:
 
     html_output = html_output.replace("<p>", "")
     html_output = html_output.replace("</p>", "<br><br>")
-    
+
     while html_output.endswith("<br>"):
         html_output = html_output[:-4]
 
     return html_output.strip()
 
-import genanki
+
 import random
- 
+
+import genanki
+
 CSS = r"""
 :root{
   --bg:#faf6ef;
@@ -854,112 +898,110 @@ th{ background:linear-gradient(160deg, #ffffff 0%, var(--accent-soft) 100%); col
 .night_mode code, .nightMode code{ background:linear-gradient(160deg, #3a352c 0%, var(--code-bg) 100%); box-shadow:0 2px 5px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
 .night_mode th, .nightMode th{ background:linear-gradient(160deg, #3a352c 0%, var(--accent-soft) 100%); box-shadow:inset 0 -1px 0 rgba(0,0,0,.2); }
 """
- 
+
 MODEL_BASIC_ID = 1875392046
 model_basic = genanki.Model(
     MODEL_BASIC_ID,
-    'Basique (Claude)',
-    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
+    "Basique (Claude)",
+    fields=[{"name": "Front"}, {"name": "Back"}, {"name": "Sequence"}],
     sort_field_index=2,
     templates=[
         {
-            'name': 'Card 1',
-            'qfmt': '<div class="note">{{Front}}</div>',
-            'afmt': '<div class="note">{{Front}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Back}}</div>',
-        },
-    ],
-    css=CSS,
-)
- 
-MODEL_GENERALITES_ID = 1875392091
-model_generalites = genanki.Model(
-    MODEL_GENERALITES_ID,
-    'Generalites deux sens (Claude)',
-    fields=[{'name': 'Front'}, {'name': 'Back'}, {'name': 'Sequence'}],
-    sort_field_index=2,
-    templates=[
-        {
-            'name': 'Sens 1',
-            'qfmt': '<div class="note">{{Front}}</div>',
-            'afmt': '<div class="note">{{Front}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Back}}</div>',
-        },
-        {
-            'name': 'Sens 2',
-            'qfmt': '<div class="note">{{Back}}</div>',
-            'afmt': '<div class="note">{{Back}}</div>'
-                    '<div class="divider"><span>Reponse</span></div>'
-                    '<div class="note answer">{{Front}}</div>',
-        },
-    ],
-    css=CSS,
-)
- 
-MODEL_CLOZE_ID = 1875392177
-model_cloze = genanki.Model(
-    MODEL_CLOZE_ID,
-    'Cloze (Claude)',
-    model_type=genanki.Model.CLOZE,
-    fields=[{'name': 'Text'}, {'name': 'Extra'}, {'name': 'Sequence'}],
-    sort_field_index=2,
-    templates=[
-        {
-            'name': 'Cloze',
-            'qfmt': '<div class="note">{{cloze:Text}}</div>',
-            'afmt': '<div class="note">{{cloze:Text}}</div>'
-                    '{{#Extra}}<div class="divider"><span>Info</span></div>'
-                    '<div class="note answer">{{Extra}}</div>{{/Extra}}',
+            "name": "Card 1",
+            "qfmt": '<div class="note">{{Front}}</div>',
+            "afmt": '<div class="note">{{Front}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Back}}</div>',
         },
     ],
     css=CSS,
 )
 
+MODEL_GENERALITES_ID = 1875392091
+model_generalites = genanki.Model(
+    MODEL_GENERALITES_ID,
+    "Generalites deux sens (Claude)",
+    fields=[{"name": "Front"}, {"name": "Back"}, {"name": "Sequence"}],
+    sort_field_index=2,
+    templates=[
+        {
+            "name": "Sens 1",
+            "qfmt": '<div class="note">{{Front}}</div>',
+            "afmt": '<div class="note">{{Front}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Back}}</div>',
+        },
+        {
+            "name": "Sens 2",
+            "qfmt": '<div class="note">{{Back}}</div>',
+            "afmt": '<div class="note">{{Back}}</div>'
+            '<div class="divider"><span>Reponse</span></div>'
+            '<div class="note answer">{{Front}}</div>',
+        },
+    ],
+    css=CSS,
+)
+
+MODEL_CLOZE_ID = 1875392177
+model_cloze = genanki.Model(
+    MODEL_CLOZE_ID,
+    "Cloze (Claude)",
+    model_type=genanki.Model.CLOZE,
+    fields=[{"name": "Text"}, {"name": "Extra"}, {"name": "Sequence"}],
+    sort_field_index=2,
+    templates=[
+        {
+            "name": "Cloze",
+            "qfmt": '<div class="note">{{cloze:Text}}</div>',
+            "afmt": '<div class="note">{{cloze:Text}}</div>'
+            '{{#Extra}}<div class="divider"><span>Info</span></div>'
+            '<div class="note answer">{{Extra}}</div>{{/Extra}}',
+        },
+    ],
+    css=CSS,
+)
 
 
 import hashlib
 
+
 def generer_id_deterministe(chaine_texte):
     # 1. Préparation : conversion de la chaîne en séquence d'octets
-    octets = chaine_texte.encode('utf-8')
-    
+    octets = chaine_texte.encode("utf-8")
+
     # 2. Hachage : création de l'objet hash avec l'algorithme SHA-256
     hash_obj = hashlib.sha256(octets)
-    
+
     # 3. Récupération de l'empreinte sous forme de chaîne hexadécimale
     empreinte_hexa = hash_obj.hexdigest()
-    
-    # 4. Troncature : on garde les 8 premiers caractères 
+
+    # 4. Troncature : on garde les 8 premiers caractères
     # (cela génère un nombre en base 16 qui tiendra largement sur 32 bits)
     empreinte_courte = empreinte_hexa[:8]
-    
+
     # 5. Conversion finale : de la chaîne hexadécimale (base 16) vers un entier (base 10)
     id_final = int(empreinte_courte, 16)
-    
+
     return id_final
 
 
-my_deck = genanki.Deck(
-  generer_id_deterministe('Lebesgue'),
-  'Lebesgue')
+my_deck = genanki.Deck(generer_id_deterministe("Lebesgue"), "Lebesgue")
 
-j=0
+j = 0
 for card in anki_source:
     enonce = []
     proof = []
     remark = []
     example = []
     exercice = []
-    
+
     front = card["label"]
     back = ""
-    
+
     for i in range(len(card["sub_nodes"])):
         sub_type = card["sub_nodes"][i]["type"]
         html_text = markdown_to_anki_html(card["sub_nodes"][i]["text"])
-        
+
         if sub_type == "Enoncé":
             enonce.append(html_text)
         elif sub_type == "Démonstration":
@@ -970,28 +1012,32 @@ for card in anki_source:
             example.append(html_text)
         elif sub_type == "Exercice":
             exercice.append(html_text)
-            
+
     # Construction propre et sécurisée du dos de la carte
     if enonce:
         back += enonce[0] + "<br><br>"
     if proof:
         back += "<strong>Démonstration :</strong><br>" + proof[0] + "<br><br>"
     if example:
-        back += "<strong>Exemple(s) :</strong><br>" + "<br><br>".join(example) + "<br><br>"
+        back += (
+            "<strong>Exemple(s) :</strong><br>" + "<br><br>".join(example) + "<br><br>"
+        )
     if remark:
-        back += "<strong>Remarque(s) :</strong><br>" + "<br><br>".join(remark) + "<br><br>"
+        back += (
+            "<strong>Remarque(s) :</strong><br>" + "<br><br>".join(remark) + "<br><br>"
+        )
     if exercice:
-        back += "<strong>Exercice(s) :</strong><br>" + "<br><br>".join(exercice) + "<br><br>"
+        back += (
+            "<strong>Exercice(s) :</strong><br>"
+            + "<br><br>".join(exercice)
+            + "<br><br>"
+        )
 
-
-    
-    my_note = genanki.Note(
-        model=model_basic,
-        fields=[front, back, str(j)])
+    my_note = genanki.Note(model=model_basic, fields=[front, back, str(j)])
     j += 1
     my_deck.add_note(my_note)
 
 my_package = genanki.Package(my_deck)
-my_package.media_files = media_files 
-my_package.write_to_file('AI_Chap2Test.apkg')
+my_package.media_files = media_files
+my_package.write_to_file("AI_Chap2Test.apkg")
 print("✅ Génération du paquet Anki terminée !")
