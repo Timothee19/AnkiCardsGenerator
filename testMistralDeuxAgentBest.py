@@ -467,89 +467,97 @@ The following line intervals were missed and must be integrated:
         print("=" * 50 + "\n")
 
         return self.concept_list
-    
+
+    # Updated version : now just catch all the $ $ tags to convert them to \( \) and $$ $$ to \[ \] for Anki compatibility
     def markdown_to_anki_html(self, text: str) -> str:
         if not text:
             return ""
 
+        # 1. Nettoyage des antislashs surnuméraires
+        text = re.sub(r'\\\\+(\(|\[|\)|\])', r'\\\1', text)
+
+        # 2. Nettoyage des doubles délimiteurs (LLM hallucination: $\(...\)$ ou \($...$\))
+        text = text.replace(r'\( $', r'\(').replace(r'$ \)', r'\)')
+        text = text.replace(r'\($', r'\(').replace(r'$\)', r'\)')
+        text = text.replace(r'$\(', r'\(').replace(r'\)$', r'\)')
+        
+        # 3. Auto-heal immédiat : recolle \(\mathcal\){A} -> \(\mathcal{A}\)
+        text = re.sub(r'\\\(([a-zA-Z\\]+)\\\)\{([^{}]+)\}', r'\\(\1{\2}\\)', text)
+
         placeholders = {}
         counter = 0
 
+        # 4. Protection des blocs ($$...$$ et \[...\])
         def protect_block(match):
             nonlocal counter
-            key = f"@@MATH_BLOCK_{counter}@@"
             content = match.group(1).strip()
+            
+            # Anti-nesting: empêche de re-protéger un placeholder existant
+            if re.fullmatch(r'XXMATH(?:INLINE|BLOCK)\d+XX', content):
+                return content
+                
+            key = f"XXMATHBLOCK{counter}XX"
             placeholders[key] = f"\\[\n{content}\n\\]"
             counter += 1
             return f"\n\n{key}\n\n"
 
-        text = re.sub(r'\\+\[(.*?)\\+\]', protect_block, text, flags=re.DOTALL)
+        text = re.sub(r'\\\[(.*?)\\\]', protect_block, text, flags=re.DOTALL)
         text = re.sub(r'\$\$(.*?)\$\$', protect_block, text, flags=re.DOTALL)
 
+        # 5. Protection de l'inline (\(...\) et $...$)
         def protect_inline(match):
             nonlocal counter
-            key = f"@@MATH_INLINE_{counter}@@"
             content = match.group(1).strip()
+            if not content:
+                return match.group(0)
+                
+            # Anti-nesting LLM
+            if re.fullmatch(r'XXMATH(?:INLINE|BLOCK)\d+XX', content):
+                return content
+                
+            key = f"XXMATHINLINE{counter}XX"
             placeholders[key] = f"\\({content}\\)"
             counter += 1
             return key
 
-        def protect_code_fallback(match):
+        text = re.sub(r'\\\((.*?)\\\)', protect_inline, text, flags=re.DOTALL)
+        text = re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', protect_inline, text)
+
+        # 6. Rattrapage des commandes LaTeX nues isolées (\mathcal{A}, \mathbb{R}^n)
+        def protect_orphan_latex(match):
             nonlocal counter
-            content = match.group(1).strip()
-            if "@@MATH_BLOCK_" in content or "@@MATH_INLINE_" in content:
-                return content
-            else:
-                key = f"@@MATH_INLINE_{counter}@@"
-                placeholders[key] = f"\\({content}\\)"
-                counter += 1
-                return content
+            content = match.group(0).strip()
+            
+            if "XXMATH" in content:
+                return match.group(0)
+                
+            key = f"XXMATHINLINE{counter}XX"
+            placeholders[key] = f"\\({content}\\)"
+            counter += 1
+            return key
 
-        text = re.sub(r'\\+\((.*?)\\+\)', protect_inline, text, flags=re.DOTALL)
-        text = re.sub(r'(?<!\\)\$([^$\n]+?)(?<!\\)\$', protect_inline, text)
-        # Capture les balises HTML <code>...</code> générées par le LLM
-        text = re.sub(r'<code>(.*?)</code>', protect_code_fallback, text, flags=re.DOTALL)
-        # Capture les backticks Markdown `...` générés par le LLM
-        text = re.sub(r'`([^`\n]+?)`', protect_code_fallback, text)
+        orphan_pattern = re.compile(
+            r'\\[a-zA-Z]+(?:\{(?:[^{}]+|\{[^{}]*\})*\}|\[[^\[\]]*\])*(?:(?:_|\^)(?:\{(?:[^{}]+|\{[^{}]*\})*\}|[a-zA-Z0-9]))*'
+        )
+        text = orphan_pattern.sub(protect_orphan_latex, text)
 
-        # 1. Ta liste de lettres rebelles (on utilise 'r' devant la chaîne pour que le \ soit bien lu)
-        lettres_grecques = [
-            r"\alpha", r"\beta", r"\gamma", r"\delta", r"\epsilon", r"\zeta", r"\eta", r"\theta",
-            r"\iota", r"\kappa", r"\lambda", r"\mu", r"\nu", r"\xi", r"\pi", r"\rho",
-            r"\sigma", r"\tau", r"\upsilon", r"\phi", r"\chi", r"\psi", r"\omega",
-            r"\Alpha", r"\Beta", r"\Gamma", r"\Delta", r"\Epsilon", r"\Zeta", r"\Eta", r"\Theta",
-            r"\Iota", r"\Kappa", r"\Lambda", r"\Mu", r"\Nu", r"\Xi", r"\Pi", r"\Rho",
-            r"\Sigma", r"\Tau", r"\Upsilon", r"\Phi", r"\Chi", r"\Psi", r"\Omega"
-        ]
-
-        # 2. La boucle de rattrapage
-        for lettre in lettres_grecques:
-
-            # Si la lettre est encore visible dans le texte à ce stade,
-            # c'est qu'elle est "nue" (sinon elle serait déjà cachée dans un @@MATH_...)
-            if lettre in text:
-
-                # On fabrique une nouvelle étiquette de boîte noire
-                key = f"@@MATH_INLINE_{counter}@@"
-
-                # On range la lettre dans le dictionnaire, mais cette fois bien encadrée par ses balises
-                placeholders[key] = f"\\({lettre}\\)"
-
-                # On remplace l'occurrence nue dans le texte par notre boîte noire
-                text = text.replace(lettre, key)
-
-                # On n'oublie pas d'augmenter le compteur pour la prochaine lettre !
-                counter += 1
-
+        # 7. Rendu Markdown -> HTML
         html_output = markdown.markdown(
             text,
-            extensions=['markdown.extensions.tables', 'markdown.extensions.nl2br'],
+            extensions=[
+                'markdown.extensions.tables',
+                'markdown.extensions.nl2br',
+                'markdown.extensions.extra'
+            ],
             output_format='html5'
         )
 
-        for key in reversed(list(placeholders)):
-            math_str = placeholders[key]
-            html_output = html_output.replace(key, math_str)
+        # 8. Réinjection des formules (EN SENS INVERSE POUR RÉSOUDRE LES IMBRICATIONS)
+        for key in reversed(list(placeholders.keys())):
+            html_output = html_output.replace(key, placeholders[key])
+
+        # Ultime vérification de surface sur d'éventuels résidus
+        html_output = re.sub(r'\\\(([a-zA-Z\\]+)\\\)\{([^{}]+)\}', r'\\(\1{\2}\\)', html_output)
 
         return html_output.strip()
     def generer_id_deterministe(self,chaine_texte):
@@ -592,26 +600,25 @@ STRICT RULES:
    - Replace the original proof with a section titled "<b>Sketch of proof:</b>" or "<b>Idea of the proof:</b>".
    - Summarize the proof's architecture into 2 or 3 essential anchor points (e.g., "1. Initialize with X", "2. Use Y inequality", "3. Conclude by taking the limit"). Get straight to the point.
 
-3. JSON FORMATTING AND LATEX (CRITICAL):
-   - The output MUST be a valid flat JSON object with exactly two keys: "front" and "back".
-   - The "back" field MUST BE A SINGLE CONTINUOUS STRING containing all your HTML text. DO NOT create nested JSON objects (like "statement": {...} or "proof": {...}) inside the back field!
-   - Because your output is JSON, you MUST double-escape all LaTeX backslashes. For example, write \\( ... \\) instead of \( ... \), and \\[ ... \\] instead of \[ ... \], and \\frac instead of \frac.
-   - Use single quotes ('') inside HTML attributes, never unescaped double quotes.
-   - Keep images and figures in their original format (e.g., ![img-2.jpeg](img-2.jpeg)).
+3. MATHEMATICAL FORMATTING:
+   - Delimit ALL math:
+     * Inline math MUST be enclosed in $...$ (e.g. $f_n \to f$, $\mathcal{A}$-measurable).
+     * Display / block equations MUST be enclosed in $$...$$.
+   - CRITICAL - Set notation and bullet points:
+     * LaTeX set braces \{ and \} are NOT delimiters! You MUST wrap whole set equations in dollars:
+       BAD:  <li>\{\sup f_n < a\} = \bigcap \{f_n < a\}</li>
+       GOOD: <li>$\{\sup f_n < a\} = \bigcap \{f_n < a\}$</li>
+     * Never write naked LaTeX commands like \mathcal{A} attached to words; write $\mathcal{A}$-measurable.
+   - Do NOT use \begin{itemize} or \item. Use HTML tags (<ul>, <li>) for lists.
 
-4. STRICT FORMATTING (CRITICAL):
-   - The use of \\text{} or \\begin{aligned} is STRICTLY FORBIDDEN.
-   - \\begin{array} or \\begin{matrix} environments are tolerated ONLY inside mathematical blocks \\[ ... \\] for real mathematical matrices. They are STRICTLY FORBIDDEN to format or structure natural text.
-   - You must ensure that natural text is in plain text/HTML (use <b> instead of **).
-   - You must ensure that EVERY mathematical expression (even a simple variable) is enclosed by \\( ... \\) for inline, or \\[ ... \\] for block mode. Verify that all \\( tags are properly closed by \\). Fix errors like \\( X_a(t) \" to \\( X_a(t) \\).
-   - Never use <code> or <pre> tags for mathematical expressions. Use ONLY \\( ... \\) or \\[ ... \\].
-   - NEVER leave bare LaTeX symbols or variables (like \\Omega, \\sigma, \\mu, t, s) in plain text. You MUST enclose EVERY single mathematical symbol or letter in inline math delimiters \\... \\), even if it is a single character.
-   
-5. INVALID LaTeX Environments: (CRITICAL)
-   - NEVER USE \begin{itemize} or \\item. Use HTML tags (<ul>, <li>).
-   - NEVER USE mathematical delimiters like $, $$. Use ONLY \\( and \\[.
-6. NO DELETION OF SECONDARY FACTS: 
+4. JSON CONSTRAINTS:
+   - Output MUST be a flat JSON object: {"front": "...", "back": "..."}.
+   - The "back" field must be a single string containing your HTML and math.
+   - Use single quotes inside HTML attributes (e.g., class='math-step').
+
+5. NO DELETION OF SECONDARY FACTS: 
    - You are strictly forbidden from deleting secondary definitions, remarks, or historical names present in the raw text. 
+   - Never delete any image tag (e.g., ![img-2.jpeg](img-2.jpeg)), let it exactly appear as in the original text.
    - If multiple concepts are present, use clear bold sub-headings to include ALL of them on the back of the card without dropping information.
    
 INPUT FORMAT:
@@ -759,11 +766,11 @@ def main():
             # Add examples, remarks and exercises in collapsible sections
             
             if example:
-                back += "<details><summary>Examples (click to expand)</summary>" + example[0] + "</details><br>"
+                back += "<details><summary>Examples (click to expand)</summary>" + pipeline.markdown_to_anki_html(example[0]) + "</details><br>"
             if remark:
-                back += "<details><summary>Remarks (click to expand)</summary>" + remark[0] + "</details><br>"
+                back += "<details><summary>Remarks (click to expand)</summary>" + pipeline.markdown_to_anki_html(remark[0]) + "</details><br>"
             if exercice:
-                back += "<details><summary>Exercises (click to expand)</summary>" + exercice[0] + "</details><br>"
+                back += "<details><summary>Exercises (click to expand)</summary>" + pipeline.markdown_to_anki_html(exercice[0]) + "</details><br>"
 
             back = pipeline.markdown_to_anki_html(back)  # Ensure back is in HTML format
             my_note = genanki.Note(
