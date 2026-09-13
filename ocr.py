@@ -39,7 +39,6 @@ def select_file():
 def traiter_pdf_vers_markdown():
 
     cache_file = "ocr_cache.json"
-
     # ==========================================
     # 1. VÉRIFICATION DU CACHE
     # ==========================================
@@ -49,7 +48,7 @@ def traiter_pdf_vers_markdown():
             cache_data = json.load(f)
 
         # On retourne directement les données sauvegardées
-        return cache_data["markdown_file"], cache_data["media_files"]
+        return cache_data["markdown_file"], cache_data["media_files"], cache_data["cost"]
 
     # ==========================================
     # 2. SI AUCUN CACHE, LANCEMENT DE L'OCR
@@ -117,6 +116,9 @@ def traiter_pdf_vers_markdown():
 
     print("Extraction et sauvegarde des images en cours...")
 
+    processed_pages = ocr_response.usage_info.pages_processed
+    cost = processed_pages / 1000 * 3.5
+
     media_files = []
     full_markdown = ""
     # Parcours des pages de la réponse OCR
@@ -164,7 +166,7 @@ def traiter_pdf_vers_markdown():
     # ==========================================
     with open(cache_file, "w", encoding="utf-8") as f:
         json.dump(
-            {"markdown_file": output_filename, "media_files": media_files},
+            {"markdown_file": output_filename, "media_files": media_files, "cost": cost},
             f,
             indent=4,
             ensure_ascii=False,
@@ -172,4 +174,171 @@ def traiter_pdf_vers_markdown():
 
     print("💾 Résultats enregistrés dans le cache (ocr_cache.json).")
 
-    return output_filename, media_files
+    return output_filename, media_files, cost
+
+def split_markdown_into_chunks(markdown_text, max_chunk_size=3000):
+    lines = markdown_text.split("\n")
+    chunks = []
+    current_chunk = []
+    current_length = 0
+
+    for line in lines:
+        is_header = (
+            line.startswith("# ") or line.startswith("## ") or line.startswith("### ")
+        )
+
+        if is_header and current_length > 1000:
+            chunks.append("\n".join(current_chunk))
+            current_chunk = [line]
+            current_length = len(line)
+        else:
+            current_chunk.append(line)
+            current_length += len(line) + 1
+
+        if current_length > max_chunk_size and not line.strip():
+            chunks.append("\n".join(current_chunk))
+            current_chunk = []
+            current_length = 0
+
+    if current_chunk:
+        chunks.append("\n".join(current_chunk))
+
+    return chunks
+
+
+def semantic_split_with_ai(
+    client, markdown_text, model="mistral-large-latest", retries=2
+):
+    
+    lines = markdown_text.split("\n")
+    numbered_lines = [f"{i+1}: {line}" for i, line in enumerate(lines)]
+    numbered_text = "\n".join(numbered_lines)
+    cost = 0
+    system_prompt = r"""
+ROLE
+You are a structural parser Agent. Your only job is to semantically split an academic course text (provided with line numbers) into logical "chunks" or "blocks".
+Each chunk must be a coherent pedagogical unit that can later be fed completely to an Anki card generator.
+
+RULES:
+1. MAXIMUM AGGREGATION: A Theorem (or Proposition/Property), its associated Proof, and its direct Examples/Remarks form ONE INDIVISIBLE UNIT. You MUST group them together into ONE SINGLE CHUNK.
+   - Example scenario: Line 10 is `## THEOREM 1`, Line 40 is `# EXAMPLE 1`, Line 70 is `# PROOF`, Line 120 is `# EXAMPLE 2`. You MUST create a SINGLE chunk starting at line 10 and ending at line 140 inclusive.
+   - NEVER separate the formal statement of a Theorem from its Proof or its Examples. They MUST physically reside in the exact same chunk.
+   - You only start a new chunk when shifting to a completely independent topic, a completely new Theorem, or a list of disconnected definitions.
+2. A single chunk can contain multiple Definitions or minor properties if they are closely related.
+3. Output a JSON array with the exact start and end line numbers for each chunk.
+4. You must skip the Table of contents at the beginning of the document. The first chunk starts at the first line after the Table of contents, and the last chunk ends at the last line number.
+
+OUTPUT FORMAT MUST BE STRICTLY JSON:
+{
+    "chunks": [
+        {"start": 1, "end": 45, "reason": "Intro and early definitions"},
+        {"start": 46, "end": 150, "reason": "Theorem 1 + Example 1 + Proof of Theorem 1"}
+    ]
+}
+
+Ensure no lines are left out after skipping the Table of contents. The first chunk starts at first line after the Table of contents, the last chunk ends at the last line number.
+"""
+
+    for attempt in range(retries):
+        try:
+            print(
+                f"   (Agent Splitter en cours d'analyse - Tentative {attempt+1}/{retries}...)"
+            )
+            response = client.chat.complete(
+                model=model,
+                temperature=0.0,
+                response_format={
+                    "type": "json_schema",
+                    "json_schema":{
+                        "description":"Semantic split of the course",
+                        "name":"courseSplit",
+                        "strict":True,
+                        "schema":{                    
+                            "title": "Academic Course Text Chunker Schema",
+                            "description": "Schema for parsing academic course texts into pedagogical chunks for Anki card generation.",
+                            "type": "object",
+                            "properties": {
+                                "chunks": {
+                                "description": "Array of chunks representing coherent pedagogical units.",
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                    "start": {
+                                        "description": "Starting line number of the chunk (inclusive).",
+                                        "type": "integer",
+                                        "minimum": 1
+                                    },
+                                    "end": {
+                                        "description": "Ending line number of the chunk (inclusive).",
+                                        "type": "integer",
+                                        "minimum": 1
+                                    },
+                                    "reason": {
+                                        "description": "Brief explanation of the chunk's content and why it was grouped.",
+                                        "type": "string",
+                                        "minLength": 1
+                                    }
+                                    },
+                                    "required": [
+                                    "start",
+                                    "end",
+                                    "reason"
+                                    ],
+                                    "additionalProperties": False
+                                },
+                                "minItems": 1
+                                }
+                            },
+                            "required": [
+                                "chunks"
+                            ],
+                            "additionalProperties": False
+                            
+                        }
+                    }
+                },
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {
+                        "role": "user",
+                        "content": numbered_text,
+                    },
+                ],
+            )
+
+            details = getattr(response.usage, "prompt_tokens_details", None)
+            cached_tokens = getattr(details, "cached_tokens", 0) or 0
+
+            cost += (
+                (response.usage.prompt_tokens - cached_tokens) / 1e6 * 0.44
+                + response.usage.completion_tokens / 1e6 * 1.3
+                + cached_tokens / 1e6 * 0.044
+            ) 
+
+            json_strings = response.choices[0].message.content
+            parsed_data = json.loads(json_strings)
+
+            if "chunks" in parsed_data:
+                chunks = []
+                i=0
+                for chunk_info in parsed_data["chunks"]:
+                    if not chunks :
+                        start = max(0, int(chunk_info["start"]) - 1)
+                    else:
+                        start = end  # Start from the end of the previous chunk
+                    end = min(len(lines), int(chunk_info["end"]))
+                    if end > start:
+                        chunks.append("\n".join(lines[start:end]))
+
+                if chunks:
+                    return cost, chunks
+        except Exception as e:
+            import time
+
+            print(f"   Erreur Agent Splitter: {e}. Nouvel essai...")
+            time.sleep(2)
+
+    # Fallback
+    print("   Fallback: utilisation du découpage heuristique statique.")
+    return cost, split_markdown_into_chunks(markdown_text)

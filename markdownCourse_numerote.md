@@ -1,1902 +1,1975 @@
-1: # 2
+1: # Artificial Intelligence Algorithms
 2: 
-3: # Probability Distributions
+3: ## Basic Search
 4: 
-5: In Chapter 1, we emphasized the central role played by probability theory in the solution of pattern recognition problems. We turn now to an exploration of some particular examples of probability distributions and their properties. As well as being of great interest in their own right, these distributions can form building blocks for more complex models and will be used extensively throughout the book. The distributions introduced in this chapter will also serve another important purpose, namely to provide us with the opportunity to discuss some key statistical concepts, such as Bayesian inference, in the context of simple models before we encounter them in more complex situations in later chapters.
+5: ![img-0.jpeg](img-0.jpeg)
 6: 
-7: One role for the distributions discussed in this chapter is to model the probability distribution $p(\mathbf{x})$ of a random variable $\mathbf{x}$, given a finite set $\mathbf{x}_1, \ldots, \mathbf{x}_N$ of observations. This problem is known as *density estimation*. For the purposes of this chapter, we shall assume that the data points are independent and identically distributed. It should be emphasized that the problem of density estimation is fun-
-8: damentally ill-posed, because there are infinitely many probability distributions that could have given rise to the observed finite data set. Indeed, any distribution $p(\mathbf{x})$ that is nonzero at each of the data points $\mathbf{x}_1, \ldots, \mathbf{x}_N$ is a potential candidate. The issue of choosing an appropriate distribution relates to the problem of model selection that has already been encountered in the context of polynomial curve fitting in Chapter 1 and that is a central issue in pattern recognition.
-9: 
-10: We begin by considering the binomial and multinomial distributions for discrete random variables and the Gaussian distribution for continuous random variables. These are specific examples of *parametric* distributions, so-called because they are governed by a small number of adaptive parameters, such as the mean and variance in the case of a Gaussian for example. To apply such models to the problem of density estimation, we need a procedure for determining suitable values for the parameters, given an observed data set. In a frequentist treatment, we choose specific values for the parameters by optimizing some criterion, such as the likelihood function. By contrast, in a Bayesian treatment we introduce prior distributions over the parameters and then use Bayes' theorem to compute the corresponding posterior distribution given the observed data.
+7: Instructor: Farah AIT SALAHT
+8: 
+9: ESILV- Leonard de Vinci Graduated School of Engineering
+10: # Previous session
 11: 
-12: We shall see that an important role is played by *conjugate* priors, that lead to posterior distributions having the same functional form as the prior, and that therefore lead to a greatly simplified Bayesian analysis. For example, the conjugate prior for the parameters of the multinomial distribution is called the *Dirichlet* distribution, while the conjugate prior for the mean of a Gaussian is another Gaussian. All of these distributions are examples of the *exponential family* of distributions, which possess a number of important properties, and which will be discussed in some detail.
+12: ## What did we learn:
 13: 
-14: One limitation of the parametric approach is that it assumes a specific functional form for the distribution, which may turn out to be inappropriate for a particular application. An alternative approach is given by *nonparametric* density estimation methods in which the form of the distribution typically depends on the size of the data set. Such models still contain parameters, but these control the model complexity rather than the form of the distribution. We end this chapter by considering three nonparametric methods based respectively on histograms, nearest-neighbours, and kernels.
-15: 
-16: ## 2.1. Binary Variables
-17: 
-18: We begin by considering a single binary random variable $x \in \{0, 1\}$. For example, $x$ might describe the outcome of flipping a coin, with $x = 1$ representing 'heads', and $x = 0$ representing 'tails'. We can imagine that this is a damaged coin so that the probability of landing heads is not necessarily the same as that of landing tails. The probability of $x = 1$ will be denoted by the parameter $\mu$ so that
+14: - Introduction to Artificial Intelligence for problem solving and decision-making and intelligent agents
+15: - What makes an Agents?
+16: 
+17: ![img-1.jpeg](img-1.jpeg)
+18: # What makes an Agents?
 19: 
-20: $$
-21: p(x = 1|\mu) = \mu \tag{2.1}
-22: $$
-23: where $0 \leqslant \mu \leqslant 1$, from which it follows that $p(x = 0|\mu) = 1 - \mu$. The probability distribution over $x$ can therefore be written in the form
-24: 
-25: $$\operatorname{Bern}(x|\mu) = \mu^x (1 - \mu)^{1-x} \tag{2.2}$$
-26: 
-27: Exercise 2.1
+20: - Example: Vacuum-cleaner world – Roomba!
+21: 
+22: ![img-2.jpeg](img-2.jpeg)
+23: 
+24: (dirt)
+25: 
+26: - Percepts: location and contents, e.g., [A,Dirty]
+27: - Actions: Left, Right, Suck
 28: 
-29: which is known as the Bernoulli distribution. It is easily verified that this distribution is normalized and that it has mean and variance given by
+29: - Example of an agent function:
 30: 
-31: $$\mathbb{E}[x] = \mu \tag{2.3}$$
-32: 
-33: $$\operatorname{var}[x] = \mu(1 - \mu). \tag{2.4}$$
-34: 
-35: Now suppose we have a data set $\mathcal{D} = \{x_1, \ldots, x_N\}$ of observed values of $x$. We can construct the likelihood function, which is a function of $\mu$, on the assumption that the observations are drawn independently from $p(x|\mu)$, so that
-36: 
-37: $$p(\mathcal{D}|\mu) = \prod_{n=1}^{N} p(x_n|\mu) = \prod_{n=1}^{N} \mu^{x_n} (1 - \mu)^{1-x_n}. \tag{2.5}$$
-38: 
-39: In a frequentist setting, we can estimate a value for $\mu$ by maximizing the likelihood function, or equivalently by maximizing the logarithm of the likelihood. In the case of the Bernoulli distribution, the log likelihood function is given by
-40: 
-41: $$\ln p(\mathcal{D}|\mu) = \sum_{n=1}^{N} \ln p(x_n|\mu) = \sum_{n=1}^{N} \{x_n \ln \mu + (1 - x_n) \ln(1 - \mu)\}. \tag{2.6}$$
-42: 
-43: Section 2.4
-44: 
-45: At this point, it is worth noting that the log likelihood function depends on the $N$ observations $x_n$ only through their sum $\sum_n x_n$. This sum provides an example of a sufficient statistic for the data under this distribution, and we shall study the important role of sufficient statistics in some detail. If we set the derivative of $\ln p(\mathcal{D}|\mu)$ with respect to $\mu$ equal to zero, we obtain the maximum likelihood estimator
+31: |  Percept sequence | Action  |
+32: | --- | --- |
+33: |  [A, Clean] | Right  |
+34: |  [A, Dirty] | Suck  |
+35: |  [B, Clean] | Left  |
+36: |  [B, Dirty] | Suck  |
+37: |  [A, Clean], [A, Clean] | Right  |
+38: |  [A, Clean], [A, Dirty] | Suck  |
+39: |  ⋮ | ⋮  |
+40: # What makes one rational?
+41: 
+42: A rational agent always acts to **maximize the utility function**, given current state/percept
+43: 
+44: ![img-3.jpeg](img-3.jpeg)
+45: # What makes one rational?
 46: 
-47: $$\mu_{\mathrm{ML}} = \frac{1}{N} \sum_{n=1}^{N} x_n \tag{2.7}$$
+47: How do we choose the best sequence of actions?
 48: 
-49: ![img-0.jpeg](img-0.jpeg)
-50: 
-51: # Jacob Bernoulli
-52: 1654–1705
-53: 
-54: Jacob Bernoulli, also known as Jacques or James Bernoulli, was a Swiss mathematician and was the first of many in the Bernoulli family to pursue a career in science and mathematics. Although compelled
+49: This involves defining the
+50: « search problems »
+51: # Search process?
+52: 
+53: ![img-4.jpeg](img-4.jpeg)
+54: # Information Retrieval vs. Search
 55: 
-56: to study philosophy and theology against his will by his parents, he travelled extensively after graduating in order to meet with many of the leading scientists of
+56: ![img-5.jpeg](img-5.jpeg)
 57: 
-58: his time, including Boyle and Hooke in England. When he returned to Switzerland, he taught mechanics and became Professor of Mathematics at Basel in 1687. Unfortunately, rivalry between Jacob and his younger brother Johann turned an initially productive collaboration into a bitter and public dispute. Jacob's most significant contributions to mathematics appeared in The Art of Conjecture published in 1713, eight years after his death, which deals with topics in probability theory including what has become known as the Bernoulli distribution.
-59: Figure 2.1 Histogram plot of the binomial distribution (2.9) as a function of $m$ for $N = 10$ and $\mu = 0.25$.
-60: 
-61: ![img-1.jpeg](img-1.jpeg)
-62: 
-63: which is also known as the *sample mean*. If we denote the number of observations of $x = 1$ (heads) within this data set by $m$, then we can write (2.7) in the form
+58: ![img-6.jpeg](img-6.jpeg)
+59: 
+60: ![img-7.jpeg](img-7.jpeg)
+61: 
+62: ![img-8.jpeg](img-8.jpeg)
+63: # Definition of Search
 64: 
-65: $$
-66: \mu_{\mathrm{ML}} = \frac{m}{N} \tag{2.8}
-67: $$
-68: 
-69: so that the probability of landing heads is given, in this maximum likelihood framework, by the fraction of observations of heads in the data set.
-70: 
-71: Now suppose we flip a coin, say, 3 times and happen to observe 3 heads. Then $N = m = 3$ and $\mu_{\mathrm{ML}} = 1$. In this case, the maximum likelihood result would predict that all future observations should give heads. Common sense tells us that this is unreasonable, and in fact this is an extreme example of the over-fitting associated with maximum likelihood. We shall see shortly how to arrive at more sensible conclusions through the introduction of a prior distribution over $\mu$.
-72: 
-73: We can also work out the distribution of the number $m$ of observations of $x = 1$, given that the data set has size $N$. This is called the *binomial* distribution, and from (2.5) we see that it is proportional to $\mu^m(1 - \mu)^{N - m}$. In order to obtain the normalization coefficient we note that out of $N$ coin flips, we have to add up all of the possible ways of obtaining $m$ heads, so that the binomial distribution can be written
-74: 
-75: $$
-76: \operatorname{Bin}(m \mid N, \mu) = \binom{N}{m} \mu^m (1 - \mu)^{N - m} \tag{2.9}
-77: $$
-78: 
-79: where
-80: 
-81: $$
-82: \binom{N}{m} \equiv \frac{N!}{(N - m)! m!} \tag{2.10}
-83: $$
-84: 
-85: **Exercise 2.3**
+65: ## Finding a (best) sequence of actions to solve a problem
+66: 
+67: - We will consider the problem of designing goal-based agents in
+68:   - Deterministic
+69:   - Fully observable
+70:   - Discret
+71:   - Known environments.
+72: # Today
+73: 
+74: ## Solving problems by searching
+75: 
+76: - Problem-solving agents
+77: - Search Problems
+78: - Uninformed Search Methods
+79:   1. Depth-First Search
+80:   2. Breadth-First Search
+81:   3. Iterative Deepening Search
+82:   4. Uniform-Cost Search
+83: 
+84: ![img-9.jpeg](img-9.jpeg)
+85: # Agents that Plan ahead
 86: 
-87: is the number of ways of choosing $m$ objects out of a total of $N$ identical objects. Figure 2.1 shows a plot of the binomial distribution for $N = 10$ and $\mu = 0.25$.
-88: 
-89: The mean and variance of the binomial distribution can be found by using the result of Exercise 1.10, which shows that for independent events the mean of the sum is the sum of the means, and the variance of the sum is the sum of the variances. Because $m = x_1 + \ldots + x_N$, and for each observation the mean and variance are
-90: given by (2.3) and (2.4), respectively, we have
+87: - An agent enjoying a touring vacation in United States.
+88: - He is in the city of Boston and must find his friend in San Francisco.
+89: - Which route to follow?
+90: - We assume that our agent always have access to information about the world (the map).
 91: 
-92: $$
-93: \mathbb{E}[m] \equiv \sum_{m=0}^{N} m \operatorname{Bin}(m|N, \mu) = N\mu \tag{2.11}
-94: $$
-95: 
-96: $$
-97: \operatorname{var}[m] \equiv \sum_{m=0}^{N} (m - \mathbb{E}[m])^2 \operatorname{Bin}(m|N, \mu) = N\mu(1 - \mu). \tag{2.12}
-98: $$
+92: ![img-10.jpeg](img-10.jpeg)
+93: # Building a Problem-Solving Agent
+94: 
+95: - What goal / problem does the agent try to achieve / solve?
+96: - What knowledge does the agent need?
+97: - What actions does the agent need to do?
+98: # Agents that Plan ahead
 99: 
-100: **Exercise 2.4**
+100: To find a way to reach the destination (goal), the agent can follow this four-phase problem-solving process:
 101: 
-102: These results can also be proved directly using calculus.
+102: ## 1. Goal formulation:
 103: 
-104: ### 2.1.1 The beta distribution
-105: 
-106: We have seen in (2.8) that the maximum likelihood setting for the parameter $\mu$ in the Bernoulli distribution, and hence in the binomial distribution, is given by the fraction of the observations in the data set having $x = 1$. As we have already noted, this can give severely over-fitted results for small data sets. In order to develop a Bayesian treatment for this problem, we need to introduce a prior distribution $p(\mu)$ over the parameter $\mu$. Here we consider a form of prior distribution that has a simple interpretation as well as some useful analytical properties. To motivate this prior, we note that the likelihood function takes the form of the product of factors of the form $\mu^x(1 - \mu)^{1-x}$. If we choose a prior to be proportional to powers of $\mu$ and $(1 - \mu)$, then the posterior distribution, which is proportional to the product of the prior and the likelihood function, will have the same functional form as the prior. This property is called *conjugacy* and we will see several examples of it later in this chapter. We therefore choose a prior, called the *beta* distribution, given by
-107: 
-108: $$
-109: \operatorname{Beta}(\mu|a, b) = \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} \mu^{a-1}(1 - \mu)^{b-1} \tag{2.13}
-110: $$
-111: 
-112: **Exercise 2.5**
+104: - How do you describe the goal?
+105:   - as a problem to be solved
+106:   - as a situation to be reached
+107:   - as a set of properties to be acquired.
+108: - **Our example:** The agent adopts the **goal** of reaching San Francisco.
+109: - Goals organize behavior by limiting the objectives and hence the actions to be considered.
+110: 
+111: ![img-11.jpeg](img-11.jpeg)
+112: # Agents that Plan ahead
 113: 
-114: where $\Gamma(x)$ is the gamma function defined by (1.141), and the coefficient in (2.13) ensures that the beta distribution is normalized, so that
+114: To find a way to reach the destination (goal), the agent can follow this four-phase problem-solving process:
 115: 
-116: $$
-117: \int_0^1 \operatorname{Beta}(\mu|a, b) \, \mathrm{d}\mu = 1. \tag{2.14}
-118: $$
-119: 
-120: **Exercise 2.6**
-121: 
-122: The mean and variance of the beta distribution are given by
-123: 
-124: $$
-125: \mathbb{E}[\mu] = \frac{a}{a + b} \tag{2.15}
-126: $$
-127: 
-128: $$
-129: \operatorname{var}[\mu] = \frac{ab}{(a + b)^2(a + b + 1)}. \tag{2.16}
-130: $$
+116: ## 2. Problem formulation:
+117: 
+118: - The agent devises a description of the states and actions necessary to reach the goal
+119: - Define an abstract model of the relevant part of the world.
+120:   - Removing detail from a representation while retaining relevant information for solving the problem.
+121: - **Example:**
+122:   - consider the actions of traveling from one city to an adjacent city
+123:   - the state of the world that will change due to an action is the current city.
+124: 
+125: ![img-12.jpeg](img-12.jpeg)
+126: 
+127: Key West
+128: # Agents that Plan ahead
+129: 
+130: To find a way to reach the destination (goal), the agent can follow this four-phase problem-solving process:
 131: 
-132: The parameters $a$ and $b$ are often called *hyperparameters* because they control the distribution of the parameter $\mu$. Figure 2.2 shows plots of the beta distribution for various values of the hyperparameters.
+132: ## 3. Search:
 133: 
-134: The posterior distribution of $\mu$ is now obtained by multiplying the beta prior (2.13) by the binomial likelihood function (2.9) and normalizing. Keeping only the factors that depend on $\mu$, we see that this posterior distribution has the form
+134: - Before taking any action in the real world, the agent simulates sequences of actions in its model, searching until it finds a sequence of actions that reaches the goal. Such a sequence is called a **solution**.
 135: 
-136: $$
-137: p(\mu|m, l, a, b) \propto \mu^{m+a-1}(1 - \mu)^{l+b-1} \tag{2.17}
-138: $$
-139: ![img-2.jpeg](img-2.jpeg)
-140: 
-141: ![img-3.jpeg](img-3.jpeg)
+136: ## 4. Execution:
+137: 
+138: The agent can now execute the actions in the solution, one at a time.
+139: 
+140: ![img-13.jpeg](img-13.jpeg)
+141: # Today
 142: 
-143: ![img-4.jpeg](img-4.jpeg)
+143: ## Solving problems by searching
 144: 
-145: ![img-5.jpeg](img-5.jpeg)
-146: 
-147: Figure 2.2 Plots of the beta distribution $\mathrm{Beta}(\mu |a,b)$ given by (2.13) as a function of $\mu$ for various values of the hyperparameters $a$ and $b$.
-148: 
-149: where $l = N - m$, and therefore corresponds to the number of ‘tails’ in the coin example. We see that (2.17) has the same functional dependence on $\mu$ as the prior distribution, reflecting the conjugacy properties of the prior with respect to the likelihood function. Indeed, it is simply another beta distribution, and its normalization coefficient can therefore be obtained by comparison with (2.13) to give
-150: 
-151: $$
-152: p(\mu|m,l,a,b) = \frac{\Gamma(m + a + l + b)}{\Gamma(m + a)\Gamma(l + b)} \mu^{m+a-1}(1 - \mu)^{l+b-1}. \tag{2.18}
-153: $$
-154: 
-155: We see that the effect of observing a data set of $m$ observations of $x = 1$ and $l$ observations of $x = 0$ has been to increase the value of $a$ by $m$, and the value of $b$ by $l$, in going from the prior distribution to the posterior distribution. This allows us to provide a simple interpretation of the hyperparameters $a$ and $b$ in the prior as an *effective number of observations* of $x = 1$ and $x = 0$, respectively. Note that $a$ and $b$ need not be integers. Furthermore, the posterior distribution can act as the prior if we subsequently observe additional data. To see this, we can imagine taking observations one at a time and after each observation updating the current posterior
-156: ![img-6.jpeg](img-6.jpeg)
+145: - Problem-solving agents
+146: - Search Problems
+147: - Uninformed Search Methods
+148:   1. Depth-First Search
+149:   2. Breadth-First Search
+150:   3. Iterative Deepening Search
+151:   4. Uniform-Cost Search
+152: 
+153: ![img-14.jpeg](img-14.jpeg)
+154: # Search problems
+155: 
+156: ## Search: sequence of actions to achieve goal.
 157: 
-158: ![img-7.jpeg](img-7.jpeg)
-159: 
-160: ![img-8.jpeg](img-8.jpeg)
-161: 
-162: Figure 2.3 Illustration of one step of sequential Bayesian inference. The prior is given by a beta distribution with parameters $a = 2$, $b = 2$, and the likelihood function, given by (2.9) with $N = m = 1$, corresponds to a single observation of $x = 1$, so that the posterior is given by a beta distribution with parameters $a = 3$, $b = 2$.
-163: 
-164: distribution by multiplying by the likelihood function for the new observation and then normalizing to obtain the new, revised posterior distribution. At each stage, the posterior is a beta distribution with some total number of (prior and actual) observed values for $x = 1$ and $x = 0$ given by the parameters $a$ and $b$. Incorporation of an additional observation of $x = 1$ simply corresponds to incrementing the value of $a$ by 1, whereas for an observation of $x = 0$ we increment $b$ by 1. Figure 2.3 illustrates one step in this process.
+158: - Search algorithm takes a problem as input and returns a solution in the form of a sequence of actions.
+159: - Once solution is found, actions it recommends are executed.
+160: 
+161: Formulate -> Search -> Actions
+162: 
+163: - When executing, the agent is running open loop, i.e., it ignores percepts since it already knows in advance what they will be.
+164: # Problem formulation
 165: 
-166: We see that this *sequential* approach to learning arises naturally when we adopt a Bayesian viewpoint. It is independent of the choice of prior and of the likelihood function and depends only on the assumption of i.i.d. data. Sequential methods make use of observations one at a time, or in small batches, and then discard them before the next observations are used. They can be used, for example, in real-time learning scenarios where a steady stream of data is arriving, and predictions must be made before all of the data is seen. Because they do not require the whole data set to be stored or loaded into memory, sequential methods are also useful for large data sets. Maximum likelihood methods can also be cast into a sequential framework.
+166: A search problem can be defined formally as follows:
 167: 
-168: If our goal is to predict, as best we can, the outcome of the next trial, then we must evaluate the predictive distribution of $x$, given the observed data set $\mathcal{D}$. From the sum and product rules of probability, this takes the form
+168: a) **State space** — The set of all possible states in the environment.
 169: 
-170: $$
-171: p(x = 1|\mathcal{D}) = \int_0^1 p(x = 1|\mu)p(\mu|\mathcal{D}) \, \mathrm{d}\mu = \int_0^1 \mu p(\mu|\mathcal{D}) \, \mathrm{d}\mu = \mathbb{E}[\mu|\mathcal{D}]. \tag{2.19}
-172: $$
+170: b) **Initial state** — The starting state of the agent. Example: *Boston*.
+171: 
+172: c) **Goal States (Goal Test)** — Desired end states the agent aims to reach. **Example:** San Francisco.
 173: 
-174: Using the result (2.18) for the posterior distribution $p(\mu|\mathcal{D})$, together with the result (2.15) for the mean of the beta distribution, we obtain
+174: d) **Actions Available to the Agent** — Possible moves or decisions the agent can make. Given a state $s$, $ACTIONS(s)$ returns a finite set of actions that can be executed in $s$. Each of these actions is considered applicable in $s$.
 175: 
-176: $$
-177: p(x = 1|\mathcal{D}) = \frac{m + a}{m + a + l + b} \tag{2.20}
-178: $$
-179: 
-180: which has a simple interpretation as the total fraction of observations (both real observations and fictitious prior observations) that correspond to $x = 1$. Note that in the limit of an infinitely large data set $m, l \to \infty$ the result (2.20) reduces to the maximum likelihood result (2.8). As we shall see, it is a very general property that the Bayesian and maximum likelihood results will agree in the limit of an infinitely
-181: 
-182: Section 2.3.5
-183: Exercise 2.7
+176: **Example:** $ACTIONS(Boston) = \{To\_KeyWest, To\_NewYork, To\_Chicago\}$
+177: # Problem formulation
+178: 
+179: A search problem can be defined formally as follows:
+180: 
+181: e) A **transition model** — describes what each action does. $RESULT(s, a)$ returns the state that results from doing action $a$ in state $s$.
+182: 
+183: For example, $RESULT(Boston, To\_Chicago) = Chicago$.
 184: 
-185: large data set. For a finite data set, the posterior mean for $\mu$ always lies between the prior mean and the maximum likelihood estimate for $\mu$ corresponding to the relative frequencies of events given by (2.7).
+185: f) **Action cost function** — denoted by $ACTION-COST(s, a, s')$, gives a numeric cost of applying action $a$ in state $s$ to reach state $s'$.
 186: 
-187: From Figure 2.2, we see that as the number of observations increases, so the posterior distribution becomes more sharply peaked. This can also be seen from the result (2.16) for the variance of the beta distribution, in which we see that the variance goes to zero for $a \to \infty$ or $b \to \infty$. In fact, we might wonder whether it is a general property of Bayesian learning that, as we observe more and more data, the uncertainty represented by the posterior distribution will steadily decrease.
-188: 
-189: To address this, we can take a frequentist view of Bayesian learning and show that, on average, such a property does indeed hold. Consider a general Bayesian inference problem for a parameter $\boldsymbol{\theta}$ for which we have observed a data set $\mathcal{D}$, described by the joint distribution $p(\boldsymbol{\theta}, \mathcal{D})$. The following result
+187: - A problem-solving agent should use a cost function that reflects its own performance measure;
+188: - For example, for route-finding agents, the cost of an action might be the length in kilometers, or it might be the time it takes to complete the action, etc.
+189: # Problem formulation
 190: 
-191: $$
-192: \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] = \mathbb{E}_{\mathcal{D}} \left[ \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}] \right] \tag{2.21}
-193: $$
-194: 
-195: where
-196: 
-197: $$
-198: \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] \equiv \int p(\boldsymbol{\theta}) \boldsymbol{\theta} \, \mathrm{d}\boldsymbol{\theta} \tag{2.22}
-199: $$
-200: 
-201: $$
-202: \mathbb{E}_{\mathcal{D}}[\mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}]] \equiv \int \left\{ \int \boldsymbol{\theta} p(\boldsymbol{\theta}|\mathcal{D}) \, \mathrm{d}\boldsymbol{\theta} \right\} p(\mathcal{D}) \, \mathrm{d}\mathcal{D} \tag{2.23}
-203: $$
+191: - The state space can be represented as a **graph** in which the vertices are states and the directed edges between them are actions.
+192: 
+193: - In a **state space graph**, each state occurs only once!
+194: - In case of an undirected graph, each edge indicates two actions, one in each direction.
+195: 
+196: - A sequence of actions forms a **path**
+197: - A **solution** is a path from the initial state to a goal state.
+198: - We assume that action costs are additive; that is, the total cost of a path is the sum of the individual action costs.
+199: - An **optimal solution** has the lowest path cost among all solutions.
+200: - In this course, we assume that all action costs will be positive, to avoid certain complications.
+201: 
+202: ![img-15.jpeg](img-15.jpeg)
+203: # Problem formulation
 204: 
-205: says that the posterior mean of $\boldsymbol{\theta}$, averaged over the distribution generating the data, is equal to the prior mean of $\boldsymbol{\theta}$. Similarly, we can show that
+205: ![img-16.jpeg](img-16.jpeg)
 206: 
-207: $$
-208: \operatorname{var}_{\boldsymbol{\theta}}[\boldsymbol{\theta}] = \mathbb{E}_{\mathcal{D}} \left[ \operatorname{var}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}] \right] + \operatorname{var}_{\mathcal{D}} \left[ \mathbb{E}_{\boldsymbol{\theta}}[\boldsymbol{\theta}|\mathcal{D}] \right]. \tag{2.24}
-209: $$
-210: 
-211: The term on the left-hand side of (2.24) is the prior variance of $\boldsymbol{\theta}$. On the right-hand side, the first term is the average posterior variance of $\boldsymbol{\theta}$, and the second term measures the variance in the posterior mean of $\boldsymbol{\theta}$. Because this variance is a positive quantity, this result shows that, on average, the posterior variance of $\boldsymbol{\theta}$ is smaller than the prior variance. The reduction in variance is greater if the variance in the posterior mean is greater. Note, however, that this result only holds on average, and that for a particular observed data set it is possible for the posterior variance to be larger than the prior variance.
-212: 
-213: ## 2.2. Multinomial Variables
-214: 
-215: Binary variables can be used to describe quantities that can take one of two possible values. Often, however, we encounter discrete variables that can take on one of $K$ possible mutually exclusive states. Although there are various alternative ways to express such variables, we shall see shortly that a particularly convenient representation is the 1-of-$K$ scheme in which the variable is represented by a $K$-dimensional vector $\mathbf{x}$ in which one of the elements $x_k$ equals 1, and all remaining elements equal
-216: 0. So, for instance if we have a variable that can take $K = 6$ states and a particular observation of the variable happens to correspond to the state where $x_3 = 1$, then $\mathbf{x}$ will be represented by
-217: 
-218: $$\mathbf{x} = (0, 0, 1, 0, 0, 0)^{\mathrm{T}}. \tag{2.25}$$
-219: 
-220: Note that such vectors satisfy $\sum_{k=1}^{K} x_k = 1$. If we denote the probability of $x_k = 1$ by the parameter $\mu_k$, then the distribution of $\mathbf{x}$ is given
-221: 
-222: $$p(\mathbf{x}|\boldsymbol{\mu}) = \prod_{k=1}^{K} \mu_k^{x_k} \tag{2.26}$$
-223: 
-224: where $\boldsymbol{\mu} = (\mu_1, \ldots, \mu_K)^{\mathrm{T}}$, and the parameters $\mu_k$ are constrained to satisfy $\mu_k \geqslant 0$ and $\sum_k \mu_k = 1$, because they represent probabilities. The distribution (2.26) can be regarded as a generalization of the Bernoulli distribution to more than two outcomes. It is easily seen that the distribution is normalized
+207: ![img-17.jpeg](img-17.jpeg)
+208: 
+209: - State space: Cities
+210: - Initial state: Boston
+211: - Goal test: is state == San Francisco?
+212: - Actions: Go to adjacent city
+213: - Action cost: e.g., cost = distance
+214: - Transition model: RESULT(Boston, To_Chicago) = Chicago
+215:   RESULT(Boston, To_New York) = New York
+216:   RESULT(Chicago, To_Danver) = Denver
+217:   ...
+218: - Example of path: {NewYork, Nashville, Austin}
+219: - Solutions:
+220:   - {Boston, NewYork, Nashville, Austin, Phoenix, SanFrancisco}
+221:   - {Boston, Chicago, SanFrancisco}
+222:   - ...
+223: - Optimal solution?? Depends on the objective
+224: # Problem formulation
 225: 
-226: $$\sum_{\mathbf{x}} p(\mathbf{x}|\boldsymbol{\mu}) = \sum_{k=1}^{K} \mu_k = 1 \tag{2.27}$$
+226: ## Other example
 227: 
-228: and that
+228: ![img-18.jpeg](img-18.jpeg)
 229: 
-230: $$\mathbb{E}[\mathbf{x}|\boldsymbol{\mu}] = \sum_{\mathbf{x}} p(\mathbf{x}|\boldsymbol{\mu})\mathbf{x} = (\mu_1, \ldots, \mu_M)^{\mathrm{T}} = \boldsymbol{\mu}. \tag{2.28}$$
+230: A vacuum-cleaner world with just two locations.
 231: 
-232: Now consider a data set $\mathcal{D}$ of $N$ independent observations $\mathbf{x}_1, \ldots, \mathbf{x}_N$. The corresponding likelihood function takes the form
+232: ![img-19.jpeg](img-19.jpeg)
 233: 
-234: $$p(\mathcal{D}|\boldsymbol{\mu}) = \prod_{n=1}^{N} \prod_{k=1}^{K} \mu_k^{x_{nk}} = \prod_{k=1}^{K} \mu_k^{(\sum_n x_{nk})} = \prod_{k=1}^{K} \mu_k^{m_k}. \tag{2.29}$$
+234: ![img-20.jpeg](img-20.jpeg)
 235: 
-236: We see that the likelihood function depends on the $N$ data points only through the $K$ quantities
+236: ## State space
 237: 
-238: $$m_k = \sum_n x_{nk} \tag{2.30}$$
+238: ![img-21.jpeg](img-21.jpeg)
 239: 
-240: which represent the number of observations of $x_k = 1$. These are called the *sufficient statistics* for this distribution.
+240: ![img-22.jpeg](img-22.jpeg)
 241: 
-242: In order to find the maximum likelihood solution for $\boldsymbol{\mu}$, we need to maximize $\ln p(\mathcal{D}|\boldsymbol{\mu})$ with respect to $\mu_k$ taking account of the constraint that the $\mu_k$ must sum to one. This can be achieved using a Lagrange multiplier $\lambda$ and maximizing
+242: ![img-23.jpeg](img-23.jpeg)
 243: 
-244: $$\sum_{k=1}^{K} m_k \ln \mu_k + \lambda \left( \sum_{k=1}^{K} \mu_k - 1 \right). \tag{2.31}$$
+244: ![img-24.jpeg](img-24.jpeg)
 245: 
-246: Setting the derivative of (2.31) with respect to $\mu_k$ to zero, we obtain
+246: ![img-25.jpeg](img-25.jpeg)
 247: 
-248: $$\mu_k = -m_k/\lambda. \tag{2.32}$$
+248: ![img-26.jpeg](img-26.jpeg)
 249: 
-250: Section 2.4
+250: ## Goal State
 251: 
-252: Appendix E
-253: We can solve for the Lagrange multiplier $\lambda$ by substituting (2.32) into the constraint $\sum_{k} \mu_{k} = 1$ to give $\lambda = -N$. Thus we obtain the maximum likelihood solution in the form
-254: 
-255: $$\mu_{k}^{\mathrm{ML}} = \frac{m_{k}}{N} \tag{2.33}$$
-256: 
-257: which is the fraction of the $N$ observations for which $x_{k} = 1$.
-258: 
-259: We can consider the joint distribution of the quantities $m_{1}, \ldots, m_{K}$, conditioned on the parameters $\boldsymbol{\mu}$ and on the total number $N$ of observations. From (2.29) this takes the form
-260: 
-261: $$\operatorname{Mult}(m_{1}, m_{2}, \ldots, m_{K} | \boldsymbol{\mu}, N) = \binom{N}{m_{1} m_{2} \ldots m_{K}} \prod_{k=1}^{K} \mu_{k}^{m_{k}} \tag{2.34}$$
-262: 
-263: which is known as the *multinomial* distribution. The normalization coefficient is the number of ways of partitioning $N$ objects into $K$ groups of size $m_{1}, \ldots, m_{K}$ and is given by
-264: 
-265: $$\binom{N}{m_{1} m_{2} \ldots m_{K}} = \frac{N!}{m_{1}! m_{2}! \ldots m_{K}!}. \tag{2.35}$$
-266: 
-267: Note that the variables $m_{k}$ are subject to the constraint
-268: 
-269: $$\sum_{k=1}^{K} m_{k} = N. \tag{2.36}$$
-270: 
-271: ### 2.2.1 The Dirichlet distribution
+252: ![img-27.jpeg](img-27.jpeg)
+253: 
+254: ![img-28.jpeg](img-28.jpeg)
+255: 
+256: ![img-29.jpeg](img-29.jpeg)
+257: 
+258: ![img-30.jpeg](img-30.jpeg)
+259: 
+260: ![img-31.jpeg](img-31.jpeg)
+261: 
+262: ![img-32.jpeg](img-32.jpeg)
+263: 
+264: ![img-33.jpeg](img-33.jpeg)
+265: 
+266: ![img-34.jpeg](img-34.jpeg)
+267: 
+268: The eight possible states of the vacuum world
+269: 
+270: States 7 and 8 are goal states.
+271: # Problem formulation
 272: 
-273: We now introduce a family of prior distributions for the parameters $\{\mu_{k}\}$ of the multinomial distribution (2.34). By inspection of the form of the multinomial distribution, we see that the conjugate prior is given by
+273: Example
 274: 
-275: $$p(\boldsymbol{\mu} | \boldsymbol{\alpha}) \propto \prod_{k=1}^{K} \mu_{k}^{\alpha_{k}-1} \tag{2.37}$$
+275: ![img-35.jpeg](img-35.jpeg)
 276: 
-277: where $0 \leqslant \mu_{k} \leqslant 1$ and $\sum_{k} \mu_{k} = 1$. Here $\alpha_{1}, \ldots, \alpha_{K}$ are the parameters of the distribution, and $\boldsymbol{\alpha}$ denotes $(\alpha_{1}, \ldots, \alpha_{K})^{\mathrm{T}}$. Note that, because of the summation constraint, the distribution over the space of the $\{\mu_{k}\}$ is confined to a *simplex* of dimensionality $K - 1$, as illustrated for $K = 3$ in Figure 2.4.
+277: A vacuum-cleaner world with just two locations.
 278: 
-279: The normalized form for this distribution is by
+279: Initial state
 280: 
-281: $$\operatorname{Dir}(\boldsymbol{\mu} | \boldsymbol{\alpha}) = \frac{\Gamma(\alpha_{0})}{\Gamma(\alpha_{1}) \cdots \Gamma(\alpha_{K})} \prod_{k=1}^{K} \mu_{k}^{\alpha_{k}-1} \tag{2.38}$$
+281: ![img-36.jpeg](img-36.jpeg)
 282: 
-283: which is called the *Dirichlet* distribution. Here $\Gamma(x)$ is the gamma function defined by (1.141) while
+283: ![img-37.jpeg](img-37.jpeg)
 284: 
-285: $$\alpha_{0} = \sum_{k=1}^{K} \alpha_{k}. \tag{2.39}$$
+285: ![img-38.jpeg](img-38.jpeg)
 286: 
-287: Exercise 2.9
-288: Figure 2.4 The Dirichlet distribution over three variables $\mu_1, \mu_2, \mu_3$ is confined to a simplex (a bounded linear manifold) of the form shown, as a consequence of the constraints $0 \leqslant \mu_k \leqslant 1$ and $\sum_k \mu_k = 1$.
-289: 
-290: ![img-9.jpeg](img-9.jpeg)
-291: 
-292: Plots of the Dirichlet distribution over the simplex, for various settings of the parameters $\alpha_k$, are shown in Figure 2.5.
-293: 
-294: Multiplying the prior (2.38) by the likelihood function (2.34), we obtain the posterior distribution for the parameters $\{\mu_k\}$ in the form
-295: 
-296: $$
-297: p(\boldsymbol{\mu}|\mathcal{D}, \boldsymbol{\alpha}) \propto p(\mathcal{D}|\boldsymbol{\mu})p(\boldsymbol{\mu}|\boldsymbol{\alpha}) \propto \prod_{k=1}^{K} \mu_k^{\alpha_k + m_k - 1}. \tag{2.40}
-298: $$
-299: 
-300: We see that the posterior distribution again takes the form of a Dirichlet distribution, confirming that the Dirichlet is indeed a conjugate prior for the multinomial. This allows us to determine the normalization coefficient by comparison with (2.38) so that
-301: 
-302: $$
-303: \begin{array}{l}
-304: p(\boldsymbol{\mu}|\mathcal{D}, \boldsymbol{\alpha}) = \operatorname{Dir}(\boldsymbol{\mu}|\boldsymbol{\alpha} + \mathbf{m}) \\
-305: \quad = \frac{\Gamma(\alpha_0 + N)}{\Gamma(\alpha_1 + m_1) \cdots \Gamma(\alpha_K + m_K)} \prod_{k=1}^{K} \mu_k^{\alpha_k + m_k - 1} \tag{2.41}
-306: \end{array}
-307: $$
-308: 
-309: where we have denoted $\mathbf{m} = (m_1, \ldots, m_K)^{\mathrm{T}}$. As for the case of the binomial distribution with its beta prior, we can interpret the parameters $\alpha_k$ of the Dirichlet prior as an effective number of observations of $x_k = 1$.
-310: 
-311: Note that two-state quantities can either be represented as binary variables and
-312: 
-313: ![img-10.jpeg](img-10.jpeg)
-314: 
-315: Fourier series. His family originated from Richelet in Belgium, and the name Lejeune Dirichlet comes
-316: 
-317: # Lejeune Dirichlet
-318: 
-319: 1805–1859
-320: 
-321: Johann Peter Gustav Lejeune Dirichlet was a modest and reserved mathematician who made contributions in number theory, mechanics, and astronomy, and who gave the first rigorous analysis of
+287: ![img-39.jpeg](img-39.jpeg)
+288: 
+289: ![img-40.jpeg](img-40.jpeg)
+290: 
+291: ![img-41.jpeg](img-41.jpeg)
+292: 
+293: ![img-42.jpeg](img-42.jpeg)
+294: 
+295: ![img-43.jpeg](img-43.jpeg)
+296: 
+297: Actions
+298: 
+299: - Right (R)
+300: - Left (L)
+301: - Suck (S)
+302: 
+303: Any state can be designated as the initial state.
+304: # Problem formulation
+305: 
+306: ## Example
+307: 
+308: ![img-44.jpeg](img-44.jpeg)
+309: 
+310: A vacuum-cleaner world with just two locations.
+311: 
+312: ## Transition model
+313: 
+314: - **Suck** removes any dirt from the agent's cell;
+315: - **Right** moves the agent one cell in the right direction, unless it hits a wall, in which case the action has no effect.
+316: - **Left** moves the agent one cell in the left direction, unless it hits a wall, in which case the action has no effect.
+317: 
+318: ## Action cost
+319: 
+320: - Each action costs 1.
+321: # Problem formulation
 322: 
-323: His family originated from Richelet in Belgium, and the name Lejeune Dirichlet comes
+323: Example
 324: 
-325: from ‘le jeune de Richelet’ (the young person from Richelet). Dirichlet’s first paper, which was published in 1825, brought him instant fame. It concerned Fermat’s last theorem, which claims that there are no positive integer solutions to $x^n + y^n = z^n$ for $n > 2$. Dirichlet gave a partial proof for the case $n = 5$, which was sent to Legendre for review and who in turn completed the proof. Later, Dirichlet gave a complete proof for $n = 14$, although a full proof of Fermat’s last theorem for arbitrary $n$ had to wait until the work of Andrew Wiles in the closing years of the 20$^{th}$ century.
-326: ![img-11.jpeg](img-11.jpeg)
-327: 
-328: ![img-12.jpeg](img-12.jpeg)
-329: 
-330: ![img-13.jpeg](img-13.jpeg)
-331: 
-332: Figure 2.5 Plots of the Dirichlet distribution over three variables, where the two horizontal axes are coordinates in the plane of the simplex and the vertical axis corresponds to the value of the density. Here $\{\alpha_k\} = 0.1$ on the left plot, $\{\alpha_k\} = 1$ in the centre plot, and $\{\alpha_k\} = 10$ in the right plot.
-333: 
-334: modelled using the binomial distribution (2.9) or as 1-of-2 variables and modelled using the multinomial distribution (2.34) with $K = 2$.
-335: 
-336: ## 2.3. The Gaussian Distribution
-337: 
-338: The Gaussian, also known as the normal distribution, is a widely used model for the distribution of continuous variables. In the case of a single variable $x$, the Gaussian distribution can be written in the form
-339: 
-340: $$
-341: \mathcal{N}(x|\mu, \sigma^2) = \frac{1}{(2\pi\sigma^2)^{1/2}} \exp\left\{-\frac{1}{2\sigma^2}(x - \mu)^2\right\} \tag{2.42}
-342: $$
-343: 
-344: where $\mu$ is the mean and $\sigma^2$ is the variance. For a $D$-dimensional vector $\mathbf{x}$, the multivariate Gaussian distribution takes the form
-345: 
-346: $$
-347: \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Sigma}) = \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \exp\left\{-\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^\mathrm{T} \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu})\right\} \tag{2.43}
-348: $$
-349: 
-350: where $\boldsymbol{\mu}$ is a $D$-dimensional mean vector, $\boldsymbol{\Sigma}$ is a $D \times D$ covariance matrix, and $|\boldsymbol{\Sigma}|$ denotes the determinant of $\boldsymbol{\Sigma}$.
-351: 
-352: The Gaussian distribution arises in many different contexts and can be motivated from a variety of different perspectives. For example, we have already seen that for a single real variable, the distribution that maximizes the entropy is the Gaussian. This property applies also to the multivariate Gaussian.
-353: 
-354: Another situation in which the Gaussian distribution arises is when we consider the sum of multiple random variables. The *central limit theorem* (due to Laplace) tells us that, subject to certain mild conditions, the sum of a set of random variables, which is of course itself a random variable, has a distribution that becomes increasingly Gaussian as the number of terms in the sum increases (Walker, 1969). We can
-355: 
-356: Section 1.6
-357: 
-358: Exercise 2.14
-359: ![img-14.jpeg](img-14.jpeg)
-360: 
-361: ![img-15.jpeg](img-15.jpeg)
-362: 
-363: ![img-16.jpeg](img-16.jpeg)
-364: 
-365: Figure 2.6 Histogram plots of the mean of $N$ uniformly distributed numbers for various values of $N$. We observe that as $N$ increases, the distribution tends towards a Gaussian.
-366: 
-367: illustrate this by considering $N$ variables $x_{1},\ldots ,x_{N}$ each of which has a uniform distribution over the interval $[0,1]$ and then considering the distribution of the mean $(x_{1} + \dots +x_{N}) / N$. For large $N$, this distribution tends to a Gaussian, as illustrated in Figure 2.6. In practice, the convergence to a Gaussian as $N$ increases can be very rapid. One consequence of this result is that the binomial distribution (2.9), which is a distribution over $m$ defined by the sum of $N$ observations of the random binary variable $x$, will tend to a Gaussian as $N\to \infty$ (see Figure 2.1 for the case of $N = 10$).
-368: 
-369: The Gaussian distribution has many important analytical properties, and we shall consider several of these in detail. As a result, this section will be rather more technically involved than some of the earlier sections, and will require familiarity with various matrix identities. However, we strongly encourage the reader to become proficient in manipulating Gaussian distributions using the techniques presented here as this will prove invaluable in understanding the more complex models presented in later chapters.
-370: 
-371: We begin by considering the geometrical form of the Gaussian distribution. The
-372: 
-373: Appendix C
-374: 
-375: ![img-17.jpeg](img-17.jpeg)
+325: ![img-45.jpeg](img-45.jpeg)
+326: 
+327: A vacuum-cleaner world with just two locations.
+328: 
+329: State space graph
+330: 
+331: ![img-46.jpeg](img-46.jpeg)
+332: 
+333: - Example of path:
+334: {R, S, R, S, L}, From initial state 1
+335: - Example of solution:
+336: {S, L, S, R, S}, From initial state 1
+337: - Example of optimal solution:
+338: {S, R, S}, From initial state 1
+339: # Problem Formulation involves Abstraction
+340: 
+341: ## Example: Missionaries and Cannibals
+342: 
+343: ![img-47.jpeg](img-47.jpeg)
+344: 
+345: - 3 missionaries and 3 cannibals on left side
+346: - Boat holds 1 or 2 people
+347: - Never leave missionaries outnumbered by cannibals
+348: - **States:**
+349:   (# cannibals, # missionaries, # boats) on left side of river
+350: - **Starting state / Goal state:**
+351:   - (3,3,1) / (0,0,0)
+352: - **Actions:**
+353:   - Remove up to 2 people to other side and the resulting state is safe
+354: - **Path cost:** number of crossing
+355: # Problem formulation
+356: 
+357: - The process of removing detail from a representation is called *abstraction*.
+358: - A good problem formulation has the right level of detail.
+359: - The abstraction is *valid* if we can elaborate any abstract solution into a solution in the more detailed world;
+360:   - a sufficient condition is that for every detailed state that is “in Boston,” there is a detailed path to some state that is “in Key west,” and so on.
+361: - The abstraction is *useful* if carrying out each of the actions in the solution is easier than the original problem; in our case, the action “drive from Boston to Key West” can be carried out without further search or planning by a driver with average skill.
+362: # How to Search
+363: 
+364: Given:
+365: 
+366: - Initial state
+367: - Actions
+368: - Transition model
+369: - Goal state
+370: - Path cost
+371: 
+372: ![img-48.jpeg](img-48.jpeg)
+373: 
+374: How do we find a solution (best solution)?
+375: # How to Search
 376: 
-377: # Carl Friedrich Gauss 1777-1855
+377: ## Generating action sequences
 378: 
-379: It is said that when Gauss went to elementary school at age 7, his teacher Büttner, trying to keep the class occupied, asked the pupils to sum the integers from 1 to 100. To the teacher's amazement, Gauss
+379: ![img-49.jpeg](img-49.jpeg)
 380: 
-381: arrived at the answer in a matter of moments by noting that the sum can be represented as 50 pairs $(1 + 100, 2 + 99$, etc.) each of which added to 101, giving the answer 5,050. It is now believed that the problem which was actually set was of the same form but somewhat harder in that the sequence had a larger starting value and a larger increment. Gauss was a German math
+381: ![img-50.jpeg](img-50.jpeg)
 382: 
-383: mathematician and scientist with a reputation for being a hard-working perfectionist. One of his many contributions was to show that least squares can be derived under the assumption of normally distributed errors. He also created an early formulation of non-Euclidean geometry (a self-consistent geometrical theory that violates the axioms of Euclid) but was reluctant to discuss it openly for fear that his reputation might suffer if it were seen that he believed in such a geometry. At one point, Gauss was asked to conduct a geodetic survey of the state of Hanover, which led to his formulation of the normal distribution, now also known as the Gaussian. After his death, a study of his diaries revealed that he had discovered several important mathematical results years or even decades before they were published by others.
-384: functional dependence of the Gaussian on x is through the quadratic form
+383: The search strategy determines which state to expand next.
+384: # Search Tree
 385: 
-386: $$\Delta^{2} = (\mathbf{x} - \boldsymbol{\mu})^{\mathrm{T}} \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu}) \tag{2.44}$$
-387: 
-388: which appears in the exponent. The quantity $\Delta$ is called the Mahalanobis distance from $\boldsymbol{\mu}$ to x and reduces to the Euclidean distance when $\boldsymbol{\Sigma}$ is the identity matrix. The Gaussian distribution will be constant on surfaces in x-space for which this quadratic form is constant.
-389: 
-390: First of all, we note that the matrix $\boldsymbol{\Sigma}$ can be taken to be symmetric, without loss of generality, because any antisymmetric component would disappear from the exponent. Now consider the eigenvector equation for the covariance matrix
-391: 
-392: Exercise 2.17
-393: 
-394: $$\boldsymbol{\Sigma} \mathbf{u}_{i} = \lambda_{i} \mathbf{u}_{i} \tag{2.45}$$
+386: - A sequences of actions and their outcomes
+387: - The root node corresponds to the starting state
+388: - The children of a node correspond to the successor states of that node's state
+389: - A path through the tree corresponds to a sequence of actions
+390:   - A solution is a path ending in the goal state
+391: - **Nodes vs. states**
+392:   - A state is a representation of the world, while a **node** is a data structure that is part of the search tree
+393:     - Node keeps track of a **state description**, a **parent node** (the node that generated this node), an **action** (the action that was applied to the parent to generate this node), a **path cost** (the cost of the path from the start state to this state), **depth** (number of steps in the path from the start state), and possibly other info.
+394: - For most problems, we can never actually build the whole tree
 395: 
-396: Exercise 2.18
-397: 
-398: where $i = 1, \ldots, D$. Because $\boldsymbol{\Sigma}$ is a real, symmetric matrix its eigenvalues will be real, and its eigenvectors can be chosen to form an orthonormal set, so that
-399: 
-400: $$\mathbf{u}_{i}^{\mathrm{T}} \mathbf{u}_{j} = I_{ij} \tag{2.46}$$
-401: 
-402: where $I_{ij}$ is the $i, j$ element of the identity matrix and satisfies
-403: 
-404: $$I_{ij} = \left\{ \begin{array}{ll} 1, & \text{if } i = j \\ 0, & \text{otherwise.} \end{array} \right. \tag{2.47}$$
-405: 
-406: Exercise 2.19
-407: 
-408: The covariance matrix $\boldsymbol{\Sigma}$ can be expressed as an expansion in terms of its eigenvectors in the form
+396: ![img-51.jpeg](img-51.jpeg)
+397: # State Space Graphs vs. Search Trees
+398: 
+399: ## State Space Graph
+400: 
+401: ![img-52.jpeg](img-52.jpeg)
+402: 
+403: State : e
+404: 
+405: Each NODE in the
+406: search tree is an
+407: entire PATH in the
+408: state space graph.
 409: 
-410: $$\boldsymbol{\Sigma} = \sum_{i=1}^{D} \lambda_{i} \mathbf{u}_{i} \mathbf{u}_{i}^{\mathrm{T}} \tag{2.48}$$
+410: ## Search Tree
 411: 
-412: and similarly the inverse covariance matrix $\boldsymbol{\Sigma}^{-1}$ can be expressed as
+412: ![img-53.jpeg](img-53.jpeg)
 413: 
-414: $$\boldsymbol{\Sigma}^{-1} = \sum_{i=1}^{D} \frac{1}{\lambda_{i}} \mathbf{u}_{i} \mathbf{u}_{i}^{\mathrm{T}}. \tag{2.49}$$
+414: Node: (e, [S,d,e], 2,...)
 415: 
-416: Substituting (2.49) into (2.44), the quadratic form becomes
+416: Node: (e, [S,e], 1,...)
 417: 
-418: $$\Delta^{2} = \sum_{i=1}^{D} \frac{y_{i}^{2}}{\lambda_{i}} \tag{2.50}$$
-419: 
-420: where we have defined
-421: 
-422: $$y_{i} = \mathbf{u}_{i}^{\mathrm{T}} (\mathbf{x} - \boldsymbol{\mu}). \tag{2.51}$$
-423: 
-424: We can interpret $\{y_{i}\}$ as a new coordinate system defined by the orthonormal vectors $\mathbf{u}_{i}$ that are shifted and rotated with respect to the original $x_{i}$ coordinates. Forming the vector $\mathbf{y} = (y_{1}, \ldots, y_{D})^{\mathrm{T}}$, we have
-425: 
-426: $$\mathbf{y} = \mathbf{U} (\mathbf{x} - \boldsymbol{\mu}) \tag{2.52}$$
-427: Figure 2.7 The red curve shows the elliptical surface of constant probability density for a Gaussian in a two-dimensional space $\mathbf{x} = (x_{1}, x_{2})$ on which the density is $\exp(-1/2)$ of its value at $\mathbf{x} = \boldsymbol{\mu}$. The major axes of the ellipse are defined by the eigenvectors $\mathbf{u}_{i}$ of the covariance matrix, with corresponding eigenvalues $\lambda_{i}$.
-428: 
-429: ![img-18.jpeg](img-18.jpeg)
-430: 
-431: Appendix C
-432: 
-433: where $\mathbf{U}$ is a matrix whose rows are given by $\mathbf{u}_i^{\mathrm{T}}$. From (2.46) it follows that $\mathbf{U}$ is an *orthogonal* matrix, i.e., it satisfies $\mathbf{U}\mathbf{U}^{\mathrm{T}} = \mathbf{I}$, and hence also $\mathbf{U}^{\mathrm{T}}\mathbf{U} = \mathbf{I}$, where $\mathbf{I}$ is the identity matrix.
-434: 
-435: The quadratic form, and hence the Gaussian density, will be constant on surfaces for which (2.51) is constant. If all of the eigenvalues $\lambda_{i}$ are positive, then these surfaces represent ellipsoids, with their centres at $\boldsymbol{\mu}$ and their axes oriented along $\mathbf{u}_i$, and with scaling factors in the directions of the axes given by $\lambda_i^{1/2}$, as illustrated in Figure 2.7.
-436: 
-437: For the Gaussian distribution to be well defined, it is necessary for all of the eigenvalues $\lambda_{i}$ of the covariance matrix to be strictly positive, otherwise the distribution cannot be properly normalized. A matrix whose eigenvalues are strictly positive is said to be *positive definite*. In Chapter 12, we will encounter Gaussian distributions for which one or more of the eigenvalues are zero, in which case the distribution is singular and is confined to a subspace of lower dimensionality. If all of the eigenvalues are nonnegative, then the covariance matrix is said to be *positive semidefinite*.
-438: 
-439: Now consider the form of the Gaussian distribution in the new coordinate system defined by the $y_{i}$. In going from the $\mathbf{x}$ to the $\mathbf{y}$ coordinate system, we have a Jacobian matrix $\mathbf{J}$ with elements given by
-440: 
-441: $$
-442: J_{ij} = \frac{\partial x_i}{\partial y_j} = U_{ji} \tag{2.53}
-443: $$
+418: Node: (Current state, path from initial state, cost, depth...)
+419: # Search tree process
+420: 
+421: - Begin at the start state and **expand** it by making a list of all possible successor states
+422: - Maintain a **frontier** or a list of unexpanded states
+423: - At each step, pick a state from the frontier to expand
+424: - Keep going until you reach a goal state
+425: - **Objective:** *Try to expand as few states as possible*
+426: 
+427: ![img-54.jpeg](img-54.jpeg)
+428: # Tree Search example
+429: 
+430: ![img-55.jpeg](img-55.jpeg)
+431: 
+432: |  expended node | Frontier  |
+433: | --- | --- |
+434: |   | {S}  |
+435: |  S not goal | {d,e,p}  |
+436: |  d not goal | {e,p,b,c,e}  |
+437: |  e not goal | {e,p,b,c,h,r}  |
+438: |  r not goal | {e,p,b,c,h,f}  |
+439: |  f not goal | {e,p,b,c,h,c,G}  |
+440: |  G is goal | {e,p,b,c,h,c}  |
+441: 
+442: ![img-56.jpeg](img-56.jpeg)
+443: # Quiz: State Space Graphs vs. Search Trees
 444: 
-445: where $U_{ji}$ are the elements of the matrix $\mathbf{U}^{\mathrm{T}}$. Using the orthonormality property of the matrix $\mathbf{U}$, we see that the square of the determinant of the Jacobian matrix is
+445: Consider this 4-state graph:
 446: 
-447: $$
-448: |\mathbf{J}|^2 = |\mathbf{U}^{\mathrm{T}}|^2 = |\mathbf{U}^{\mathrm{T}}| |\mathbf{U}| = |\mathbf{U}^{\mathrm{T}}\mathbf{U}| = |\mathbf{I}| = 1 \tag{2.54}
-449: $$
+447: ![img-57.jpeg](img-57.jpeg)
+448: 
+449: How big is its search tree (from $s$)?
 450: 
-451: and hence $|\mathbf{J}| = 1$. Also, the determinant $|\boldsymbol{\Sigma}|$ of the covariance matrix can be written
-452: as the product of its eigenvalues, and hence
-453: 
-454: $$|\boldsymbol{\Sigma}|^{1/2} = \prod_{j=1}^{D} \lambda_j^{1/2}. \tag{2.55}$$
-455: 
-456: Thus in the $y_j$ coordinate system, the Gaussian distribution takes the form
+451: ![img-58.jpeg](img-58.jpeg)
+452: 
+453: ![img-59.jpeg](img-59.jpeg)
+454: 
+455: Important: Lots of repeated structure in the search tree!
+456: # Tree search algorithm
 457: 
-458: $$p(\mathbf{y}) = p(\mathbf{x})|\mathbf{J}| = \prod_{j=1}^{D} \frac{1}{(2\pi\lambda_j)^{1/2}} \exp\left\{-\frac{y_j^2}{2\lambda_j}\right\} \tag{2.56}$$
+458: ## Remark — Handle repeated states
 459: 
-460: which is the product of $D$ independent univariate Gaussian distributions. The eigenvectors therefore define a new set of shifted and rotated coordinates with respect to which the joint probability distribution factorizes into a product of independent distributions. The integral of the distribution in the $\mathbf{y}$ coordinate system is then
-461: 
-462: $$\int p(\mathbf{y}) \, \mathrm{d}\mathbf{y} = \prod_{j=1}^{D} \int_{-\infty}^{\infty} \frac{1}{(2\pi\lambda_j)^{1/2}} \exp\left\{-\frac{y_j^2}{2\lambda_j}\right\} \, \mathrm{d}y_j = 1 \tag{2.57}$$
-463: 
-464: where we have used the result (1.48) for the normalization of the univariate Gaussian. This confirms that the multivariate Gaussian (2.43) is indeed normalized.
-465: 
-466: We now look at the moments of the Gaussian distribution and thereby provide an interpretation of the parameters $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$. The expectation of $\mathbf{x}$ under the Gaussian distribution is given by
-467: 
-468: $$\begin{aligned} \mathbb{E}[\mathbf{x}] &= \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \int \exp\left\{-\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^{\mathrm{T}} \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu})\right\} \mathbf{x} \, \mathrm{d}\mathbf{x} \\ &= \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \int \exp\left\{-\frac{1}{2} \mathbf{z}^{\mathrm{T}} \boldsymbol{\Sigma}^{-1} \mathbf{z}\right\} (\mathbf{z} + \boldsymbol{\mu}) \, \mathrm{d}\mathbf{z} \tag{2.58} \end{aligned}$$
-469: 
-470: where we have changed variables using $\mathbf{z} = \mathbf{x} - \boldsymbol{\mu}$. We now note that the exponent is an even function of the components of $\mathbf{z}$ and, because the integrals over these are taken over the range $(-\infty, \infty)$, the term in $\mathbf{z}$ in the factor $(\mathbf{z} + \boldsymbol{\mu})$ will vanish by symmetry. Thus
-471: 
-472: $$\mathbb{E}[\mathbf{x}] = \boldsymbol{\mu} \tag{2.59}$$
+460: - Every time you **expand a node**, add that state to the **explored set**; do not put explored states on the frontier again
+461: - Every time you add a node to the frontier, check whether it already exists in the frontier with a higher path cost, and if yes, replace that node with the new one
+462: - This approach is called **Graph search**
+463: # General Graph Search
+464: 
+465: Consider this 4-state graph:
+466: 
+467: ![img-60.jpeg](img-60.jpeg)
+468: 
+469: How big is its graph search (from s)?
+470: 
+471: ![img-61.jpeg](img-61.jpeg)
+472: # Tree search vs. Graph search
 473: 
-474: and so we refer to $\boldsymbol{\mu}$ as the mean of the Gaussian distribution.
+474: ## General Tree Search
 475: 
-476: We now consider second order moments of the Gaussian. In the univariate case, we considered the second order moment given by $\mathbb{E}[x^2]$. For the multivariate Gaussian, there are $D^2$ second order moments given by $\mathbb{E}[x_i x_j]$, which we can group together to form the matrix $\mathbb{E}[\mathbf{x}\mathbf{x}^{\mathrm{T}}]$. This matrix can be written as
+476: **function TREE-SEARCH(problem) returns** a solution, or failure
 477: 
-478: $$\begin{aligned} \mathbb{E}[\mathbf{x}\mathbf{x}^{\mathrm{T}}] &= \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \int \exp\left\{-\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^{\mathrm{T}} \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu})\right\} \mathbf{x}\mathbf{x}^{\mathrm{T}} \, \mathrm{d}\mathbf{x} \\ &= \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \int \exp\left\{-\frac{1}{2} \mathbf{z}^{\mathrm{T}} \boldsymbol{\Sigma}^{-1} \mathbf{z}\right\} (\mathbf{z} + \boldsymbol{\mu}) (\mathbf{z} + \boldsymbol{\mu})^{\mathrm{T}} \, \mathrm{d}\mathbf{z} \end{aligned}$$
-479: where again we have changed variables using $\mathbf{z} = \mathbf{x} - \boldsymbol{\mu}$. Note that the cross-terms involving $\boldsymbol{\mu}\mathbf{z}^{\mathrm{T}}$ and $\boldsymbol{\mu}^{\mathrm{T}}\mathbf{z}$ will again vanish by symmetry. The term $\boldsymbol{\mu}\boldsymbol{\mu}^{\mathrm{T}}$ is constant and can be taken outside the integral, which itself is unity because the Gaussian distribution is normalized. Consider the term involving $\mathbf{z}\mathbf{z}^{\mathrm{T}}$. Again, we can make use of the eigenvector expansion of the covariance matrix given by (2.45), together with the completeness of the set of eigenvectors, to write
-480: 
-481: $$
-482: \mathbf{z} = \sum_{j=1}^{D} y_j \mathbf{u}_j \tag{2.60}
-483: $$
-484: 
-485: where $y_j = \mathbf{u}_j^{\mathrm{T}}\mathbf{z}$, which gives
-486: 
-487: $$
-488: \begin{array}{l}
-489: \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \int \exp\left\{-\frac{1}{2}\mathbf{z}^{\mathrm{T}}\boldsymbol{\Sigma}^{-1}\mathbf{z}\right\} \mathbf{z}\mathbf{z}^{\mathrm{T}} \, \mathrm{d}\mathbf{z} \\
-490: = \frac{1}{(2\pi)^{D/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} \sum_{i=1}^{D} \sum_{j=1}^{D} \mathbf{u}_i \mathbf{u}_j^{\mathrm{T}} \int \exp\left\{-\sum_{k=1}^{D} \frac{y_k^2}{2\lambda_k}\right\} y_i y_j \, \mathrm{d}\mathbf{y} \\
-491: = \sum_{i=1}^{D} \mathbf{u}_i \mathbf{u}_i^{\mathrm{T}} \lambda_i = \boldsymbol{\Sigma}
-492: \end{array}
-493: \tag{2.61}
-494: $$
+478: initialize the **frontier** using the initial state of **problem**
+479: 
+480: **loop do**
+481: 
+482: if the **frontier** is empty **then return** failure
+483: 
+484: choose a leaf **node** and remove it from the **frontier**
+485: 
+486: if the **node** contains a goal state **then return** the corresponding solution
+487: 
+488: **expand** the chosen **node**, adding the resulting **nodes** to the **frontier**
+489: 
+490: **VS.**
+491: 
+492: ## General Graph Search
+493: 
+494: **function GRAPH-SEARCH(problem) returns** a solution, or failure
 495: 
-496: where we have made use of the eigenvector equation (2.45), together with the fact that the integral on the right-hand side of the middle line vanishes by symmetry unless $i = j$, and in the final line we have made use of the results (1.50) and (2.55), together with (2.48). Thus we have
+496: initialize the **frontier** using the initial state of **problem**
 497: 
-498: $$
-499: \mathbb{E}[\mathbf{x}\mathbf{x}^{\mathrm{T}}] = \boldsymbol{\mu}\boldsymbol{\mu}^{\mathrm{T}} + \boldsymbol{\Sigma}. \tag{2.62}
-500: $$
+498: initialize the **explored set** to be empty
+499: 
+500: **loop do**
 501: 
-502: For single random variables, we subtracted the mean before taking second moments in order to define a variance. Similarly, in the multivariate case it is again convenient to subtract off the mean, giving rise to the *covariance* of a random vector $\mathbf{x}$ defined by
+502: if the **frontier** is empty **then return** failure
 503: 
-504: $$
-505: \operatorname{cov}[\mathbf{x}] = \mathbb{E}\left[(\mathbf{x} - \mathbb{E}[\mathbf{x}])(\mathbf{x} - \mathbb{E}[\mathbf{x}])^{\mathrm{T}}\right]. \tag{2.63}
-506: $$
+504: choose a leaf **node** and remove it from the **frontier**
+505: 
+506: if the **node** contains a goal state **then return** the corresponding solution
 507: 
-508: For the specific case of a Gaussian distribution, we can make use of $\mathbb{E}[\mathbf{x}] = \boldsymbol{\mu}$, together with the result (2.62), to give
+508: add the **node** to the **explored set**
 509: 
-510: $$
-511: \operatorname{cov}[\mathbf{x}] = \boldsymbol{\Sigma}. \tag{2.64}
-512: $$
-513: 
-514: Because the parameter matrix $\boldsymbol{\Sigma}$ governs the covariance of $\mathbf{x}$ under the Gaussian distribution, it is called the covariance matrix.
-515: 
-516: Although the Gaussian distribution (2.43) is widely used as a density model, it suffers from some significant limitations. Consider the number of free parameters in the distribution. A general symmetric covariance matrix $\boldsymbol{\Sigma}$ will have $D(D + 1)/2$ independent parameters, and there are another $D$ independent parameters in $\boldsymbol{\mu}$, giving $D(D + 3)/2$ parameters in total. For large $D$, the total number of parameters
-517: Figure 2.8 Contours of constant probability density for a Gaussian distribution in two dimensions in which the covariance matrix is (a) of general form, (b) diagonal, in which the elliptical contours are aligned with the coordinate axes, and (c) proportional to the identity matrix, in which the contours are concentric circles.
-518: 
-519: ![img-19.jpeg](img-19.jpeg)
-520: 
-521: (a)
+510: **expand** the chosen **node**, adding the resulting **nodes** to the **frontier**
+511: 
+512: but only if the **node** is not already in the **frontier** or **explored set**
+513: # Search algorithm
+514: 
+515: **Main question:** which frontier nodes to explore? How to expand as few nodes as possible, while achieving the goal?
+516: 
+517: - **Search Strategy**
+518:   - A search strategy determines the order in which nodes are expanded.
+519: 
+520: ![img-62.jpeg](img-62.jpeg)
+521: # Properties of Search Methods
 522: 
-523: ![img-20.jpeg](img-20.jpeg)
+523: Strategies are evaluated along the following criteria:
 524: 
-525: (b)
-526: 
-527: ![img-21.jpeg](img-21.jpeg)
-528: 
-529: (c)
-530: 
-531: therefore grows quadratically with $D$, and the computational task of manipulating and inverting large matrices can become prohibitive. One way to address this problem is to use restricted forms of the covariance matrix. If we consider covariance matrices that are *diagonal*, so that $\Sigma = \mathrm{diag}(\sigma_i^2)$, we then have a total of $2D$ independent parameters in the density model. The corresponding contours of constant density are given by axis-aligned ellipsoids. We could further restrict the covariance matrix to be proportional to the identity matrix, $\Sigma = \sigma^2\mathbf{I}$, known as an *isotropic* covariance, giving $D + 1$ independent parameters in the model and spherical surfaces of constant density. The three possibilities of general, diagonal, and isotropic covariance matrices are illustrated in Figure 2.8. Unfortunately, whereas such approaches limit the number of degrees of freedom in the distribution and make inversion of the covariance matrix a much faster operation, they also greatly restrict the form of the probability density and limit its ability to capture interesting correlations in the data.
-532: 
-533: A further limitation of the Gaussian distribution is that it is intrinsically unimodal (i.e., has a single maximum) and so is unable to provide a good approximation to multimodal distributions. Thus the Gaussian distribution can be both too flexible, in the sense of having too many parameters, while also being too limited in the range of distributions that it can adequately represent. We will see later that the introduction of *latent* variables, also called *hidden* variables or *unobserved* variables, allows both of these problems to be addressed. In particular, a rich family of multimodal distributions is obtained by introducing discrete latent variables leading to mixtures of Gaussians, as discussed in Section 2.3.9. Similarly, the introduction of continuous latent variables, as described in Chapter 12, leads to models in which the number of free parameters can be controlled independently of the dimensionality $D$ of the data space while still allowing the model to capture the dominant correlations in the data set. Indeed, these two approaches can be combined and further extended to derive a very rich set of hierarchical models that can be adapted to a broad range of practical applications. For instance, the Gaussian version of the *Markov random field*, which is widely used as a probabilistic model of images, is a Gaussian distribution over the joint space of pixel intensities but rendered tractable through the imposition of considerable structure reflecting the spatial organization of the pixels. Similarly, the *linear dynamical system*, used to model time series data for applications such as tracking, is also a joint Gaussian distribution over a potentially large number of observed and latent variables and again is tractable due to the structure imposed on the distribution. A powerful framework for expressing the form and properties of
-534: 
-535: Section 8.3
-536: 
-537: Section 13.3
-538: such complex distributions is that of probabilistic graphical models, which will form the subject of Chapter 8.
+525: - ▶ **Completeness:** is the strategy guaranteed to find a solution when there is one?
+526: - ▶ **Time Complexity:** how long does it take to find a solution?
+527: - ▶ **Space Complexity:** how much memory does it require to perform the search?
+528: - ▶ **Optimality:** Does the strategy find the best-quality solution when more than one solution exists?
+529: 
+530: • Time and space complexity are measured in terms of :
+531: 
+532: - • $b$ is the branching factor
+533: - • $m$ is the maximum depth
+534: - • solutions at various depths
+535: 
+536: • Number of nodes in entire tree?
+537: 
+538: • $1 + b + b^2 + \dots b^m = O(b^m)$
 539: 
-540: ### 2.3.1 Conditional Gaussian distributions
-541: 
-542: An important property of the multivariate Gaussian distribution is that if two sets of variables are jointly Gaussian, then the conditional distribution of one set conditioned on the other is again Gaussian. Similarly, the marginal distribution of either set is also Gaussian.
-543: 
-544: Consider first the case of conditional distributions. Suppose $\mathbf{x}$ is a $D$-dimensional vector with Gaussian distribution $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Sigma})$ and that we partition $\mathbf{x}$ into two disjoint subsets $\mathbf{x}_a$ and $\mathbf{x}_b$. Without loss of generality, we can take $\mathbf{x}_a$ to form the first $M$ components of $\mathbf{x}$, with $\mathbf{x}_b$ comprising the remaining $D - M$ components, so that
-545: 
-546: $$\mathbf{x} = \begin{pmatrix} \mathbf{x}_a \\ \mathbf{x}_b \end{pmatrix}. \tag{2.65}$$
-547: 
-548: We also define corresponding partitions of the mean vector $\boldsymbol{\mu}$ given by
+540: ![img-63.jpeg](img-63.jpeg)
+541: # Search Strategies
+542: 
+543: ???
+544: 
+545: ![img-64.jpeg](img-64.jpeg)
+546: 
+547: What kinds of search algorithms are there?
+548: # Search Algorithms
 549: 
-550: $$\boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b \end{pmatrix} \tag{2.66}$$
+550: • Uninformed search algorithms
 551: 
-552: and of the covariance matrix $\boldsymbol{\Sigma}$ given by
-553: 
-554: $$\boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} \end{pmatrix}. \tag{2.67}$$
+552: - Have no knowledge other the problem definition
+553: - Has a start state
+554: - Will recognize the goal state
 555: 
-556: Note that the symmetry $\boldsymbol{\Sigma}^{\mathrm{T}} = \boldsymbol{\Sigma}$ of the covariance matrix implies that $\boldsymbol{\Sigma}_{aa}$ and $\boldsymbol{\Sigma}_{bb}$ are symmetric, while $\boldsymbol{\Sigma}_{ba} = \boldsymbol{\Sigma}_{ab}^{\mathrm{T}}$.
+556: • Informed search algorithms:
 557: 
-558: In many situations, it will be convenient to work with the inverse of the covariance matrix
-559: 
-560: $$\boldsymbol{\Lambda} \equiv \boldsymbol{\Sigma}^{-1} \tag{2.68}$$
-561: 
-562: which is known as the *precision matrix*. In fact, we shall see that some properties of Gaussian distributions are most naturally expressed in terms of the covariance, whereas others take a simpler form when viewed in terms of the precision. We therefore also introduce the partitioned form of the precision matrix
-563: 
-564: $$\boldsymbol{\Lambda} = \begin{pmatrix} \boldsymbol{\Lambda}_{aa} & \boldsymbol{\Lambda}_{ab} \\ \boldsymbol{\Lambda}_{ba} & \boldsymbol{\Lambda}_{bb} \end{pmatrix} \tag{2.69}$$
+558: - Finds the solution efficiently
+559: - Leverage information about the environment
+560: - Use a heuristics - An under-estimate of cost to reach the goal
+561: - Or path cost - Distance traveled to current state
+562: 
+563: ![img-65.jpeg](img-65.jpeg)
+564: # Today
 565: 
-566: Exercise 2.22
+566: ## Solving problems by searching
 567: 
-568: corresponding to the partitioning (2.65) of the vector $\mathbf{x}$. Because the inverse of a symmetric matrix is also symmetric, we see that $\boldsymbol{\Lambda}_{aa}$ and $\boldsymbol{\Lambda}_{bb}$ are symmetric, while $\boldsymbol{\Lambda}_{ab}^{\mathrm{T}} = \boldsymbol{\Lambda}_{ba}$. It should be stressed at this point that, for instance, $\boldsymbol{\Lambda}_{aa}$ is not simply given by the inverse of $\boldsymbol{\Sigma}_{aa}$. In fact, we shall shortly examine the relation between the inverse of a partitioned matrix and the inverses of its partitions.
-569: 
-570: Let us begin by finding an expression for the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$. From the product rule of probability, we see that this conditional distribution can be
-571: evaluated from the joint distribution $p(\mathbf{x}) = p(\mathbf{x}_a, \mathbf{x}_b)$ simply by fixing $\mathbf{x}_b$ to the observed value and normalizing the resulting expression to obtain a valid probability distribution over $\mathbf{x}_a$. Instead of performing this normalization explicitly, we can obtain the solution more efficiently by considering the quadratic form in the exponent of the Gaussian distribution given by (2.44) and then reinstating the normalization coefficient at the end of the calculation. If we make use of the partitioning (2.65), (2.66), and (2.69), we obtain
-572: 
-573: $$\begin{array}{l} - \frac {1}{2} (\mathbf {x} - \boldsymbol {\mu}) ^ {\mathrm{T}} \boldsymbol {\Sigma} ^ {- 1} (\mathbf {x} - \boldsymbol {\mu}) = \\ - \frac {1}{2} (\mathbf {x} _ {a} - \boldsymbol {\mu} _ {a}) ^ {\mathrm{T}} \boldsymbol {\Lambda} _ {a a} (\mathbf {x} _ {a} - \boldsymbol {\mu} _ {a}) - \frac {1}{2} (\mathbf {x} _ {a} - \boldsymbol {\mu} _ {a}) ^ {\mathrm{T}} \boldsymbol {\Lambda} _ {a b} (\mathbf {x} _ {b} - \boldsymbol {\mu} _ {b}) \\ - \frac {1}{2} (\mathbf {x} _ {b} - \boldsymbol {\mu} _ {b}) ^ {\mathrm{T}} \boldsymbol {\Lambda} _ {b a} (\mathbf {x} _ {a} - \boldsymbol {\mu} _ {a}) - \frac {1}{2} (\mathbf {x} _ {b} - \boldsymbol {\mu} _ {b}) ^ {\mathrm{T}} \boldsymbol {\Lambda} _ {b b} (\mathbf {x} _ {b} - \boldsymbol {\mu} _ {b}). \tag {2.70} \\ \end{array}$$
-574: 
-575: We see that as a function of $\mathbf{x}_a$, this is again a quadratic form, and hence the corresponding conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ will be Gaussian. Because this distribution is completely characterized by its mean and its covariance, our goal will be to identify expressions for the mean and covariance of $p(\mathbf{x}_a|\mathbf{x}_b)$ by inspection of (2.70).
-576: 
-577: This is an example of a rather common operation associated with Gaussian distributions, sometimes called 'completing the square', in which we are given a quadratic form defining the exponent terms in a Gaussian distribution, and we need to determine the corresponding mean and covariance. Such problems can be solved straightforwardly by noting that the exponent in a general Gaussian distribution $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Sigma})$ can be written
+568: - Problem-solving agents
+569: - Search Problems
+570: - **Uninformed Search Methods**
+571:   1. Depth-First Search
+572:   2. Breadth-First Search
+573:   3. Iterative Deepening Search
+574:   4. Uniform-Cost Search
+575: 
+576: ![img-66.jpeg](img-66.jpeg)
+577: # Uninformed search strategies
 578: 
-579: $$- \frac {1}{2} (\mathbf {x} - \boldsymbol {\mu}) ^ {\mathrm{T}} \boldsymbol {\Sigma} ^ {- 1} (\mathbf {x} - \boldsymbol {\mu}) = - \frac {1}{2} \mathbf {x} ^ {\mathrm{T}} \boldsymbol {\Sigma} ^ {- 1} \mathbf {x} + \mathbf {x} ^ {\mathrm{T}} \boldsymbol {\Sigma} ^ {- 1} \boldsymbol {\mu} + \text { const } \tag {2.71}$$
-580: 
-581: where 'const' denotes terms which are independent of $\mathbf{x}$, and we have made use of the symmetry of $\boldsymbol{\Sigma}$. Thus if we take our general quadratic form and express it in the form given by the right-hand side of (2.71), then we can immediately equate the matrix of coefficients entering the second order term in $\mathbf{x}$ to the inverse covariance matrix $\boldsymbol{\Sigma}^{-1}$ and the coefficient of the linear term in $\mathbf{x}$ to $\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu}$, from which we can obtain $\boldsymbol{\mu}$.
-582: 
-583: Now let us apply this procedure to the conditional Gaussian distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ for which the quadratic form in the exponent is given by (2.70). We will denote the mean and covariance of this distribution by $\boldsymbol{\mu}_{a|b}$ and $\boldsymbol{\Sigma}_{a|b}$, respectively. Consider the functional dependence of (2.70) on $\mathbf{x}_a$ in which $\mathbf{x}_b$ is regarded as a constant. If we pick out all terms that are second order in $\mathbf{x}_a$, we have
-584: 
-585: $$- \frac {1}{2} \mathbf {x} _ {a} ^ {\mathrm{T}} \boldsymbol {\Lambda} _ {a a} \mathbf {x} _ {a} \tag {2.72}$$
-586: 
-587: from which we can immediately conclude that the covariance (inverse precision) of $p(\mathbf{x}_a|\mathbf{x}_b)$ is given by
-588: 
-589: $$\boldsymbol {\Sigma} _ {a | b} = \boldsymbol {\Lambda} _ {a a} ^ {- 1}. \tag {2.73}$$
-590: Now consider all of the terms in (2.70) that are linear in $\mathbf{x}_a$
-591: 
-592: $$\mathbf{x}_a^{\mathrm{T}} \left\{ \boldsymbol{\Lambda}_{aa} \boldsymbol{\mu}_a - \boldsymbol{\Lambda}_{ab} (\mathbf{x}_b - \boldsymbol{\mu}_b) \right\} \tag{2.74}$$
-593: 
-594: where we have used $\boldsymbol{\Lambda}_{ba}^{\mathrm{T}} = \boldsymbol{\Lambda}_{ab}$. From our discussion of the general form (2.71), the coefficient of $\mathbf{x}_a$ in this expression must equal $\boldsymbol{\Sigma}_{a|b}^{-1} \boldsymbol{\mu}_{a|b}$ and hence
-595: 
-596: $$\begin{array}{l} \boldsymbol{\mu}_{a|b} = \boldsymbol{\Sigma}_{a|b} \left\{ \boldsymbol{\Lambda}_{aa} \boldsymbol{\mu}_a - \boldsymbol{\Lambda}_{ab} (\mathbf{x}_b - \boldsymbol{\mu}_b) \right\} \\ = \boldsymbol{\mu}_a - \boldsymbol{\Lambda}_{aa}^{-1} \boldsymbol{\Lambda}_{ab} (\mathbf{x}_b - \boldsymbol{\mu}_b) \tag{2.75} \end{array}$$
+579: - **Uninformed search** also known as unguided search, blind search, or brute-force search is a search methodology that has no additional information about the domain of the problem apart from the representation of the problem which is usually a tree.
+580:   - Can only traverse state space blindly in hope of somehow hitting a goal state at some point
+581: - **Uninformed search algorithms:**
+582:   - Depth-first Search
+583:   - Breadth-first Search
+584:   - Iterative deepening search
+585:   - Uniform Cost Search
+586: # Today
+587: 
+588: ## Solving problems by searching
+589: 
+590: - Problem-solving agents
+591: - Search Problems
+592: - Uninformed Search Methods
+593:   1. Depth-First Search
+594:   2. Breadth-First Search
+595:   3. Iterative Deepening Search
+596:   4. Uniform-Cost Search
 597: 
-598: where we have made use of (2.73).
-599: 
-600: The results (2.73) and (2.75) are expressed in terms of the partitioned precision matrix of the original joint distribution $p(\mathbf{x}_a, \mathbf{x}_b)$. We can also express these results in terms of the corresponding partitioned covariance matrix. To do this, we make use of the following identity for the inverse of a partitioned matrix
-601: 
-602: Exercise 2.24
-603: 
-604: $$\begin{pmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{pmatrix}^{-1} = \begin{pmatrix} \mathbf{M} & -\mathbf{MBD}^{-1} \\ -\mathbf{D}^{-1}\mathbf{CM} & \mathbf{D}^{-1} + \mathbf{D}^{-1}\mathbf{CMBD}^{-1} \end{pmatrix} \tag{2.76}$$
-605: 
-606: where we have defined
-607: 
-608: $$\mathbf{M} = (\mathbf{A} - \mathbf{BD}^{-1}\mathbf{C})^{-1}. \tag{2.77}$$
-609: 
-610: The quantity $\mathbf{M}^{-1}$ is known as the Schur complement of the matrix on the left-hand side of (2.76) with respect to the submatrix $\mathbf{D}$. Using the definition
+598: ![img-67.jpeg](img-67.jpeg)
+599: # 1. Depth-First Search
+600: 
+601: Depth-First Search (DFS):
+602: 
+603: - Always expand node at the deepest level of the tree, e.g., one of the most recently generated nodes
+604: - When hit a dead-end, backtrack to last choice
+605: - Frontier can be maintained as a last-in first-out (LIFO) queue (aka. a stack).
+606: - The elements are added to the stack one at a time.
+607: - The one selected and taken off the frontier at any time is the last element that was added.
+608: 
+609: ![img-68.jpeg](img-68.jpeg)
+610: # 1. Depth-First Search Example
 611: 
-612: $$\begin{pmatrix} \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} \end{pmatrix}^{-1} = \begin{pmatrix} \boldsymbol{\Lambda}_{aa} & \boldsymbol{\Lambda}_{ab} \\ \boldsymbol{\Lambda}_{ba} & \boldsymbol{\Lambda}_{bb} \end{pmatrix} \tag{2.78}$$
+612: DFS Search(problem, stack )
 613: 
-614: and making use of (2.76), we have
+614: # of nodes tested: 0, expanded: 0
 615: 
-616: $$\boldsymbol{\Lambda}_{aa} = (\boldsymbol{\Sigma}_{aa} - \boldsymbol{\Sigma}_{ab} \boldsymbol{\Sigma}_{bb}^{-1} \boldsymbol{\Sigma}_{ba})^{-1} \tag{2.79}$$
-617: 
-618: $$\boldsymbol{\Lambda}_{ab} = -(\boldsymbol{\Sigma}_{aa} - \boldsymbol{\Sigma}_{ab} \boldsymbol{\Sigma}_{bb}^{-1} \boldsymbol{\Sigma}_{ba})^{-1} \boldsymbol{\Sigma}_{ab} \boldsymbol{\Sigma}_{bb}^{-1}. \tag{2.80}$$
+616: |  Explored node | Frontier  |
+617: | --- | --- |
+618: |   | {(S, path:[S])}  |
 619: 
-620: From these we obtain the following expressions for the mean and covariance of the conditional distribution $p(\mathbf{x}_a | \mathbf{x}_b)$
+620: **Strategy:** expand a deepest node first
 621: 
-622: $$\boldsymbol{\mu}_{a|b} = \boldsymbol{\mu}_a + \boldsymbol{\Sigma}_{ab} \boldsymbol{\Sigma}_{bb}^{-1} (\mathbf{x}_b - \boldsymbol{\mu}_b) \tag{2.81}$$
+622: **Implementation:** Frontier is a LIFO stack
 623: 
-624: $$\boldsymbol{\Sigma}_{a|b} = \boldsymbol{\Sigma}_{aa} - \boldsymbol{\Sigma}_{ab} \boldsymbol{\Sigma}_{bb}^{-1} \boldsymbol{\Sigma}_{ba}. \tag{2.82}$$
+624: State Space Graph
 625: 
-626: Comparing (2.73) and (2.82), we see that the conditional distribution $p(\mathbf{x}_a | \mathbf{x}_b)$ takes a simpler form when expressed in terms of the partitioned precision matrix than when it is expressed in terms of the partitioned covariance matrix. Note that the mean of the conditional distribution $p(\mathbf{x}_a | \mathbf{x}_b)$, given by (2.81), is a linear function of $\mathbf{x}_b$ and that the covariance, given by (2.82), is independent of $\mathbf{x}_a$. This represents an example of a linear-Gaussian model.
+626: ![img-69.jpeg](img-69.jpeg)
 627: 
-628: Section 8.1.4
-629: ### 2.3.2 Marginal Gaussian distributions
+628: Graph Search
+629: # 1. Depth-First Search Example
 630: 
-631: We have seen that if a joint distribution $p(\mathbf{x}_a, \mathbf{x}_b)$ is Gaussian, then the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ will again be Gaussian. Now we turn to a discussion of the marginal distribution given by
+631: DFS Search(problem, stack )
 632: 
-633: $$p(\mathbf{x}_a) = \int p(\mathbf{x}_a, \mathbf{x}_b) \, \mathrm{d}\mathbf{x}_b \tag{2.83}$$
+633: # of nodes tested: 0, expanded: 0
 634: 
-635: which, as we shall see, is also Gaussian. Once again, our strategy for evaluating this distribution efficiently will be to focus on the quadratic form in the exponent of the joint distribution and thereby to identify the mean and covariance of the marginal distribution $p(\mathbf{x}_a)$.
-636: 
-637: The quadratic form for the joint distribution can be expressed, using the partitioned precision matrix, in the form (2.70). Because our goal is to integrate out $\mathbf{x}_b$, this is most easily achieved by first considering the terms involving $\mathbf{x}_b$ and then completing the square in order to facilitate integration. Picking out just those terms that involve $\mathbf{x}_b$, we have
-638: 
-639: $$-\frac{1}{2}\mathbf{x}_b^{\mathrm{T}}\boldsymbol{\Lambda}_{bb}\mathbf{x}_b + \mathbf{x}_b^{\mathrm{T}}\mathbf{m} = -\frac{1}{2}(\mathbf{x}_b - \boldsymbol{\Lambda}_{bb}^{-1}\mathbf{m})^{\mathrm{T}}\boldsymbol{\Lambda}_{bb}(\mathbf{x}_b - \boldsymbol{\Lambda}_{bb}^{-1}\mathbf{m}) + \frac{1}{2}\mathbf{m}^{\mathrm{T}}\boldsymbol{\Lambda}_{bb}^{-1}\mathbf{m} \tag{2.84}$$
-640: 
-641: where we have defined
-642: 
-643: $$\mathbf{m} = \boldsymbol{\Lambda}_{bb}\boldsymbol{\mu}_b - \boldsymbol{\Lambda}_{ba}(\mathbf{x}_a - \boldsymbol{\mu}_a). \tag{2.85}$$
-644: 
-645: We see that the dependence on $\mathbf{x}_b$ has been cast into the standard quadratic form of a Gaussian distribution corresponding to the first term on the right-hand side of (2.84), plus a term that does not depend on $\mathbf{x}_b$ (but that does depend on $\mathbf{x}_a$). Thus, when we take the exponential of this quadratic form, we see that the integration over $\mathbf{x}_b$ required by (2.83) will take the form
-646: 
-647: $$\int \exp \left\{ -\frac{1}{2}(\mathbf{x}_b - \boldsymbol{\Lambda}_{bb}^{-1}\mathbf{m})^{\mathrm{T}}\boldsymbol{\Lambda}_{bb}(\mathbf{x}_b - \boldsymbol{\Lambda}_{bb}^{-1}\mathbf{m}) \right\} \mathrm{d}\mathbf{x}_b. \tag{2.86}$$
+635: |  Explored node | Frontier  |
+636: | --- | --- |
+637: |   | {(S, path:[S])}  |
+638: |  S not goal |   |
+639: 
+640: State Space Graph
+641: 
+642: ![img-70.jpeg](img-70.jpeg)
+643: 
+644: Graph Search
+645: 
+646: ![img-71.jpeg](img-71.jpeg)
+647: # 1. Depth-First Search Example
 648: 
-649: This integration is easily performed by noting that it is the integral over an unnormalized Gaussian, and so the result will be the reciprocal of the normalization coefficient. We know from the form of the normalized Gaussian given by (2.43), that this coefficient is independent of the mean and depends only on the determinant of the covariance matrix. Thus, by completing the square with respect to $\mathbf{x}_b$, we can integrate out $\mathbf{x}_b$ and the only term remaining from the contributions on the left-hand side of (2.84) that depends on $\mathbf{x}_a$ is the last term on the right-hand side of (2.84) in which $\mathbf{m}$ is given by (2.85). Combining this term with the remaining terms from
-650: (2.70) that depend on $\mathbf{x}_a$, we obtain
-651: 
-652: $$\begin{array}{l} \frac{1}{2} \left[ \boldsymbol{\Lambda}_{bb} \boldsymbol{\mu}_b - \boldsymbol{\Lambda}_{ba} (\mathbf{x}_a - \boldsymbol{\mu}_a) \right]^{\mathrm{T}} \boldsymbol{\Lambda}_{bb}^{-1} \left[ \boldsymbol{\Lambda}_{bb} \boldsymbol{\mu}_b - \boldsymbol{\Lambda}_{ba} (\mathbf{x}_a - \boldsymbol{\mu}_a) \right] \\ \quad - \frac{1}{2} \mathbf{x}_a^{\mathrm{T}} \boldsymbol{\Lambda}_{aa} \mathbf{x}_a + \mathbf{x}_a^{\mathrm{T}} (\boldsymbol{\Lambda}_{aa} \boldsymbol{\mu}_a + \boldsymbol{\Lambda}_{ab} \boldsymbol{\mu}_b) + \text{const} \\ = - \frac{1}{2} \mathbf{x}_a^{\mathrm{T}} (\boldsymbol{\Lambda}_{aa} - \boldsymbol{\Lambda}_{ab} \boldsymbol{\Lambda}_{bb}^{-1} \boldsymbol{\Lambda}_{ba}) \mathbf{x}_a \\ \quad + \mathbf{x}_a^{\mathrm{T}} (\boldsymbol{\Lambda}_{aa} - \boldsymbol{\Lambda}_{ab} \boldsymbol{\Lambda}_{bb}^{-1} \boldsymbol{\Lambda}_{ba})^{-1} \boldsymbol{\mu}_a + \text{const} \end{array} \tag{2.87}$$
-653: 
-654: where 'const' denotes quantities independent of $\mathbf{x}_a$. Again, by comparison with (2.71), we see that the covariance of the marginal distribution of $p(\mathbf{x}_a)$ is given by
-655: 
-656: $$\boldsymbol{\Sigma}_a = (\boldsymbol{\Lambda}_{aa} - \boldsymbol{\Lambda}_{ab} \boldsymbol{\Lambda}_{bb}^{-1} \boldsymbol{\Lambda}_{ba})^{-1}. \tag{2.88}$$
+649: DFS Search(problem, stack )
+650: 
+651: # of nodes tested: 1, expanded: 1
+652: 
+653: |  Explored node | Frontier  |
+654: | --- | --- |
+655: |   | {(S, path:[S])}  |
+656: |  S not goal | {(C, path: [S,C]), (B, path: [S,B]), (A, path: [S,A])}  |
 657: 
-658: Similarly, the mean is given by
+658: State Space Graph
 659: 
-660: $$\boldsymbol{\Sigma}_a (\boldsymbol{\Lambda}_{aa} - \boldsymbol{\Lambda}_{ab} \boldsymbol{\Lambda}_{bb}^{-1} \boldsymbol{\Lambda}_{ba}) \boldsymbol{\mu}_a = \boldsymbol{\mu}_a \tag{2.89}$$
+660: ![img-72.jpeg](img-72.jpeg)
 661: 
-662: where we have used (2.88). The covariance in (2.88) is expressed in terms of the partitioned precision matrix given by (2.69). We can rewrite this in terms of the corresponding partitioning of the covariance matrix given by (2.67), as we did for the conditional distribution. These partitioned matrices are related by
+662: Graph Search
 663: 
-664: $$\begin{pmatrix} \boldsymbol{\Lambda}_{aa} & \boldsymbol{\Lambda}_{ab} \\ \boldsymbol{\Lambda}_{ba} & \boldsymbol{\Lambda}_{bb} \end{pmatrix}^{-1} = \begin{pmatrix} \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} \end{pmatrix} \tag{2.90}$$
-665: 
-666: Making use of (2.76), we then have
-667: 
-668: $$(\boldsymbol{\Lambda}_{aa} - \boldsymbol{\Lambda}_{ab} \boldsymbol{\Lambda}_{bb}^{-1} \boldsymbol{\Lambda}_{ba})^{-1} = \boldsymbol{\Sigma}_{aa}. \tag{2.91}$$
-669: 
-670: Thus we obtain the intuitively satisfying result that the marginal distribution $p(\mathbf{x}_a)$ has mean and covariance given by
-671: 
-672: $$\mathbb{E}[\mathbf{x}_a] = \boldsymbol{\mu}_a \tag{2.92}$$
-673: 
-674: $$\text{cov}[\mathbf{x}_a] = \boldsymbol{\Sigma}_{aa}. \tag{2.93}$$
-675: 
-676: We see that for a marginal distribution, the mean and covariance are most simply expressed in terms of the partitioned covariance matrix, in contrast to the conditional distribution for which the partitioned precision matrix gives rise to simpler expressions.
-677: 
-678: Our results for the marginal and conditional distributions of a partitioned Gaussian are summarized below.
-679: 
-680: ### Partitioned Gaussians
-681: 
-682: Given a joint Gaussian distribution $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Sigma})$ with $\boldsymbol{\Lambda} \equiv \boldsymbol{\Sigma}^{-1}$ and
-683: 
-684: $$\mathbf{x} = \begin{pmatrix} \mathbf{x}_a \\ \mathbf{x}_b \end{pmatrix}, \quad \boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b \end{pmatrix} \tag{2.94}$$
-685: ![img-22.jpeg](img-22.jpeg)
-686: 
-687: ![img-23.jpeg](img-23.jpeg)
-688: 
-689: Figure 2.9 The plot on the left shows the contours of a Gaussian distribution $p(x_a, x_b)$ over two variables, and the plot on the right shows the marginal distribution $p(x_a)$ (blue curve) and the conditional distribution $p(x_a|x_b)$ for $x_b = 0.7$ (red curve).
-690: 
-691: $$\boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb} \end{pmatrix}, \quad \boldsymbol{\Lambda} = \begin{pmatrix} \boldsymbol{\Lambda}_{aa} & \boldsymbol{\Lambda}_{ab} \\ \boldsymbol{\Lambda}_{ba} & \boldsymbol{\Lambda}_{bb} \end{pmatrix}. \tag{2.95}$$
-692: 
-693: Conditional distribution:
-694: 
-695: $$p(\mathbf{x}_a|\mathbf{x}_b) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_{a|b}, \boldsymbol{\Lambda}_{aa}^{-1}) \tag{2.96}$$
+664: ![img-73.jpeg](img-73.jpeg)
+665: # 1. Depth-First Search Example
+666: 
+667: DFS Search(problem, stack )
+668: 
+669: # of nodes tested: 2, expanded: 2
+670: 
+671: |  Explored node | Frontier  |
+672: | --- | --- |
+673: |   | {(S, path:[S])}  |
+674: |  S not goal | {(C, path: [S,C]), (B, path: [S,B]), (A, path: [S,A])}  |
+675: |  A not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E]), (D, path: [S,A,E])}  |
+676: 
+677: State Space Graph
+678: 
+679: ![img-74.jpeg](img-74.jpeg)
+680: 
+681: Graph Search
+682: 
+683: ![img-75.jpeg](img-75.jpeg)
+684: # 1. Depth-First Search Example
+685: 
+686: DFS Search(problem, stack )
+687: 
+688: # of nodes tested: 3, expanded: 3
+689: 
+690: |  Explored node | Frontier  |
+691: | --- | --- |
+692: |   | {(S, path:[S])}  |
+693: |  S not goal | {(C, path: [S,C]), (B, path: [S,B]), (A, path: [S,A])}  |
+694: |  A not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E]), (D, path: [S,A,E])}  |
+695: |  D not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E]), (H, path: [S,A,D,H])}  |
 696: 
-697: $$\boldsymbol{\mu}_{a|b} = \boldsymbol{\mu}_a - \boldsymbol{\Lambda}_{aa}^{-1}\boldsymbol{\Lambda}_{ab}(\mathbf{x}_b - \boldsymbol{\mu}_b). \tag{2.97}$$
+697: State Space Graph
 698: 
-699: Marginal distribution:
+699: ![img-76.jpeg](img-76.jpeg)
 700: 
-701: $$p(\mathbf{x}_a) = \mathcal{N}(\mathbf{x}_a|\boldsymbol{\mu}_a, \boldsymbol{\Sigma}_{aa}). \tag{2.98}$$
+701: Graph Search
 702: 
-703: We illustrate the idea of conditional and marginal distributions associated with a multivariate Gaussian using an example involving two variables in Figure 2.9.
-704: 
-705: ### 2.3.3 Bayes' theorem for Gaussian variables
-706: 
-707: In Sections 2.3.1 and 2.3.2, we considered a Gaussian $p(\mathbf{x})$ in which we partitioned the vector $\mathbf{x}$ into two subvectors $\mathbf{x} = (\mathbf{x}_a, \mathbf{x}_b)$ and then found expressions for the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ and the marginal distribution $p(\mathbf{x}_a)$. We noted that the mean of the conditional distribution $p(\mathbf{x}_a|\mathbf{x}_b)$ was a linear function of $\mathbf{x}_b$. Here we shall suppose that we are given a Gaussian marginal distribution $p(\mathbf{x})$ and a Gaussian conditional distribution $p(\mathbf{y}|\mathbf{x})$ in which $p(\mathbf{y}|\mathbf{x})$ has a mean that is a linear function of $\mathbf{x}$, and a covariance which is independent of $\mathbf{x}$. This is an example of
-708: a linear Gaussian model (Roweis and Ghahramani, 1999), which we shall study in greater generality in Section 8.1.4. We wish to find the marginal distribution $p(\mathbf{y})$ and the conditional distribution $p(\mathbf{x}|\mathbf{y})$. This is a problem that will arise frequently in subsequent chapters, and it will prove convenient to derive the general results here.
+703: ![img-77.jpeg](img-77.jpeg)
+704: # 1. Depth-First Search Example
+705: 
+706: DFS Search(problem, stack )
+707: 
+708: # of nodes tested: 4, expanded: 3
 709: 
-710: We shall take the marginal and conditional distributions to be
-711: 
-712: $$
-713: p(\mathbf{x}) = \mathcal{N}\left(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda}^{-1}\right) \tag{2.99}
-714: $$
-715: 
-716: $$
-717: p(\mathbf{y}|\mathbf{x}) = \mathcal{N}\left(\mathbf{y}|\mathbf{A}\mathbf{x} + \mathbf{b}, \mathbf{L}^{-1}\right) \tag{2.100}
-718: $$
+710: |  Explored node | Frontier  |
+711: | --- | --- |
+712: |   | {S}  |
+713: |  S not goal | {C, B, A}  |
+714: |  A not goal | {C,B, E, D}  |
+715: |  D not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E]), (H, path: [S,A,D,H])}  |
+716: |  H not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E])} **no expand**  |
+717: 
+718: State Space Graph
 719: 
-720: where $\boldsymbol{\mu}$, $\mathbf{A}$, and $\mathbf{b}$ are parameters governing the means, and $\boldsymbol{\Lambda}$ and $\mathbf{L}$ are precision matrices. If $\mathbf{x}$ has dimensionality $M$ and $\mathbf{y}$ has dimensionality $D$, then the matrix $\mathbf{A}$ has size $D \times M$.
+720: ![img-78.jpeg](img-78.jpeg)
 721: 
-722: First we find an expression for the joint distribution over $\mathbf{x}$ and $\mathbf{y}$. To do this, we define
+722: Graph Search
 723: 
-724: $$
-725: \mathbf{z} = \begin{pmatrix} \mathbf{x} \\ \mathbf{y} \end{pmatrix} \tag{2.101}
-726: $$
-727: 
-728: and then consider the log of the joint distribution
-729: 
-730: $$
-731: \begin{aligned}
-732: \ln p(\mathbf{z}) &= \ln p(\mathbf{x}) + \ln p(\mathbf{y}|\mathbf{x}) \\
-733: &= -\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^{\mathrm{T}}\boldsymbol{\Lambda}(\mathbf{x} - \boldsymbol{\mu}) \\
-734: &\quad - \frac{1}{2}(\mathbf{y} - \mathbf{A}\mathbf{x} - \mathbf{b})^{\mathrm{T}}\mathbf{L}(\mathbf{y} - \mathbf{A}\mathbf{x} - \mathbf{b}) + \text{const} \tag{2.102}
-735: \end{aligned}
-736: $$
-737: 
-738: where 'const' denotes terms independent of $\mathbf{x}$ and $\mathbf{y}$. As before, we see that this is a quadratic function of the components of $\mathbf{z}$, and hence $p(\mathbf{z})$ is Gaussian distribution. To find the precision of this Gaussian, we consider the second order terms in (2.102), which can be written as
-739: 
-740: $$
-741: \begin{aligned}
-742: &-\frac{1}{2}\mathbf{x}^{\mathrm{T}}(\boldsymbol{\Lambda} + \mathbf{A}^{\mathrm{T}}\mathbf{L}\mathbf{A})\mathbf{x} - \frac{1}{2}\mathbf{y}^{\mathrm{T}}\mathbf{L}\mathbf{y} + \frac{1}{2}\mathbf{y}^{\mathrm{T}}\mathbf{L}\mathbf{A}\mathbf{x} + \frac{1}{2}\mathbf{x}^{\mathrm{T}}\mathbf{A}^{\mathrm{T}}\mathbf{L}\mathbf{y} \\
-743: &= -\frac{1}{2}\begin{pmatrix} \mathbf{x} \\ \mathbf{y} \end{pmatrix}^{\mathrm{T}}\begin{pmatrix} \boldsymbol{\Lambda} + \mathbf{A}^{\mathrm{T}}\mathbf{L}\mathbf{A} & -\mathbf{A}^{\mathrm{T}}\mathbf{L} \\ -\mathbf{L}\mathbf{A} & \mathbf{L} \end{pmatrix}\begin{pmatrix} \mathbf{x} \\ \mathbf{y} \end{pmatrix} = -\frac{1}{2}\mathbf{z}^{\mathrm{T}}\mathbf{R}\mathbf{z} \tag{2.103}
-744: \end{aligned}
-745: $$
-746: 
-747: and so the Gaussian distribution over $\mathbf{z}$ has precision (inverse covariance) matrix given by
-748: 
-749: $$
-750: \mathbf{R} = \begin{pmatrix} \boldsymbol{\Lambda} + \mathbf{A}^{\mathrm{T}}\mathbf{L}\mathbf{A} & -\mathbf{A}^{\mathrm{T}}\mathbf{L} \\ -\mathbf{L}\mathbf{A} & \mathbf{L} \end{pmatrix}. \tag{2.104}
-751: $$
-752: 
-753: The covariance matrix is found by taking the inverse of the precision, which can be done using the matrix inversion formula (2.76) to give
-754: 
-755: Exercise 2.29
-756: 
-757: $$
-758: \operatorname{cov}[\mathbf{z}] = \mathbf{R}^{-1} = \begin{pmatrix} \boldsymbol{\Lambda}^{-1} & \boldsymbol{\Lambda}^{-1}\mathbf{A}^{\mathrm{T}} \\ \mathbf{A}\boldsymbol{\Lambda}^{-1} & \mathbf{L}^{-1} + \mathbf{A}\boldsymbol{\Lambda}^{-1}\mathbf{A}^{\mathrm{T}} \end{pmatrix}. \tag{2.105}
-759: $$
-760: Similarly, we can find the mean of the Gaussian distribution over $\mathbf{z}$ by identifying the linear terms in (2.102), which are given by
+724: ![img-79.jpeg](img-79.jpeg)
+725: # 1. Depth-First Search Example
+726: 
+727: DFS Search(problem, stack )
+728: 
+729: # of nodes tested: 4, expanded: 3
+730: 
+731: |  Explored node | Frontier  |
+732: | --- | --- |
+733: |   | {S}  |
+734: |  S not goal | {C, B, A}  |
+735: |  A not goal | {C,B, E, D}  |
+736: |  D not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E]), (H, path: [S,A,D,H])}  |
+737: |  H not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E])}  |
+738: 
+739: State Space Graph
+740: 
+741: ![img-80.jpeg](img-80.jpeg)
+742: 
+743: Graph Search
+744: 
+745: ![img-81.jpeg](img-81.jpeg)
+746: # 1. Depth-First Search Example
+747: 
+748: DFS Search(problem, stack )
+749: 
+750: # of nodes tested: 4, expanded: 3
+751: 
+752: |  Explored node | Frontier  |
+753: | --- | --- |
+754: |   | {S}  |
+755: |  S not goal | {C, B, A}  |
+756: |  A not goal | {C,B, E, D}  |
+757: |  D not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E]), (H, path: [S,A,D,H])}  |
+758: |  H not goal | {(C, path: [S,C]), (B, path: [S,B]), (E, path: [S,A,E])}  |
+759: 
+760: State Space Graph
 761: 
-762: $$\mathbf{x}^{\mathrm{T}} \mathbf{\Lambda} \boldsymbol{\mu} - \mathbf{x}^{\mathrm{T}} \mathbf{A}^{\mathrm{T}} \mathbf{L} \mathbf{b} + \mathbf{y}^{\mathrm{T}} \mathbf{L} \mathbf{b} = \begin{pmatrix} \mathbf{x} \\ \mathbf{y} \end{pmatrix}^{\mathrm{T}} \begin{pmatrix} \mathbf{\Lambda} \boldsymbol{\mu} - \mathbf{A}^{\mathrm{T}} \mathbf{L} \mathbf{b} \\ \mathbf{L} \mathbf{b} \end{pmatrix}. \quad (2.106)$$
+762: ![img-82.jpeg](img-82.jpeg)
 763: 
-764: Using our earlier result (2.71) obtained by completing the square over the quadratic form of a multivariate Gaussian, we find that the mean of $\mathbf{z}$ is given by
+764: Graph Search
 765: 
-766: $$\mathbb{E}[\mathbf{z}] = \mathbf{R}^{-1} \begin{pmatrix} \mathbf{\Lambda} \boldsymbol{\mu} - \mathbf{A}^{\mathrm{T}} \mathbf{L} \mathbf{b} \\ \mathbf{L} \mathbf{b} \end{pmatrix}. \quad (2.107)$$
-767: 
-768: *Exercise 2.30*
-769: 
-770: Making use of (2.105), we then obtain
-771: 
-772: $$\mathbb{E}[\mathbf{z}] = \begin{pmatrix} \boldsymbol{\mu} \\ \mathbf{A} \boldsymbol{\mu} + \mathbf{b} \end{pmatrix}. \quad (2.108)$$
-773: 
-774: *Section 2.3*
-775: 
-776: Next we find an expression for the marginal distribution $p(\mathbf{y})$ in which we have marginalized over $\mathbf{x}$. Recall that the marginal distribution over a subset of the components of a Gaussian random vector takes a particularly simple form when expressed in terms of the partitioned covariance matrix. Specifically, its mean and covariance are given by (2.92) and (2.93), respectively. Making use of (2.105) and (2.108) we see that the mean and covariance of the marginal distribution $p(\mathbf{y})$ are given by
-777: 
-778: $$\mathbb{E}[\mathbf{y}] = \mathbf{A} \boldsymbol{\mu} + \mathbf{b} \quad (2.109)$$
-779: 
-780: $$\operatorname{cov}[\mathbf{y}] = \mathbf{L}^{-1} + \mathbf{A} \mathbf{\Lambda}^{-1} \mathbf{A}^{\mathrm{T}}. \quad (2.110)$$
+766: ![img-83.jpeg](img-83.jpeg)
+767: # 1. Depth-First Search Example
+768: 
+769: DFS Search(problem, stack )
+770: 
+771: # of nodes tested: 5, expanded: 4
+772: 
+773: |  Explored node | Frontier  |
+774: | --- | --- |
+775: |   | {S}  |
+776: |  S not goal | {C, B, A}  |
+777: |  A not goal | {C,B, E, D}  |
+778: |  D not goal | {C, B, E, H}  |
+779: |  H not goal | {C, B, E}  |
+780: |  E not goal | {(C, path: [S,C]), (B, path: [S,B]), (G, path: [S,A,E, G])}  |
 781: 
-782: A special case of this result is when $\mathbf{A} = \mathbf{I}$, in which case it reduces to the convolution of two Gaussians, for which we see that the mean of the convolution is the sum of the mean of the two Gaussians, and the covariance of the convolution is the sum of their covariances.
+782: State Space Graph
 783: 
-784: *Section 2.3*
+784: ![img-84.jpeg](img-84.jpeg)
 785: 
-786: Finally, we seek an expression for the conditional $p(\mathbf{x}|\mathbf{y})$. Recall that the results for the conditional distribution are most easily expressed in terms of the partitioned precision matrix, using (2.73) and (2.75). Applying these results to (2.105) and (2.108) we see that the conditional distribution $p(\mathbf{x}|\mathbf{y})$ has mean and covariance given by
+786: Graph Search
 787: 
-788: $$\mathbb{E}[\mathbf{x}|\mathbf{y}] = (\mathbf{\Lambda} + \mathbf{A}^{\mathrm{T}} \mathbf{L} \mathbf{A})^{-1} \left\{ \mathbf{A}^{\mathrm{T}} \mathbf{L} (\mathbf{y} - \mathbf{b}) + \mathbf{\Lambda} \boldsymbol{\mu} \right\} \quad (2.111)$$
-789: 
-790: $$\operatorname{cov}[\mathbf{x}|\mathbf{y}] = (\mathbf{\Lambda} + \mathbf{A}^{\mathrm{T}} \mathbf{L} \mathbf{A})^{-1}. \quad (2.112)$$
-791: 
-792: The evaluation of this conditional can be seen as an example of Bayes' theorem. We can interpret the distribution $p(\mathbf{x})$ as a prior distribution over $\mathbf{x}$. If the variable $\mathbf{y}$ is observed, then the conditional distribution $p(\mathbf{x}|\mathbf{y})$ represents the corresponding posterior distribution over $\mathbf{x}$. Having found the marginal and conditional distributions, we effectively expressed the joint distribution $p(\mathbf{z}) = p(\mathbf{x})p(\mathbf{y}|\mathbf{x})$ in the form $p(\mathbf{x}|\mathbf{y})p(\mathbf{y})$. These results are summarized below.
-793: # Marginal and Conditional Gaussians
+788: ![img-85.jpeg](img-85.jpeg)
+789: # 1. Depth-First Search Example
+790: 
+791: DFS Search(problem, stack )
+792: 
+793: # of nodes tested: 6, expanded: 4
 794: 
-795: Given a marginal Gaussian distribution for x and a conditional Gaussian distribution for y given x in the form
-796: 
-797: $$p(\mathbf{x}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda}^{-1}) \tag{2.113}$$
-798: 
-799: $$p(\mathbf{y}|\mathbf{x}) = \mathcal{N}(\mathbf{y}|\mathbf{A}\mathbf{x} + \mathbf{b}, \mathbf{L}^{-1}) \tag{2.114}$$
-800: 
-801: the marginal distribution of y and the conditional distribution of x given y are given by
-802: 
-803: $$p(\mathbf{y}) = \mathcal{N}(\mathbf{y}|\mathbf{A}\boldsymbol{\mu} + \mathbf{b}, \mathbf{L}^{-1} + \mathbf{A}\boldsymbol{\Lambda}^{-1}\mathbf{A}^{\mathrm{T}}) \tag{2.115}$$
+795: |  Explored node | Frontier  |
+796: | --- | --- |
+797: |   | {S}  |
+798: |  S not goal | {C, B, A}  |
+799: |  A not goal | {C,B, E, D}  |
+800: |  D not goal | {C, B, E, H}  |
+801: |  H not goal | {C, B, E}  |
+802: |  E not goal | {C, B, G}  |
+803: |  **G is goal** | **Stop**  |
 804: 
-805: $$p(\mathbf{x}|\mathbf{y}) = \mathcal{N}(\mathbf{x}|\boldsymbol{\Sigma}\{\mathbf{A}^{\mathrm{T}}\mathbf{L}(\mathbf{y} - \mathbf{b}) + \boldsymbol{\Lambda}\boldsymbol{\mu}\}, \boldsymbol{\Sigma}) \tag{2.116}$$
+805: Expansion order: (S, A, D, H, E, G)
 806: 
-807: where
+807: State Space Graph
 808: 
-809: $$\boldsymbol{\Sigma} = (\boldsymbol{\Lambda} + \mathbf{A}^{\mathrm{T}}\mathbf{L}\mathbf{A})^{-1}. \tag{2.117}$$
+809: ![img-86.jpeg](img-86.jpeg)
 810: 
-811: ### 2.3.4 Maximum likelihood for the Gaussian
-812: 
-813: Given a data set $\mathbf{X} = (\mathbf{x}_1, \ldots, \mathbf{x}_N)^{\mathrm{T}}$ in which the observations $\{\mathbf{x}_n\}$ are assumed to be drawn independently from a multivariate Gaussian distribution, we can estimate the parameters of the distribution by maximum likelihood. The log likelihood function is given by
-814: 
-815: $$\ln p(\mathbf{X}|\boldsymbol{\mu}, \boldsymbol{\Sigma}) = -\frac{ND}{2} \ln(2\pi) - \frac{N}{2} \ln|\boldsymbol{\Sigma}| - \frac{1}{2} \sum_{n=1}^{N} (\mathbf{x}_n - \boldsymbol{\mu})^{\mathrm{T}} \boldsymbol{\Sigma}^{-1} (\mathbf{x}_n - \boldsymbol{\mu}). \tag{2.118}$$
-816: 
-817: By simple rearrangement, we see that the likelihood function depends on the data set only through the two quantities
+811: Path: S, A, E, G
+812: Cost: 15
+813: 
+814: Graph Search
+815: 
+816: ![img-87.jpeg](img-87.jpeg)
+817: # 1. Depth-First Search
 818: 
-819: $$\sum_{n=1}^{N} \mathbf{x}_n, \quad \sum_{n=1}^{N} \mathbf{x}_n \mathbf{x}_n^{\mathrm{T}}. \tag{2.119}$$
+819: **Depth-first search:** In depth-first search, the frontier acts like a last-in first-out queue (a stack). The elements are added to the stack one at a time. The one selected and taken off the frontier at any time is the last element that was added.
 820: 
-821: These are known as the sufficient statistics for the Gaussian distribution. Using (C.19), the derivative of the log likelihood with respect to $\boldsymbol{\mu}$ is given by
+821: ![img-88.jpeg](img-88.jpeg)
 822: 
-823: $$\frac{\partial}{\partial \boldsymbol{\mu}} \ln p(\mathbf{X}|\boldsymbol{\mu}, \boldsymbol{\Sigma}) = \sum_{n=1}^{N} \boldsymbol{\Sigma}^{-1} (\mathbf{x}_n - \boldsymbol{\mu}) \tag{2.120}$$
+823: ![img-89.jpeg](img-89.jpeg)
 824: 
-825: and setting this derivative to zero, we obtain the solution for the maximum likelihood estimate of the mean given by
-826: 
-827: $$\boldsymbol{\mu}_{\mathrm{ML}} = \frac{1}{N} \sum_{n=1}^{N} \mathbf{x}_n \tag{2.121}$$
-828: 
-829: Appendix C
-830: Exercise 2.34
+825: ![img-90.jpeg](img-90.jpeg)
+826: # 1. Depth-First Search Example
+827: 
+828: ## Depth-First Search algorithm
+829: 
+830: **function** DEPTH-FIRST-SEARCH( *problem* ) **returns** a solution, or failure
 831: 
-832: which is the mean of the observed set of data points. The maximization of (2.118) with respect to $\Sigma$ is rather more involved. The simplest approach is to ignore the symmetry constraint and show that the resulting solution is symmetric as required. Alternative derivations of this result, which impose the symmetry and positive definiteness constraints explicitly, can be found in Magnus and Neudecker (1999). The result is as expected and takes the form
+832: *node* ← a node with STATE = *problem*.INITIAL-STATE, PATH-COST = 0
 833: 
-834: $$
-835: \boldsymbol{\Sigma}_{\mathrm{ML}} = \frac{1}{N} \sum_{n=1}^{N} (\mathbf{x}_n - \boldsymbol{\mu}_{\mathrm{ML}})(\mathbf{x}_n - \boldsymbol{\mu}_{\mathrm{ML}})^{\mathrm{T}} \tag{2.122}
-836: $$
+834: **if** *problem*.GOAL-TEST( *node*.STATE) **then return** SOLUTION( *node* )
+835: 
+836: *frontier* ← a LIFO queue with *node* as the only element
 837: 
-838: which involves $\boldsymbol{\mu}_{\mathrm{ML}}$ because this is the result of a joint maximization with respect to $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$. Note that the solution (2.121) for $\boldsymbol{\mu}_{\mathrm{ML}}$ does not depend on $\boldsymbol{\Sigma}_{\mathrm{ML}}$, and so we can first evaluate $\boldsymbol{\mu}_{\mathrm{ML}}$ and then use this to evaluate $\boldsymbol{\Sigma}_{\mathrm{ML}}$.
+838: *explored* ← an empty set
 839: 
-840: Exercise 2.35
+840: **loop do**
 841: 
-842: If we evaluate the expectations of the maximum likelihood solutions under the true distribution, we obtain the following results
+842: **if** EMPTY?( *frontier* ) **then return** failure
 843: 
-844: $$
-845: \mathbb{E}[\boldsymbol{\mu}_{\mathrm{ML}}] = \boldsymbol{\mu} \tag{2.123}
-846: $$
+844: *node* ← POP( *frontier* ) /* chooses the deepest node in *frontier* */
+845: 
+846: add *node*.STATE to *explored*
 847: 
-848: $$
-849: \mathbb{E}[\boldsymbol{\Sigma}_{\mathrm{ML}}] = \frac{N-1}{N} \boldsymbol{\Sigma}. \tag{2.124}
-850: $$
+848: **for each** *action* **in** *problem*.ACTIONS( *node*.STATE) **do**
+849: 
+850: *child* ← CHILD-NODE( *problem*, *node*, *action* )
 851: 
-852: We see that the expectation of the maximum likelihood estimate for the mean is equal to the true mean. However, the maximum likelihood estimate for the covariance has an expectation that is less than the true value, and hence it is biased. We can correct this bias by defining a different estimator $\widetilde{\boldsymbol{\Sigma}}$ given by
+852: **if** *child*.STATE is not in *explored* or *frontier* **then**
 853: 
-854: $$
-855: \widetilde{\boldsymbol{\Sigma}} = \frac{1}{N-1} \sum_{n=1}^{N} (\mathbf{x}_n - \boldsymbol{\mu}_{\mathrm{ML}})(\mathbf{x}_n - \boldsymbol{\mu}_{\mathrm{ML}})^{\mathrm{T}}. \tag{2.125}
-856: $$
-857: 
-858: Clearly from (2.122) and (2.124), the expectation of $\widetilde{\boldsymbol{\Sigma}}$ is equal to $\boldsymbol{\Sigma}$.
-859: 
-860: ### 2.3.5 Sequential estimation
-861: 
-862: Our discussion of the maximum likelihood solution for the parameters of a Gaussian distribution provides a convenient opportunity to give a more general discussion of the topic of sequential estimation for maximum likelihood. Sequential methods allow data points to be processed one at a time and then discarded and are important for on-line applications, and also where large data sets are involved so that batch processing of all data points at once is infeasible.
-863: 
-864: Consider the result (2.121) for the maximum likelihood estimator of the mean $\boldsymbol{\mu}_{\mathrm{ML}}$, which we will denote by $\boldsymbol{\mu}_{\mathrm{ML}}^{(N)}$ when it is based on $N$ observations. If we
-865: Figure 2.10 A schematic illustration of two correlated random variables $z$ and $\theta$, together with the regression function $f(\theta)$ given by the conditional expectation $\mathbb{E}[z|\theta]$. The Robbins-Monro algorithm provides a general sequential procedure for finding the root $\theta^{*}$ of such functions.
+854: **if** *problem*.GOAL-TEST( *child*.STATE) **then return** SOLUTION( *child* )
+855: 
+856: *frontier* ← INSERT( *child*, *frontier* )
+857: # 1. DFS Properties
+858: 
+859: - What nodes DFS expand?
+860: 
+861: - Some left prefix of the tree.
+862: - Could process the whole tree!
+863: - If $m$ is finite, takes time $O(b^m)$
+864: 
+865: - How much space does the fringe take?
 866: 
-867: ![img-24.jpeg](img-24.jpeg)
+867: - Only has siblings on path to root, so $O(bm)$, i.e., linear space!
 868: 
-869: dissect out the contribution from the final data point $\mathbf{x}_N$, we obtain
+869: - Is it complete?
 870: 
-871: $$
-872: \begin{array}{l} \boldsymbol {\mu} _ {\mathrm {M L}} ^ {(N)} = \frac {1}{N} \sum_ {n = 1} ^ {N} \mathbf {x} _ {n} \\ = \frac {1}{N} \mathbf {x} _ {N} + \frac {1}{N} \sum_ {n = 1} ^ {N - 1} \mathbf {x} _ {n} \\ = \frac {1}{N} \mathbf {x} _ {N} + \frac {N - 1}{N} \boldsymbol {\mu} _ {\mathrm {M L}} ^ {(N - 1)} \\ = \boldsymbol {\mu} _ {\mathrm {M L}} ^ {(N - 1)} + \frac {1}{N} \left(\mathbf {x} _ {N} - \boldsymbol {\mu} _ {\mathrm {M L}} ^ {(N - 1)}\right). \tag {2.126} \\ \end{array}
-873: $$
-874: 
-875: This result has a nice interpretation, as follows. After observing $N - 1$ data points we have estimated $\boldsymbol{\mu}$ by $\boldsymbol{\mu}_{\mathrm{ML}}^{(N - 1)}$. We now observe data point $\mathbf{x}_N$, and we obtain our revised estimate $\boldsymbol{\mu}_{\mathrm{ML}}^{(N)}$ by moving the old estimate a small amount, proportional to $1 / N$, in the direction of the 'error signal' $(\mathbf{x}_N - \boldsymbol{\mu}_{\mathrm{ML}}^{(N - 1)})$. Note that, as $N$ increases, so the contribution from successive data points gets smaller.
-876: 
-877: The result (2.126) will clearly give the same answer as the batch result (2.121) because the two formulae are equivalent. However, we will not always be able to derive a sequential algorithm by this route, and so we seek a more general formulation of sequential learning, which leads us to the *Robbins-Monro* algorithm. Consider a pair of random variables $\theta$ and $z$ governed by a joint distribution $p(z,\theta)$. The conditional expectation of $z$ given $\theta$ defines a deterministic function $f(\theta)$ that is given by
-878: 
-879: $$
-880: f (\theta) \equiv \mathbb {E} [ z | \theta ] = \int z p (z | \theta) \mathrm {d} z \tag {2.127}
-881: $$
+871: - $m$ could be infinite, so only if we prevent cycles (more later)
+872: - Complete in finite spaces
+873: 
+874: - Is it optimal?
+875: 
+876: - No, it finds the “leftmost” solution, regardless of depth or cost
+877: 
+878: ![img-91.jpeg](img-91.jpeg)
+879: 
+880: ![img-92.jpeg](img-92.jpeg)
+881: # Today
 882: 
-883: and is illustrated schematically in Figure 2.10. Functions defined in this way are called *regression functions*.
+883: ## Solving problems by searching
 884: 
-885: Our goal is to find the root $\theta^{*}$ at which $f(\theta^{*}) = 0$. If we had a large data set of observations of $z$ and $\theta$, then we could model the regression function directly and then obtain an estimate of its root. Suppose, however, that we observe values of $z$ one at a time and we wish to find a corresponding sequential estimation scheme for $\theta^{*}$. The following general procedure for solving such problems was given by
-886: Robbins and Monro (1951). We shall assume that the conditional variance of $z$ is finite so that
-887: 
-888: $$\mathbb{E} \left[ (z - f)^2 \mid \theta \right] < \infty \tag{2.128}$$
-889: 
-890: and we shall also, without loss of generality, consider the case where $f(\theta) > 0$ for $\theta > \theta^*$ and $f(\theta) < 0$ for $\theta < \theta^*$, as is the case in Figure 2.10. The Robbins-Monro procedure then defines a sequence of successive estimates of the root $\theta^*$ given by
-891: 
-892: $$\theta^{(N)} = \theta^{(N-1)} + a_{N-1} z(\theta^{(N-1)}) \tag{2.129}$$
-893: 
-894: where $z(\theta^{(N)})$ is an observed value of $z$ when $\theta$ takes the value $\theta^{(N)}$. The coefficients $\{a_N\}$ represent a sequence of positive numbers that satisfy the conditions
+885: - Problem-solving agents
+886: - Search Problems
+887: - Uninformed Search Methods
+888:   1. Depth-First Search
+889:   2. Breadth-First Search
+890:   3. Iterative Deepening Search
+891:   4. Uniform-Cost Search
+892: 
+893: ![img-93.jpeg](img-93.jpeg)
+894: ## 2. Breadth-First Search
 895: 
-896: $$\lim_{N \to \infty} a_N = 0 \tag{2.130}$$
+896: Breadth-First Search (BFS):
 897: 
-898: $$\sum_{N=1}^{\infty} a_N = \infty \tag{2.131}$$
-899: 
-900: $$\sum_{N=1}^{\infty} a_N^2 < \infty. \tag{2.132}$$
-901: 
-902: It can then be shown (Robbins and Monro, 1951; Fukunaga, 1990) that the sequence of estimates given by (2.129) does indeed converge to the root with probability one. Note that the first condition (2.130) ensures that the successive corrections decrease in magnitude so that the process can converge to a limiting value. The second condition (2.131) is required to ensure that the algorithm does not converge short of the root, and the third condition (2.132) is needed to ensure that the accumulated noise has finite variance and hence does not spoil convergence.
-903: 
-904: Now let us consider how a general maximum likelihood problem can be solved sequentially using the Robbins-Monro algorithm. By definition, the maximum likelihood solution $\theta_{\text{ML}}$ is a stationary point of the log likelihood function and hence satisfies
+898: - Nodes are expanded in the same order in which they are generated.
+899: - Frontier can be maintained as a First-In, First-Out (FIFO) queue. Thus, the path that is selected from the frontier is the one that was added earliest.
+900: - This approach implies that the paths from the start node are generated in order of the number of arcs in the path.
+901: - One of the paths with the fewest arcs is selected at each stage.
+902: 
+903: BFS
+904: Looking wide before looking deep
 905: 
-906: $$\left. \frac{\partial}{\partial \theta} \left\{ \frac{1}{N} \sum_{n=1}^{N} \ln p(\mathbf{x}_n | \theta) \right\} \right|_{\theta_{\text{ML}}} = 0. \tag{2.133}$$
+906: ![img-94.jpeg](img-94.jpeg)
 907: 
-908: Exchanging the derivative and the summation, and taking the limit $N \to \infty$ we have
+908: ![img-95.jpeg](img-95.jpeg)
 909: 
-910: $$\lim_{N \to \infty} \frac{1}{N} \sum_{n=1}^{N} \frac{\partial}{\partial \theta} \ln p(x_n | \theta) = \mathbb{E}_x \left[ \frac{\partial}{\partial \theta} \ln p(x | \theta) \right] \tag{2.134}$$
+910: Queue:
 911: 
-912: and so we see that finding the maximum likelihood solution corresponds to finding the root of a regression function. We can therefore apply the Robbins-Monro procedure, which now takes the form
-913: 
-914: $$\theta^{(N)} = \theta^{(N-1)} + a_{N-1} \frac{\partial}{\partial \theta^{(N-1)}} \ln p(x_N | \theta^{(N-1)}). \tag{2.135}$$
-915: Figure 2.11 In the case of a Gaussian distribution, with $\theta$ corresponding to the mean $\mu$, the regression function illustrated in Figure 2.10 takes the form of a straight line, as shown in red. In this case, the random variable $z$ corresponds to the derivative of the log likelihood function and is given by $(x - \mu_{\mathrm{ML}})/\sigma^2$, and its expectation that defines the regression function is a straight line given by $(\mu - \mu_{\mathrm{ML}})/\sigma^2$. The root of the regression function corresponds to the maximum likelihood estimator $\mu_{\mathrm{ML}}$.
+912: ![img-96.jpeg](img-96.jpeg)
+913: ## 2. Breadth-First Search Example
+914: 
+915: BFS_Search(problem, queue )
 916: 
-917: ![img-25.jpeg](img-25.jpeg)
+917: # of nodes tested: 0, expanded: 0
 918: 
-919: As a specific example, we consider once again the sequential estimation of the mean of a Gaussian distribution, in which case the parameter $\theta^{(N)}$ is the estimate $\mu_{\mathrm{ML}}^{(N)}$ of the mean of the Gaussian, and the random variable $z$ is given by
-920: 
-921: $$
-922: z = \frac{\partial}{\partial \mu_{\mathrm{ML}}} \ln p(x|\mu_{\mathrm{ML}}, \sigma^2) = \frac{1}{\sigma^2}(x - \mu_{\mathrm{ML}}). \tag{2.136}
-923: $$
+919: |  expnd. node | node list  |
+920: | --- | --- |
+921: |   | {(S, path:[S])}  |
+922: 
+923: Strategy: expand a shallowest node first
 924: 
-925: Thus the distribution of $z$ is Gaussian with mean $\mu - \mu_{\mathrm{ML}}$, as illustrated in Figure 2.11. Substituting (2.136) into (2.135), we obtain the univariate form of (2.126), provided we choose the coefficients $a_N$ to have the form $a_N = \sigma^2/N$. Note that although we have focussed on the case of a single variable, the same technique, together with the same restrictions (2.130)–(2.132) on the coefficients $a_N$, apply equally to the multivariate case (Blum, 1965).
+925: Implementation: Fringe/Frontier is a FIFO queue
 926: 
-927: ### 2.3.6 Bayesian inference for the Gaussian
+927: State Space Graph
 928: 
-929: The maximum likelihood framework gave point estimates for the parameters $\mu$ and $\Sigma$. Now we develop a Bayesian treatment by introducing prior distributions over these parameters. Let us begin with a simple example in which we consider a single Gaussian random variable $x$. We shall suppose that the variance $\sigma^2$ is known, and we consider the task of inferring the mean $\mu$ given a set of $N$ observations $\mathbf{X} = \{x_1, \dots, x_N\}$. The likelihood function, that is the probability of the observed data given $\mu$, viewed as a function of $\mu$, is given by
+929: ![img-97.jpeg](img-97.jpeg)
 930: 
-931: $$
-932: p(\mathbf{X}|\mu) = \prod_{n=1}^{N} p(x_n|\mu) = \frac{1}{(2\pi\sigma^2)^{N/2}} \exp\left\{-\frac{1}{2\sigma^2} \sum_{n=1}^{N} (x_n - \mu)^2\right\}. \tag{2.137}
-933: $$
-934: 
-935: Again we emphasize that the likelihood function $p(\mathbf{X}|\mu)$ is not a probability distribution over $\mu$ and is not normalized.
-936: 
-937: We see that the likelihood function takes the form of the exponential of a quadratic form in $\mu$. Thus if we choose a prior $p(\mu)$ given by a Gaussian, it will be a
-938: conjugate distribution for this likelihood function because the corresponding posterior will be a product of two exponentials of quadratic functions of $\mu$ and hence will also be Gaussian. We therefore take our prior distribution to be
-939: 
-940: $$p(\mu) = \mathcal{N} \left( \mu | \mu_0, \sigma_0^2 \right) \tag{2.138}$$
-941: 
-942: and the posterior distribution is given by
-943: 
-944: $$p(\mu | \mathbf{X}) \propto p(\mathbf{X} | \mu) p(\mu). \tag{2.139}$$
-945: 
-946: Exercise 2.38
-947: 
-948: Simple manipulation involving completing the square in the exponent shows that the posterior distribution is given by
-949: 
-950: $$p(\mu | \mathbf{X}) = \mathcal{N} \left( \mu | \mu_N, \sigma_N^2 \right) \tag{2.140}$$
+931: Graph Search
+932: ## 2. Breadth-First Search Example
+933: 
+934: BFS_Search(problem, queue )
+935: 
+936: # of nodes tested: 1, expanded: 1
+937: 
+938: |  Explored node | node list  |
+939: | --- | --- |
+940: |   | {(S, path:[S])}  |
+941: |  S not goal | {(A, path:[S,A]), (B, path:[S,B]), (C, path:[S,C])}  |
+942: 
+943: State Space Graph
+944: 
+945: ![img-98.jpeg](img-98.jpeg)
+946: 
+947: Graph Search
+948: 
+949: ![img-99.jpeg](img-99.jpeg)
+950: ## 2. Breadth-First Search Example
 951: 
-952: where
+952: BFS_Search(problem, queue )
 953: 
-954: $$\mu_N = \frac{\sigma^2}{N \sigma_0^2 + \sigma^2} \mu_0 + \frac{N \sigma_0^2}{N \sigma_0^2 + \sigma^2} \mu_{\mathrm{ML}} \tag{2.141}$$
+954: # of nodes tested: 2, expanded: 2
 955: 
-956: $$\frac{1}{\sigma_N^2} = \frac{1}{\sigma_0^2} + \frac{N}{\sigma^2} \tag{2.142}$$
-957: 
-958: in which $\mu_{\mathrm{ML}}$ is the maximum likelihood solution for $\mu$ given by the sample mean
-959: 
-960: $$\mu_{\mathrm{ML}} = \frac{1}{N} \sum_{n=1}^{N} x_n. \tag{2.143}$$
+956: |  Explored node | node list  |
+957: | --- | --- |
+958: |   | {(S, path:[S])}  |
+959: |  S not goal | {(A, path:[S,A]), (B, path:[S,B]), (C, path:[S,C])}  |
+960: |  A not goal | {(B, path:[S,B]), (C, path:[S,C]), (D, path:[S,A,D]), (E, path:[S,A,E])}  |
 961: 
-962: It is worth spending a moment studying the form of the posterior mean and variance. First of all, we note that the mean of the posterior distribution given by (2.141) is a compromise between the prior mean $\mu_0$ and the maximum likelihood solution $\mu_{\mathrm{ML}}$. If the number of observed data points $N = 0$, then (2.141) reduces to the prior mean as expected. For $N \to \infty$, the posterior mean is given by the maximum likelihood solution. Similarly, consider the result (2.142) for the variance of the posterior distribution. We see that this is most naturally expressed in terms of the inverse variance, which is called the precision. Furthermore, the precisions are additive, so that the precision of the posterior is given by the precision of the prior plus one contribution of the data precision from each of the observed data points. As we increase the number of observed data points, the precision steadily increases, corresponding to a posterior distribution with steadily decreasing variance. With no observed data points, we have the prior variance, whereas if the number of data points $N \to \infty$, the variance $\sigma_N^2$ goes to zero and the posterior distribution becomes infinitely peaked around the maximum likelihood solution. We therefore see that the maximum likelihood result of a point estimate for $\mu$ given by (2.143) is recovered precisely from the Bayesian formalism in the limit of an infinite number of observations. Note also that for finite $N$, if we take the limit $\sigma_0^2 \to \infty$ in which the prior has infinite variance then the posterior mean (2.141) reduces to the maximum likelihood result, while from (2.142) the posterior variance is given by $\sigma_N^2 = \sigma^2 / N$.
-963: Figure 2.12 Illustration of Bayesian inference for the mean $\mu$ of a Gaussian distribution, in which the variance is assumed to be known. The curves show the prior distribution over $\mu$ (the curve labelled $N = 0$), which in this case is itself Gaussian, along with the posterior distribution given by (2.140) for increasing numbers $N$ of data points. The data points are generated from a Gaussian of mean 0.8 and variance 0.1, and the prior is chosen to have mean 0. In both the prior and the likelihood function, the variance is set to the true value.
-964: 
-965: ![img-26.jpeg](img-26.jpeg)
-966: 
-967: Exercise 2.40
-968: 
-969: Section 2.3.5
+962: State Space Graph
+963: 
+964: ![img-100.jpeg](img-100.jpeg)
+965: 
+966: Graph Search
+967: 
+968: ![img-101.jpeg](img-101.jpeg)
+969: ## 2. Breadth-First Search Example
 970: 
-971: We illustrate our analysis of Bayesian inference for the mean of a Gaussian distribution in Figure 2.12. The generalization of this result to the case of a $D$-dimensional Gaussian random variable $\mathbf{x}$ with known covariance and unknown mean is straightforward.
+971: BFS_Search(problem, queue )
 972: 
-973: We have already seen how the maximum likelihood expression for the mean of a Gaussian can be re-cast as a sequential update formula in which the mean after observing $N$ data points was expressed in terms of the mean after observing $N - 1$ data points together with the contribution from data point $\mathbf{x}_N$. In fact, the Bayesian paradigm leads very naturally to a sequential view of the inference problem. To see this in the context of the inference of the mean of a Gaussian, we write the posterior distribution with the contribution from the final data point $\mathbf{x}_N$ separated out so that
+973: # of nodes tested: 3, expanded: 3
 974: 
-975: $$
-976: p(\boldsymbol{\mu}|D) \propto \left[ p(\boldsymbol{\mu}) \prod_{n=1}^{N-1} p(\mathbf{x}_n|\boldsymbol{\mu}) \right] p(\mathbf{x}_N|\boldsymbol{\mu}). \tag{2.144}
-977: $$
-978: 
-979: The term in square brackets is (up to a normalization coefficient) just the posterior distribution after observing $N - 1$ data points. We see that this can be viewed as a prior distribution, which is combined using Bayes' theorem with the likelihood function associated with data point $\mathbf{x}_N$ to arrive at the posterior distribution after observing $N$ data points. This sequential view of Bayesian inference is very general and applies to any problem in which the observed data are assumed to be independent and identically distributed.
-980: 
-981: So far, we have assumed that the variance of the Gaussian distribution over the data is known and our goal is to infer the mean. Now let us suppose that the mean is known and we wish to infer the variance. Again, our calculations will be greatly simplified if we choose a conjugate form for the prior distribution. It turns out to be most convenient to work with the precision $\lambda \equiv 1/\sigma^2$. The likelihood function for $\lambda$ takes the form
-982: 
-983: $$
-984: p(\mathbf{X}|\lambda) = \prod_{n=1}^{N} \mathcal{N}(x_n|\mu, \lambda^{-1}) \propto \lambda^{N/2} \exp \left\{ -\frac{\lambda}{2} \sum_{n=1}^{N} (x_n - \mu)^2 \right\}. \tag{2.145}
-985: $$
-986: ![img-27.jpeg](img-27.jpeg)
+975: |  Explored node | node list  |
+976: | --- | --- |
+977: |   | {(S, path:[S])}  |
+978: |  S not goal | {(A, path:[S,A]), (B, path:[S,B]), (C, path:[S,C])}  |
+979: |  A not goal | {(B, path:[S,B]), (C, path:[S,C]), (D, path:[S,A,D]), (E, path:[S,A,E])}  |
+980: |  B not goal | {(C, path:[S,C]), (D, path:[S,A,D]), (E, path:[S,A,E]), (G, path:[S,B,G])}  |
+981: 
+982: State Space Graph
+983: 
+984: ![img-102.jpeg](img-102.jpeg)
+985: 
+986: Graph Search
 987: 
-988: ![img-28.jpeg](img-28.jpeg)
-989: 
-990: ![img-29.jpeg](img-29.jpeg)
-991: 
-992: Figure 2.13 Plot of the gamma distribution \(\mathrm{Gam}(\lambda |a,b)\) defined by (2.146) for various values of the parameters \(a\) and \(b\).
-993: 
-994: The corresponding conjugate prior should therefore be proportional to the product of a power of  \( \lambda \)  and the exponential of a linear function of  \( \lambda \) . This corresponds to the gamma distribution which is defined by
-995: 
-996: \[
-997: \operatorname{Gam} (\lambda | a, b) = \frac {1}{\Gamma (a)} b ^ {a} \lambda^ {a - 1} \exp (- b \lambda). \tag {2.146}
-998: \]
-999: 
-1000: Exercise 2.41
-1001: 
-1002: Exercise 2.42
-1003: 
-1004: Here  \( \Gamma(a) \)  is the gamma function that is defined by (1.141) and that ensures that (2.146) is correctly normalized. The gamma distribution has a finite integral if a > 0, and the distribution itself is finite if  \( a \geqslant 1 \) . It is plotted, for various values of a and b, in Figure 2.13. The mean and variance of the gamma distribution are given by
-1005: 
-1006: \[
-1007: \mathbb {E} [ \lambda ] = \frac {a}{b} \tag {2.147}
-1008: \]
-1009: 
-1010: \[
-1011: \operatorname{var} [ \lambda ] = \frac {a}{b ^ {2}}. \tag {2.148}
-1012: \]
+988: ![img-103.jpeg](img-103.jpeg)
+989: ## 2. Breadth-First Search Example
+990: 
+991: BFS_Search(problem, queue )
+992: 
+993: # of nodes tested: 4, expanded: 4
+994: 
+995: |  Explored node | node list  |
+996: | --- | --- |
+997: |   | {S}  |
+998: |  S not goal | {A, B, C}  |
+999: |  A not goal | {B, C, D, E}  |
+1000: |  B not goal | {C, D, E, G}  |
+1001: |  C not goal | {(D, path:[S,A,D]), (E, path:[S,A,E]), (G, path:[S,B,G]), **(F, path:[S,C,F])**}  |
+1002: 
+1003: State Space Graph
+1004: 
+1005: ![img-104.jpeg](img-104.jpeg)
+1006: 
+1007: Graph Search
+1008: 
+1009: ![img-105.jpeg](img-105.jpeg)
+1010: ## 2. Breadth-First Search Example
+1011: 
+1012: BFS_Search(problem, queue )
 1013: 
-1014: Consider a prior distribution \(\mathrm{Gam}(\lambda |a_0,b_0)\). If we multiply by the likelihood function (2.145), then we obtain a posterior distribution
+1014: # of nodes tested: 5, expanded: 5
 1015: 
-1016: \[
-1017: p (\lambda | \mathbf {X}) \propto \lambda^ {a _ {0} - 1} \lambda^ {N / 2} \exp \left\{- b _ {0} \lambda - \frac {\lambda}{2} \sum_ {n = 1} ^ {N} (x _ {n} - \mu) ^ {2} \right\} \tag {2.149}
-1018: \]
-1019: 
-1020: which we recognize as a gamma distribution of the form  \( \operatorname{Gam}(\lambda|a_{N}, b_{N}) \)  where
-1021: 
-1022: \[
-1023: a _ {N} = a _ {0} + \frac {N}{2} \tag {2.150}
-1024: \]
-1025: 
-1026: \[
-1027: b _ {N} = b _ {0} + \frac {1}{2} \sum_ {n = 1} ^ {N} (x _ {n} - \mu) ^ {2} = b _ {0} + \frac {N}{2} \sigma_ {\mathrm{ML}} ^ {2} \tag {2.151}
-1028: \]
-1029: 
-1030: where  \( \sigma_{ML}^{2} \)  is the maximum likelihood estimator of the variance. Note that in (2.149) there is no need to keep track of the normalization constants in the prior and the likelihood function because, if required, the correct coefficient can be found at the end using the normalized form (2.146) for the gamma distribution.
-1031: Section 2.2
-1032: 
-1033: From (2.150), we see that the effect of observing $N$ data points is to increase the value of the coefficient $a$ by $N/2$. Thus we can interpret the parameter $a_0$ in the prior in terms of $2a_0$ 'effective' prior observations. Similarly, from (2.151) we see that the $N$ data points contribute $N\sigma_{\mathrm{ML}}^2/2$ to the parameter $b$, where $\sigma_{\mathrm{ML}}^2$ is the variance, and so we can interpret the parameter $b_0$ in the prior as arising from the $2a_0$ 'effective' prior observations having variance $2b_0/(2a_0) = b_0/a_0$. Recall that we made an analogous interpretation for the Dirichlet prior. These distributions are examples of the exponential family, and we shall see that the interpretation of a conjugate prior in terms of effective fictitious data points is a general one for the exponential family of distributions.
-1034: 
-1035: Instead of working with the precision, we can consider the variance itself. The conjugate prior in this case is called the *inverse gamma* distribution, although we shall not discuss this further because we will find it more convenient to work with the precision.
-1036: 
-1037: Now suppose that both the mean and the precision are unknown. To find a conjugate prior, we consider the dependence of the likelihood function on $\mu$ and $\lambda$
-1038: 
-1039: $$
-1040: \begin{aligned}
-1041: p(\mathbf{X}|\mu, \lambda) &= \prod_{n=1}^{N} \left(\frac{\lambda}{2\pi}\right)^{1/2} \exp\left\{-\frac{\lambda}{2}(x_n - \mu)^2\right\} \\
-1042: &\propto \left[\lambda^{1/2} \exp\left(-\frac{\lambda\mu^2}{2}\right)\right]^N \exp\left\{\lambda\mu \sum_{n=1}^{N} x_n - \frac{\lambda}{2} \sum_{n=1}^{N} x_n^2\right\}.
-1043: \end{aligned}
-1044: \tag{2.152}
-1045: $$
-1046: 
-1047: We now wish to identify a prior distribution $p(\mu, \lambda)$ that has the same functional dependence on $\mu$ and $\lambda$ as the likelihood function and that should therefore take the form
-1048: 
-1049: $$
-1050: \begin{aligned}
-1051: p(\mu, \lambda) &\propto \left[\lambda^{1/2} \exp\left(-\frac{\lambda\mu^2}{2}\right)\right]^\beta \exp\left\{c\lambda\mu - d\lambda\right\} \\
-1052: &= \exp\left\{-\frac{\beta\lambda}{2}(\mu - c/\beta)^2\right\} \lambda^{\beta/2} \exp\left\{-\left(d - \frac{c^2}{2\beta}\right)\lambda\right\}
-1053: \end{aligned}
-1054: \tag{2.153}
-1055: $$
+1016: |  Explored node | node list  |
+1017: | --- | --- |
+1018: |   | {S}  |
+1019: |  S not goal | {A, B, C}  |
+1020: |  A not goal | {B, C, D, E}  |
+1021: |  B not goal | {C, D, E, G}  |
+1022: |  C not goal | {D, E, G, F}  |
+1023: |  D not goal | {(E, path:[S,A,E]), (G, path:[S,B,G]), (F, path:[S,C,F]), (H, path:[S,A,D,H])}  |
+1024: 
+1025: State Space Graph
+1026: 
+1027: ![img-106.jpeg](img-106.jpeg)
+1028: 
+1029: Graph Search
+1030: 
+1031: ![img-107.jpeg](img-107.jpeg)
+1032: ## 2. Breadth-First Search Example
+1033: 
+1034: BFS_Search(problem, queue )
+1035: 
+1036: # of nodes tested: 6, expanded: 6
+1037: 
+1038: |  Explored node | node list  |
+1039: | --- | --- |
+1040: |   | {S}  |
+1041: |  S not goal | {A, B, C}  |
+1042: |  A not goal | {B, C, D, E}  |
+1043: |  B not goal | {C, D, E, G}  |
+1044: |  C not goal | {D, E, G, F}  |
+1045: |  D not goal | {E, G, F, H}  |
+1046: |  E not goal | {(G, path:[S,B,G]), (F, path:[S,C,F]), (H, path:[S,A,D,H])}  |
+1047: 
+1048: State Space Graph
+1049: 
+1050: ![img-108.jpeg](img-108.jpeg)
+1051: 
+1052: Graph Search
+1053: 
+1054: ![img-109.jpeg](img-109.jpeg)
+1055: ## 2. Breadth-First Search Example
 1056: 
-1057: where $c$, $d$, and $\beta$ are constants. Since we can always write $p(\mu, \lambda) = p(\mu|\lambda)p(\lambda)$, we can find $p(\mu|\lambda)$ and $p(\lambda)$ by inspection. In particular, we see that $p(\mu|\lambda)$ is a Gaussian whose precision is a linear function of $\lambda$ and that $p(\lambda)$ is a gamma distribution, so that the normalized prior takes the form
+1057: BFS_Search(problem, queue )
 1058: 
-1059: $$
-1060: p(\mu, \lambda) = \mathcal{N}(\mu|\mu_0, (\beta\lambda)^{-1})\mathrm{Gam}(\lambda|a, b)
-1061: \tag{2.154}
-1062: $$
-1063: 
-1064: where we have defined new constants given by $\mu_0 = c/\beta$, $a = 1 + \beta/2$, $b = d - c^2/2\beta$. The distribution (2.154) is called the *normal-gamma* or *Gaussian-gamma* distribution and is plotted in Figure 2.14. Note that this is not simply the product of an independent Gaussian prior over $\mu$ and a gamma prior over $\lambda$, because the precision of $\mu$ is a linear function of $\lambda$. Even if we chose a prior in which $\mu$ and $\lambda$ were independent, the posterior distribution would exhibit a coupling between the precision of $\mu$ and the value of $\lambda$.
-1065: Figure 2.14 Contour plot of the normal-gamma distribution (2.154) for parameter values $\mu_0 = 0$, $\beta = 2$, $a = 5$ and $b = 6$.
-1066: 
-1067: ![img-30.jpeg](img-30.jpeg)
-1068: 
-1069: Exercise 2.45
-1070: 
-1071: In the case of the multivariate Gaussian distribution $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Lambda}^{-1})$ for a $D$-dimensional variable $\mathbf{x}$, the conjugate prior distribution for the mean $\boldsymbol{\mu}$, assuming the precision is known, is again a Gaussian. For known mean and unknown precision matrix $\boldsymbol{\Lambda}$, the conjugate prior is the *Wishart* distribution given by
-1072: 
-1073: $$
-1074: \mathcal{W}(\boldsymbol{\Lambda}|\mathbf{W},\nu) = B|\boldsymbol{\Lambda}|^{(\nu-D-1)/2} \exp\left(-\frac{1}{2}\mathrm{Tr}(\mathbf{W}^{-1}\boldsymbol{\Lambda})\right) \tag{2.155}
-1075: $$
-1076: 
-1077: where $\nu$ is called the number of *degrees of freedom* of the distribution, $\mathbf{W}$ is a $D \times D$ scale matrix, and $\mathrm{Tr}(\cdot)$ denotes the trace. The normalization constant $B$ is given by
+1059: # of nodes tested: 7, expanded: 6
+1060: 
+1061: |  Explored node | node list  |
+1062: | --- | --- |
+1063: |   | {S}  |
+1064: |  S not goal | {A, B, C}  |
+1065: |  A not goal | {B, C, D, E}  |
+1066: |  B not goal | {C, D, E, G}  |
+1067: |  C not goal | {D, E, G, F}  |
+1068: |  D not goal | {E, G, F, H}  |
+1069: |  E not goal | {G, F, H, G}  |
+1070: |  **G is goal** | **Stop**  |
+1071: 
+1072: State Space Graph
+1073: 
+1074: ![img-110.jpeg](img-110.jpeg)
+1075: 
+1076: Path: S, B, G
+1077: Cost: 8
 1078: 
-1079: $$
-1080: B(\mathbf{W},\nu) = |\mathbf{W}|^{-\nu/2} \left(2^{\nu D/2} \pi^{D(D-1)/4} \prod_{i=1}^{D} \Gamma\left(\frac{\nu+1-i}{2}\right)\right)^{-1}. \tag{2.156}
-1081: $$
+1079: Graph Search
+1080: 
+1081: ![img-111.jpeg](img-111.jpeg)
 1082: 
-1083: Again, it is also possible to define a conjugate prior over the covariance matrix itself, rather than over the precision matrix, which leads to the *inverse Wishart* distribution, although we shall not discuss this further. If both the mean and the precision are unknown, then, following a similar line of reasoning to the univariate case, the conjugate prior is given by
-1084: 
-1085: $$
-1086: p(\boldsymbol{\mu},\boldsymbol{\Lambda}|\boldsymbol{\mu}_0,\beta,\mathbf{W},\nu) = \mathcal{N}(\boldsymbol{\mu}|\boldsymbol{\mu}_0,(\beta\boldsymbol{\Lambda})^{-1})\mathcal{W}(\boldsymbol{\Lambda}|\mathbf{W},\nu) \tag{2.157}
-1087: $$
+1083: Expansion order:
+1084: (S, A, B, C, D, E, G)
+1085: ## 2. Breadth-First Search
+1086: 
+1087: **Breadth-first search:** In breadth-first search, the frontier acts like a first-in first-out (FIFO) queue. The element selected and removed from the frontier at any given time is the one that was added earliest.
 1088: 
-1089: which is known as the *normal-Wishart* or *Gaussian-Wishart* distribution.
+1089: ![img-112.jpeg](img-112.jpeg)
 1090: 
-1091: ### 2.3.7 Student's t-distribution
-1092: 
-1093: Section 2.3.6
-1094: 
-1095: Exercise 2.46
-1096: 
-1097: We have seen that the conjugate prior for the precision of a Gaussian is given by a gamma distribution. If we have a univariate Gaussian $\mathcal{N}(x|\mu,\tau^{-1})$ together with a Gamma prior $\mathrm{Gam}(\tau|a,b)$ and we integrate out the precision, we obtain the marginal distribution of $x$ in the form
-1098: Figure 2.15 Plot of Student's t-distribution (2.159) for \(\mu = 0\) and \(\lambda = 1\) for various values of \(\nu\). The limit \(\nu \to \infty\) corresponds to a Gaussian distribution with mean \(\mu\) and precision \(\lambda\).
+1091: ![img-113.jpeg](img-113.jpeg)
+1092: ## 2. BFS pseudo-code
+1093: 
+1094: ### Breadth-First Search algorithm
+1095: 
+1096: **function** BREADTH-FIRST-SEARCH( *problem* ) **returns** a solution, or failure
+1097: 
+1098: *node* ← a node with STATE = *problem*.INITIAL-STATE, PATH-COST = 0
 1099: 
-1100: ![img-31.jpeg](img-31.jpeg)
+1100: **if** *problem*.GOAL-TEST( *node*.STATE) **then return** SOLUTION( *node* )
 1101: 
-1102: \[
-1103: \begin{array}{l} p (x | \mu , a, b) = \int_ {0} ^ {\infty} \mathcal {N} (x | \mu , \tau^ {- 1}) \operatorname{Gam} (\tau | a, b) \mathrm{d} \tau \tag {2.158} \\ = \int_ {0} ^ {\infty} \frac {b ^ {a} e ^ {(- b \tau)} \tau^ {a - 1}}{\Gamma (a)} \left(\frac {\tau}{2 \pi}\right) ^ {1 / 2} \exp \left\{- \frac {\tau}{2} (x - \mu) ^ {2} \right\} d \tau \\ = \frac {b ^ {a}}{\Gamma (a)} \left(\frac {1}{2 \pi}\right) ^ {1 / 2} \left[ b + \frac {(x - \mu) ^ {2}}{2} \right] ^ {- a - 1 / 2} \Gamma (a + 1 / 2) \\ \end{array}
-1104: \]
+1102: *frontier* ← a FIFO queue with *node* as the only element
+1103: 
+1104: *explored* ← an empty set
 1105: 
-1106: where we have made the change of variable  \( z = \tau[b + (x - \mu)^{2}/2] \) . By convention we define new parameters given by  \( \nu = 2a \)  and  \( \lambda = a/b \) , in terms of which the distribution  \( p(x|\mu, a, b) \)  takes the form
+1106: **loop do**
 1107: 
-1108: \[
-1109: \operatorname{St} (x | \mu , \lambda , \nu) = \frac {\Gamma (\nu / 2 + 1 / 2)}{\Gamma (\nu / 2)} \left(\frac {\lambda}{\pi \nu}\right) ^ {1 / 2} \left[ 1 + \frac {\lambda (x - \mu) ^ {2}}{\nu} \right] ^ {- \nu / 2 - 1 / 2} \tag {2.159}
-1110: \]
+1108: **if** EMPTY?( *frontier* ) **then return** failure
+1109: 
+1110: *node* ← POP( *frontier* ) /* chooses the shallowest node in *frontier* */
 1111: 
-1112: which is known as Student's t-distribution. The parameter  \( \lambda \)  is sometimes called the precision of the t-distribution, even though it is not in general equal to the inverse of the variance. The parameter  \( \nu \)  is called the degrees of freedom, and its effect is illustrated in Figure 2.15. For the particular case of  \( \nu = 1 \), the t-distribution reduces to the Cauchy distribution, while in the limit  \( \nu \to \infty \)  the t-distribution  \( \mathrm{St}(x|\mu, \lambda, \nu) \)  becomes a Gaussian  \( \mathcal{N}(x|\mu, \lambda^{-1}) \)  with mean  \( \mu \)  and precision  \( \lambda \).
+1112: add *node*.STATE to *explored*
 1113: 
-1114: From (2.158), we see that Student's t-distribution is obtained by adding up an infinite number of Gaussian distributions having the same mean but different precisions. This can be interpreted as an infinite mixture of Gaussians (Gaussian mixtures will be discussed in detail in Section 2.3.9. The result is a distribution that in general has longer 'tails' than a Gaussian, as was seen in Figure 2.15. This gives the t-distribution an important property called robustness, which means that it is much less sensitive than the Gaussian to the presence of a few data points which are outliers. The robustness of the t-distribution is illustrated in Figure 2.16, which compares the maximum likelihood solutions for a Gaussian and a t-distribution. Note that the maximum likelihood solution for the t-distribution can be found using the expectation-maximization (EM) algorithm. Here we see that the effect of a small number of
+1114: **for each** *action* **in** *problem*.ACTIONS( *node*.STATE) **do**
 1115: 
-1116: Exercise 2.47
+1116: *child* ← CHILD-NODE( *problem*, *node*, *action* )
 1117: 
-1118: Exercise 12.24
-1119: ![img-32.jpeg](img-32.jpeg)
-1120: 
-1121: (a)
-1122: 
-1123: ![img-33.jpeg](img-33.jpeg)
+1118: **if** *child*.STATE is not in *explored* or *frontier* **then**
+1119: 
+1120: **if** *problem*.GOAL-TEST(*child*.STATE) **then return** SOLUTION(*child* )
+1121: 
+1122: *frontier* ← INSERT( *child*, *frontier* )
+1123: ## 2. BFS Properties
 1124: 
-1125: (b)
+1125: ■ What nodes does BFS expand?
 1126: 
-1127: Figure 2.16 Illustration of the robustness of Student's t-distribution compared to a Gaussian. (a) Histogram distribution of 30 data points drawn from a Gaussian distribution, together with the maximum likelihood fit obtained from a t-distribution (red curve) and a Gaussian (green curve, largely hidden by the red curve). Because the t-distribution contains the Gaussian as a special case it gives almost the same solution as the Gaussian. (b) The same data set but with three additional outlying data points showing how the Gaussian (green curve) is strongly distorted by the outliers, whereas the t-distribution (red curve) is relatively unaffected.
-1128: 
-1129: outliers is much less significant for the t-distribution than for the Gaussian. Outliers can arise in practical applications either because the process that generates the data corresponds to a distribution having a heavy tail or simply through mislabelled data. Robustness is also an important property for regression problems. Unsurprisingly, the least squares approach to regression does not exhibit robustness, because it corresponds to maximum likelihood under a (conditional) Gaussian distribution. By basing a regression model on a heavy-tailed distribution such as a t-distribution, we obtain a more robust model.
+1127: - ■ Processes all nodes above shallowest solution
+1128: - ■ Let depth of shallowest solution be $d$
+1129: - ■ Search takes time $O(b^d)$
 1130: 
-1131: If we go back to (2.158) and substitute the alternative parameters $\nu = 2a$, $\lambda = a/b$, and $\eta = \tau b/a$, we see that the t-distribution can be written in the form
+1131: ■ How much space does the frontier take?
 1132: 
-1133: $$
-1134: \operatorname{St}(x|\mu, \lambda, \nu) = \int_0^\infty \mathcal{N}\left(x|\mu, (\eta\lambda)^{-1}\right) \operatorname{Gam}(\eta|\nu/2, \nu/2) \, \mathrm{d}\eta. \tag{2.160}
-1135: $$
+1133: - ■ Has roughly the last tier, so $O(b^d)$
+1134: 
+1135: ■ Is it complete?
 1136: 
-1137: We can then generalize this to a multivariate Gaussian $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda})$ to obtain the corresponding multivariate Student's t-distribution in the form
+1137: - ■ $d$ must be finite if a solution exists, so yes!
 1138: 
-1139: $$
-1140: \operatorname{St}(\mathbf{x}|\boldsymbol{\mu}, \boldsymbol{\Lambda}, \nu) = \int_0^\infty \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}, (\eta\boldsymbol{\Lambda})^{-1}) \operatorname{Gam}(\eta|\nu/2, \nu/2) \, \mathrm{d}\eta. \tag{2.161}
-1141: $$
+1139: ■ Is it optimal?
+1140: 
+1141: - ■ Only if costs are all 1 (1 per step)
 1142: 
-1143: Exercise 2.48
+1143: ![img-114.jpeg](img-114.jpeg)
 1144: 
-1145: Using the same technique as for the univariate case, we can evaluate this integral to give
-1146: $$\operatorname{St}(\mathbf{x}|\boldsymbol{\mu},\boldsymbol{\Lambda},\nu)=\frac{\Gamma(D/2+\nu/2)}{\Gamma(\nu/2)}\frac{|\boldsymbol{\Lambda}|^{1/2}}{(\pi\nu)^{D/2}}\left[1+\frac{\Delta^{2}}{\nu}\right]^{-D/2-\nu/2} \tag{2.162}$$
+1145: ![img-115.jpeg](img-115.jpeg)
+1146: # Quiz: DFS vs BFS
 1147: 
-1148: where $D$ is the dimensionality of $\mathbf{x}$, and $\Delta^{2}$ is the squared Mahalanobis distance defined by
+1148: ![img-116.jpeg](img-116.jpeg)
 1149: 
-1150: $$\Delta^{2}=(\mathbf{x}-\boldsymbol{\mu})^{\mathrm{T}}\boldsymbol{\Lambda}(\mathbf{x}-\boldsymbol{\mu}). \tag{2.163}$$
-1151: 
-1152: Exercise 2.49
-1153: 
-1154: This is the multivariate form of Student's t-distribution and satisfies the following properties
-1155: 
-1156: $$\mathbb{E}[\mathbf{x}] = \boldsymbol{\mu}, \quad \text{if} \quad \nu > 1 \tag{2.164}$$
-1157: 
-1158: $$\operatorname{cov}[\mathbf{x}] = \frac{\nu}{(\nu-2)}\boldsymbol{\Lambda}^{-1}, \quad \text{if} \quad \nu > 2 \tag{2.165}$$
-1159: 
-1160: $$\operatorname{mode}[\mathbf{x}] = \boldsymbol{\mu} \tag{2.166}$$
-1161: 
-1162: with corresponding results for the univariate case.
+1150: - When will BFS outperform DFS?
+1151: - When will DFS outperform BFS?
+1152: 
+1153: ![img-117.jpeg](img-117.jpeg)
+1154: 
+1155: ![img-118.jpeg](img-118.jpeg)
+1156: 
+1157: BFS, the closest elements to the starting location are searched first.
+1158: 
+1159: ![img-119.jpeg](img-119.jpeg)
+1160: 
+1161: DFS, the search proceeds along a continuously deeper path until it hits a barrier and must backtracks to the last decision point.
+1162: # DFS vs. BFS
 1163: 
-1164: ### 2.3.8 Periodic variables
-1165: 
-1166: Although Gaussian distributions are of great practical significance, both in their own right and as building blocks for more complex probabilistic models, there are situations in which they are inappropriate as density models for continuous variables. One important case, which arises in practical applications, is that of periodic variables.
-1167: 
-1168: An example of a periodic variable would be the wind direction at a particular geographical location. We might, for instance, measure values of wind direction on a number of days and wish to summarize this using a parametric distribution. Another example is calendar time, where we may be interested in modelling quantities that are believed to be periodic over 24 hours or over an annual cycle. Such quantities can conveniently be represented using an angular (polar) coordinate $0 \leqslant \theta < 2\pi$.
+1164: - If you know a solution is not far from the root of the tree, *a breadth first search (BFS) might be better*
+1165: - If the tree is very deep and solutions are rare, *depth first search (DFS) might take an extremely long time, but BFS could be faster*
+1166: - If the tree is very wide, *a BFS might need to much memory, so it might be completely impractical*
+1167: - If solutions are frequent but located deep in the tree, *BFS could be completely impractical*
+1168: - If the search tree is very deep *you will need to restrict the search depth for depth first search (DFS)*
 1169: 
-1170: We might be tempted to treat periodic variables by choosing some direction as the origin and then applying a conventional distribution such as the Gaussian. Such an approach, however, would give results that were strongly dependent on the arbitrary choice of origin. Suppose, for instance, that we have two observations at $\theta_{1}=1^{\circ}$ and $\theta_{2}=359^{\circ}$, and we model them using a standard univariate Gaussian distribution. If we choose the origin at $0^{\circ}$, then the sample mean of this data set will be $180^{\circ}$ with standard deviation $179^{\circ}$, whereas if we choose the origin at $180^{\circ}$, then the mean will be $0^{\circ}$ and the standard deviation will be $1^{\circ}$. We clearly need to develop a special approach for the treatment of periodic variables.
-1171: 
-1172: Let us consider the problem of evaluating the mean of a set of observations $\mathcal{D}=\{\theta_{1},\ldots,\theta_{N}\}$ of a periodic variable. From now on, we shall assume that $\theta$ is measured in radians. We have already seen that the simple average $(\theta_{1}+\cdots+\theta_{N})/N$ will be strongly coordinate dependent. To find an invariant measure of the mean, we note that the observations can be viewed as points on the unit circle and can therefore be described instead by two-dimensional unit vectors $\mathbf{x}_{1},\ldots,\mathbf{x}_{N}$ where $\|\mathbf{x}_{n}\|=1$ for $n=1,\ldots,N$, as illustrated in Figure 2.17. We can average the vectors $\{\mathbf{x}_{n}\}$
-1173: Figure 2.17 Illustration of the representation of values $\theta_{n}$ of a periodic variable as two-dimensional vectors $\mathbf{x}_n$ living on the unit circle. Also shown is the average $\overline{\mathbf{x}}$ of those vectors.
-1174: 
-1175: ![img-34.jpeg](img-34.jpeg)
-1176: 
-1177: instead to give
-1178: 
-1179: $$
-1180: \overline{\mathbf{x}} = \frac{1}{N} \sum_{n=1}^{N} \mathbf{x}_n \tag{2.167}
-1181: $$
-1182: 
-1183: and then find the corresponding angle $\overline{\theta}$ of this average. Clearly, this definition will ensure that the location of the mean is independent of the origin of the angular coordinate. Note that $\overline{\mathbf{x}}$ will typically lie inside the unit circle. The Cartesian coordinates of the observations are given by $\mathbf{x}_n = (\cos \theta_n, \sin \theta_n)$, and we can write the Cartesian coordinates of the sample mean in the form $\overline{\mathbf{x}} = (\overline{r} \cos \overline{\theta}, \overline{r} \sin \overline{\theta})$. Substituting into (2.167) and equating the $x_1$ and $x_2$ components then gives
-1184: 
-1185: $$
-1186: \overline{r} \cos \overline{\theta} = \frac{1}{N} \sum_{n=1}^{N} \cos \theta_n, \quad \overline{r} \sin \overline{\theta} = \frac{1}{N} \sum_{n=1}^{N} \sin \theta_n. \tag{2.168}
-1187: $$
+1170: |  Scenario | Depth first | Breadth first  |
+1171: | --- | --- | --- |
+1172: |  Some paths are extremely long, or even infinite | Performs badly | Performs well  |
+1173: |  All paths are of similar length | Performs well | Performs well  |
+1174: |  All paths are of similar length, and all paths lead to a goal state | Performs well | Wasteful of time and memory  |
+1175: |  High branching factor | Performance depends on other factors | Performs poorly  |
+1176: # DFS Limites
+1177: 
+1178: - Depth first search is incomplete if there is an infinite branch in the search tree.
+1179:   - Infinite branches can happen if:
+1180:     - paths contain loops
+1181:     - infinite number of states and/or operators.
+1182: - For problems with infinite (or just very large) state spaces, several variants of depth-first search have been developed:
+1183:   - Depth limited search
+1184:   - Iterative deepening search
+1185: # Outline
+1186: 
+1187: ## Solving problems by searching
 1188: 
-1189: Taking the ratio, and using the identity $\tan \theta = \sin \theta / \cos \theta$, we can solve for $\overline{\theta}$ to give
-1190: 
-1191: $$
-1192: \overline{\theta} = \tan^{-1} \left\{ \frac{\sum_n \sin \theta_n}{\sum_n \cos \theta_n} \right\}. \tag{2.169}
-1193: $$
-1194: 
-1195: Shortly, we shall see how this result arises naturally as the maximum likelihood estimator for an appropriately defined distribution over a periodic variable.
+1189: - Problem-solving agents
+1190: - Search Problems
+1191: - Uninformed Search Methods
+1192:   1. Depth-First Search
+1193:   2. Breadth-First Search
+1194:   3. Iterative Deepening Search
+1195:   4. Uniform-Cost Search
 1196: 
-1197: We now consider a periodic generalization of the Gaussian called the *von Mises* distribution. Here we shall limit our attention to univariate distributions, although periodic distributions can also be found over hyperspheres of arbitrary dimension. For an extensive discussion of periodic distributions, see Mardia and Jupp (2000).
-1198: 
-1199: By convention, we will consider distributions $p(\theta)$ that have period $2\pi$. Any probability density $p(\theta)$ defined over $\theta$ must not only be nonnegative and integrate
-1200: Figure 2.18 The von Mises distribution can be derived by considering a two-dimensional Gaussian of the form (2.173), whose density contours are shown in blue and conditioning on the unit circle shown in red.
-1201: 
-1202: ![img-35.jpeg](img-35.jpeg)
-1203: 
-1204: to one, but it must also be periodic. Thus $p(\theta)$ must satisfy the three conditions
-1205: 
-1206: $$
-1207: p(\theta) \geqslant 0 \tag{2.170}
-1208: $$
-1209: 
-1210: $$
-1211: \int_0^{2\pi} p(\theta) \, \mathrm{d}\theta = 1 \tag{2.171}
-1212: $$
-1213: 
-1214: $$
-1215: p(\theta + 2\pi) = p(\theta). \tag{2.172}
-1216: $$
-1217: 
-1218: From (2.172), it follows that $p(\theta + M2\pi) = p(\theta)$ for any integer $M$.
-1219: 
-1220: We can easily obtain a Gaussian-like distribution that satisfies these three properties as follows. Consider a Gaussian distribution over two variables $\mathbf{x} = (x_1, x_2)$ having mean $\boldsymbol{\mu} = (\mu_1, \mu_2)$ and a covariance matrix $\boldsymbol{\Sigma} = \sigma^2 \mathbf{I}$ where $\mathbf{I}$ is the $2 \times 2$ identity matrix, so that
-1221: 
-1222: $$
-1223: p(x_1, x_2) = \frac{1}{2\pi\sigma^2} \exp \left\{ -\frac{(x_1 - \mu_1)^2 + (x_2 - \mu_2)^2}{2\sigma^2} \right\}. \tag{2.173}
-1224: $$
+1197: ![img-120.jpeg](img-120.jpeg)
+1198: ## 3.a. Depth Limited Search
+1199: 
+1200: - **Limited depth DFS:** just like DFS, except never go deeper than some depth $\ell$
+1201: - The nodes at depth $\ell$ are treated as if they had no successors
+1202: - If the search reaches a node at depth $\ell$ where the path is not a solution, we backtrack to the next choice point at depth $< \ell$
+1203: - Depth-first search can be viewed as a special case of **Depth Limited Search** where $\ell = \infty$
+1204: - The depth bound can sometimes be chosen based on knowledge of the problem
+1205: # 3.a. Depth Limited Search
+1206: 
+1207: ![img-121.jpeg](img-121.jpeg)
+1208: 
+1209: ![img-122.jpeg](img-122.jpeg)
+1210: 
+1211: Example: route planning problem
+1212: 
+1213: ▶ Requires some knowledge of the solution:
+1214: 
+1215: - in the route planning problem, the longest route has length $s - 1$, where $s$ is the number of cities (states),
+1216: - so we can set $\ell = s - 1$
+1217: - 9 cities, depth limit of 8?
+1218: 
+1219: ▶ What if we choose a limit too small?
+1220: 
+1221: - Sacrifice completeness
+1222: # 3. Iterative Deepening Search
+1223: 
+1224: For the most problems, $\ell$ is unknown.
 1225: 
-1226: The contours of constant $p(\mathbf{x})$ are circles, as illustrated in Figure 2.18. Now suppose we consider the value of this distribution along a circle of fixed radius. Then by construction this distribution will be periodic, although it will not be normalized. We can determine the form of this distribution by transforming from Cartesian coordinates $(x_1, x_2)$ to polar coordinates $(r, \theta)$ so that
+1226: Iterative Deepening Search (IDS) is a form of depth limited search which progressively increases the bound.
 1227: 
-1228: $$
-1229: x_1 = r \cos \theta, \quad x_2 = r \sin \theta. \tag{2.174}
-1230: $$
-1231: 
-1232: We also map the mean $\boldsymbol{\mu}$ into polar coordinates by writing
-1233: 
-1234: $$
-1235: \mu_1 = r_0 \cos \theta_0, \quad \mu_2 = r_0 \sin \theta_0. \tag{2.175}
-1236: $$
+1228: ![img-123.jpeg](img-123.jpeg)
+1229: ### 3. Iterative Deepening Search
+1230: 
+1231: - Idea: get DFS's space advantage with BFS's time / shallow-solution advantages
+1232: 
+1233: - Run a DFS with depth limit 1. If no solution...
+1234: - Run a DFS with depth limit 2. If no solution...
+1235: - Run a DFS with depth limit 3 ...
+1236: - Until a solution is found
 1237: 
-1238: Next we substitute these transformations into the two-dimensional Gaussian distribution (2.173), and then condition on the unit circle $r = 1$, noting that we are interested only in the dependence on $\theta$. Focussing on the exponent in the Gaussian distribution we have
+1238: - Solution will be found when $\ell = d$
 1239: 
-1240: $$
-1241: \begin{aligned}
-1242: & -\frac{1}{2\sigma^2} \left\{ (r \cos \theta - r_0 \cos \theta_0)^2 + (r \sin \theta - r_0 \sin \theta_0)^2 \right\} \\
-1243: & = -\frac{1}{2\sigma^2} \left\{ 1 + r_0^2 - 2r_0 \cos \theta \cos \theta_0 - 2r_0 \sin \theta \sin \theta_0 \right\} \\
-1244: & = \frac{r_0}{\sigma^2} \cos(\theta - \theta_0) + \text{const} \tag{2.176}
-1245: \end{aligned}
-1246: $$
-1247: ![img-36.jpeg](img-36.jpeg)
+1240: - Isn't that wastefully redundant?
+1241: 
+1242: - Generally most work happens in the lowest level searched, so not so bad!
+1243: 
+1244: ![img-124.jpeg](img-124.jpeg)
+1245: # 3. Iterative Deepening Search Example
+1246: 
+1247: IDS Search(problem, stack )
 1248: 
-1249: ![img-37.jpeg](img-37.jpeg)
+1249: Depth : 1, # of nodes tested: 0, expanded: 0
 1250: 
-1251: Figure 2.19 The von Mises distribution plotted for two different parameter values, shown as a Cartesian plot on the left and as the corresponding polar plot on the right.
-1252: 
-1253: Exercise 2.51
+1251: |  expnd. node | node list  |
+1252: | --- | --- |
+1253: |  |   |
 1254: 
-1255: where 'const' denotes terms independent of $\theta$, and we have made use of the following trigonometrical identities
+1255: State Space Graph
 1256: 
-1257: $$
-1258: \cos^2 A + \sin^2 A = 1 \tag{2.177}
-1259: $$
-1260: 
-1261: $$
-1262: \cos A \cos B + \sin A \sin B = \cos(A - B). \tag{2.178}
-1263: $$
-1264: 
-1265: If we now define $m = r_0 / \sigma^2$, we obtain our final expression for the distribution of $p(\theta)$ along the unit circle $r = 1$ in the form
-1266: 
-1267: $$
-1268: p(\theta|\theta_0, m) = \frac{1}{2\pi I_0(m)} \exp \left\{ m \cos(\theta - \theta_0) \right\} \tag{2.179}
-1269: $$
-1270: 
-1271: which is called the *von Mises* distribution, or the *circular normal*. Here the parameter $\theta_0$ corresponds to the mean of the distribution, while $m$, which is known as the *concentration* parameter, is analogous to the inverse variance (precision) for the Gaussian. The normalization coefficient in (2.179) is expressed in terms of $I_0(m)$, which is the zeroth-order Bessel function of the first kind (Abramowitz and Stegun, 1965) and is defined by
-1272: 
-1273: $$
-1274: I_0(m) = \frac{1}{2\pi} \int_0^{2\pi} \exp \left\{ m \cos \theta \right\} \mathrm{d}\theta. \tag{2.180}
-1275: $$
+1257: ![img-125.jpeg](img-125.jpeg)
+1258: 
+1259: Graph Search
+1260: # 3. Iterative Deepening Search Example
+1261: 
+1262: IDS Search(problem, stack )
+1263: 
+1264: Depth : 1, # of nodes tested: 0, expanded: 0
+1265: 
+1266: |  expnd. node | node list  |
+1267: | --- | --- |
+1268: |  |   |
+1269: 
+1270: State Space Graph
+1271: 
+1272: ![img-126.jpeg](img-126.jpeg)
+1273: 
+1274: Graph Search
+1275: # 3. Iterative Deepening Search Example
 1276: 
-1277: Exercise 2.52
+1277: IDS Search(problem, stack )
 1278: 
-1279: For large $m$, the distribution becomes approximately Gaussian. The von Mises distribution is plotted in Figure 2.19, and the function $I_0(m)$ is plotted in Figure 2.20.
+1279: Depth : 1, # of nodes tested: 0, expanded: 0
 1280: 
-1281: Now consider the maximum likelihood estimators for the parameters $\theta_0$ and $m$ for the von Mises distribution. The log likelihood function is given by
-1282: 
-1283: $$
-1284: \ln p(\mathcal{D}|\theta_0, m) = -N \ln(2\pi) - N \ln I_0(m) + m \sum_{n=1}^{N} \cos(\theta_n - \theta_0). \tag{2.181}
-1285: $$
-1286: ![img-38.jpeg](img-38.jpeg)
-1287: 
-1288: ![img-39.jpeg](img-39.jpeg)
-1289: 
-1290: Figure 2.20 Plot of the Bessel function \( I_0(m) \) defined by (2.180), together with the function \( A(m) \) defined by (2.186).
+1281: |  expnd. node | node list  |
+1282: | --- | --- |
+1283: |   | {(S, path: [S])}  |
+1284: 
+1285: State Space Graph
+1286: 
+1287: ![img-127.jpeg](img-127.jpeg)
+1288: 
+1289: Graph Search
+1290: # 3. Iterative Deepening Search Example
 1291: 
-1292: Setting the derivative with respect to $\theta_0$ equal to zero gives
+1292: IDS Search(problem, stack )
 1293: 
-1294: $$
-1295: \sum_{n=1}^{N} \sin(\theta_n - \theta_0) = 0. \tag{2.182}
-1296: $$
-1297: 
-1298: To solve for $\theta_0$, we make use of the trigonometric identity
-1299: 
-1300: $$
-1301: \sin(A - B) = \cos B \sin A - \cos A \sin B \tag{2.183}
-1302: $$
-1303: 
-1304: *Exercise 2.53* from which we obtain
-1305: 
-1306: $$
-1307: \theta_0^{\mathrm{ML}} = \tan^{-1} \left\{ \frac{\sum_n \sin \theta_n}{\sum_n \cos \theta_n} \right\} \tag{2.184}
-1308: $$
+1294: Depth : 1, # of nodes tested: 1, expanded: 1
+1295: 
+1296: |  Explored node | Frontier  |
+1297: | --- | --- |
+1298: |   | {(S, path: [S])}  |
+1299: |  S not goal | {(C, path: [S, C]), (B, path: [S, B]), (A, path: [S, A])}  |
+1300: 
+1301: State Space Graph
+1302: 
+1303: ![img-128.jpeg](img-128.jpeg)
+1304: 
+1305: Graph Search
+1306: 
+1307: ![img-129.jpeg](img-129.jpeg)
+1308: # 3. Iterative Deepening Search Example
 1309: 
-1310: which we recognize as the result (2.169) obtained earlier for the mean of the observations viewed in a two-dimensional Cartesian space.
+1310: IDS Search(problem, stack )
 1311: 
-1312: Similarly, maximizing (2.181) with respect to $m$, and making use of $I_0'(m) = I_1(m)$ (Abramowitz and Stegun, 1965), we have
+1312: Depth : 1, # of nodes tested: 2, expanded: 1
 1313: 
-1314: $$
-1315: A(m) = \frac{1}{N} \sum_{n=1}^{N} \cos(\theta_n - \theta_0^{\mathrm{ML}}) \tag{2.185}
-1316: $$
-1317: 
-1318: where we have substituted for the maximum likelihood solution for $\theta_0^{\mathrm{ML}}$ (recalling that we are performing a joint optimization over $\theta$ and $m$), and we have defined
+1314: |  Explored node | Frontier  |
+1315: | --- | --- |
+1316: |   | {(S, path: [S])}  |
+1317: |  S not goal | {(C, path: [S, C]), (B, path: [S, B]), (A, path: [S, A])}  |
+1318: |  A not goal | {(C, path: [S, C]), (B, path: [S, B])} **no expand**  |
 1319: 
-1320: $$
-1321: A(m) = \frac{I_1(m)}{I_0(m)}. \tag{2.186}
-1322: $$
+1320: State Space Graph
+1321: 
+1322: ![img-130.jpeg](img-130.jpeg)
 1323: 
-1324: The function $A(m)$ is plotted in Figure 2.20. Making use of the trigonometric identity (2.178), we can write (2.185) in the form
+1324: Graph Search
 1325: 
-1326: $$
-1327: A(m_{\mathrm{ML}}) = \left( \frac{1}{N} \sum_{n=1}^{N} \cos \theta_n \right) \cos \theta_0^{\mathrm{ML}} - \left( \frac{1}{N} \sum_{n=1}^{N} \sin \theta_n \right) \sin \theta_0^{\mathrm{ML}}. \tag{2.187}
-1328: $$
-1329: Figure 2.21 Plots of the 'old faithful' data in which the blue curves show contours of constant probability density. On the left is a single Gaussian distribution which has been fitted to the data using maximum likelihood. Note that this distribution fails to capture the two clumps in the data and indeed places much of its probability mass in the central region between the clumps where the data are relatively sparse. On the right the distribution is given by a linear combination of two Gaussians which has been fitted to the data by maximum likelihood using techniques discussed Chapter 9, and which gives a better representation of the data.
+1326: ![img-131.jpeg](img-131.jpeg)
+1327: # 3. Iterative Deepening Search Example
+1328: 
+1329: IDS Search(problem, stack )
 1330: 
-1331: ![img-40.jpeg](img-40.jpeg)
+1331: Depth : 1, # of nodes tested: 3, expanded: 1
 1332: 
-1333: ![img-41.jpeg](img-41.jpeg)
-1334: 
-1335: The right-hand side of (2.187) is easily evaluated, and the function $A(m)$ can be inverted numerically.
-1336: 
-1337: For completeness, we mention briefly some alternative techniques for the construction of periodic distributions. The simplest approach is to use a histogram of observations in which the angular coordinate is divided into fixed bins. This has the virtue of simplicity and flexibility but also suffers from significant limitations, as we shall see when we discuss histogram methods in more detail in Section 2.5. Another approach starts, like the von Mises distribution, from a Gaussian distribution over a Euclidean space but now marginalizes onto the unit circle rather than conditioning (Mardia and Jupp, 2000). However, this leads to more complex forms of distribution and will not be discussed further. Finally, any valid distribution over the real axis (such as a Gaussian) can be turned into a periodic distribution by mapping successive intervals of width $2\pi$ onto the periodic variable $(0, 2\pi)$, which corresponds to 'wrapping' the real axis around unit circle. Again, the resulting distribution is more complex to handle than the von Mises distribution.
-1338: 
-1339: One limitation of the von Mises distribution is that it is unimodal. By forming *mixtures* of von Mises distributions, we obtain a flexible framework for modelling periodic variables that can handle multimodality. For an example of a machine learning application that makes use of von Mises distributions, see Lawrence *et al.* (2002), and for extensions to modelling conditional densities for regression problems, see Bishop and Nabney (1996).
-1340: 
-1341: ### 2.3.9 Mixtures of Gaussians
-1342: 
-1343: While the Gaussian distribution has some important analytical properties, it suffers from significant limitations when it comes to modelling real data sets. Consider the example shown in Figure 2.21. This is known as the 'Old Faithful' data set, and comprises 272 measurements of the eruption of the Old Faithful geyser at Yellowstone National Park in the USA. Each measurement comprises the duration of
-1344: Figure 2.22 Example of a Gaussian mixture distribution in one dimension showing three Gaussians (each scaled by a coefficient) in blue and their sum in red.
+1333: |  Explored node | Frontier  |
+1334: | --- | --- |
+1335: |   | {(S, path: [S])}  |
+1336: |  S not goal | {(C, path: [S, C]), (B, path: [S, B]), (A, path: [S, A])}  |
+1337: |  A not goal | {(C, path: [S, C]), (B, path: [S, B])} **no expand**  |
+1338: |  B not goal | {(C, path: [S, C]) **no expand**  |
+1339: 
+1340: State Space Graph
+1341: 
+1342: ![img-132.jpeg](img-132.jpeg)
+1343: 
+1344: Graph Search
 1345: 
-1346: ![img-42.jpeg](img-42.jpeg)
-1347: 
-1348: the eruption in minutes (horizontal axis) and the time in minutes to the next eruption (vertical axis). We see that the data set forms two dominant clumps, and that a simple Gaussian distribution is unable to capture this structure, whereas a linear superposition of two Gaussians gives a better characterization of the data set.
-1349: 
-1350: Such superpositions, formed by taking linear combinations of more basic distributions such as Gaussians, can be formulated as probabilistic models known as *mixture distributions* (McLachlan and Basford, 1988; McLachlan and Peel, 2000). In Figure 2.22 we see that a linear combination of Gaussians can give rise to very complex densities. By using a sufficient number of Gaussians, and by adjusting their means and covariances as well as the coefficients in the linear combination, almost any continuous density can be approximated to arbitrary accuracy.
-1351: 
-1352: We therefore consider a superposition of $K$ Gaussian densities of the form
-1353: 
-1354: $$
-1355: p(\mathbf{x}) = \sum_{k=1}^{K} \pi_k \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k) \tag{2.188}
-1356: $$
-1357: 
-1358: which is called a *mixture of Gaussians*. Each Gaussian density $\mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$ is called a *component* of the mixture and has its own mean $\boldsymbol{\mu}_k$ and covariance $\boldsymbol{\Sigma}_k$. Contour and surface plots for a Gaussian mixture having 3 components are shown in Figure 2.23.
-1359: 
-1360: In this section we shall consider Gaussian components to illustrate the framework of mixture models. More generally, mixture models can comprise linear combinations of other distributions. For instance, in Section 9.3.3 we shall consider mixtures of Bernoulli distributions as an example of a mixture model for discrete variables.
-1361: 
-1362: The parameters $\pi_k$ in (2.188) are called *mixing coefficients*. If we integrate both sides of (2.188) with respect to $\mathbf{x}$, and note that both $p(\mathbf{x})$ and the individual Gaussian components are normalized, we obtain
-1363: 
-1364: $$
-1365: \sum_{k=1}^{K} \pi_k = 1. \tag{2.189}
-1366: $$
-1367: 
-1368: Also, the requirement that $p(\mathbf{x}) \geqslant 0$, together with $\mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k) \geqslant 0$, implies $\pi_k \geqslant 0$ for all $k$. Combining this with the condition (2.189) we obtain
+1346: ![img-133.jpeg](img-133.jpeg)
+1347: # 3. Iterative Deepening Search Example
+1348: 
+1349: IDS Search(problem, stack )
+1350: 
+1351: Depth : 1, # of nodes tested: 4, expanded: 1
+1352: 
+1353: |  Explored node | Frontier  |
+1354: | --- | --- |
+1355: |   | {(S, path: [S])}  |
+1356: |  S not goal | {(C, path: [S, C]), (B, path: [S, B]), (A, path: [S, A])}  |
+1357: |  A not goal | {(C, path: [S, C]), (B, path: [S, B])} **no expand**  |
+1358: |  B not goal | {(C, path: [S, C])} **no expand**  |
+1359: |  C not goal | {} **no expand**  |
+1360: 
+1361: State Space Graph
+1362: 
+1363: ![img-134.jpeg](img-134.jpeg)
+1364: 
+1365: Graph Search
+1366: 
+1367: ![img-135.jpeg](img-135.jpeg)
+1368: # 3. Iterative Deepening Search Example
 1369: 
-1370: $$
-1371: 0 \leqslant \pi_k \leqslant 1. \tag{2.190}
-1372: $$
+1370: IDS Search(problem, stack )
+1371: 
+1372: Depth : 1, # of nodes tested: 4, expanded: 1
 1373: 
-1374: Section 9.3.3
-1375: ![img-43.jpeg](img-43.jpeg)
-1376: 
-1377: ![img-44.jpeg](img-44.jpeg)
-1378: 
-1379: ![img-45.jpeg](img-45.jpeg)
-1380: 
-1381: Figure 2.23 Illustration of a mixture of 3 Gaussians in a two-dimensional space. (a) Contours of constant density for each of the mixture components, in which the 3 components are denoted red, blue and green, and the values of the mixing coefficients are shown below each component. (b) Contours of the marginal probability density $p(\mathbf{x})$ of the mixture distribution. (c) A surface plot of the distribution $p(\mathbf{x})$.
-1382: 
-1383: We therefore see that the mixing coefficients satisfy the requirements to be probabilities.
-1384: 
-1385: From the sum and product rules, the marginal density is given by
-1386: 
-1387: $$
-1388: p(\mathbf{x}) = \sum_{k=1}^{K} p(k)p(\mathbf{x}|k) \tag{2.191}
-1389: $$
-1390: 
-1391: which is equivalent to (2.188) in which we can view $\pi_k = p(k)$ as the prior probability of picking the $k^{\text{th}}$ component, and the density $\mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k) = p(\mathbf{x}|k)$ as the probability of $\mathbf{x}$ conditioned on $k$. As we shall see in later chapters, an important role is played by the posterior probabilities $p(k|\mathbf{x})$, which are also known as *responsibilities*. From Bayes' theorem these are given by
+1374: |  Explored node | Frontier  |
+1375: | --- | --- |
+1376: |   | {(S, path: [S])}  |
+1377: |  S not goal | {(C, path: [S, C]), (B, path: [S, B]), (A, path: [S, A])}  |
+1378: |  A not goal | {(C, path: [S, C]), (B, path: [S, B])} **no expand**  |
+1379: |  B not goal | {(C, path: [S, C])} **no expand**  |
+1380: |  C not goal | {} **no expand**  |
+1381: 
+1382: Frontier is empty. Increasing depth
+1383: 
+1384: State Space Graph
+1385: 
+1386: ![img-136.jpeg](img-136.jpeg)
+1387: 
+1388: Graph Search
+1389: 
+1390: ![img-137.jpeg](img-137.jpeg)
+1391: # 3. Iterative Deepening Search Example
 1392: 
-1393: $$
-1394: \begin{array}{l}
-1395: \gamma_k(\mathbf{x}) \equiv p(k|\mathbf{x}) \\
-1396: \quad = \frac{p(k)p(\mathbf{x}|k)}{\sum_l p(l)p(\mathbf{x}|l)} \\
-1397: \quad = \frac{\pi_k \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k)}{\sum_l \pi_l \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_l,\boldsymbol{\Sigma}_l)}.
-1398: \end{array}
-1399: \tag{2.192}
-1400: $$
-1401: 
-1402: We shall discuss the probabilistic interpretation of the mixture distribution in greater detail in Chapter 9.
-1403: 
-1404: The form of the Gaussian mixture distribution is governed by the parameters $\boldsymbol{\pi}$, $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$, where we have used the notation $\boldsymbol{\pi} \equiv \{\pi_1, \dots, \pi_K\}$, $\boldsymbol{\mu} \equiv \{\boldsymbol{\mu}_1, \dots, \boldsymbol{\mu}_K\}$ and $\boldsymbol{\Sigma} \equiv \{\boldsymbol{\Sigma}_1, \dots, \boldsymbol{\Sigma}_K\}$. One way to set the values of these parameters is to use maximum likelihood. From (2.188) the log of the likelihood function is given by
-1405: 
-1406: $$
-1407: \ln p(\mathbf{X}|\boldsymbol{\pi},\boldsymbol{\mu},\boldsymbol{\Sigma}) = \sum_{n=1}^{N} \ln \left\{ \sum_{k=1}^{K} \pi_k \mathcal{N}(\mathbf{x}_n|\boldsymbol{\mu}_k,\boldsymbol{\Sigma}_k) \right\} \tag{2.193}
-1408: $$
-1409: where $\mathbf{X} = \{\mathbf{x}_1, \dots, \mathbf{x}_N\}$. We immediately see that the situation is now much more complex than with a single Gaussian, due to the presence of the summation over $k$ inside the logarithm. As a result, the maximum likelihood solution for the parameters no longer has a closed-form analytical solution. One approach to maximizing the likelihood function is to use iterative numerical optimization techniques (Fletcher, 1987; Nocedal and Wright, 1999; Bishop and Nabney, 2008). Alternatively we can employ a powerful framework called *expectation maximization*, which will be discussed at length in Chapter 9.
-1410: 
-1411: ## 2.4. The Exponential Family
-1412: 
-1413: The probability distributions that we have studied so far in this chapter (with the exception of the Gaussian mixture) are specific examples of a broad class of distributions called the *exponential family* (Duda and Hart, 1973; Bernardo and Smith, 1994). Members of the exponential family have many important properties in common, and it is illuminating to discuss these properties in some generality.
-1414: 
-1415: The exponential family of distributions over $\mathbf{x}$, given parameters $\boldsymbol{\eta}$, is defined to be the set of distributions of the form
-1416: 
-1417: $$
-1418: p(\mathbf{x}|\boldsymbol{\eta}) = h(\mathbf{x})g(\boldsymbol{\eta}) \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \mathbf{u}(\mathbf{x}) \right\} \tag{2.194}
-1419: $$
-1420: 
-1421: where $\mathbf{x}$ may be scalar or vector, and may be discrete or continuous. Here $\boldsymbol{\eta}$ are called the *natural parameters* of the distribution, and $\mathbf{u}(\mathbf{x})$ is some function of $\mathbf{x}$. The function $g(\boldsymbol{\eta})$ can be interpreted as the coefficient that ensures that the distribution is normalized and therefore satisfies
-1422: 
-1423: $$
-1424: g(\boldsymbol{\eta}) \int h(\mathbf{x}) \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \mathbf{u}(\mathbf{x}) \right\} \mathrm{d}\mathbf{x} = 1 \tag{2.195}
-1425: $$
-1426: 
-1427: where the integration is replaced by summation if $\mathbf{x}$ is a discrete variable.
-1428: 
-1429: We begin by taking some examples of the distributions introduced earlier in the chapter and showing that they are indeed members of the exponential family. Consider first the Bernoulli distribution
-1430: 
-1431: $$
-1432: p(x|\mu) = \operatorname{Bern}(x|\mu) = \mu^x (1 - \mu)^{1-x}. \tag{2.196}
-1433: $$
+1393: IDS Search(problem, stack )
+1394: 
+1395: **Depth : 2**, # of nodes tested: 4, expanded: 2
+1396: 
+1397: |  expnd. node | node list  |
+1398: | --- | --- |
+1399: |   | {S}  |
+1400: |  S not goal | {C,B,A}  |
+1401: |  A not goal | {C,B} no expand  |
+1402: |  B not goal | {C} no expand  |
+1403: |  C not goal | {} no expand  |
+1404: 
+1405: State Space Graph
+1406: 
+1407: ![img-138.jpeg](img-138.jpeg)
+1408: 
+1409: Graph Search
+1410: # 3. Iterative Deepening Search Example
+1411: 
+1412: IDS Search(problem, stack )
+1413: 
+1414: Depth : 2, # of nodes tested: 4, expanded: 2
+1415: 
+1416: |  expnd. node | node list  |
+1417: | --- | --- |
+1418: |   | {S}  |
+1419: |  S not goal | {C,B,A}  |
+1420: |  A not goal | {C,B} no expand  |
+1421: |  B not goal | {C} no expand  |
+1422: |  C not goal | {} no expand  |
+1423: 
+1424: ![img-139.jpeg](img-139.jpeg)
+1425: 
+1426: State Space Graph
+1427: 
+1428: ![img-140.jpeg](img-140.jpeg)
+1429: 
+1430: Graph Search
+1431: # 3. Iterative Deepening Search Example
+1432: 
+1433: IDS Search(problem, stack )
 1434: 
-1435: Expressing the right-hand side as the exponential of the logarithm, we have
+1435: Depth : 2, # of nodes tested: 4, expanded: 2
 1436: 
-1437: $$
-1438: \begin{aligned}
-1439: p(x|\mu) &= \exp \left\{ x \ln \mu + (1 - x) \ln(1 - \mu) \right\} \\
-1440: &= (1 - \mu) \exp \left\{ \ln \left( \frac{\mu}{1 - \mu} \right) x \right\}. \tag{2.197}
-1441: \end{aligned}
-1442: $$
-1443: 
-1444: Comparison with (2.194) allows us to identify
+1437: |  expnd. node | node list  |
+1438: | --- | --- |
+1439: |   | {S}  |
+1440: |  S not goal | {C,B,A}  |
+1441: |  A not goal | {C,B} no expand  |
+1442: |  B not goal | {C} no expand  |
+1443: |  C not goal | {} no expand  |
+1444: |  S not goal | {C,B,A}  |
 1445: 
-1446: $$
-1447: \eta = \ln \left( \frac{\mu}{1 - \mu} \right) \tag{2.198}
-1448: $$
-1449: which we can solve for $\mu$ to give $\mu = \sigma(\eta)$, where
-1450: 
-1451: $$
-1452: \sigma(\eta) = \frac{1}{1 + \exp(-\eta)} \tag{2.199}
-1453: $$
+1446: State Space Graph
+1447: 
+1448: ![img-141.jpeg](img-141.jpeg)
+1449: 
+1450: Graph Search
+1451: 
+1452: ![img-142.jpeg](img-142.jpeg)
+1453: # 3. Iterative Deepening Search Example
 1454: 
-1455: is called the *logistic sigmoid* function. Thus we can write the Bernoulli distribution using the standard representation (2.194) in the form
+1455: IDS Search(problem, stack )
 1456: 
-1457: $$
-1458: p(x|\eta) = \sigma(-\eta) \exp(\eta x) \tag{2.200}
-1459: $$
-1460: 
-1461: where we have used $1 - \sigma(\eta) = \sigma(-\eta)$, which is easily proved from (2.199). Comparison with (2.194) shows that
-1462: 
-1463: $$
-1464: u(x) = x \tag{2.201}
-1465: $$
-1466: 
-1467: $$
-1468: h(x) = 1 \tag{2.202}
-1469: $$
+1457: Depth : 2, # of nodes tested: 4, expanded: 3
+1458: 
+1459: |  expnd. node | node list  |
+1460: | --- | --- |
+1461: |   | {S}  |
+1462: |  S not goal | {C,B,A}  |
+1463: |  A not goal | {C,B} no expand  |
+1464: |  B not goal | {C} no expand  |
+1465: |  C not goal | {} no expand  |
+1466: |  S not goal | {C,B,A}  |
+1467: |  A not goal | {C,B,E, D}  |
+1468: 
+1469: State Space Graph
 1470: 
-1471: $$
-1472: g(\eta) = \sigma(-\eta). \tag{2.203}
-1473: $$
+1471: ![img-143.jpeg](img-143.jpeg)
+1472: 
+1473: Graph Search
 1474: 
-1475: Next consider the multinomial distribution that, for a single observation $\mathbf{x}$, takes the form
-1476: 
-1477: $$
-1478: p(\mathbf{x}|\boldsymbol{\mu}) = \prod_{k=1}^{M} \mu_k^{x_k} = \exp \left\{ \sum_{k=1}^{M} x_k \ln \mu_k \right\} \tag{2.204}
-1479: $$
-1480: 
-1481: where $\mathbf{x} = (x_1, \ldots, x_N)^{\mathrm{T}}$. Again, we can write this in the standard representation (2.194) so that
-1482: 
-1483: $$
-1484: p(\mathbf{x}|\boldsymbol{\eta}) = \exp(\boldsymbol{\eta}^{\mathrm{T}} \mathbf{x}) \tag{2.205}
-1485: $$
-1486: 
-1487: where $\eta_k = \ln \mu_k$, and we have defined $\boldsymbol{\eta} = (\eta_1, \ldots, \eta_M)^{\mathrm{T}}$. Again, comparing with (2.194) we have
-1488: 
-1489: $$
-1490: \mathbf{u}(\mathbf{x}) = \mathbf{x} \tag{2.206}
-1491: $$
+1475: ![img-144.jpeg](img-144.jpeg)
+1476: # 3. Iterative Deepening Search Example
+1477: 
+1478: IDS Search(problem, stack )
+1479: 
+1480: Depth : 2, # of nodes tested: 5, expanded: 3
+1481: 
+1482: |  expnd. node | node list  |
+1483: | --- | --- |
+1484: |   | {S}  |
+1485: |  S not goal | {C,B,A}  |
+1486: |  A not goal | {C,B} no expand  |
+1487: |  B not goal | {C} no expand  |
+1488: |  C not goal | {} no expand  |
+1489: |  S not goal | {C,B,A}  |
+1490: |  A not goal | {C,B,E, D}  |
+1491: |  D not goal | {C,B,E}  |
 1492: 
-1493: $$
-1494: h(\mathbf{x}) = 1 \tag{2.207}
-1495: $$
+1493: State Space Graph
+1494: 
+1495: ![img-145.jpeg](img-145.jpeg)
 1496: 
-1497: $$
-1498: g(\boldsymbol{\eta}) = 1. \tag{2.208}
-1499: $$
-1500: 
-1501: Note that the parameters $\eta_k$ are not independent because the parameters $\mu_k$ are subject to the constraint
-1502: 
-1503: $$
-1504: \sum_{k=1}^{M} \mu_k = 1 \tag{2.209}
-1505: $$
-1506: 
-1507: so that, given any $M - 1$ of the parameters $\mu_k$, the value of the remaining parameter is fixed. In some circumstances, it will be convenient to remove this constraint by expressing the distribution in terms of only $M - 1$ parameters. This can be achieved by using the relationship (2.209) to eliminate $\mu_M$ by expressing it in terms of the remaining $\{\mu_k\}$ where $k = 1, \ldots, M - 1$, thereby leaving $M - 1$ parameters. Note that these remaining parameters are still subject to the constraints
-1508: 
-1509: $$
-1510: 0 \leqslant \mu_k \leqslant 1, \quad \sum_{k=1}^{M-1} \mu_k \leqslant 1. \tag{2.210}
-1511: $$
-1512: Making use of the constraint (2.209), the multinomial distribution in this representation then becomes
-1513: 
-1514: $$\begin{array}{l} \exp \left\{\sum_{k=1}^{M} x_{k} \ln \mu_{k}\right\} \\ = \exp \left\{\sum_{k=1}^{M-1} x_{k} \ln \mu_{k} + \left(1 - \sum_{k=1}^{M-1} x_{k}\right) \ln \left(1 - \sum_{k=1}^{M-1} \mu_{k}\right)\right\} \\ = \exp \left\{\sum_{k=1}^{M-1} x_{k} \ln \left(\frac{\mu_{k}}{1 - \sum_{j=1}^{M-1} \mu_{j}}\right) + \ln \left(1 - \sum_{k=1}^{M-1} \mu_{k}\right)\right\}. \end{array} \tag{2.211}$$
-1515: 
-1516: We now identify
+1497: Graph Search
+1498: 
+1499: ![img-146.jpeg](img-146.jpeg)
+1500: # 3. Iterative Deepening Search Example
+1501: 
+1502: IDS Search(problem, stack )
+1503: 
+1504: Depth : 2, # of nodes tested: 6, expanded: 3
+1505: 
+1506: |  expnd. node | node list  |
+1507: | --- | --- |
+1508: |   | {S}  |
+1509: |  S not goal | {C,B,A}  |
+1510: |  A not goal | {C,B} no expand  |
+1511: |  B not goal | {C} no expand  |
+1512: |  C not goal | {} no expand  |
+1513: |  S not goal | {C, B, A}  |
+1514: |  A not goal | {C, B, E, D}  |
+1515: |  D not goal | {C, B, E}  |
+1516: |  E not goal | {C, B}  |
 1517: 
-1518: $$\ln \left(\frac{\mu_{k}}{1 - \sum_{j} \mu_{j}}\right) = \eta_{k} \tag{2.212}$$
+1518: State Space Graph
 1519: 
-1520: which we can solve for $\mu_{k}$ by first summing both sides over $k$ and then rearranging and back-substituting to give
+1520: ![img-147.jpeg](img-147.jpeg)
 1521: 
-1522: $$\mu_{k} = \frac{\exp(\eta_{k})}{1 + \sum_{j} \exp(\eta_{j})}. \tag{2.213}$$
+1522: Graph Search
 1523: 
-1524: This is called the softmax function, or the normalized exponential. In this representation, the multinomial distribution therefore takes the form
-1525: 
-1526: $$p(\mathbf{x}|\boldsymbol{\eta}) = \left(1 + \sum_{k=1}^{M-1} \exp(\eta_{k})\right)^{-1} \exp(\boldsymbol{\eta}^{\mathrm{T}}\mathbf{x}). \tag{2.214}$$
-1527: 
-1528: This is the standard form of the exponential family, with parameter vector $\boldsymbol{\eta} = (\eta_{1}, \ldots, \eta_{M-1})^{\mathrm{T}}$ in which
-1529: 
-1530: $$\mathbf{u}(\mathbf{x}) = \mathbf{x} \tag{2.215}$$
-1531: 
-1532: $$h(\mathbf{x}) = 1 \tag{2.216}$$
-1533: 
-1534: $$g(\boldsymbol{\eta}) = \left(1 + \sum_{k=1}^{M-1} \exp(\eta_{k})\right)^{-1}. \tag{2.217}$$
-1535: 
-1536: Finally, let us consider the Gaussian distribution. For the univariate Gaussian, we have
-1537: 
-1538: $$p(x|\mu, \sigma^{2}) = \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp \left\{-\frac{1}{2\sigma^{2}}(x - \mu)^{2}\right\} \tag{2.218}$$
-1539: 
-1540: $$= \frac{1}{(2\pi\sigma^{2})^{1/2}} \exp \left\{-\frac{1}{2\sigma^{2}}x^{2} + \frac{\mu}{\sigma^{2}}x - \frac{1}{2\sigma^{2}}\mu^{2}\right\} \tag{2.219}$$
-1541: Exercise 2.57
-1542: 
-1543: which, after some simple rearrangement, can be cast in the standard exponential family form (2.194) with
-1544: 
-1545: $$
-1546: \boldsymbol {\eta} = \left( \begin{array}{c} \mu / \sigma^ {2} \\ - 1 / 2 \sigma^ {2} \end{array} \right) \tag {2.220}
-1547: $$
-1548: 
-1549: $$
-1550: \mathbf {u} (x) = \left( \begin{array}{c} x \\ x ^ {2} \end{array} \right) \tag {2.221}
-1551: $$
+1524: ![img-148.jpeg](img-148.jpeg)
+1525: # 3. Iterative Deepening Search Example
+1526: 
+1527: IDS Search(problem, stack )
+1528: 
+1529: Depth : 2, # of nodes tested: 6, expanded: 4
+1530: 
+1531: |  expnd. node | node list  |
+1532: | --- | --- |
+1533: |   | {S}  |
+1534: |  S not goal | {C,B,A}  |
+1535: |  A not goal | {C,B} no expand  |
+1536: |  B not goal | {C} no expand  |
+1537: |  C not goal | {} no expand  |
+1538: |  S not goal | {C, B, A}  |
+1539: |  A not goal | {C, B, E, D}  |
+1540: |  D not goal | {C, B, E}  |
+1541: |  E not goal | {C, B}  |
+1542: |  B not goal | {C, G}  |
+1543: 
+1544: State Space Graph
+1545: 
+1546: ![img-149.jpeg](img-149.jpeg)
+1547: 
+1548: Graph Search
+1549: 
+1550: ![img-150.jpeg](img-150.jpeg)
+1551: # 3. Iterative Deepening Search Example
 1552: 
-1553: $$
-1554: h (\mathbf {x}) = (2 \pi) ^ {- 1 / 2} \tag {2.222}
-1555: $$
+1553: IDS Search(problem, stack )
+1554: 
+1555: Depth : 2, # of nodes tested: 7, expanded: 4
 1556: 
-1557: $$
-1558: g (\boldsymbol {\eta}) = (- 2 \eta_ {2}) ^ {1 / 2} \exp \left(\frac {\eta_ {1} ^ {2}}{4 \eta_ {2}}\right). \tag {2.223}
-1559: $$
-1560: 
-1561: ## 2.4.1 Maximum likelihood and sufficient statistics
-1562: 
-1563: Let us now consider the problem of estimating the parameter vector $\boldsymbol{\eta}$ in the general exponential family distribution (2.194) using the technique of maximum likelihood. Taking the gradient of both sides of (2.195) with respect to $\boldsymbol{\eta}$, we have
-1564: 
-1565: $$
-1566: \begin{array}{l} \nabla g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathrm {d} \mathbf {x} \\ + \quad g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathbf {u} (\mathbf {x}) \mathrm {d} \mathbf {x} = 0. \tag {2.224} \\ \end{array}
-1567: $$
-1568: 
-1569: Rearranging, and making use again of (2.195) then gives
+1557: |  expnd. node | node list  |
+1558: | --- | --- |
+1559: |   | {S}  |
+1560: |  S not goal | {C,B,A}  |
+1561: |  A not goal | {C,B} no expand  |
+1562: |  B not goal | {C} no expand  |
+1563: |  C not goal | {} no expand  |
+1564: |  S not goal | {C, B, A}  |
+1565: |  A not goal | {C, B, E, D}  |
+1566: |  D not goal | {C, B, E}  |
+1567: |  E not goal | {C, B}  |
+1568: |  B not goal | {C, G}  |
+1569: |  **G is goal** | **Stop**  |
 1570: 
-1571: $$
-1572: - \frac {1}{g (\boldsymbol {\eta})} \nabla g (\boldsymbol {\eta}) = g (\boldsymbol {\eta}) \int h (\mathbf {x}) \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \mathbf {u} (\mathbf {x}) \right\} \mathbf {u} (\mathbf {x}) \mathrm {d} \mathbf {x} = \mathbb {E} [ \mathbf {u} (\mathbf {x}) ] \tag {2.225}
-1573: $$
+1571: State Space Graph
+1572: 
+1573: ![img-151.jpeg](img-151.jpeg)
 1574: 
-1575: where we have used (2.194). We therefore obtain the result
+1575: Graph Search
 1576: 
-1577: $$
-1578: - \nabla \ln g (\boldsymbol {\eta}) = \mathbb {E} [ \mathbf {u} (\mathbf {x}) ]. \tag {2.226}
-1579: $$
-1580: 
-1581: Exercise 2.58
-1582: 
-1583: Note that the covariance of $\mathbf{u}(\mathbf{x})$ can be expressed in terms of the second derivatives of $g(\boldsymbol{\eta})$, and similarly for higher order moments. Thus, provided we can normalize a distribution from the exponential family, we can always find its moments by simple differentiation.
-1584: 
-1585: Now consider a set of independent identically distributed data denoted by $\mathbf{X} = \{\mathbf{x}_1,\dots ,\mathbf{x}_n\}$, for which the likelihood function is given by
-1586: 
-1587: $$
-1588: p (\mathbf {X} | \boldsymbol {\eta}) = \left(\prod_ {n = 1} ^ {N} h \left(\mathbf {x} _ {n}\right)\right) g (\boldsymbol {\eta}) ^ {N} \exp \left\{\boldsymbol {\eta} ^ {\mathrm {T}} \sum_ {n = 1} ^ {N} \mathbf {u} \left(\mathbf {x} _ {n}\right) \right\}. \tag {2.227}
-1589: $$
-1590: 
-1591: Setting the gradient of $\ln p(\mathbf{X}|\boldsymbol{\eta})$ with respect to $\boldsymbol{\eta}$ to zero, we get the following condition to be satisfied by the maximum likelihood estimator $\boldsymbol{\eta}_{\mathrm{ML}}$
-1592: 
-1593: $$
-1594: - \nabla \ln g (\boldsymbol {\eta} _ {\mathrm {M L}}) = \frac {1}{N} \sum_ {n = 1} ^ {N} \mathbf {u} (\mathbf {x} _ {n}) \tag {2.228}
-1595: $$
-1596: which can in principle be solved to obtain $\boldsymbol{\eta}_{\mathrm{ML}}$. We see that the solution for the maximum likelihood estimator depends on the data only through $\sum_{n} \mathbf{u}(\mathbf{x}_{n})$, which is therefore called the *sufficient statistic* of the distribution (2.194). We do not need to store the entire data set itself but only the value of the sufficient statistic. For the Bernoulli distribution, for example, the function $\mathbf{u}(x)$ is given just by $x$ and so we need only keep the sum of the data points $\{x_{n}\}$, whereas for the Gaussian $\mathbf{u}(x) = (x, x^{2})^{\mathrm{T}}$, and so we should keep both the sum of $\{x_{n}\}$ and the sum of $\{x_{n}^{2}\}$.
+1577: ![img-152.jpeg](img-152.jpeg)
+1578: # 3. Iterative Deepening Search Example
+1579: 
+1580: IDS Search(problem, stack )
+1581: 
+1582: Depth : 2, # of nodes tested: 7, expanded: 4
+1583: 
+1584: |  expnd. node | node list  |
+1585: | --- | --- |
+1586: |   | {S}  |
+1587: |  S not goal | {C,B,A}  |
+1588: |  A not goal | {C,B} no expand  |
+1589: |  B not goal | {C} no expand  |
+1590: |  C not goal | {} no expand  |
+1591: |  S not goal | {C, B, A}  |
+1592: |  A not goal | {C, B, E, D}  |
+1593: |  D not goal | {C, B, E}  |
+1594: |  E not goal | {C, B}  |
+1595: |  B not goal | {C, G}  |
+1596: |  **G is goal** | **Stop**  |
 1597: 
-1598: If we consider the limit $N \to \infty$, then the right-hand side of (2.228) becomes $\mathbb{E}[\mathbf{u}(\mathbf{x})]$, and so by comparing with (2.226) we see that in this limit $\boldsymbol{\eta}_{\mathrm{ML}}$ will equal the true value $\boldsymbol{\eta}$.
+1598: State Space Graph
 1599: 
-1600: In fact, this sufficiency property holds also for Bayesian inference, although we shall defer discussion of this until Chapter 8 when we have equipped ourselves with the tools of graphical models and can thereby gain a deeper insight into these important concepts.
+1600: ![img-153.jpeg](img-153.jpeg)
 1601: 
-1602: ## 2.4.2 Conjugate priors
+1602: Graph Search
 1603: 
-1604: We have already encountered the concept of a conjugate prior several times, for example in the context of the Bernoulli distribution (for which the conjugate prior is the beta distribution) or the Gaussian (where the conjugate prior for the mean is a Gaussian, and the conjugate prior for the precision is the Wishart distribution). In general, for a given probability distribution $p(\mathbf{x}|\boldsymbol{\eta})$, we can seek a prior $p(\boldsymbol{\eta})$ that is conjugate to the likelihood function, so that the posterior distribution has the same functional form as the prior. For any member of the exponential family (2.194), there exists a conjugate prior that can be written in the form
+1604: ![img-154.jpeg](img-154.jpeg)
 1605: 
-1606: $$
-1607: p(\boldsymbol{\eta}|\boldsymbol{\chi}, \nu) = f(\boldsymbol{\chi}, \nu)g(\boldsymbol{\eta})^{\nu} \exp \left\{ \nu \boldsymbol{\eta}^{\mathrm{T}} \boldsymbol{\chi} \right\} \tag{2.229}
-1608: $$
+1606: Path: S, B, G
+1607: Cost: 8
+1608: # 3. Iterative deepening search Properties
 1609: 
-1610: where $f(\boldsymbol{\chi}, \nu)$ is a normalization coefficient, and $g(\boldsymbol{\eta})$ is the same function as appears in (2.194). To see that this is indeed conjugate, let us multiply the prior (2.229) by the likelihood function (2.227) to obtain the posterior distribution, up to a normalization coefficient, in the form
+1610: # - ■ **Time?**
 1611: 
-1612: $$
-1613: p(\boldsymbol{\eta}|\mathbf{X}, \boldsymbol{\chi}, \nu) \propto g(\boldsymbol{\eta})^{\nu+N} \exp \left\{ \boldsymbol{\eta}^{\mathrm{T}} \left( \sum_{n=1}^{N} \mathbf{u}(\mathbf{x}_{n}) + \nu \boldsymbol{\chi} \right) \right\}. \tag{2.230}
-1614: $$
+1612: - ■ $O(b^d)$, where $b$ is the branching factor and $d$ is the depth of the shallowest solution.
+1613: 
+1614: # - ■ **Space?**
 1615: 
-1616: This again takes the same functional form as the prior (2.229), confirming conjugacy. Furthermore, we see that the parameter $\nu$ can be interpreted as a effective number of pseudo-observations in the prior, each of which has a value for the sufficient statistic $\mathbf{u}(\mathbf{x})$ given by $\boldsymbol{\chi}$.
+1616: - ■ $O(bd)$
 1617: 
-1618: ## 2.4.3 Noninformative priors
+1618: # - ■ **Is it complete?**
 1619: 
-1620: In some applications of probabilistic inference, we may have prior knowledge that can be conveniently expressed through the prior distribution. For example, if the prior assigns zero probability to some value of variable, then the posterior distribution will necessarily also assign zero probability to that value, irrespective of
-1621: any subsequent observations of data. In many cases, however, we may have little idea of what form the distribution should take. We may then seek a form of prior distribution, called a *noninformative prior*, which is intended to have as little influence on the posterior distribution as possible (Jeffries, 1946; Box and Tao, 1973; Bernardo and Smith, 1994). This is sometimes referred to as 'letting the data speak for themselves'.
-1622: 
-1623: If we have a distribution $p(x|\lambda)$ governed by a parameter $\lambda$, we might be tempted to propose a prior distribution $p(\lambda) = \text{const}$ as a suitable prior. If $\lambda$ is a discrete variable with $K$ states, this simply amounts to setting the prior probability of each state to $1/K$. In the case of continuous parameters, however, there are two potential difficulties with this approach. The first is that, if the domain of $\lambda$ is unbounded, this prior distribution cannot be correctly normalized because the integral over $\lambda$ diverges. Such priors are called *improper*. In practice, improper priors can often be used provided the corresponding posterior distribution is *proper*, i.e., that it can be correctly normalized. For instance, if we put a uniform prior distribution over the mean of a Gaussian, then the posterior distribution for the mean, once we have observed at least one data point, will be proper.
-1624: 
-1625: A second difficulty arises from the transformation behaviour of a probability density under a nonlinear change of variables, given by (1.27). If a function $h(\lambda)$ is constant, and we change variables to $\lambda = \eta^2$, then $\widehat{h}(\eta) = h(\eta^2)$ will also be constant. However, if we choose the density $p_{\lambda}(\lambda)$ to be constant, then the density of $\eta$ will be given, from (1.27), by
-1626: 
-1627: $$
-1628: p_{\eta}(\eta) = p_{\lambda}(\lambda) \left| \frac{\mathrm{d}\lambda}{\mathrm{d}\eta} \right| = p_{\lambda}(\eta^2) 2\eta \propto \eta \tag{2.231}
-1629: $$
-1630: 
-1631: and so the density over $\eta$ will not be constant. This issue does not arise when we use maximum likelihood, because the likelihood function $p(x|\lambda)$ is a simple function of $\lambda$ and so we are free to use any convenient parameterization. If, however, we are to choose a prior distribution that is constant, we must take care to use an appropriate representation for the parameters.
-1632: 
-1633: Here we consider two simple examples of noninformative priors (Berger, 1985). First of all, if a density takes the form
-1634: 
-1635: $$
-1636: p(x|\mu) = f(x - \mu) \tag{2.232}
-1637: $$
-1638: 
-1639: then the parameter $\mu$ is known as a *location parameter*. This family of densities exhibits *translation invariance* because if we shift $x$ by a constant to give $\widehat{x} = x + c$, then
+1620: - ■ yes
+1621: 
+1622: # - ■ **Is it optimal?**
+1623: 
+1624: - ■ Yes, if step cost = 1
+1625: 
+1626: ![img-155.jpeg](img-155.jpeg)
+1627: ### 3. Iterative deepening search Properties
+1628: 
+1629: - Has the advantages of BFS
+1630:   - Complete
+1631:   - Optimal (if the edges have identical costs)
+1632: - Has the advantages of DFS
+1633:   - Linear space complexity: $O(bd)$
+1634: - Wasteful?
+1635:   - because nodes near the top of the search tree are generated multiple times
+1636: - It turns out this is NOT very costly
+1637:   - For a tree with (nearly) the same branching factor at each level, most of the nodes are in the bottom level
+1638: - Worst case time complexity: $O(b^d)$
+1639: # 3. Iterative Deepening Search algorithm
 1640: 
-1641: $$
-1642: p(\widehat{x}|\widehat{\mu}) = f(\widehat{x} - \widehat{\mu}) \tag{2.233}
-1643: $$
+1641: # Iterative Deepening Search pseudocode
+1642: 
+1643: function ITERATIVE-DEEPENING-SEARCH(problem) returns a solution node or failure
 1644: 
-1645: where we have defined $\widehat{\mu} = \mu + c$. Thus the density takes the same form in the new variable as in the original one, and so the density is independent of the choice of origin. We would like to choose a prior distribution that reflects this translation invariance property, and so we choose a prior that assigns equal probability mass to
-1646: an interval $A \leqslant \mu \leqslant B$ as to the shifted interval $A - c \leqslant \mu \leqslant B - c$. This implies
-1647: 
-1648: $$
-1649: \int_{A}^{B} p(\mu) \, \mathrm{d}\mu = \int_{A-c}^{B-c} p(\mu) \, \mathrm{d}\mu = \int_{A}^{B} p(\mu - c) \, \mathrm{d}\mu \tag{2.234}
-1650: $$
-1651: 
-1652: and because this must hold for all choices of $A$ and $B$, we have
-1653: 
-1654: $$
-1655: p(\mu - c) = p(\mu) \tag{2.235}
-1656: $$
-1657: 
-1658: which implies that $p(\mu)$ is constant. An example of a location parameter would be the mean $\mu$ of a Gaussian distribution. As we have seen, the conjugate prior distribution for $\mu$ in this case is a Gaussian $p(\mu|\mu_0, \sigma_0^2) = \mathcal{N}(\mu|\mu_0, \sigma_0^2)$, and we obtain a noninformative prior by taking the limit $\sigma_0^2 \to \infty$. Indeed, from (2.141) and (2.142) we see that this gives a posterior distribution over $\mu$ in which the contributions from the prior vanish.
-1659: 
-1660: As a second example, consider a density of the form
-1661: 
-1662: $$
-1663: p(x|\sigma) = \frac{1}{\sigma} f\left(\frac{x}{\sigma}\right) \tag{2.236}
-1664: $$
-1665: 
-1666: Exercise 2.59
-1667: 
-1668: where $\sigma > 0$. Note that this will be a normalized density provided $f(x)$ is correctly normalized. The parameter $\sigma$ is known as a *scale parameter*, and the density exhibits *scale invariance* because if we scale $x$ by a constant to give $\widehat{x} = cx$, then
-1669: 
-1670: $$
-1671: p(\widehat{x}|\widehat{\sigma}) = \frac{1}{\widehat{\sigma}} f\left(\frac{\widehat{x}}{\widehat{\sigma}}\right) \tag{2.237}
-1672: $$
-1673: 
-1674: where we have defined $\widehat{\sigma} = c\sigma$. This transformation corresponds to a change of scale, for example from meters to kilometers if $x$ is a length, and we would like to choose a prior distribution that reflects this scale invariance. If we consider an interval $A \leqslant \sigma \leqslant B$, and a scaled interval $A/c \leqslant \sigma \leqslant B/c$, then the prior should assign equal probability mass to these two intervals. Thus we have
+1645: for depth = 0 to ∞ do
+1646: 
+1647: result ← DEPTH-LIMITED-SEARCH(problem, depth)
+1648: 
+1649: if result ≠ cutoff then return result
+1650: 
+1651: function DEPTH-LIMITED-SEARCH(problem, ℓ) returns a node or failure or cutoff
+1652: 
+1653: frontier ← a LIFO queue (stack) with NODE(problem.INITIAL) as an element
+1654: 
+1655: result ← failure
+1656: 
+1657: while not IS-EMPTY(frontier) do
+1658: 
+1659: node ← POP(frontier)
+1660: 
+1661: if problem.IS-GOAL(node.STATE) then return node
+1662: 
+1663: if DEPTH(node) > ℓ then
+1664: 
+1665: result ← cutoff
+1666: 
+1667: else if not IS-CYCLE(node) do
+1668: 
+1669: for each child in EXPAND(problem, node) do
+1670: 
+1671: add child to frontier
+1672: 
+1673: return result
+1674: # Outline
 1675: 
-1676: $$
-1677: \int_{A}^{B} p(\sigma) \, \mathrm{d}\sigma = \int_{A/c}^{B/c} p(\sigma) \, \mathrm{d}\sigma = \int_{A}^{B} p\left(\frac{1}{c}\sigma\right) \frac{1}{c} \, \mathrm{d}\sigma \tag{2.238}
-1678: $$
-1679: 
-1680: and because this must hold for choices of $A$ and $B$, we have
-1681: 
-1682: $$
-1683: p(\sigma) = p\left(\frac{1}{c}\sigma\right) \frac{1}{c} \tag{2.239}
-1684: $$
+1676: ## Solving problems by searching
+1677: 
+1678: - Problem-solving agents
+1679: - Search Problems
+1680: - Uninformed Search Methods
+1681:   1. Depth-First Search
+1682:   2. Breadth-First Search
+1683:   3. Iterative Deepening Search
+1684:   4. Uniform-Cost Search
 1685: 
-1686: and hence $p(\sigma) \propto 1/\sigma$. Note that again this is an improper prior because the integral of the distribution over $0 \leqslant \sigma \leqslant \infty$ is divergent. It is sometimes also convenient to think of the prior distribution for a scale parameter in terms of the density of the log of the parameter. Using the transformation rule (1.27) for densities we see that $p(\ln \sigma) = \text{const}$. Thus, for this prior there is the same probability mass in the range $1 \leqslant \sigma \leqslant 10$ as in the range $10 \leqslant \sigma \leqslant 100$ and in $100 \leqslant \sigma \leqslant 1000$.
-1687: An example of a scale parameter would be the standard deviation $\sigma$ of a Gaussian distribution, after we have taken account of the location parameter $\mu$, because
+1686: ![img-156.jpeg](img-156.jpeg)
+1687: # Search with varying step costs
 1688: 
-1689: $$
-1690: \mathcal{N}(x|\mu,\sigma^2) \propto \sigma^{-1} \exp \left\{ -(\widetilde{x}/\sigma)^2 \right\} \tag{2.240}
-1691: $$
-1692: 
-1693: Section 2.3
-1694: 
-1695: where $\widetilde{x} = x - \mu$. As discussed earlier, it is often more convenient to work in terms of the precision $\lambda = 1/\sigma^2$ rather than $\sigma$ itself. Using the transformation rule for densities, we see that a distribution $p(\sigma) \propto 1/\sigma$ corresponds to a distribution over $\lambda$ of the form $p(\lambda) \propto 1/\lambda$. We have seen that the conjugate prior for $\lambda$ was the gamma distribution $\mathrm{Gam}(\lambda|a_0, b_0)$ given by (2.146). The noninformative prior is obtained as the special case $a_0 = b_0 = 0$. Again, if we examine the results (2.150) and (2.151) for the posterior distribution of $\lambda$, we see that for $a_0 = b_0 = 0$, the posterior depends only on terms arising from the data and not from the prior.
-1696: 
-1697: ## 2.5. Nonparametric Methods
-1698: 
-1699: Throughout this chapter, we have focussed on the use of probability distributions having specific functional forms governed by a small number of parameters whose values are to be determined from a data set. This is called the *parametric* approach to density modelling. An important limitation of this approach is that the chosen density might be a poor model of the distribution that generates the data, which can result in poor predictive performance. For instance, if the process that generates the data is multimodal, then this aspect of the distribution can never be captured by a Gaussian, which is necessarily unimodal.
-1700: 
-1701: In this final section, we consider some *nonparametric* approaches to density estimation that make few assumptions about the form of the distribution. Here we shall focus mainly on simple frequentist methods. The reader should be aware, however, that nonparametric Bayesian methods are attracting increasing interest (Walker et al., 1999; Neal, 2000; Müller and Quintana, 2004; Teh et al., 2006).
-1702: 
-1703: Let us start with a discussion of histogram methods for density estimation, which we have already encountered in the context of marginal and conditional distributions in Figure 1.11 and in the context of the central limit theorem in Figure 2.6. Here we explore the properties of histogram density models in more detail, focussing on the case of a single continuous variable $x$. Standard histograms simply partition $x$ into distinct bins of width $\Delta_i$ and then count the number $n_i$ of observations of $x$ falling in bin $i$. In order to turn this count into a normalized probability density, we simply divide by the total number $N$ of observations and by the width $\Delta_i$ of the bins to obtain probability values for each bin given by
-1704: 
-1705: $$
-1706: p_i = \frac{n_i}{N\Delta_i} \tag{2.241}
-1707: $$
-1708: 
-1709: for which it is easily seen that $\int p(x) \, \mathrm{d}x = 1$. This gives a model for the density $p(x)$ that is constant over the width of each bin, and often the bins are chosen to have the same width $\Delta_i = \Delta$.
-1710: Figure 2.24 An illustration of the histogram approach to density estimation, in which a data set of 50 data points is generated from the distribution shown by the green curve. Histogram density estimates, based on (2.241), with a common bin width $\Delta$ are shown for various values of $\Delta$.
-1711: 
-1712: ![img-46.jpeg](img-46.jpeg)
-1713: 
-1714: In Figure 2.24, we show an example of histogram density estimation. Here the data is drawn from the distribution, corresponding to the green curve, which is formed from a mixture of two Gaussians. Also shown are three examples of histogram density estimates corresponding to three different choices for the bin width $\Delta$. We see that when $\Delta$ is very small (top figure), the resulting density model is very spiky, with a lot of structure that is not present in the underlying distribution that generated the data set. Conversely, if $\Delta$ is too large (bottom figure) then the result is a model that is too smooth and that consequently fails to capture the bimodal property of the green curve. The best results are obtained for some intermediate value of $\Delta$ (middle figure). In principle, a histogram density model is also dependent on the choice of edge location for the bins, though this is typically much less significant than the value of $\Delta$.
+1689: ![img-157.jpeg](img-157.jpeg)
+1690: 
+1691: - BFS finds the path with the fewest steps, but **does not always find the cheapest path**
+1692: # Outline
+1693: 
+1694: ## Solving problems by searching
+1695: 
+1696: - Problem-solving agents
+1697: - Search Problems
+1698: - Uninformed Search Methods
+1699:   1. Depth-First Search
+1700:   2. Breadth-First Search
+1701:   3. Iterative Deepening Search
+1702:   4. Uniform-Cost Search
+1703: 
+1704: ![img-158.jpeg](img-158.jpeg)
+1705: ## 4. Uniform Cost Search (UCS)
+1706: 
+1707: - For each frontier node, save the total cost of the path from the initial state to that node
+1708: - Expand the frontier node with the lowest path cost
+1709: - **Implementation:** *frontier* is a priority queue ordered by path cost
+1710: - Equivalent to breadth-first if step costs all equal
+1711: - Equivalent to Dijkstra's algorithm in general
+1712: 
+1713: ![img-159.jpeg](img-159.jpeg)
+1714: # 4. Uniform Cost Search Example
 1715: 
-1716: Note that the histogram method has the property (unlike the methods to be discussed shortly) that, once the histogram has been computed, the data set itself can be discarded, which can be advantageous if the data set is large. Also, the histogram approach is easily applied if the data points are arriving sequentially.
+1716: UCS Search(problem, priorityQueue )
 1717: 
-1718: In practice, the histogram technique can be useful for obtaining a quick visualization of data in one or two dimensions but is unsuited to most density estimation applications. One obvious problem is that the estimated density has discontinuities that are due to the bin edges rather than any property of the underlying distribution that generated the data. Another major limitation of the histogram approach is its scaling with dimensionality. If we divide each variable in a $D$-dimensional space into $M$ bins, then the total number of bins will be $M^D$. This exponential scaling with $D$ is an example of the curse of dimensionality. In a space of high dimensionality, the quantity of data needed to provide meaningful estimates of local probability density would be prohibitive.
+1718: # of nodes tested: 0, expanded: 0
 1719: 
-1720: The histogram approach to density estimation does, however, teach us two important lessons. First, to estimate the probability density at a particular location, we should consider the data points that lie within some local neighbourhood of that point. Note that the concept of locality requires that we assume some form of distance measure, and here we have been assuming Euclidean distance. For histograms,
-1721: 
-1722: Section 1.4
-1723: this neighbourhood property was defined by the bins, and there is a natural 'smoothing' parameter describing the spatial extent of the local region, in this case the bin width. Second, the value of the smoothing parameter should be neither too large nor too small in order to obtain good results. This is reminiscent of the choice of model complexity in polynomial curve fitting discussed in Chapter 1 where the degree $M$ of the polynomial, or alternatively the value $\alpha$ of the regularization parameter, was optimal for some intermediate value, neither too large nor too small. Armed with these insights, we turn now to a discussion of two widely used nonparametric techniques for density estimation, kernel estimators and nearest neighbours, which have better scaling with dimensionality than the simple histogram model.
-1724: 
-1725: ## 2.5.1 Kernel density estimators
-1726: 
-1727: Let us suppose that observations are being drawn from some unknown probability density $p(\mathbf{x})$ in some $D$-dimensional space, which we shall take to be Euclidean, and we wish to estimate the value of $p(\mathbf{x})$. From our earlier discussion of locality, let us consider some small region $\mathcal{R}$ containing $\mathbf{x}$. The probability mass associated with this region is given by
-1728: 
-1729: $$
-1730: P = \int_{\mathcal{R}} p(\mathbf{x}) \, \mathrm{d}\mathbf{x}. \tag{2.242}
-1731: $$
-1732: 
-1733: Now suppose that we have collected a data set comprising $N$ observations drawn from $p(\mathbf{x})$. Because each data point has a probability $P$ of falling within $\mathcal{R}$, the total number $K$ of points that lie inside $\mathcal{R}$ will be distributed according to the binomial distribution
+1720: |  expnd. node | node list  |
+1721: | --- | --- |
+1722: |   | {S}  |
+1723: 
+1724: **Strategy:** expand a cheapest node first
+1725: 
+1726: **Implementation:** Frontier is a priority queue (priority: cumulative cost)
+1727: 
+1728: State Space Graph
+1729: 
+1730: ![img-160.jpeg](img-160.jpeg)
+1731: 
+1732: Graph Search
+1733: # 4. Uniform Cost Search Example
 1734: 
-1735: $$
-1736: \operatorname{Bin}(K|N, P) = \frac{N!}{K!(N - K)!} P^K (1 - P)^{1 - K}. \tag{2.243}
-1737: $$
+1735: UCS Search(problem, priorityQueue )
+1736: 
+1737: # of nodes tested:1, expanded: 1
 1738: 
-1739: Using (2.11), we see that the mean fraction of points falling inside the region is $\mathbb{E}[K/N] = P$, and similarly using (2.12) we see that the variance around this mean is $\operatorname{var}[K/N] = P(1 - P)/N$. For large $N$, this distribution will be sharply peaked around the mean and so
-1740: 
-1741: $$
-1742: K \simeq NP. \tag{2.244}
-1743: $$
-1744: 
-1745: If, however, we also assume that the region $\mathcal{R}$ is sufficiently small that the probability density $p(\mathbf{x})$ is roughly constant over the region, then we have
-1746: 
-1747: $$
-1748: P \simeq p(\mathbf{x})V \tag{2.245}
-1749: $$
-1750: 
-1751: where $V$ is the volume of $\mathcal{R}$. Combining (2.244) and (2.245), we obtain our density estimate in the form
+1739: |  Explored node | Frontier  |
+1740: | --- | --- |
+1741: |   | {(S, path: [S], cost: 0}  |
+1742: |  S not goal | {(B, [S,B], 2), (C, [S,C], 4), (A, [S,A], 5)}  |
+1743: 
+1744: State Space Graph
+1745: 
+1746: ![img-161.jpeg](img-161.jpeg)
+1747: 
+1748: Graph Search
+1749: 
+1750: ![img-162.jpeg](img-162.jpeg)
+1751: # 4. Uniform Cost Search Example
 1752: 
-1753: $$
-1754: p(\mathbf{x}) = \frac{K}{NV}. \tag{2.246}
-1755: $$
+1753: UCS Search(problem, priorityQueue )
+1754: 
+1755: # of nodes tested: 2, expanded: 2
 1756: 
-1757: Note that the validity of (2.246) depends on two contradictory assumptions, namely that the region $\mathcal{R}$ be sufficiently small that the density is approximately constant over the region and yet sufficiently large (in relation to the value of that density) that the number $K$ of points falling inside the region is sufficient for the binomial distribution to be sharply peaked.
-1758: 
-1759: Section 2.1
-1760: We can exploit the result (2.246) in two different ways. Either we can fix $K$ and determine the value of $V$ from the data, which gives rise to the $K$-nearest-neighbour technique discussed shortly, or we can fix $V$ and determine $K$ from the data, giving rise to the kernel approach. It can be shown that both the $K$-nearest-neighbour density estimator and the kernel density estimator converge to the true probability density in the limit $N \to \infty$ provided $V$ shrinks suitably with $N$, and $K$ grows with $N$ (Duda and Hart, 1973).
-1761: 
-1762: We begin by discussing the kernel method in detail, and to start with we take the region $\mathcal{R}$ to be a small hypercube centred on the point $\mathbf{x}$ at which we wish to determine the probability density. In order to count the number $K$ of points falling within this region, it is convenient to define the following function
-1763: 
-1764: $$
-1765: k(\mathbf{u}) = \left\{ \begin{array}{ll} 1, & |u_i| \leqslant 1/2, \\ 0, & \text{otherwise} \end{array} \right. \quad i = 1, \dots, D, \tag{2.247}
-1766: $$
-1767: 
-1768: which represents a unit cube centred on the origin. The function $k(\mathbf{u})$ is an example of a *kernel function*, and in this context is also called a *Parzen window*. From (2.247), the quantity $k((\mathbf{x} - \mathbf{x}_n)/h)$ will be one if the data point $\mathbf{x}_n$ lies inside a cube of side $h$ centred on $\mathbf{x}$, and zero otherwise. The total number of data points lying inside this cube will therefore be
-1769: 
-1770: $$
-1771: K = \sum_{n=1}^{N} k \left( \frac{\mathbf{x} - \mathbf{x}_n}{h} \right). \tag{2.248}
-1772: $$
+1757: |  Explored node | Frontier  |
+1758: | --- | --- |
+1759: |   | {(S, path: [S], cost: 0}  |
+1760: |  S not goal | {(B, [S,B], 2), (C, [S,C], 4), (A, [S,A], 5)}  |
+1761: |  B not goal | {(C, [S,C], 4), (A, [S,A], 5), (G, [S, B, G], 8)}  |
+1762: 
+1763: State Space Graph
+1764: 
+1765: ![img-163.jpeg](img-163.jpeg)
+1766: 
+1767: Graph Search
+1768: 
+1769: ![img-164.jpeg](img-164.jpeg)
+1770: # 4. Uniform Cost Search Example
+1771: 
+1772: UCS Search(problem, priorityQueue )
 1773: 
-1774: Substituting this expression into (2.246) then gives the following result for the estimated density at $\mathbf{x}$
+1774: # of nodes tested: 3, expanded: 3
 1775: 
-1776: $$
-1777: p(\mathbf{x}) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{h^D} k \left( \frac{\mathbf{x} - \mathbf{x}_n}{h} \right) \tag{2.249}
-1778: $$
-1779: 
-1780: where we have used $V = h^D$ for the volume of a hypercube of side $h$ in $D$ dimensions. Using the symmetry of the function $k(\mathbf{u})$, we can now re-interpret this equation, not as a single cube centred on $\mathbf{x}$ but as the sum over $N$ cubes centred on the $N$ data points $\mathbf{x}_n$.
-1781: 
-1782: As it stands, the kernel density estimator (2.249) will suffer from one of the same problems that the histogram method suffered from, namely the presence of artificial discontinuities, in this case at the boundaries of the cubes. We can obtain a smoother density model if we choose a smoother kernel function, and a common choice is the Gaussian, which gives rise to the following kernel density model
-1783: 
-1784: $$
-1785: p(\mathbf{x}) = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{(2\pi h^2)^{1/2}} \exp \left\{ -\frac{\|\mathbf{x} - \mathbf{x}_n\|^2}{2h^2} \right\} \tag{2.250}
-1786: $$
-1787: 
-1788: where $h$ represents the standard deviation of the Gaussian components. Thus our density model is obtained by placing a Gaussian over each data point and then adding up the contributions over the whole data set, and then dividing by $N$ so that the density is correctly normalized. In Figure 2.25, we apply the model (2.250) to the data
-1789: Figure 2.25 Illustration of the kernel density model (2.250) applied to the same data set used to demonstrate the histogram approach in Figure 2.24. We see that $h$ acts as a smoothing parameter and that if it is set too small (top panel), the result is a very noisy density model, whereas if it is set too large (bottom panel), then the bimodal nature of the underlying distribution from which the data is generated (shown by the green curve) is washed out. The best density model is obtained for some intermediate value of $h$ (middle panel).
-1790: 
-1791: ![img-47.jpeg](img-47.jpeg)
-1792: 
-1793: set used earlier to demonstrate the histogram technique. We see that, as expected, the parameter $h$ plays the role of a smoothing parameter, and there is a trade-off between sensitivity to noise at small $h$ and over-smoothing at large $h$. Again, the optimization of $h$ is a problem in model complexity, analogous to the choice of bin width in histogram density estimation, or the degree of the polynomial used in curve fitting.
-1794: 
-1795: We can choose any other kernel function $k(\mathbf{u})$ in (2.249) subject to the conditions
-1796: 
-1797: $$
-1798: k(\mathbf{u}) \geqslant 0, \tag{2.251}
-1799: $$
-1800: 
-1801: $$
-1802: \int k(\mathbf{u}) \, d\mathbf{u} = 1 \tag{2.252}
-1803: $$
-1804: 
-1805: which ensure that the resulting probability distribution is nonnegative everywhere and integrates to one. The class of density model given by (2.249) is called a kernel density estimator, or *Parzen* estimator. It has a great merit that there is no computation involved in the ‘training’ phase because this simply requires storage of the training set. However, this is also one of its great weaknesses because the computational cost of evaluating the density grows linearly with the size of the data set.
-1806: 
-1807: ## 2.5.2 Nearest-neighbour methods
-1808: 
-1809: One of the difficulties with the kernel approach to density estimation is that the parameter $h$ governing the kernel width is fixed for all kernels. In regions of high data density, a large value of $h$ may lead to over-smoothing and a washing out of structure that might otherwise be extracted from the data. However, reducing $h$ may lead to noisy estimates elsewhere in data space where the density is smaller. Thus the optimal choice for $h$ may be dependent on location within the data space. This issue is addressed by nearest-neighbour methods for density estimation.
-1810: 
-1811: We therefore return to our general result (2.246) for local density estimation, and instead of fixing $V$ and determining the value of $K$ from the data, we consider a fixed value of $K$ and use the data to find an appropriate value for $V$. To do this, we consider a small sphere centred on the point $\mathbf{x}$ at which we wish to estimate the
-1812: Figure 2.26 Illustration of $K$-nearest-neighbour density estimation using the same data set as in Figures 2.25 and 2.24. We see that the parameter $K$ governs the degree of smoothing, so that a small value of $K$ leads to a very noisy density model (top panel), whereas a large value (bottom panel) smoothes out the bimodal nature of the true distribution (shown by the green curve) from which the data set was generated.
-1813: 
-1814: ![img-48.jpeg](img-48.jpeg)
-1815: 
-1816: Exercise 2.61
-1817: 
-1818: density $p(\mathbf{x})$, and we allow the radius of the sphere to grow until it contains precisely $K$ data points. The estimate of the density $p(\mathbf{x})$ is then given by (2.246) with $V$ set to the volume of the resulting sphere. This technique is known as $K$ nearest neighbours and is illustrated in Figure 2.26, for various choices of the parameter $K$, using the same data set as used in Figure 2.24 and Figure 2.25. We see that the value of $K$ now governs the degree of smoothing and that again there is an optimum choice for $K$ that is neither too large nor too small. Note that the model produced by $K$ nearest neighbours is not a true density model because the integral over all space diverges.
-1819: 
-1820: We close this chapter by showing how the $K$-nearest-neighbour technique for density estimation can be extended to the problem of classification. To do this, we apply the $K$-nearest-neighbour density estimation technique to each class separately and then make use of Bayes' theorem. Let us suppose that we have a data set comprising $N_k$ points in class $\mathcal{C}_k$ with $N$ points in total, so that $\sum_k N_k = N$. If we wish to classify a new point $\mathbf{x}$, we draw a sphere centred on $\mathbf{x}$ containing precisely $K$ points irrespective of their class. Suppose this sphere has volume $V$ and contains $K_k$ points from class $\mathcal{C}_k$. Then (2.246) provides an estimate of the density associated with each class
-1821: 
-1822: $$
-1823: p(\mathbf{x}|\mathcal{C}_k) = \frac{K_k}{N_k V}. \tag{2.253}
-1824: $$
+1776: |  Explored node | Frontier  |
+1777: | --- | --- |
+1778: |   | {(S, path: [S], cost: 0)}  |
+1779: |  S not goal | {(B, [S,B], 2), (C, [S,C], 4), (A, [S,A], 5)}  |
+1780: |  B not goal | {(C, [S,C], 4), (A, [S,A], 5), (G, [S, B, G], 8)}  |
+1781: |  C not goal | {(A, [S,A], 5), (G, [S, B, G], 8), (F, [S, C, F], 6)}  |
+1782: 
+1783: State Space Graph
+1784: 
+1785: ![img-165.jpeg](img-165.jpeg)
+1786: 
+1787: Graph Search
+1788: 
+1789: ![img-166.jpeg](img-166.jpeg)
+1790: # 4. Uniform Cost Search Example
+1791: 
+1792: UCS Search(problem, priorityQueue )
+1793: 
+1794: # of nodes tested: 4, expanded: 4
+1795: 
+1796: |  Explored node | Frontier  |
+1797: | --- | --- |
+1798: |   | {(S, path: [S], cost: 0)}  |
+1799: |  S not goal | {(B, [S,B], 2), (C, [S,C], 4), (A, [S,A], 5)}  |
+1800: |  B not goal | {(C, [S,C], 4), (A, [S,A], 5), (G, [S, B, G], 8)}  |
+1801: |  C not goal | {(A, [S,A], 5), (G, [S, B, G], 8), (F, [S, C, F], 6)}  |
+1802: |  A not goal | {(G, [S, B, G], 8), (F, [S, C, F], 6), (D, [S, A, D], 14), (E, [S, A, E], 9)}  |
+1803: 
+1804: State Space Graph
+1805: 
+1806: ![img-167.jpeg](img-167.jpeg)
+1807: 
+1808: Graph Search
+1809: 
+1810: ![img-168.jpeg](img-168.jpeg)
+1811: # 4. Uniform Cost Search Example
+1812: 
+1813: UCS Search(problem, priorityQueue )
+1814: 
+1815: # of nodes tested: 5, expanded: 5
+1816: 
+1817: |  Explored node | Frontier  |
+1818: | --- | --- |
+1819: |   | {(S, path: [S], cost: 0}  |
+1820: |  S not goal | {(B, [S,B], 2),(C, [S,C], 4),(A, [S,A], 5)}  |
+1821: |  B not goal | {(C, [S,C], 4), (A, [S,A], 5), (G, [S, B, G], 8)}  |
+1822: |  C not goal | {(A, [S,A], 5), (G, [S, B, G], 8), (F, [S, C, F], 6)}  |
+1823: |  A not goal | {(G, [S, B, G], 8), (F, [S, C, F], 6), (D, [S, A, D], 14), (E, [S, A, E], 9)}  |
+1824: |  F not goal | {(G, [S, B, G], 8), (D, [S, A, D], 14), (E, [S, A, E], 9), (G, [S, C, F, G], 7)}  |
 1825: 
-1826: Similarly, the unconditional density is given by
+1826: State Space Graph
 1827: 
-1828: $$
-1829: p(\mathbf{x}) = \frac{K}{NV} \tag{2.254}
-1830: $$
+1828: ![img-169.jpeg](img-169.jpeg)
+1829: 
+1830: Graph Search
 1831: 
-1832: while the class priors are given by
+1832: ![img-170.jpeg](img-170.jpeg)
 1833: 
-1834: $$
-1835: p(\mathcal{C}_k) = \frac{N_k}{N}. \tag{2.255}
-1836: $$
-1837: 
-1838: We can now combine (2.253), (2.254), and (2.255) using Bayes' theorem to obtain the posterior probability of class membership
-1839: 
-1840: $$
-1841: p(\mathcal{C}_k|\mathbf{x}) = \frac{p(\mathbf{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{p(\mathbf{x})} = \frac{K_k}{K}. \tag{2.256}
-1842: $$
-1843: Figure 2.27 (a) In the $K$-nearest-neighbour classifier, a new point, shown by the black diamond, is classified according to the majority class membership of the $K$ closest training data points, in this case $K = 3$. (b) In the nearest-neighbour ($K = 1$) approach to classification, the resulting decision boundary is composed of hyperplanes that form perpendicular bisectors of pairs of points from different classes.
-1844: 
-1845: ![img-49.jpeg](img-49.jpeg)
-1846: 
-1847: (a)
-1848: 
-1849: ![img-50.jpeg](img-50.jpeg)
+1834: Remove the higher-cost of identical nodes on the queue and save memory. However, UCS is optimal even if this is not done, since lower-cost nodes sort to the front.
+1835: ## 4. Uniform Cost Search Example
+1836: 
+1837: UCS Search(problem, priorityQueue)
+1838: 
+1839: # of nodes tested: 6, expanded: 5
+1840: 
+1841: |  Explored node | Frontier  |
+1842: | --- | --- |
+1843: |   | {(S, path: [S], cost: 0}  |
+1844: |  S not goal | {(B, [S,B], 2),(C, [S,C], 4),(A, [S,A], 5)}  |
+1845: |  B not goal | {(C, [S,C], 4), (A, [S,A], 5), (G, [S, B, G], 8)}  |
+1846: |  C not goal | {(A, [S,A], 5), (G, [S, B, G], 8), (F, [S, C, F], 6)}  |
+1847: |  A not goal | {(G, [S, B, G], 8), (F, [S, C, F], 6), (D, [S, A, D], 14), (E, [S, A, E], 9)}  |
+1848: |  F not goal | {(G, [S, B, G], 8), (D, [S, A, D], 14), (E, [S, A, E], 9), (G, [S, C, F, G], 7)}  |
+1849: |  G is goal | Stop  |
 1850: 
-1851: (b)
+1851: State Space Graph
 1852: 
-1853: If we wish to minimize the probability of misclassification, this is done by assigning the test point $\mathbf{x}$ to the class having the largest posterior probability, corresponding to the largest value of $K_{k} / K$. Thus to classify a new point, we identify the $K$ nearest points from the training data set and then assign the new point to the class having the largest number of representatives amongst this set. Ties can be broken at random. The particular case of $K = 1$ is called the *nearest-neighbour* rule, because a test point is simply assigned to the same class as the nearest point from the training set. These concepts are illustrated in Figure 2.27.
+1853: ![img-171.jpeg](img-171.jpeg)
 1854: 
-1855: In Figure 2.28, we show the results of applying the $K$-nearest-neighbour algorithm to the oil flow data, introduced in Chapter 1, for various values of $K$. As expected, we see that $K$ controls the degree of smoothing, so that small $K$ produces many small regions of each class, whereas large $K$ leads to fewer larger regions.
+1855: Graph Search
 1856: 
-1857: ![img-51.jpeg](img-51.jpeg)
-1858: 
-1859: ![img-52.jpeg](img-52.jpeg)
-1860: 
-1861: ![img-53.jpeg](img-53.jpeg)
-1862: 
-1863: Figure 2.28 Plot of 200 data points from the oil data set showing values of \( x_{6} \) plotted against \( x_{7} \), where the red, green, and blue points correspond to the 'laminar', 'annular', and 'homogeneous' classes, respectively. Also shown are the classifications of the input space given by the \( K \)-nearest-neighbour algorithm for various values of \( K \).
-1864: An interesting property of the nearest-neighbour ($K = 1$) classifier is that, in the limit $N \to \infty$, the error rate is never more than twice the minimum achievable error rate of an optimal classifier, i.e., one that uses the true class distributions (Cover and Hart, 1967).
-1865: 
-1866: As discussed so far, both the $K$-nearest-neighbour method, and the kernel density estimator, require the entire training data set to be stored, leading to expensive computation if the data set is large. This effect can be offset, at the expense of some additional one-off computation, by constructing tree-based search structures to allow (approximate) near neighbours to be found efficiently without doing an exhaustive search of the data set. Nevertheless, these nonparametric methods are still severely limited. On the other hand, we have seen that simple parametric models are very restricted in terms of the forms of distribution that they can represent. We therefore need to find density models that are very flexible and yet for which the complexity of the models can be controlled independently of the size of the training set, and we shall see in subsequent chapters how to achieve this.
-1867: 
-1868: ## Exercises
-1869: 
-1870: **2.1** $(\star)$ **www** Verify that the Bernoulli distribution (2.2) satisfies the following properties
-1871: 
-1872: $$
-1873: \sum_{x=0}^{1} p(x|\mu) = 1 \tag{2.257}
-1874: $$
+1857: ![img-172.jpeg](img-172.jpeg)
+1858: # 4. UCS algorithm
+1859: 
+1860: # Best first search
+1861: 
+1862: function BEST-FIRST-SEARCH(problem, f) returns a solution node or failure
+1863:     node ← NODE(STATE=problem.INITIAL)
+1864:     frontier ← a priority queue ordered by f, with node as an element
+1865:     reached ← a lookup table, with one entry with key problem.INITIAL and value node
+1866:     while not IS-EMPTY(frontier) do
+1867:         node ← POP(frontier)
+1868:         if problem.IS-GOAL(node.STATE) then return node
+1869:         for each child in EXPAND(problem, node) do
+1870:             s ← child.STATE
+1871:             if s is not in reached or child.PATH-COST < reached[s].PATH-COST then
+1872:                 reached[s] ← child
+1873:                 add child to frontier
+1874:     return failure
 1875: 
-1876: $$
-1877: \mathbb{E}[x] = \mu \tag{2.258}
-1878: $$
-1879: 
-1880: $$
-1881: \operatorname{var}[x] = \mu(1 - \mu). \tag{2.259}
-1882: $$
+1876: function EXPAND(problem, node) yields nodes
+1877:     s ← node.STATE
+1878: 
+1879:     for each action in problem.ACTIONS(s) do
+1880:         s' ← problem.RESULT(s, action)
+1881:         cost ← node.PATH-COST + problem.ACTION-COST(s, action, s')
+1882:     yield NODE(STATE=s', PARENT=node, ACTION=action, PATH-COST=cost)
 1883: 
-1884: Show that the entropy $\mathrm{H}[x]$ of a Bernoulli distributed random binary variable $x$ is given by
+1884: # Uniform Cost Search
 1885: 
-1886: $$
-1887: \mathrm{H}[x] = -\mu \ln \mu - (1 - \mu) \ln(1 - \mu). \tag{2.260}
-1888: $$
+1886: function UNIFORM-COST-SEARCH(problem) returns a solution node, or failure
+1887: return BEST-FIRST-SEARCH(problem, PATH-COST)
+1888: # 4. UCS Properties
 1889: 
-1890: **2.2** $(\star\star)$ The form of the Bernoulli distribution given by (2.2) is not symmetric between the two values of $x$. In some situations, it will be more convenient to use an equivalent formulation for which $x \in \{-1, 1\}$, in which case the distribution can be written
+1890: What nodes does UCS expand?
 1891: 
-1892: $$
-1893: p(x|\mu) = \left(\frac{1 - \mu}{2}\right)^{(1-x)/2} \left(\frac{1 + \mu}{2}\right)^{(1+x)/2} \tag{2.261}
-1894: $$
-1895: 
-1896: where $\mu \in [-1, 1]$. Show that the distribution (2.261) is normalized, and evaluate its mean, variance, and entropy.
-1897: 
-1898: **2.3** $(\star\star)$ **www** In this exercise, we prove that the binomial distribution (2.9) is normalized. First use the definition (2.10) of the number of combinations of $m$ identical objects chosen from a total of $N$ to show that
-1899: 
-1900: $$
-1901: \binom{N}{m} + \binom{N}{m - 1} = \binom{N + 1}{m}. \tag{2.262}
-1902: $$
+1892: - Processes all nodes with cost less than cheapest solution!
+1893: - If that solution costs $C^*$ and arcs cost at least $\varepsilon$, then the “effective depth” is roughly $C^*/\varepsilon$
+1894: - Takes time $O(b^{C*/\varepsilon})$ (exponential in effective depth)
+1895: - This can be greater than $O(b^d)$: the search can explore long paths consisting of small steps before exploring shorter paths consisting of larger steps
+1896: 
+1897: How much space does the frontier take?
+1898: 
+1899: - Has roughly the last tier, so $O(b^{C*/\varepsilon})$
+1900: 
+1901: Is it complete?
+1902: 
+1903: - Assuming best solution has a finite cost and minimum arc cost is positive, yes!
+1904: 
+1905: Is it optimal?
+1906: 
+1907: - Yes! (Proof next lecture via A*)
+1908: 
+1909: ![img-173.jpeg](img-173.jpeg)
+1910: # 4. Uniform Cost Issues
+1911: 
+1912: - ■ **Strategy:** expand lowest path cost
+1913: - ■ **The good:** UCS is complete and optimal!
+1914: - ■ **The bad:**
+1915:   - ■ Explores options in every “direction”
+1916:   - ■ No information about goal location
+1917: 
+1918: ![img-174.jpeg](img-174.jpeg)
+1919: 
+1920: ![img-175.jpeg](img-175.jpeg)
+1921: # Review: Uninformed search strategies
+1922: 
+1923: - A **search strategy** is defined by picking the order of node expansion
+1924: - **Uninformed** search strategies use only the information available in the problem definition
+1925:   - Breadth-first search
+1926:   - Depth-first search
+1927:   - Iterative deepening search
+1928:   - Uniform-cost search
+1929:   - Bidirectional Search
+1930: # BFS/DFS/IDS/UCS
+1931: 
+1932: • Breadth-first search
+1933: 
+1934: - • **Good**: optimal, works well when many options, but not many actions required
+1935: - • **Bad**: assumes all actions have equal cost
+1936: 
+1937: • Depth-first search
+1938: 
+1939: - • **Good**: memory-efficient, works well when few options, but lots of actions required
+1940: - • **Bad**: not optimal, can run infinitely, assumes all actions have equal cost
+1941: 
+1942: • Iterative deepening search
+1943: 
+1944: - • **Good**: optimal, memory-efficient, and adaptable to different situations
+1945: - • **Bad**: redundant work, assume all actions have equal cost,
+1946: 
+1947: • Uniform-cost search
+1948: 
+1949: - • **Good**: optimal, handles variable-cost actions
+1950: - • **Bad**: explores all options, no information about goal location
+1951: 
+1952: **Basically Dijkstra's Algorithm!**
+1953: # Evaluation of search algorithms
+1954: 
+1955: |  Criterion | Breadth-First | Uniform-Cost | Depth-First | Depth-Limited | Iterative Deepening  |
+1956: | --- | --- | --- | --- | --- | --- |
+1957: |  Complete? | Yes^{1} | Yes^{1,2} | No | No | Yes^{1}  |
+1958: |  Optimal cost? | Yes^{3} | Yes | No | No | Yes^{3}  |
+1959: |  Time | $$O(b^d)$$ | $$O(b^{1+\lfloor C^*/\epsilon \rfloor})$$ | $$O(b^m)$$ | $$O(b^\ell)$$ | $$O(b^d)$$  |
+1960: |  Space | $$O(b^d)$$ | $$O(b^{1+\lfloor C^*/\epsilon \rfloor})$$ | $$O(bm)$$ | $$O(b\ell)$$ | $$O(bd)$$  |
+1961: 
+1962: - b is the branching factor; m is the maximum depth of the search tree; d is the depth of the shallowest solution, or is m when there is no solution; ℓ is the depth limit.
+1963: - Superscript caveats are as follows: ¹ complete if b is finite, and the state space either has a solution or is finite. ² complete if all action costs are ≥ ε > 0; ³ cost-optimal if action costs are all identical.
+1964: # Search Gone Wrong?
+1965: 
+1966: Still not as smart as it could be...
+1967: 
+1968: Can we do better?
+1969: 
+1970: ![img-176.jpeg](img-176.jpeg)
+1971: # Incorporating goal information
+1972: 
+1973: **How to efficiently solve search problems with variable-cost actions, using information about the goal state?**
+1974: 
+1975: This is the motivation behind **informed search**, which uses problem-specific knowledge to try and find solutions more efficiently

@@ -252,10 +252,17 @@ CSS = r"""
 }
 
 /* ---------- reveal rule + answer flag ---------- */
+/* A thin, irregular oval — a stylized flat mark instead of a perfect
+   geometric ellipse, in the same rust used for the answer flag and
+   cloze pills, so it reads as part of the same system. Flat fill, no
+   shadow. */
 .divider {
-  border: none;
-  border-top: 1.5px solid var(--hairline);
-  margin: 26px 0 20px;
+  height: 12px;
+  width: 168px;
+  margin: 32px auto 26px;
+  background: var(--accent);
+  border-radius: 72% 28% 61% 39% / 72% 84% 16% 28%;
+  transform: rotate(-2deg);
 }
 .answer-block {
   position: relative;
@@ -553,6 +560,7 @@ basic_model = genanki.Model(
             "afmt": BASIC_BACK,
         }
     ],
+    sort_field_index=2,
     css=CSS,
 )
 
@@ -572,6 +580,7 @@ twoway_model = genanki.Model(
             "afmt": TWOWAY_CARD2_BACK,
         },
     ],
+    sort_field_index=2,
     css=CSS,
 )
 
@@ -586,102 +595,8 @@ cloze_model = genanki.Model(
             "afmt": CLOZE_BACK,
         }
     ],
+    sort_field_index=2,
     css=CSS,
     model_type=genanki.Model.CLOZE,
 )
 
-# --------------------------------------------------------------------------
-# DECK
-# --------------------------------------------------------------------------
-
-deck = genanki.Deck(DECK_ID, "Studio — Mathématiques & Fondamentaux")
-
-notes = [
-    genanki.Note(
-        model=basic_model,
-        fields=[
-            r"Quelle est la definition de la derivee d'une fonction \(f\) en un point \(a\) ?",
-            r"\[f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}\]<br>C'est la limite du taux d'accroissement quand \(h\) tend vers 0.",
-            "1",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "1"),
-    ),
-    genanki.Note(
-        model=basic_model,
-        fields=[
-            "En Python, quelle est la complexite temporelle moyenne d'une recherche dans un dictionnaire (<code>dict</code>) ?",
-            "<code>O(1)</code> en moyenne, grace au hachage.<br><br><pre><code>d = {\"a\": 1, \"b\": 2}\nprint(d[\"a\"])  # O(1)</code></pre>",
-            "2",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "2"),
-    ),
-    genanki.Note(
-        model=basic_model,
-        fields=[
-            "Que represente ce graphe ?<br><img src=\"img-0.png\">",
-            "La fonction \\(y = \\sin(x)\\), une oscillation periodique de periode \\(2\\pi\\) et d'amplitude 1.",
-            "3",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "3"),
-    ),
-    genanki.Note(
-        model=twoway_model,
-        fields=[
-            "Loi de Newton (2e loi)",
-            r"\[\vec{F} = m\,\vec{a}\] La somme des forces appliquees a un corps est egale au produit de sa masse par son acceleration.",
-            "4",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "4"),
-    ),
-    genanki.Note(
-        model=cloze_model,
-        fields=[
-            "Les trois etats classiques de la matiere sont {{c1::solide}}, {{c2::liquide}} et {{c3::gazeux}}.",
-            "Le passage d'un etat a l'autre (fusion, vaporisation, etc.) s'appelle un changement d'etat.",
-            "5",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "5"),
-    ),
-    genanki.Note(
-        model=basic_model,
-        fields=[
-            "Definir la mesure de comptage \\(\\mu\\) sur \\((X, \\mathcal{P}(X))\\).",
-            r"\[\mu(A) = \begin{cases} \text{le nombre d'elements de } A & \text{si } A \text{ est fini,} \\ +\infty & \text{si } A \text{ est infini,} \end{cases} \quad \text{pour tout } A \in \mathcal{P}(X).\]<br>Cette equation est volontairement large pour tester le defilement horizontal.",
-            "6",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "6"),
-    ),
-    genanki.Note(
-        model=basic_model,
-        fields=[
-            "Cette carte teste une equation INLINE tres longue, integree au milieu d'une phrase.",
-            "Le developpement en serie \\(\\pi = 4 \\left( 1 - \\frac{1}{3} + \\frac{1}{5} - \\frac{1}{7} + \\frac{1}{9} - \\frac{1}{11} + \\frac{1}{13} - \\frac{1}{15} + \\frac{1}{17} - \\frac{1}{19} + \\ldots \\right)\\) reste sur sa ligne, sans la casser, meme s'il faut faire defiler juste ce morceau.",
-            "7",
-        ],
-        guid=genanki.guid_for("unique_theme_name", "7"),
-    ),
-]
-
-for note in notes:
-    deck.add_note(note)
-
-# --------------------------------------------------------------------------
-# PACKAGE — attach media (fonts + graph image)
-# --------------------------------------------------------------------------
-
-package = genanki.Package(deck)
-package.media_files = [
-    os.path.join(ASSET_DIR, "_SpaceGrotesk.ttf"),
-    os.path.join(ASSET_DIR, "_SourceSerif4.ttf"),
-    os.path.join(ASSET_DIR, "_SourceSerif4Italic.ttf"),
-    os.path.join(ASSET_DIR, "_JetBrainsMono.ttf"),
-    os.path.join(ASSET_DIR, "img-0.png"),
-]
-# Files are named with an underscore prefix so their basenames match the
-# @font-face references in CSS exactly, and so they're unlikely to collide
-# with other decks' media in the user's collection. genanki stores every
-# media file under its basename regardless of source folder.
-
-OUTPUT = "Studio_Deck.apkg"
-package.write_to_file(OUTPUT)
-print(f"Wrote {OUTPUT}")

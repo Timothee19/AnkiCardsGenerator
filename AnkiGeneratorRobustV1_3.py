@@ -580,7 +580,7 @@ def semantic_split_with_ai(
     lines = markdown_text.split("\n")
     numbered_lines = [f"{i+1}: {line}" for i, line in enumerate(lines)]
     numbered_text = "\n".join(numbered_lines)
-
+    cost = 0
     system_prompt = r"""
 ROLE
 You are a structural parser Agent. Your only job is to semantically split an academic course text (provided with line numbers) into logical "chunks" or "blocks".
@@ -623,6 +623,15 @@ Ensure no lines are left out after skipping the Table of contents. The first chu
                     },
                 ],
             )
+
+            details = getattr(response.usage, "prompt_tokens_details", None)
+            cached_tokens = getattr(details, "cached_tokens", 0) or 0
+
+            cost += (
+                (response.usage.prompt_tokens - cached_tokens) / 1e6 * 0.44
+                + response.usage.completion_tokens / 1e6 * 1.3
+                + cached_tokens / 1e6 * 0.044
+            )          
             content = response.choices[0].message.content
             data = parse_and_repair_json(client, content, model=model)
 
@@ -639,7 +648,7 @@ Ensure no lines are left out after skipping the Table of contents. The first chu
                         chunks.append("\n".join(lines[start:end]))
 
                 if chunks:
-                    return chunks
+                    return cost, chunks
         except Exception as e:
             import time
 
@@ -648,7 +657,7 @@ Ensure no lines are left out after skipping the Table of contents. The first chu
 
     # Fallback
     print("   Fallback: utilisation du découpage heuristique statique.")
-    return split_markdown_into_chunks(markdown_text)
+    return cost, split_markdown_into_chunks(markdown_text)
 
 
 def split_text_in_half(text):

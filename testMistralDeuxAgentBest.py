@@ -3,6 +3,7 @@ import os
 import re
 from typing import Dict, List, Tuple
 
+from dotenv import load_dotenv
 import json_repair
 import genanki
 import networkx as nx
@@ -10,29 +11,15 @@ from mistralai.client import Mistral
 from pydantic import BaseModel, Field
 import markdown
 import hashlib
+import pypandoc
 
-from AnkiGeneratorRobustV1_3 import semantic_split_with_ai
-from ocr import traiter_pdf_vers_markdown
+from ocr import traiter_pdf_vers_markdown, semantic_split_with_ai
 from scholarDesign import basic_model, twoway_model, cloze_model
 
 
-# ==========================================
-# 1. SCHÉMAS PYDANTIC (Pour contraindre Mistral)
-# ==========================================
+# Fichier de logs pour débug chaque étape
 
-class Element(BaseModel):
-    type: str = Field(description="Strictement parmi: 'Enoncé', 'Démonstration', 'Exemple', 'Remarque', 'Exercice'")
-    startEndListPositions: List[Tuple[int, int]] = Field(
-        description="Liste d'intervalles de lignes [début, fin]. Ex: [[10, 15], [20, 25]]"
-    )
-
-class Concept(BaseModel):
-    main: str = Field(description="Ex: 'Théorème_01', 'Définition_01', 'Contexte_01'")
-    name: str = Field(description="Nom du concept (ex: 'Théorème de Pythagore') ou 'None'")
-    elements: List[Element] = Field(description="Les sous-éléments rattachés à ce concept dans ce chunk")
-
-class ChunkResult(BaseModel):
-    concepts: List[Concept]
+log_file = "pipeline_log.txt"
 
 # ==========================================
 # 2. PIPELINE DE TRAITEMENT
@@ -45,6 +32,7 @@ class AnkiPipeline:
         self.original_lines = [] # Stockera le texte numéroté pour l'extraction finale
         self.markdown_file_path = markdown_file_path
         self.G = nx.DiGraph()
+        self.cost = 0
         self.concept_list = []
         
         self.MODEL_BASIC_ID = 1875392046
@@ -85,7 +73,9 @@ class AnkiPipeline:
 
         texte_numerote = "\n".join(lignes_numerotees)
 
-        chunks = semantic_split_with_ai(self.client, texte_numerote)
+        cost, chunks = semantic_split_with_ai(self.client, texte_numerote)
+
+        self.cost += cost
 
         return chunks
     
@@ -105,7 +95,21 @@ class AnkiPipeline:
             included_lines.update(range(pos[0], pos[1] + 1))
 
         missing_lines_num = sorted(all_lines - included_lines)
-        missing_lines = [self.original_lines[line_num - 1].rstrip("\n") for line_num in missing_lines_num]
+
+        # Store only the missing lines that ccontain actual content (non-empty lines)
+        missing_lines = [self.original_lines[line_num - 1].rstrip("\n") for line_num in missing_lines_num if self.original_lines[line_num - 1].split(":", 1)[1].strip()]
+
+        # Logs of all the missing lines, even if they are empty, for debugging purposes
+        with open("pipeline_log.txt", "a", encoding="utf-8") as log_f:
+            log_f.write(f"\n=== Vérification d'exhaustivité pour le chunk ===\n")
+            log_f.write(f"Chunk lines: {first_line_chunk} to {last_line_chunk}\n")
+            log_f.write(f"Missing lines: {missing_lines_num}\n")
+            for line_num in missing_lines_num:
+                raw_content = self.original_lines[line_num - 1].rstrip("\n")
+                log_f.write(f"[Ligne {line_num:4d}] : {raw_content}\n")
+            log_f.write(f"=== MISSING LINES TELLES QU'ENVOYEES À MISTRAL ===\n")
+            for line in missing_lines:
+                log_f.write(f"{line}\n")
 
         if missing_lines:
             return False, missing_lines_num, missing_lines
@@ -124,66 +128,119 @@ class AnkiPipeline:
 
         for chunk in chunks :
 
+            with open(log_file, "a", encoding="utf-8") as log_f:
+                log_f.write(f"\n=== Analyse locale du chunk {i+1}/{len(chunks)} ===\n")
+                log_f.write(f"Chunk content:\n{chunk}\n")
+                log_f.write(f"=== FIN DU CHUNK ===\n")
+
             prompt = rf"""ROLE
 You are a structural parser and semantic segmentation agent for academic course notes.
 Your task is to parse a markdown text provided with line numbers (format "LineNumber: Text") and structure the content into a flat, event-based conceptual graph.
 
 OBJECTIVE
-You will receive a chunk of the full course text.
-Segment EVERY single line of this chunk into pedagogical building blocks. Each block belongs to a primary concept (Theorem, Proposition, Definition, Lemma, Corollary, Context) and has a specific pedagogical function (Statement, Proof, Example, Remark, Exercise).
+You will receive a chunk of the full course text. Segment EVERY single line of this chunk into pedagogical building blocks. Each block belongs to a primary concept (Theorem, Proposition, Property, Definition, Lemma, Corollary, Concept) and has a specific pedagogical function (Statement, Proof, Example, Remark, Exercise). Non-pedagogical noise must be filtered out.
 
 STRICT RULES:
-1. THE FLAT SCHEMA (UNIVERSAL BLOCK):
-   Every JSON object you generate MUST represent a text block using these 4 exact keys:
-   - "concept_id": The parent concept's ID. Must strictly match the regex "^(Theorem|Proposition|Property|Definition|Lemma|Corollary|Context)_[0-9]{2}$".
-   - "concept_name": The explicit name of the concept if stated in the text (e.g., "Monotone Convergence Theorem"), otherwise give it a title.
-   - "element_type": The pedagogical function of this specific text block. MUST be exactly one of: ["Statement", "Proof", "Example", "Remark", "Exercise"].
-   - "lines": A list of line intervals [[start, end]] for this block. If an image tag appear ("![img-2.jpeg](img-2.jpeg)") , you must keep it in the interval.
 
-2. CONCEPT CREATION VS SUB-ELEMENTS:
-   - To introduce a NEW formal concept, output a block with "element_type": "Statement" and generate a NEW incremented "concept_id".
-   - To attach a sub-element (Proof, Example, Remark, Exercise) to a concept, output a block with the SAME "concept_id" as its parent, set "concept_name" to "None", and choose the correct "element_type".
-   - NEVER create a standalone concept ID for an Example or Remark. They ALWAYS belong to a parent concept.
+## 1. THE FLAT SCHEMA (UNIVERSAL BLOCK)
+Every JSON object you generate MUST represent a text block using these 4 exact keys:
+- "concept_id": The parent concept's ID. Must strictly match the regex "^(Theorem|Proposition|Property|Definition|Lemma|Corollary|Concept|Ignore)_[0-9]{{2}}$". Use "Concept_XX" for valid pedagogical concepts that don't fit the other specific labels. Use "Ignore_00" for filtered content.
+- "concept_name": The explicit name of the concept if stated in the text (e.g., "Monotone Convergence Theorem"). If not applicable (for sub-elements or ignored text), output `null`.
+- "element_type": The pedagogical function of this specific text block. MUST be exactly one of: ["Statement", "Proof", "Example", "Remark", "Exercise"].
+- "lines": A list of line intervals [[start, end]] for this block. If an image tag appears ("![img-2.jpeg](img-2.jpeg)"), you must keep it in the interval.
 
-3. NON-CONTIGUOUS & DEFERRED ELEMENTS (THE GRAPH MEMORY):
-   - Sub-elements are sometimes deferred (e.g., a Proof appearing 50 lines after its Theorem, or in a new chunk entirely).
-   - Always bind each sub-element strictly to its true semantic parent.
-   - MEMORY: Here are the main concepts already extracted in previous chunks:
-     {main_nodes_for_ai}
-   - If a block in the current text is a Proof, Example, or Remark related to one of these past concepts, use its exact "concept_id" from the list above. Do NOT invent a new concept_id.
+## 2. HOW TO ASSIGN A LINE (DECISION TREE)
+For every line in the chunk, evaluate its content using this exact order of priority:
+- IF the line is an empty line, a table of contents, a structural chapter title without pedagogical content, or general introductory text:
+    - Assign it to "concept_id": "Ignore_00" with "element_type": "Statement" and "concept_name": null.
+- OTHERWISE, IF the line is a title introducing a list of multiple concepts (e.g., "# List of usual functions"):
+    - Assign this title to "Ignore_00". Do NOT group the subsequent list items together. Apply the atomicity rule below to create a distinct node for each concept in the list.
+- OTHERWISE, IF the line introduces a new formal concept (Theorem, Definition, Property, etc.) OR any other pedagogical concept that does not fit these standard mathematical labels:
+    - Generate a NEW incremented "concept_id" (using the specific label or "Concept_XX" as a fallback) and use "element_type": "Statement". Extract or infer the title into "concept_name".
+- OTHERWISE, IF the line is a Proof, Example, Remark, Statement or Exercise related to an existing concept in the graph:
+    - Bind it strictly to the "concept_id" of its parent. Set "element_type" to the correct pedagogical function and "concept_name" to `null`. (A Remark, Proof, Exercise or Example NEVER creates a new concept).
+- OTHERWISE (Safety Net):
+    - EXTEND the `[start, end]` interval of the closest active parent node to absorb the line.
 
-4. EXHAUSTIVE PARTITION (CRITICAL - NO GAPS):
-   - Every single line from the provided chunk MUST belong to exactly one interval in your output. Do not skip any line numbers.
-   - For general text, introductions, or transitional paragraphs not attached to a mathematical theorem/definition, use a "Context_XX" concept_id with "element_type": "Statement".
-   - NEVER create a "Context_XX" node for empty lines, titles, trailing equations, or secondary remarks. Instead, EXTEND the `[start, end]` interval of the related parent node to absorb them, or add a new sub-element under the SAME parent `concept_id`.
-   - VERIFY YOUR INTERVALS: If the chunk goes from line 230 to 250, your intervals must seamlessly cover 230 to 250 without any gaps (e.g., [230, 235], [236, 245], [246, 250]). DO NOT drop lines.
-   - REPEATED TITLES: If a concept spans across multiple identical headers (e.g., a slide title repeated on the next page), group ALL of it under the same `concept_id`. Do not stop at the first page.
+## 3. NON-CONTIGUOUS & DEFERRED ELEMENTS (THE GRAPH MEMORY)
+Sub-elements are sometimes deferred (e.g., a Proof appearing 50 lines after its Theorem, or in a new chunk entirely).
+MEMORY: Here are the main concepts already extracted in previous chunks:
+{main_nodes_for_ai}
+If a block in the current text is a Proof, Example, Statement, Exercise or Remark related to one of these past concepts, use its exact "concept_id" from the list above. Do NOT invent a new concept_id.
 
+## 4. EXHAUSTIVE PARTITION (CRITICAL - NO GAPS)
+Every single line from the provided chunk MUST belong to exactly one interval in your output.
+VERIFY YOUR INTERVALS: If the chunk goes from line 230 to 250, your intervals must seamlessly cover 230 to 250 without any gaps (e.g., [230, 235], [236, 245], [246, 250]). DO NOT drop lines, including empty ones. Empty lines must be absorbed by the preceding concept or assigned to Ignore_00.
 
-OUTPUT FORMAT:
-Output MUST be strictly valid JSON matching this schema:
+EXAMPLES
+
+Input:
+12: # Chapter 3: Limits
+13: 
+14: Here are the main properties to remember for the exam.
+15: ## Limit of a sum
+16: The limit of a sum is the sum of the limits.
+17: *Remark: be careful with indeterminate forms.*
+18: 
+19: ## Calculation Method (Heuristic)
+20: Always isolate the highest degree term.
+21: 
+22: ## Common limits to know
+23: ### Limit of 1/x at infinity
+24: The limit of 1/x as x approaches infinity is 0.
+25: ### Limit of e^x at negative infinity
+26: The limit of e^x as x approaches negative infinity is 0.
+
+Expected Output:
 {{
   "blocs": [
     {{
-      "concept_id": "Theorem_01",
-      "concept_name": "Bolzano-Weierstrass Theorem",
+      "concept_id": "Ignore_00",
+      "concept_name": null,
       "element_type": "Statement",
-      "lines": [10, 15]
+      "lines": [[12, 14]]
     }},
     {{
-      "concept_id": "Definition_01",
-      "concept_name": "Uniform continuity",
+      "concept_id": "Property_01",
+      "concept_name": "Limit of a sum",
       "element_type": "Statement",
-      "lines": [16, 20]
+      "lines": [[15, 16]]
     }},
     {{
-      "concept_id": "Theorem_01",
-      "concept_name": "None",
-      "element_type": "Proof",
-      "lines": [21, 30]
+      "concept_id": "Property_01",
+      "concept_name": null,
+      "element_type": "Remark",
+      "lines": [[17, 18]]
+    }},
+    {{
+      "concept_id": "Concept_01",
+      "concept_name": "Calculation Method (Heuristic)",
+      "element_type": "Statement",
+      "lines": [[19, 20]]
+    }},
+    {{
+      "concept_id": "Ignore_00",
+      "concept_name": null,
+      "element_type": "Statement",
+      "lines": [[21, 22]]
+    }},
+    {{
+      "concept_id": "Property_02",
+      "concept_name": "Limit of 1/x at infinity",
+      "element_type": "Statement",
+      "lines": [[23, 24]]
+    }},
+    {{
+      "concept_id": "Property_03",
+      "concept_name": "Limit of e^x at negative infinity",
+      "element_type": "Statement",
+      "lines": [[25, 26]]
     }}
   ]
 }}
+
+OUTPUT FORMAT
+Output MUST be strictly valid JSON matching the schema demonstrated in the example above.
         """
             graph_response_format = {
                                 "type": "json_schema",
@@ -211,7 +268,7 @@ Output MUST be strictly valid JSON matching this schema:
                                                 "properties": {
                                                 "concept_id": {
                                                     "type": "string",
-                                                    "pattern": "^(Theorem|Proposition|Property|Definition|Lemma|Corollary|Context)_[0-9]+[a-z]?$"
+                                                    "pattern": "^(Theorem|Proposition|Property|Definition|Lemma|Corollary|Concept|Ignore)_[0-9]+[a-z]?$"
                                                 },
                                                 "concept_name": {
                                                     "type": "string",
@@ -259,7 +316,21 @@ Output MUST be strictly valid JSON matching this schema:
                     )
                     
             json_string = response.choices[0].message.content
+            details = getattr(response.usage, "prompt_tokens_details", None)
+            cached_tokens = getattr(details, "cached_tokens", 0) or 0
+
+            self.cost += (
+                (response.usage.prompt_tokens - cached_tokens) / 1e6 * 0.44
+                    + response.usage.completion_tokens / 1e6 * 1.3
+                    + cached_tokens / 1e6 * 0.044
+            )         
             parsed_data = json.loads(json_string)
+            parsed_data_correction = None
+
+            with open(log_file, "a", encoding="utf-8") as log_f:
+                log_f.write(f"\n=== Résultat de Mistral pour le chunk {i+1}/{len(chunks)} ===\n")
+                log_f.write(f"{parsed_data}\n")
+                log_f.write(f"=== FIN DU CHUNK ===\n")
 
             exhaustive_parsing,  missing_lines_num, missing_lines = self.exhaustivity_check_into_chunk(chunk, parsed_data)
             while exhaustive_parsing == False:
@@ -267,7 +338,7 @@ Output MUST be strictly valid JSON matching this schema:
                 print(f"❌ Lignes manquantes : {missing_lines}")
 
                 # On demande à Mistral de corriger son output pour couvrir les lignes manquantes
-                correction_prompt = rf"""
+                correction_prompt = r"""
                 ROLE
 You are a precise conceptual graph correction agent. Your colleague has parsed a markdown course text into a JSON graph but missed specific line intervals. 
 Your ONLY task is to analyze these missing lines and generate the missing JSON blocks to repair the graph.
@@ -277,43 +348,130 @@ Read the source text and the already extracted JSON graph.
 Then, for each interval in the MISSING LINES list, create one or multiple JSON blocks to integrate this orphaned text.
 
 STRICT RULES FOR RESOLUTION:
-1. ATTACHMENT (Sub-elements): If the missing lines represent a Proof, Example, Remark, or Exercise that logically belongs to a concept already present in the EXISTING JSON, you MUST reuse the exact same "concept_id" from the existing JSON. Set "concept_name" to "None".
-2. NEW CONCEPTS (Major omissions): If the missing lines contain a completely new Theorem, Proposition, Definition, Lemma, or Corollary that was ignored, create a NEW incremented "concept_id" (e.g., if "Theorem_01" exists, create "Theorem_02").
-3. CONTEXT (Transitions): If the missing lines are introductory text, transitions, or isolated titles not tied to a specific mathematical property, create a new "Context_XX" concept_id with "element_type": "Statement".
-4. NO REPETITION: Do NOT output blocks that are already in the EXISTING JSON. ONLY output blocks covering the missing lines.
-5. EXHAUSTIVITY: The "lines" intervals in your output MUST perfectly cover all the numbers listed in MISSING LINES.
 
-INPUT DATA:
+## 1. THE FLAT SCHEMA
+Every JSON object you generate MUST strictly match this schema:
+- "concept_id": Must match "^(Theorem|Proposition|Property|Definition|Lemma|Corollary|Concept|Ignore)_[0-9]{2}$".
+- "concept_name": The title of the concept, or `null` for sub-elements/ignored text.
+- "element_type": One of ["Statement", "Proof", "Example", "Remark", "Exercise"].
+- "lines": The line intervals [[start, end]].
+
+## 2. HOW TO RESOLVE A MISSING LINE (DECISION TREE)
+Analyze the missing text and apply this priority:
+- IF the missing lines are empty lines, introductory text, transitions, or isolated titles without pedagogical properties:
+    - Assign them to "concept_id": "Ignore_00" with "element_type": "Statement" and "concept_name": null.
+- OTHERWISE, IF the missing lines represent a Proof, Example, Remark, or Exercise that logically belongs to a concept ALREADY PRESENT in the EXISTING JSON:
+    - You MUST reuse the exact same "concept_id" from the existing JSON. Set "element_type" accordingly and "concept_name" to `null`.
+- OTHERWISE, IF the missing lines contain a completely new Concept (Theorem, Definition, etc., or general Concept_XX) that was ignored:
+    - Create a NEW incremented "concept_id" (e.g., if "Theorem_01" exists, create "Theorem_02").
+
+## 3. CONSTRAINTS
+- NO REPETITION: Do NOT output blocks that are already in the EXISTING JSON. ONLY output blocks covering the missing lines.
+- EXHAUSTIVITY: The "lines" intervals in your output MUST perfectly and entirely cover all the numbers listed in MISSING LINES.
+
+EXAMPLES
 
 <source_text>
-{chunk}
+15: ## Limit of a sum
+16: The limit of a sum is the sum of the limits.
+17: *Remark: be careful with indeterminate forms.*
+18: 
+19: ## Calculation Method
 </source_text>
 
 <existing_json>
-{parsed_data}
+{
+  "blocs": [
+    {
+      "concept_id": "Property_01",
+      "concept_name": "Limit of a sum",
+      "element_type": "Statement",
+      "lines": [[15, 16]]
+    }
+  ]
+}
 </existing_json>
 
 <missing_lines>
-The following line intervals were missed and must be integrated:
-{missing_lines_num}
+[17, 17], [18, 19]
 </missing_lines>
+
+Expected Output:
+{
+  "blocs": [
+    {
+      "concept_id": "Property_01",
+      "concept_name": null,
+      "element_type": "Remark",
+      "lines": [[17, 17]]
+    },
+    {
+      "concept_id": "Ignore_00",
+      "concept_name": null,
+      "element_type": "Statement",
+      "lines": [[18, 19]]
+    }
+  ]
+}
 """
                 response_correction = self.client.chat.complete(
                                     model="mistral-large-latest",
                                     messages=[{
                                         "role": "system",
                                         "content": correction_prompt
+                                    },
+                                    {
+                                        "role": "user",
+                                        "content": rf"""
+                                        INPUT DATA:
+
+                                        <source_text>
+                                        {chunk}
+                                        </source_text>
+
+                                        <existing_json>
+                                        {parsed_data}
+                                        </existing_json>
+
+                                        <missing_lines>
+                                        The following line intervals were missed and must be integrated:
+                                        {missing_lines_num}
+                                        </missing_lines>
+                                        """
                                     }],
                                     temperature=0.0,
                                     response_format=graph_response_format
                                 )
+                # Evaluation du coup
+                details = getattr(response.usage, "prompt_tokens_details", None)
+                cached_tokens = getattr(details, "cached_tokens", 0) or 0
+
+                self.cost += (
+                    (response.usage.prompt_tokens - cached_tokens) / 1e6 * 0.44
+                    + response.usage.completion_tokens / 1e6 * 1.3
+                    + cached_tokens / 1e6 * 0.044
+                )                
+
                 json_string = response_correction.choices[0].message.content
                 parsed_data_correction = json.loads(json_string)
+
+                with open(log_file, "a", encoding="utf-8") as log_f:
+                    log_f.write(f"\n=== Résultat de Mistral pour la correction du chunk {i+1}/{len(chunks)} ===\n")
+                    log_f.write(f"{parsed_data_correction}\n")
+                    log_f.write(f"=== FIN DU CHUNK ===\n")
+
                 parsed_data["blocs"].extend(parsed_data_correction.get("blocs", []))
                 exhaustive_parsing,  missing_lines_num, missing_lines = self.exhaustivity_check_into_chunk(chunk, parsed_data)
                 
             # Sort data depending on the starting line of each block to maintain order
             parsed_data["blocs"].sort(key=lambda x: x["lines"][0])
+
+            if parsed_data_correction is not None:
+                with open(log_file, "a", encoding="utf-8") as log_f:
+                    log_f.write(f"\n=== Résultat final après correction du chunk {i+1}/{len(chunks)} ===\n")
+                    log_f.write(f"{parsed_data}\n")
+                    log_f.write(f"=== FIN DU CHUNK ===\n")
+            parsed_data_correction = None  # Reset for the next chunk
 
             for node_info in parsed_data.get("blocs", []):
 
@@ -400,7 +558,13 @@ The following line intervals were missed and must be integrated:
                 if edge_data.get("link") == "link":
                     pos = self.G.nodes[neighbor].get("pos")
                     extracted_text_from_graph = self.G.nodes[neighbor].get("text")
-                    
+                    with open(log_file, "a", encoding="utf-8") as log_f:
+                        log_f.write(f"\n=== Extraction du texte pour le sous-noeud {neighbor} ===\n")
+                        log_f.write(f"Label du sous-noeud : {self.G.nodes[neighbor].get('label')}\n")
+                        log_f.write(f"Position dans le markdown : {pos}\n")
+                        log_f.write(f"Texte extrait du graphe :\n{extracted_text_from_graph}\n")
+                        log_f.write(f"=== FIN DE L'EXTRACTION ===\n")
+
                     if pos and len(pos) == 2:
                         start_line, end_line = pos[0], pos[1]
                         covered_lines.update(range(start_line, end_line))
@@ -432,6 +596,12 @@ The following line intervals were missed and must be integrated:
                         "type": self.G.nodes[neighbor].get("label"),
                         "text": extracted_text
                     })
+
+                    with open(log_file, "a", encoding="utf-8") as log_f:
+                        log_f.write(f"\n=== Détails du sous-noeud {neighbor}, après smart expand ===\n")
+                        log_f.write(f"Type : {self.G.nodes[neighbor].get('label')}\n")
+                        log_f.write(f"Texte extrait après smart expand :\n{extracted_text}\n")
+                        log_f.write(f"=== FIN DU SOUS-NOEUD ===\n")
 
                 elif edge_data.get("link") == "next_topic":
                     next_main = neighbor
@@ -468,98 +638,7 @@ The following line intervals were missed and must be integrated:
 
         return self.concept_list
 
-    # Updated version : now just catch all the $ $ tags to convert them to \( \) and $$ $$ to \[ \] for Anki compatibility
-    def markdown_to_anki_html(self, text: str) -> str:
-        if not text:
-            return ""
-
-        # 1. Nettoyage des antislashs surnuméraires
-        text = re.sub(r'\\\\+(\(|\[|\)|\])', r'\\\1', text)
-
-        # 2. Nettoyage des doubles délimiteurs (LLM hallucination: $\(...\)$ ou \($...$\))
-        text = text.replace(r'\( $', r'\(').replace(r'$ \)', r'\)')
-        text = text.replace(r'\($', r'\(').replace(r'$\)', r'\)')
-        text = text.replace(r'$\(', r'\(').replace(r'\)$', r'\)')
-        
-        # 3. Auto-heal immédiat : recolle \(\mathcal\){A} -> \(\mathcal{A}\)
-        text = re.sub(r'\\\(([a-zA-Z\\]+)\\\)\{([^{}]+)\}', r'\\(\1{\2}\\)', text)
-
-        placeholders = {}
-        counter = 0
-
-        # 4. Protection des blocs ($$...$$ et \[...\])
-        def protect_block(match):
-            nonlocal counter
-            content = match.group(1).strip()
-            
-            # Anti-nesting: empêche de re-protéger un placeholder existant
-            if re.fullmatch(r'XXMATH(?:INLINE|BLOCK)\d+XX', content):
-                return content
-                
-            key = f"XXMATHBLOCK{counter}XX"
-            placeholders[key] = f"\\[\n{content}\n\\]"
-            counter += 1
-            return f"\n\n{key}\n\n"
-
-        text = re.sub(r'\\\[(.*?)\\\]', protect_block, text, flags=re.DOTALL)
-        text = re.sub(r'\$\$(.*?)\$\$', protect_block, text, flags=re.DOTALL)
-
-        # 5. Protection de l'inline (\(...\) et $...$)
-        def protect_inline(match):
-            nonlocal counter
-            content = match.group(1).strip()
-            if not content:
-                return match.group(0)
-                
-            # Anti-nesting LLM
-            if re.fullmatch(r'XXMATH(?:INLINE|BLOCK)\d+XX', content):
-                return content
-                
-            key = f"XXMATHINLINE{counter}XX"
-            placeholders[key] = f"\\({content}\\)"
-            counter += 1
-            return key
-
-        text = re.sub(r'\\\((.*?)\\\)', protect_inline, text, flags=re.DOTALL)
-        text = re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', protect_inline, text)
-
-        # 6. Rattrapage des commandes LaTeX nues isolées (\mathcal{A}, \mathbb{R}^n)
-        def protect_orphan_latex(match):
-            nonlocal counter
-            content = match.group(0).strip()
-            
-            if "XXMATH" in content:
-                return match.group(0)
-                
-            key = f"XXMATHINLINE{counter}XX"
-            placeholders[key] = f"\\({content}\\)"
-            counter += 1
-            return key
-
-        orphan_pattern = re.compile(
-            r'\\[a-zA-Z]+(?:\{(?:[^{}]+|\{[^{}]*\})*\}|\[[^\[\]]*\])*(?:(?:_|\^)(?:\{(?:[^{}]+|\{[^{}]*\})*\}|[a-zA-Z0-9]))*'
-        )
-        text = orphan_pattern.sub(protect_orphan_latex, text)
-
-        # 7. Rendu Markdown -> HTML
-        html_output = markdown.markdown(
-            text,
-            extensions=[
-                'markdown.extensions.tables',
-                'markdown.extensions.nl2br',
-                'markdown.extensions.extra'
-            ],
-            output_format='html5'
-        )
-
-        # 8. Réinjection des formules (EN SENS INVERSE POUR RÉSOUDRE LES IMBRICATIONS)
-        for key in reversed(list(placeholders.keys())):
-            html_output = html_output.replace(key, placeholders[key])
-
-        # Ultime vérification de surface sur d'éventuels résidus
-        html_output = re.sub(r'\\\(([a-zA-Z\\]+)\\\)\{([^{}]+)\}', r'\\(\1{\2}\\)', html_output)
-
-        return html_output.strip()
+    
     def generer_id_deterministe(self,chaine_texte):
             # 1. Préparation : conversion de la chaîne en séquence d'octets
             octets = chaine_texte.encode('utf-8')
@@ -583,52 +662,72 @@ The following line intervals were missed and must be integrated:
         """
         Appel à Mistral Small pour simplifier et transformer le contenu des cartes en flashcards.
         """
-        prompt = r"""ROLE
-You are an expert in mathematics pedagogy and Spaced Repetition Systems (Anki). Your task is to take dense mathematical flashcard content and reformat it to be highly memorizable, visually light, and structured without losing any information.
+        prompt = r"""You are an expert in mathematics pedagogy and Spaced Repetition Systems (Anki). Your task is to take dense mathematical flashcard content and reformat it to be highly memorizable, visually light, and structured without losing any information.
 
 OBJECTIVE
-Reformat the provided raw content into a clean JSON structure. The `back` field must be a SINGLE STRING formatted with HTML and mathjax equations, strictly following the rules below.
+Reformat the provided raw content into a clean JSON structure. The `back` field must be a SINGLE STRING formatted in 100% MARKDOWN (no HTML whatsoever) with MathJax/LaTeX equations, strictly following the rules below.
 
 STRICT RULES:
+
+0. FORMAT REQUIREMENT — MARKDOWN ONLY:
+   - The ENTIRE output (front and back) must be valid Markdown. HTML tags are STRICTLY FORBIDDEN (no <ul>, <li>, <b>, <div>, <span>, <br>, etc.).
+   - Bullet points MUST use Markdown syntax: newlines starting with "- " (dash + space), with sub-bullets indented by 2 spaces.
+   - Bold text MUST use Markdown syntax: **text** (never <b>text</b>).
+   - Sub-headings MUST use Markdown syntax: **Heading:** on its own line, or "#### Heading" if a true heading level is needed.
+   - Numbered steps (e.g., in proof sketches) MUST use Markdown ordered lists: "1. ", "2. ", "3. " (never manual "1)" strings mixed with HTML).
+   - Line breaks between blocks must be done with blank lines (Markdown paragraph breaks), never with <br>.
+   - If any HTML tag appears anywhere in your output, the output is INVALID and must be corrected before returning.
+
 1. THEOREM / DEFINITION / PROPERTY (The Core Statement):
    - Preserve ALL mathematical information, rigor, and hypotheses.
-   - Visually space it out: Use bullet points (<ul><li> </li></ul> or <li> </li>) to list hypotheses, conditions, or consequences instead of dense paragraphs.
-   - Highlight key terms using bold (<b>text</b>).
+   - Visually space it out: Use Markdown bullet lists ("- ") to list hypotheses, conditions, or consequences instead of dense paragraphs.
+   - Highlight key terms using Markdown bold (**text**).
 
 2. PROOFS (Sketch of proof):
    - NEVER copy the full proof verbatim.
-   - Replace the original proof with a section titled "<b>Sketch of proof:</b>" or "<b>Idea of the proof:</b>".
-   - Summarize the proof's architecture into 2 or 3 essential anchor points (e.g., "1. Initialize with X", "2. Use Y inequality", "3. Conclude by taking the limit"). Get straight to the point.
+   - Replace the original proof with a section titled "**Sketch of proof:**" or "**Idea of the proof:**" (Markdown bold, not HTML bold).
+   - Summarize the proof's architecture into 2 or 3 essential anchor points using a Markdown ordered list (e.g., "1. Initialize with X", "2. Use Y inequality", "3. Conclude by taking the limit"). Get straight to the point.
 
 3. MATHEMATICAL FORMATTING:
    - Delimit ALL math:
      * Inline math MUST be enclosed in $...$ (e.g. $f_n \to f$, $\mathcal{A}$-measurable).
      * Display / block equations MUST be enclosed in $$...$$.
-   - CRITICAL - Set notation and bullet points:
+   - CRITICAL - Set notation :
      * LaTeX set braces \{ and \} are NOT delimiters! You MUST wrap whole set equations in dollars:
-       BAD:  <li>\{\sup f_n < a\} = \bigcap \{f_n < a\}</li>
-       GOOD: <li>$\{\sup f_n < a\} = \bigcap \{f_n < a\}$</li>
+       BAD:  - \{\sup f_n < a\} = \bigcap \{f_n < a\}
+       GOOD: - $\{\sup f_n < a\} = \bigcap \{f_n < a\}$
      * Never write naked LaTeX commands like \mathcal{A} attached to words; write $\mathcal{A}$-measurable.
-   - Do NOT use \begin{itemize} or \item. Use HTML tags (<ul>, <li>) for lists.
+   - CRITICAL - LIST AND NEWLINES IN JSON:
+     - Do NOT use \begin{itemize} or \item, and do NOT use HTML tags for lists. Use Markdown dash-lists ("- ") exclusively.
+     - You MUST insert a literal "\n\n" before before the VERY FIRST bullet point of a list to force a line break. And you MUST insert a single "\n" between consecutive bullet points :
+       BAD: "List to write: - A point of the list - Another point of the list"
+       GOOD: "Geometric Interpretation:\n\n- A point of the list\n- Another point of the list"
 
 4. JSON CONSTRAINTS:
+   - Every LaTeX backslash MUST be escaped for JSON validation (e.g., write \\frac and \\alpha, never \frac or \alpha).
    - Output MUST be a flat JSON object: {"front": "...", "back": "..."}.
-   - The "back" field must be a single string containing your HTML and math.
-   - Use single quotes inside HTML attributes (e.g., class='math-step').
+   - The "back" field must be a single string containing valid Markdown + math only (no HTML).
+   - Since the string is Markdown, escape internal double quotes as needed for valid JSON, but do NOT introduce HTML attributes or tags to work around quoting — restructure in Markdown instead.
+   - Newlines inside the "back" string must be represented as literal "\n" characters so that, once unescaped, the text renders as proper Markdown (blank lines between paragraphs/lists as needed).
 
-5. NO DELETION OF SECONDARY FACTS: 
-   - You are strictly forbidden from deleting secondary definitions, remarks, or historical names present in the raw text. 
-   - Never delete any image tag (e.g., ![img-2.jpeg](img-2.jpeg)), let it exactly appear as in the original text.
-   - If multiple concepts are present, use clear bold sub-headings to include ALL of them on the back of the card without dropping information.
-   
+5. NO DELETION OF SECONDARY FACTS:
+   - You are strictly forbidden from deleting secondary definitions, remarks, or historical names present in the raw text.
+   - Never delete any image tag (e.g., ![img-2.jpeg](img-2.jpeg)) — Markdown image syntax is the one exception to the "no tags" rule and must appear exactly as in the original text.
+   - If multiple concepts are present, use clear Markdown bold sub-headings (**Concept Name:**) to include ALL of them on the back of the card without dropping information.
+
+6. STRICT ANTI-HALLUCINATION (EMPTY CARDS):
+   - You are a formatter, NOT a content generator. You MUST NEVER invent, deduce, or retrieve external knowledge to fill a card.
+   - If the Back input lacks actual pedagogical content (e.g., it is entirely empty, or consists strictly of a title/header with no body text), you MUST return empty strings.
+     BAD: The Back input is only "### Properties" -> You use your own knowledge to list mathematical properties.
+     GOOD: The Back input is only "### Properties" -> You output {"front": "", "back": ""}.
 INPUT FORMAT:
 [Front] The title of the card.
 [Back] The raw text including the statement, proof, and examples.
 
 OUTPUT FORMAT:
 {
-  "front": "The title or question (cleaned up if necessary, double-escaping LaTeX).",
-  "back": "The newly formatted content combining the spaced-out statement, the sketch of proof, and the collapsible examples (all inside ONE single string, double-escaping LaTeX)."
+    "front": "The title or question (cleaned up if necessary, double-escaping LaTeX), in plain text or Markdown.",
+     "back": "The newly formatted content combining the spaced-out statement, the sketch of proof, and the examples — written entirely in Markdown (no HTML), all inside ONE single string, double-escaping LaTeX and using \\n for line breaks."
 }"""
         response = self.client.chat.complete(
                     model="mistral-small-latest",
@@ -644,7 +743,7 @@ OUTPUT FORMAT:
                     response_format={
                         "type": "json_schema",
                         "json_schema": {
-                            "description": "Creation of the graph",
+                            "description": "Creation of the flashcard",
                             "name": "graph_creation",
                             "strict": True,
                             "schema":{
@@ -667,12 +766,19 @@ OUTPUT FORMAT:
                                 },
                                 "description": "A stripped-down schema for flashcards with only front and back fields.",
                                 "additionalProperties": False
-                            },
-                            "additionalProperties": False
+                                }
+                            }
                         }
-                    }
-                )
-        
+                    )
+
+        details = getattr(response.usage, "prompt_tokens_details", None)
+        cached_tokens = getattr(details, "cached_tokens", 0) or 0
+
+        self.cost += (
+            (response.usage.prompt_tokens - cached_tokens) / 1e6 * 0.12
+            + response.usage.completion_tokens / 1e6 * 0.5
+            + cached_tokens / 1e6 * 0.012
+        )
         json_string = response.choices[0].message.content
         parsed_data = json_repair.loads(json_string)
 
@@ -683,13 +789,15 @@ OUTPUT FORMAT:
 
 
 def main():
+
+    load_dotenv()
     API_KEY = os.environ.get("MISTRAL_API_KEY")
     if not API_KEY:
         print("Erreur: Clé API manquante.")
         return
-
-    markdown_file, media_files = traiter_pdf_vers_markdown()
-
+    deck_name = input("Entrez le nom du paquet Anki à générer (ex: AI_Algo_1) : ")
+    markdown_file, media_files, cost = traiter_pdf_vers_markdown()
+    print("Coût de l'OCR : ", cost, end="\n")
     pipeline = AnkiPipeline(API_KEY, markdown_file, media_files)
     
     print("1. Découpage du document...")
@@ -700,22 +808,22 @@ def main():
 
     #Affichage et enregistrement du graphe avec graphviz
     A = nx.nx_agraph.to_agraph(graph)
-    A.draw('AI_Chap2.png', prog='dot')
+    A.draw(f'{deck_name.replace("::", "_")}.png', prog='dot')
 
     print("3. Création de la liste de cartes pour Anki")
     concept_list = pipeline.extraire_blocs_pour_anki()
 
     print("Création du paquet Anki")
-    my_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2'),'AIChap2')
-    context_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2::Contexts'),'AIChap2::Contexts')
-    theorem_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2::Theorems'), 'AIChap2::Theorems')
-    property_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2::Properties'),'AIChap2::Properties')
-    lemma_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2::Lemma'), 'AIChap2::Lemma')
-    definition_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2::Definitions'), 'AIChap2::Definitions')
-    corollary_deck = genanki.Deck(pipeline.generer_id_deterministe('AIChap2::Corollary'), 'AIChap2::Corollary')
+    my_deck = genanki.Deck(pipeline.generer_id_deterministe(deck_name), deck_name)
+    concept_deck = genanki.Deck(pipeline.generer_id_deterministe(f'{deck_name}::Concepts'), f'{deck_name}::Concepts')
+    theorem_deck = genanki.Deck(pipeline.generer_id_deterministe(f'{deck_name}::Theorems'), f'{deck_name}::Theorems')
+    property_deck = genanki.Deck(pipeline.generer_id_deterministe(f'{deck_name}::Properties'), f'{deck_name}::Properties')
+    lemma_deck = genanki.Deck(pipeline.generer_id_deterministe(f'{deck_name}::Lemma'), f'{deck_name}::Lemma')
+    definition_deck = genanki.Deck(pipeline.generer_id_deterministe(f'{deck_name}::Definitions'), f'{deck_name}::Definitions')
+    corollary_deck = genanki.Deck(pipeline.generer_id_deterministe(f'{deck_name}::Corollary'), f'{deck_name}::Corollary')
 
     deck_dict = {"Theorem":theorem_deck, "Proposition": property_deck,"Property": property_deck,"Definition" : definition_deck,
-                 "Lemma": lemma_deck,"Corollary": corollary_deck, "Context": context_deck}
+                 "Lemma": lemma_deck,"Corollary": corollary_deck, "Concept": concept_deck}
 
     j=0
     for card in concept_list:
@@ -758,32 +866,42 @@ def main():
             length_remark = len(remark[0])
         if exercice:
             length_exercice = len(exercice[0])
-        if len(back) + length_example + length_remark + length_exercice < 30:
+        if len(back) + length_example + length_remark + length_exercice < 50:
             print("This card has a very short back content, skipping it to avoid empty cards.\n Front: {}\nBack: {}".format(front, back))
         else:
-            front = ""
             front, back = pipeline.course_into_flashcards(front, back)
             # Add examples, remarks and exercises in collapsible sections
-            
+
+            # 2. LA RUSTINE : On "aspire" les espaces aux bords et on force un double dollar propre
+            back = re.sub(r'\$\$+\s*(.*?)\s*\$\$+', r'$$\1$$', back, flags=re.DOTALL)
+            front = re.sub(r'\$\$+\s*(.*?)\s*\$\$+', r'$$\1$$', front, flags=re.DOTALL)
+            # 3. CONVERSION MARKDOWN -> HTML (avec MathJax)
+            front = pypandoc.convert_text(front, "html", format="markdown+lists_without_preceding_blankline", extra_args=["--mathjax"])
+            back = pypandoc.convert_text(back, "html", format="markdown+lists_without_preceding_blankline", extra_args=["--mathjax"])
+
             if example:
-                back += "<details><summary>Examples (click to expand)</summary>" + pipeline.markdown_to_anki_html(example[0]) + "</details><br>"
+                back += f"<details><summary>Examples (click to expand)</summary>" + "\n".join([pypandoc.convert_text(re.sub(r'\$\$+\s*(.*?)\s*\$\$+', r'$$\1$$', example[i], flags=re.DOTALL), "html", format="markdown+lists_without_preceding_blankline", extra_args=["--mathjax"]) for i in range(len(example))]) + "</details><br>"
+
             if remark:
-                back += "<details><summary>Remarks (click to expand)</summary>" + pipeline.markdown_to_anki_html(remark[0]) + "</details><br>"
+                back += f"<details><summary>Remarks (click to expand)</summary>" + "\n".join([pypandoc.convert_text(re.sub(r'\$\$+\s*(.*?)\s*\$\$+', r'$$\1$$', remark[i], flags=re.DOTALL), "html", format="markdown+lists_without_preceding_blankline", extra_args=["--mathjax"]) for i in range(len(remark))]) + "</details><br>"
             if exercice:
-                back += "<details><summary>Exercises (click to expand)</summary>" + pipeline.markdown_to_anki_html(exercice[0]) + "</details><br>"
+                back += f"<details><summary>Exercise {i + 1} (click to expand)</summary>" + "\n".join([pypandoc.convert_text(re.sub(r'\$\$+\s*(.*?)\s*\$\$+', r'$$\1$$', exercice[i], flags=re.DOTALL), "html", format="markdown+lists_without_preceding_blankline", extra_args=["--mathjax"]) for i in range(len(exercice))]) + "</details><br>"
 
-            back = pipeline.markdown_to_anki_html(back)  # Ensure back is in HTML format
-            my_note = genanki.Note(
-                model=pipeline.model_basic,
-                fields=[front, back, str(j)])
-            j += 1
-            deck_dict[card["main_id"].split("_")[0]].add_note(my_note)
+            # Skip the card if the content is empty
+            if len(back) > 30:
+                my_note = genanki.Note(
+                    model=pipeline.model_basic,
+                    fields=[front, back, str(j)])
+                j += 1
+                deck_dict[card["main_id"].split("_")[0]].add_note(my_note)
+            else:
+                print("carte skip: ", back, end="\n")
 
-    my_package = genanki.Package([my_deck] + list(deck_dict.values()))
+    my_package = genanki.Package([my_deck] + list(set(deck_dict.values())))
     my_package.media_files = media_files 
-    my_package.write_to_file('AIChap2.apkg')
+    my_package.write_to_file(f'{deck_name.replace("::","_")}.apkg')
     print("✅ Génération du paquet Anki terminée !")
-        
+    print(f"💰 Coût total estimé pour l'utilisation de Mistral : {pipeline.cost+cost:.4f} €")
     print("Terminé !")
 
 if __name__ == "__main__":
