@@ -41,7 +41,6 @@ ESILV- Leonard de Vinci Graduated School of Engineering
 
 A rational agent always acts to **maximize the utility function**, given current state/percept
 
-
 # What makes one rational?
 
 How do we choose the best sequence of actions?
@@ -50,9 +49,7 @@ This involves defining the
 « search problems »
 # Search process?
 
-
 # Information Retrieval vs. Search
-
 
 
 ![img-6.jpeg](img-6.jpeg)
@@ -243,8 +240,6 @@ A vacuum-cleaner world with just two locations.
 
 ![img-22.jpeg](img-22.jpeg)
 
-![img-23.jpeg](img-23.jpeg)
-
 
 
 ![img-25.jpeg](img-25.jpeg)
@@ -259,15 +254,10 @@ A vacuum-cleaner world with just two locations.
 
 ![img-29.jpeg](img-29.jpeg)
 
-![img-30.jpeg](img-30.jpeg)
 
-![img-31.jpeg](img-31.jpeg)
 
-![img-32.jpeg](img-32.jpeg)
 
-![img-33.jpeg](img-33.jpeg)
 
-![img-34.jpeg](img-34.jpeg)
 
 The eight possible states of the vacuum world
 
@@ -276,27 +266,18 @@ States 7 and 8 are goal states.
 
 Example
 
-![img-35.jpeg](img-35.jpeg)
 
 A vacuum-cleaner world with just two locations.
 
 Initial state
 
-![img-36.jpeg](img-36.jpeg)
-
-![img-37.jpeg](img-37.jpeg)
-
-![img-38.jpeg](img-38.jpeg)
-
-![img-39.jpeg](img-39.jpeg)
 
 
 
-![img-41.jpeg](img-41.jpeg)
 
-![img-42.jpeg](img-42.jpeg)
 
-![img-43.jpeg](img-43.jpeg)
+
+
 
 Actions
 
@@ -309,7 +290,6 @@ Any state can be designated as the initial state.
 
 ## Example
 
-![img-44.jpeg](img-44.jpeg)
 
 A vacuum-cleaner world with just two locations.
 
@@ -326,13 +306,11 @@ A vacuum-cleaner world with just two locations.
 
 Example
 
-![img-45.jpeg](img-45.jpeg)
 
 A vacuum-cleaner world with just two locations.
 
 State space graph
 
-![img-46.jpeg](img-46.jpeg)
 
 - Example of path:
 {R, S, R, S, L}, From initial state 1
@@ -344,7 +322,6 @@ State space graph
 
 ## Example: Missionaries and Cannibals
 
-![img-47.jpeg](img-47.jpeg)
 
 - 3 missionaries and 3 cannibals on left side
 - Boat holds 1 or 2 people
@@ -374,15 +351,12 @@ Given:
 - Path cost
 
 
-
 How do we find a solution (best solution)?
 # How to Search
 
 ## Generating action sequences
 
-![img-49.jpeg](img-49.jpeg)
 
-![img-50.jpeg](img-50.jpeg)
 
 The search strategy determines which state to expand next.
 # Search Tree
@@ -397,12 +371,8 @@ The search strategy determines which state to expand next.
     - Node keeps track of a **state description**, a **parent node** (the node that generated this node), an **action** (the action that was applied to the parent to generate this node), a **path cost** (the cost of the path from the start state to this state), **depth** (number of steps in the path from the start state), and possibly other info.
 - For most problems, we can never actually build the whole tree
 
-![img-51.jpeg](img-51.jpeg)
 # State Space Graphs vs. Search Trees
 
-## State Space Graph
-
-![img-52.jpeg](img-52.jpeg)
 
 State : e
 
@@ -411,9 +381,6 @@ search tree is an
 entire PATH in the
 state space graph.
 
-## Search Tree
-
-![img-53.jpeg](img-53.jpeg)
 
 Node: (e, [S,d,e], 2,...)
 
@@ -428,10 +395,8 @@ Node: (Current state, path from initial state, cost, depth...)
 - Keep going until you reach a goal state
 - **Objective:** *Try to expand as few states as possible*
 
-![img-54.jpeg](img-54.jpeg)
 # Tree Search example
 
-![img-55.jpeg](img-55.jpeg)
 
 |  expended node | Frontier  |
 | --- | --- |
@@ -443,18 +408,14 @@ Node: (Current state, path from initial state, cost, depth...)
 |  f not goal | {e,p,b,c,h,c,G}  |
 |  G is goal | {e,p,b,c,h,c}  |
 
-![img-56.jpeg](img-56.jpeg)
 # Quiz: State Space Graphs vs. Search Trees
 
 Consider this 4-state graph:
 
-![img-57.jpeg](img-57.jpeg)
 
 How big is its search tree (from $s$)?
 
-![img-58.jpeg](img-58.jpeg)
 
-![img-59.jpeg](img-59.jpeg)
 
 Important: Lots of repeated structure in the search tree!
 # Tree search algorithm
@@ -547,7 +508,6 @@ Strategies are evaluated along the following criteria:
 ???
 
 
-
 What kinds of search algorithms are there?
 # Search Algorithms
 
@@ -577,7 +537,6 @@ What kinds of search algorithms are there?
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-
 # Uninformed search strategies
 
 - **Uninformed search** also known as unguided search, blind search, or brute-force search is a search methodology that has no additional information about the domain of the problem apart from the representation of the problem which is usually a tree.
@@ -598,7 +557,6 @@ What kinds of search algorithms are there?
 2. Breadth-First Search
 3. Iterative Deepening Search
 4. Uniform-Cost Search
-
 
 # 1. Depth-First Search
 
@@ -823,7 +781,6 @@ Graph Search
 **Depth-first search:** In depth-first search, the frontier acts like a last-in first-out queue (a stack). The elements are added to the stack one at a time. The one selected and taken off the frontier at any time is the last element that was added.
 
 
-
 ![img-89.jpeg](img-89.jpeg)
 
 ![img-90.jpeg](img-90.jpeg)
@@ -894,7 +851,6 @@ add *node*.STATE to *explored*
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-
 ## 2. Breadth-First Search
 
 Breadth-First Search (BFS):
@@ -907,7 +863,7 @@ Breadth-First Search (BFS):
 BFS
 Looking wide before looking deep
 
-
+![img-94.jpeg](img-94.jpeg)
 
 ![img-95.jpeg](img-95.jpeg)
 
@@ -1198,7 +1154,6 @@ DFS, the search proceeds along a continuously deeper path until it hits a barrie
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-
 ## 3.a. Depth Limited Search
 
 - **Limited depth DFS:** just like DFS, except never go deeper than some depth $\ell$
@@ -1415,7 +1370,7 @@ Graph Search
 
 IDS Search(problem, stack )
 
-**Depth : 2**, # of nodes tested: 4, expanded: 2
+Depth : 2, # of nodes tested: 4, expanded: 2
 
 |  expnd. node | node list  |
 | --- | --- |
@@ -1687,7 +1642,6 @@ return result
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-
 # Search with varying step costs
 
 ![img-157.jpeg](img-157.jpeg)
@@ -1705,14 +1659,13 @@ return result
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-
 ## 4. Uniform Cost Search (UCS)
 
 - For each frontier node, save the total cost of the path from the initial state to that node
 - Expand the frontier node with the **lowest path cost**
 - **Implementation:** *frontier* is a priority queue ordered by path cost
 - Equivalent to breadth-first if step costs all equal
-- Equivalent to Dijkstra’s algorithm in general
+- Equivalent to Dijkstra's algorithm in general
 
 ![img-159.jpeg](img-159.jpeg)
 # 4. Uniform Cost Search Example
@@ -1742,7 +1695,7 @@ UCS Search(problem, priorityQueue )
 
 |  Explored node | Frontier  |
 | --- | --- |
-|   | {(S, path: [S], cost: 0}  |
+|   | {(S, path: [S], cost: 0)}  |
 |  S not goal | {(B, [S,B], 2), (C, [S,C], 4), (A, [S,A], 5)}  |
 
 State Space Graph
@@ -1812,9 +1765,9 @@ State Space Graph
 Graph Search
 
 ![img-168.jpeg](img-168.jpeg)
-## 4. Uniform Cost Search Example
+# 4. Uniform Cost Search Example
 
-UCS Search(problem, priorityQueue)
+UCS Search(problem, priorityQueue )
 
 # of nodes tested: 5, expanded: 5
 
@@ -1913,11 +1866,11 @@ Is it optimal?
 ![img-173.jpeg](img-173.jpeg)
 # 4. Uniform Cost Issues
 
-- ■ **Strategy:** expand lowest path cost
-- ■ **The good:** UCS is complete and optimal!
-- ■ **The bad:**
-  - ■ Explores options in every “direction”
-  - ■ No information about goal location
+- **Strategy:** expand lowest path cost
+- **The good:** UCS is complete and optimal!
+- **The bad:**
+  - Explores options in every “direction”
+  - No information about goal location
 
 ![img-174.jpeg](img-174.jpeg)
 
@@ -1970,7 +1923,6 @@ Is it optimal?
 Still not as smart as it could be...
 
 Can we do better?
-
 
 # Incorporating goal information
 

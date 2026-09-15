@@ -50,7 +50,7 @@ def traiter_pdf_vers_markdown():
             cache_data = json.load(f)
 
         # On retourne directement les données sauvegardées
-        return cache_data["markdown_file"], cache_data["media_files"], cache_data["cost"]
+        return cache_data["markdown_file"], cache_data["media_files"], cache_data["cost"], image_annotation["annotation"]
 
     # ==========================================
     # 2. SI AUCUN CACHE, LANCEMENT DE L'OCR
@@ -106,11 +106,14 @@ def traiter_pdf_vers_markdown():
       "type": "string"
     },
     "short_description": {
-      "description": "A concise and factual description of the visual content. Focus on the pedagogical, technical, or structural elements depicted (e.g., 'A search tree showing nodes A, B, and C with the DFS path highlighted'). Keep it under 20 words.",
+      "description": "A concise and factual description of the visual content. Focus on the pedagogical, technical, or structural elements depicted (e.g., 'A search tree showing nodes A, B, and C with the DFS path highlighted'). Keep it under 15 words.",
       "type": "string"
     }
   },
   "required": [
+      "image_type",
+      "pedagogical_role",
+      "short_description"
   ],
   "type": "object"
 },
@@ -144,21 +147,26 @@ def traiter_pdf_vers_markdown():
                 # Utilisation de l'ID fourni par Mistral comme nom de fichier
                 img_filename = img.id
                 if not img_filename.endswith((".jpg", ".jpeg", ".png")):
-                    img_filename += ".jpg"
+                    img_filename += ".jpeg"
 
                 annotation_dict = json_repair.loads(img.image_annotation)
-                role = annotation_dict.get("pedagogical_role", "Noise")
-                image_annotation[img_filename] = role
+                role = annotation_dict.get("pedagogical_role", "")
+                description = annotation_dict.get("short_description", "")
+                image_type = annotation_dict.get("image_type", "")
 
-                # Sauvegarde physique de l'image (écriture binaire)
-                with open(img_filename, "wb") as f_img:
-                    f_img.write(base64.b64decode(b64_str))
+                image_annotation[img_filename] = [role, description, image_type]
+                
+
+                
 
                 # 2. AJOUT À LA LISTE DES MÉDIAS POUR ANKI
                 # Utilise le chemin absolu (recommandé pour éviter les bugs avec genanki)
-                if role =="Noise":
+                if image_annotation[img_filename][0] =="Noise":
                     print(f"Image {img_filename} non sauvegardé, car bruit")
                 else:
+                    # Sauvegarde physique de l'image (écriture binaire)
+                    with open(img_filename, "wb") as f_img:
+                        f_img.write(base64.b64decode(b64_str))
                     media_files.append(os.path.abspath(img_filename))
                     print(f"✅ Image sauvegardée localement : {img_filename}")
 
@@ -171,8 +179,12 @@ def traiter_pdf_vers_markdown():
 
     # 4 Nettoyage des images inutiles
     for img_id, annotation in image_annotation.items():
-        if annotation == "Noise":
-            full_markdown = re.sub(rf'!\[.*?\]\({re.escape(img_id)}\)', '', full_markdown)
+        if annotation[0] == "Noise":
+            # On extrait uniquement "img-75" en retirant l'extension quelle qu'elle soit
+            base_id = os.path.splitext(img_id)[0] 
+            
+            # Cette regex supprime : ![n'importe quoi](base_id + n'importe quelle extension) + le saut de ligne éventuel
+            full_markdown = re.sub(rf'!\[.*?\]\({re.escape(base_id)}[^\)]*\)\n?', '', full_markdown)
 
     # 4. Écriture et sauvegarde dans le fichier local
     with open(output_filename, "w", encoding="utf-8") as md_file:
@@ -195,7 +207,7 @@ def traiter_pdf_vers_markdown():
 
     print("💾 Résultats enregistrés dans le cache (ocr_cache.json).")
 
-    return output_filename, media_files, cost
+    return output_filename, media_files, cost, image_annotation
 
 def split_markdown_into_chunks(markdown_text, max_chunk_size=3000):
     lines = markdown_text.split("\n")

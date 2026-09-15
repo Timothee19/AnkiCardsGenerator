@@ -449,10 +449,21 @@ class AnkiPipeline:
             
             return id_final
     
-    def course_into_flashcards(self, front, back, topic = MathsCourse):
+    def course_into_flashcards(self, front, back, image_annotation, topic = MathsCourse):
         """
         Appel à Mistral Small pour simplifier et transformer le contenu des cartes en flashcards.
         """
+
+        # Capture uniquement ce qui est dans les parenthèses qui suivent ![...]
+        # Le [^\s)]+ ignore un éventuel titre optionnel entre guillemets
+        pattern = r"!\[.*?\]\((https?://[^\s)]+|[^\s)]+)"
+
+        liens = re.findall(pattern, back)
+        img_description = {}
+        for lien in image_annotation.keys():
+            if lien in liens :
+                img_description[lien] = image_annotation[lien]
+        print("\n\n===========\nImageDescriptionForThisCard:\n", img_description, end="\n=============\n\n")
         prompt = topic.ankiFormater()
         response = self.client.chat.complete(
                     model="mistral-small-latest",
@@ -468,7 +479,11 @@ class AnkiPipeline:
                             </front>
                             <back>
                             {back}
-                            </back>"""
+                            </back>
+                            <images_description>
+                            {img_description}
+                            </images_description>
+"""
                     }],
                     temperature=0.0,
                     response_format={
@@ -527,7 +542,7 @@ def main():
         print("Erreur: Clé API manquante.")
         return
     deck_name = input("Entrez le nom du paquet Anki à générer (ex: AI_Algo_1) : ")
-    markdown_file, media_files, cost = traiter_pdf_vers_markdown()
+    markdown_file, media_files, cost, image_annotation = traiter_pdf_vers_markdown()
     print("Coût de l'OCR : ", cost, end="\n")
     pipeline = AnkiPipeline(API_KEY, markdown_file, media_files)
     
@@ -592,7 +607,7 @@ def main():
             if len(back) < 20:
                 print("This card has a very short back content, skipping it to avoid empty cards.\n Front: {}\nBack: {}".format(front, back))
             else:
-                front, back = pipeline.course_into_flashcards(front, back, topic)
+                front, back = pipeline.course_into_flashcards(front, back, image_annotation, topic)
                 # Add examples, remarks and exercises in collapsible sections
 
                 # 2. LA RUSTINE : On "aspire" les espaces aux bords et on force un double dollar propre

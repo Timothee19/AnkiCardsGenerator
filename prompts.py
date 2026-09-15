@@ -358,6 +358,12 @@ You MUST output ONLY a valid JSON object matching this structure. Do not wrap it
     - You are a formatter, NOT a content generator. Do not invent or retrieve external knowledge.
     - If the input lacks actual pedagogical content (e.g., it is entirely empty, or just a title like "### Properties" with no body), you MUST return empty strings: {"front": "", "back": ""}.
   </category>
+
+  <category name="6_Image_Management">
+    - ABSOLUTE RULE: You must NEVER delete, skip, or move an image markdown tag (e.g., `![...](img.jpeg)`) from the input. All images are pre-filtered and pedagogically essential. Leave them exactly where they appear in the flow of the text.
+    - ALT-TEXT REPLACEMENT: You MUST update the alternative text inside the brackets `![ ]` by using the `short_description` found in the `<images_description>` JSON dictionary provided in the user prompt.
+    - MATCHING LOGIC: If the input has `![img-1.jpeg](img-1.jpeg)`, look up "img-1.jpeg" in the dictionary. If its `short_description` is "Schema showing intersection", output exactly `![Schema showing intersection](img-1.jpeg)`.
+  </category>
 </rules>
 
 <few_shot_examples>
@@ -367,13 +373,24 @@ You MUST output ONLY a valid JSON object matching this structure. Do not wrap it
       <back>
 Every bounded sequence in \mathbb{R}^n has a convergent subsequence.
 Proof:
-Let (x_k) be a bounded sequence. By bisecting the intervals, we construct a sequence of nested compact sets. Extracting a point from each gives a subsequence converging to the intersection limit.
+Let (x_k) be a bounded sequence. By bisecting the intervals, we construct a sequence of nested compact sets. 
+![img-6.jpeg](img-6.jpeg)
+Extracting a point from each gives a subsequence converging to the intersection limit.
       </back>
+      <images_description>
+{
+  "img-6.jpeg": {
+    "image_type": "diagram",
+    "pedagogical_role": "Core_Concept",
+    "short_description": "Nested 2D intervals shrinking to a single limit point"
+  }
+}
+      </images_description>
     </input>
     <output>
 {
   "front": "Bolzano-Weierstrass Theorem in $\\mathbb{R}^n$",
-  "back": "**Statement:**\n\n- Every bounded sequence in $\\mathbb{R}^n$ has a convergent subsequence.\n\n**Sketch of proof:**\n\n1. Let $(x_k)$ be a bounded sequence.\n2. Bisect intervals to construct a sequence of nested compact sets.\n3. Extract points to form a subsequence converging to the intersection limit."
+  "back": "**Statement:**\n\n- Every bounded sequence in $\\mathbb{R}^n$ has a convergent subsequence.\n\n**Sketch of proof:**\n\n1. Let $(x_k)$ be a bounded sequence.\n2. Bisect intervals to construct a sequence of nested compact sets.\n\n![Nested 2D intervals shrinking to a single limit point](bw-diagram.png)\n\n3. Extract points to form a subsequence converging to the intersection limit."
 }
     </output>
   </example>
@@ -673,6 +690,12 @@ You MUST output ONLY a valid JSON object matching this structure. Do not wrap it
     - CODE SNIPPETS: Preserve code snippets using proper markdown code blocks with the correct language tag (e.g., ```python). If a code snippet is excessively long, summarize its core logic or highlight the most important lines.
   </category>
 
+  <category name="Visual_Assets_Handling">
+    - INLINE MATCHING: The raw input text contains markdown image tags (e.g., `![img-1.jpeg](img-1.jpeg)`). You must look up the image filename/URL in the `<images_description>` dictionary provided at the end of the input.
+    - STRICT RETENTION: NEVER delete any markdown image tags. The input has been pre-filtered, and EVERY image present in the text is pedagogically essential.
+    - ENRICH: You MUST keep the image tag exactly where it is in the text flow, BUT replace its placeholder alt-text with the `short_description` from the dictionary (e.g., change `![img-1.jpeg](img-1.jpeg)` to `![Graph showing BFS](img-1.jpeg)`).
+  </category>
+
   <category name="Markdown_Strict_Formatting">
     - APPLIES TO BOTH FIELDS: HTML IS STRICTLY FORBIDDEN. No <ul>, <li>, <b>, <div>, <br>, etc. Use only Markdown.
     - LISTS: Use "- " for bullets. Use "1. " for ordered steps.
@@ -701,20 +724,29 @@ You MUST output ONLY a valid JSON object matching this structure. Do not wrap it
     <input>
       <front>QuickSort Algorithm</front>
       <back>
-QuickSort is a divide-and-conquer algorithm that selects a 'pivot' element from the array and partitions the other elements into two sub-arrays.
+QuickSort is a divide-and-conquer algorithm.
+![img-1.jpeg](img-1.jpeg)
+
 ```python
 def quicksort(arr):
     if len(arr) <= 1: return arr
-    # ... recursive logic ...
 ```
-
-In the worst-case scenario, the time complexity is $O(n^2)$, but its average-case is $O(n \log n)$.
+It has an average-case of $O(n \log n)$.
       </back>
+      <images_description>
+      {
+        "img-1.jpeg": {
+          "image_type": "diagram",
+          "pedagogical_role": "Core_Concept",
+          "short_description": "Partitioning step showing pivot selection"
+        }
+      }
+      </images_description>
     </input>
     <output>
 {
   "front": "QuickSort Algorithm",
-  "back": "**Concept:**\n- A **divide-and-conquer** algorithm.\n- Selects a **pivot** element and partitions the remaining elements into two sub-arrays.\n\n**Implementation:**\n\n```python\ndef quicksort(arr):\n    if len(arr) <= 1: return arr\n    # ... recursive logic ...\n```\n\n**Time Complexity:**\n- **Average-case:** $\\mathcal{O}(n \\log n)$\n- **Worst-case:** $\\mathcal{O}(n^2)$"
+  "back": "**Concept:**\n- A **divide-and-conquer** algorithm.\n\n![Partitioning step showing pivot selection](img-1.jpeg)\n\n**Implementation:**\n\n```python\ndef quicksort(arr):\n    if len(arr) <= 1: return arr\n```\n\n**Time Complexity:**\n- **Average-case:** $\\mathcal{O}(n \\log n)$"
 }
     </output>
   </example>
