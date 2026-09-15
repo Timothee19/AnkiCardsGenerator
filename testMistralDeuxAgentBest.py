@@ -581,7 +581,7 @@ def main():
                 text = card["sub_nodes"][i]["text"]
                 
                 if sub_type in content_dict.keys():
-                    content_dict(sub_type).append(text)
+                    content_dict[sub_type].append(text)
                     
             # Construction propre et sécurisée du dos de la carte
             for element, texts in content_dict.items():
