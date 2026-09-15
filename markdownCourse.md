@@ -41,7 +41,7 @@ ESILV- Leonard de Vinci Graduated School of Engineering
 
 A rational agent always acts to **maximize the utility function**, given current state/percept
 
-![img-3.jpeg](img-3.jpeg)
+
 # What makes one rational?
 
 How do we choose the best sequence of actions?
@@ -50,10 +50,10 @@ This involves defining the
 « search problems »
 # Search process?
 
-![img-4.jpeg](img-4.jpeg)
+
 # Information Retrieval vs. Search
 
-![img-5.jpeg](img-5.jpeg)
+
 
 ![img-6.jpeg](img-6.jpeg)
 
@@ -194,9 +194,13 @@ f) **Action cost function** — denoted by $ACTION-COST(s, a, s')$, gives a nume
 - In case of an undirected graph, each edge indicates two actions, one in each direction.
 
 - A sequence of actions forms a **path**
+
 - A **solution** is a path from the initial state to a goal state.
+
 - We assume that action costs are additive; that is, the total cost of a path is the sum of the individual action costs.
+
 - An **optimal solution** has the lowest path cost among all solutions.
+
 - In this course, we assume that all action costs will be positive, to avoid certain complications.
 
 ![img-15.jpeg](img-15.jpeg)
@@ -219,7 +223,7 @@ f) **Action cost function** — denoted by $ACTION-COST(s, a, s')$, gives a nume
 - Solutions:
   - {Boston, NewYork, Nashville, Austin, Phoenix, SanFrancisco}
   - {Boston, Chicago, SanFrancisco}
-  - ...
+  ...
 - Optimal solution?? Depends on the objective
 # Problem formulation
 
@@ -229,11 +233,11 @@ f) **Action cost function** — denoted by $ACTION-COST(s, a, s')$, gives a nume
 
 A vacuum-cleaner world with just two locations.
 
+## State space
+
 ![img-19.jpeg](img-19.jpeg)
 
 ![img-20.jpeg](img-20.jpeg)
-
-## State space
 
 ![img-21.jpeg](img-21.jpeg)
 
@@ -241,7 +245,7 @@ A vacuum-cleaner world with just two locations.
 
 ![img-23.jpeg](img-23.jpeg)
 
-![img-24.jpeg](img-24.jpeg)
+
 
 ![img-25.jpeg](img-25.jpeg)
 
@@ -286,7 +290,7 @@ Initial state
 
 ![img-39.jpeg](img-39.jpeg)
 
-![img-40.jpeg](img-40.jpeg)
+
 
 ![img-41.jpeg](img-41.jpeg)
 
@@ -369,7 +373,7 @@ Given:
 - Goal state
 - Path cost
 
-![img-48.jpeg](img-48.jpeg)
+
 
 How do we find a solution (best solution)?
 # How to Search
@@ -542,7 +546,7 @@ Strategies are evaluated along the following criteria:
 
 ???
 
-![img-64.jpeg](img-64.jpeg)
+
 
 What kinds of search algorithms are there?
 # Search Algorithms
@@ -573,7 +577,7 @@ What kinds of search algorithms are there?
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-![img-66.jpeg](img-66.jpeg)
+
 # Uninformed search strategies
 
 - **Uninformed search** also known as unguided search, blind search, or brute-force search is a search methodology that has no additional information about the domain of the problem apart from the representation of the problem which is usually a tree.
@@ -590,12 +594,12 @@ What kinds of search algorithms are there?
 - Problem-solving agents
 - Search Problems
 - Uninformed Search Methods
-  1. Depth-First Search
-  2. Breadth-First Search
-  3. Iterative Deepening Search
-  4. Uniform-Cost Search
+1. Depth-First Search
+2. Breadth-First Search
+3. Iterative Deepening Search
+4. Uniform-Cost Search
 
-![img-67.jpeg](img-67.jpeg)
+
 # 1. Depth-First Search
 
 Depth-First Search (DFS):
@@ -818,7 +822,7 @@ Graph Search
 
 **Depth-first search:** In depth-first search, the frontier acts like a last-in first-out queue (a stack). The elements are added to the stack one at a time. The one selected and taken off the frontier at any time is the last element that was added.
 
-![img-88.jpeg](img-88.jpeg)
+
 
 ![img-89.jpeg](img-89.jpeg)
 
@@ -890,7 +894,7 @@ add *node*.STATE to *explored*
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-![img-93.jpeg](img-93.jpeg)
+
 ## 2. Breadth-First Search
 
 Breadth-First Search (BFS):
@@ -903,7 +907,7 @@ Breadth-First Search (BFS):
 BFS
 Looking wide before looking deep
 
-![img-94.jpeg](img-94.jpeg)
+
 
 ![img-95.jpeg](img-95.jpeg)
 
@@ -1194,7 +1198,7 @@ DFS, the search proceeds along a continuously deeper path until it hits a barrie
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-![img-120.jpeg](img-120.jpeg)
+
 ## 3.a. Depth Limited Search
 
 - **Limited depth DFS:** just like DFS, except never go deeper than some depth $\ell$
@@ -1411,7 +1415,7 @@ Graph Search
 
 IDS Search(problem, stack )
 
-Depth : 2, # of nodes tested: 4, expanded: 2
+**Depth : 2**, # of nodes tested: 4, expanded: 2
 
 |  expnd. node | node list  |
 | --- | --- |
@@ -1421,13 +1425,13 @@ Depth : 2, # of nodes tested: 4, expanded: 2
 |  B not goal | {C} no expand  |
 |  C not goal | {} no expand  |
 
-![img-139.jpeg](img-139.jpeg)
-
 State Space Graph
 
-![img-140.jpeg](img-140.jpeg)
-
 Graph Search
+
+![img-139.jpeg](img-139.jpeg)
+
+![img-140.jpeg](img-140.jpeg)
 # 3. Iterative Deepening Search Example
 
 IDS Search(problem, stack )
@@ -1638,7 +1642,7 @@ Cost: 8
 - Worst case time complexity: $O(b^d)$
 # 3. Iterative Deepening Search algorithm
 
-# Iterative Deepening Search pseudocode
+Iterative Deepening Search pseudocode
 
 function ITERATIVE-DEEPENING-SEARCH(problem) returns a solution node or failure
 
@@ -1683,7 +1687,7 @@ return result
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-![img-156.jpeg](img-156.jpeg)
+
 # Search with varying step costs
 
 ![img-157.jpeg](img-157.jpeg)
@@ -1701,14 +1705,14 @@ return result
   3. Iterative Deepening Search
   4. Uniform-Cost Search
 
-![img-158.jpeg](img-158.jpeg)
+
 ## 4. Uniform Cost Search (UCS)
 
 - For each frontier node, save the total cost of the path from the initial state to that node
-- Expand the frontier node with the lowest path cost
+- Expand the frontier node with the **lowest path cost**
 - **Implementation:** *frontier* is a priority queue ordered by path cost
 - Equivalent to breadth-first if step costs all equal
-- Equivalent to Dijkstra's algorithm in general
+- Equivalent to Dijkstra’s algorithm in general
 
 ![img-159.jpeg](img-159.jpeg)
 # 4. Uniform Cost Search Example
@@ -1808,9 +1812,9 @@ State Space Graph
 Graph Search
 
 ![img-168.jpeg](img-168.jpeg)
-# 4. Uniform Cost Search Example
+## 4. Uniform Cost Search Example
 
-UCS Search(problem, priorityQueue )
+UCS Search(problem, priorityQueue)
 
 # of nodes tested: 5, expanded: 5
 
@@ -1967,7 +1971,7 @@ Still not as smart as it could be...
 
 Can we do better?
 
-![img-176.jpeg](img-176.jpeg)
+
 # Incorporating goal information
 
 **How to efficiently solve search problems with variable-cost actions, using information about the goal state?**

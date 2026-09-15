@@ -1,6 +1,8 @@
 import base64
 import json
 import os
+import re
+import json_repair
 
 from dotenv import load_dotenv
 from mistralai.client import Mistral
@@ -75,37 +77,43 @@ def traiter_pdf_vers_markdown():
             json_schema=JSONSchema(
                 name="response_schema",
                 schema_definition={
-                    "properties": {
-                        "caption": {
-                            "description": "caption written below the image if it has one",
-                            "type": "string",
-                        },
-                        "figure-index": {
-                            "description": 'if the figure has an index, for example "figure 2.8", you should write "2.8"',
-                            "type": "string",
-                        },
-                        "image_type": {
-                            "description": "\"Type of image: 'diagram', 'graph', 'equation', 'photo', 'schema', 'table', 'screenshot', 'illustration'\"",
-                            "enum": [
-                                "diagram",
-                                "graph",
-                                "equation",
-                                "photo",
-                                "schema",
-                                "table",
-                                "screenshot",
-                                "illustration",
-                            ],
-                            "type": "string",
-                        },
-                        "key_concepts": {
-                            "description": "Comma-separated list of key academic concepts/topics illustrated by this image.",
-                            "type": "array",
-                        },
-                    },
-                    "required": [],
-                    "type": "object",
-                },
+  "properties": {
+    "image_type": {
+      "description": "\"Type of image: 'diagram', 'graph', 'equation', 'photo', 'schema', 'table', 'screenshot', 'illustration'\"",
+      "enum": [
+        "diagram",
+        "graph",
+        "equation",
+        "code_snippet",
+        "photo",
+        "schema",
+        "table",
+        "screenshot",
+        "illustration",
+        "logo",
+        "decoration"
+      ],
+      "type": "string"
+    },
+    "pedagogical_role": {
+      "description": "The educational purpose of the image within the context of an academic presentation. Use 'Core_Concept' for main theories, 'Example' for applied theories, 'Animation_Step' for intermediate/incomplete frames of a sequential visual process, and 'Noise' for elements without educational value",
+      "enum": [
+        "Core_Concept",
+        "Example",
+        "Animation_Step",
+        "Noise"
+      ],
+      "type": "string"
+    },
+    "short_description": {
+      "description": "A concise and factual description of the visual content. Focus on the pedagogical, technical, or structural elements depicted (e.g., 'A search tree showing nodes A, B, and C with the DFS path highlighted'). Keep it under 20 words.",
+      "type": "string"
+    }
+  },
+  "required": [
+  ],
+  "type": "object"
+},
                 strict=True,
             ),
         ),
@@ -120,6 +128,7 @@ def traiter_pdf_vers_markdown():
     cost = processed_pages / 1000 * 3.5
 
     media_files = []
+    image_annotation = {}
     full_markdown = ""
     # Parcours des pages de la réponse OCR
     for page in ocr_response.pages:
@@ -137,14 +146,21 @@ def traiter_pdf_vers_markdown():
                 if not img_filename.endswith((".jpg", ".jpeg", ".png")):
                     img_filename += ".jpg"
 
+                annotation_dict = json_repair.loads(img.image_annotation)
+                role = annotation_dict.get("pedagogical_role", "Noise")
+                image_annotation[img_filename] = role
+
                 # Sauvegarde physique de l'image (écriture binaire)
                 with open(img_filename, "wb") as f_img:
                     f_img.write(base64.b64decode(b64_str))
 
                 # 2. AJOUT À LA LISTE DES MÉDIAS POUR ANKI
                 # Utilise le chemin absolu (recommandé pour éviter les bugs avec genanki)
-                media_files.append(os.path.abspath(img_filename))
-                print(f"✅ Image sauvegardée localement : {img_filename}")
+                if role =="Noise":
+                    print(f"Image {img_filename} non sauvegardé, car bruit")
+                else:
+                    media_files.append(os.path.abspath(img_filename))
+                    print(f"✅ Image sauvegardée localement : {img_filename}")
 
         # On ajoute le markdown de la page (le texte principal sans les en-têtes/pieds de page)
         if hasattr(page, "markdown") and page.markdown:
@@ -152,6 +168,11 @@ def traiter_pdf_vers_markdown():
 
     # 3. Définition du nom du fichier de sortie
     output_filename = "markdownCourse.md"
+
+    # 4 Nettoyage des images inutiles
+    for img_id, annotation in image_annotation.items():
+        if annotation == "Noise":
+            full_markdown = re.sub(rf'!\[.*?\]\({re.escape(img_id)}\)', '', full_markdown)
 
     # 4. Écriture et sauvegarde dans le fichier local
     with open(output_filename, "w", encoding="utf-8") as md_file:
@@ -166,7 +187,7 @@ def traiter_pdf_vers_markdown():
     # ==========================================
     with open(cache_file, "w", encoding="utf-8") as f:
         json.dump(
-            {"markdown_file": output_filename, "media_files": media_files, "cost": cost},
+            {"markdown_file": output_filename, "media_files": media_files, "cost": cost, "annotation": image_annotation},
             f,
             indent=4,
             ensure_ascii=False,
@@ -317,7 +338,7 @@ Ensure no lines are left out after skipping the Table of contents. The first chu
             ) 
 
             json_strings = response.choices[0].message.content
-            parsed_data = json.loads(json_strings)
+            parsed_data = json_repair.loads(json_strings)
 
             if "chunks" in parsed_data:
                 chunks = []
@@ -325,14 +346,16 @@ Ensure no lines are left out after skipping the Table of contents. The first chu
                 for chunk_info in parsed_data["chunks"]:
                     if not chunks :
                         start = max(0, int(chunk_info["start"]) - 1)
+                        first_chunk = ("\n".join(lines[0:start]))
                     else:
                         start = end  # Start from the end of the previous chunk
                     end = min(len(lines), int(chunk_info["end"]))
+
                     if end > start:
                         chunks.append("\n".join(lines[start:end]))
 
                 if chunks:
-                    return cost, chunks
+                    return cost, chunks, first_chunk
         except Exception as e:
             import time
 
@@ -341,4 +364,5 @@ Ensure no lines are left out after skipping the Table of contents. The first chu
 
     # Fallback
     print("   Fallback: utilisation du découpage heuristique statique.")
-    return cost, split_markdown_into_chunks(markdown_text)
+    first_chunk=""
+    return cost, split_markdown_into_chunks(markdown_text), first_chunk
