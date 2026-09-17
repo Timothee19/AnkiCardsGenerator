@@ -627,7 +627,9 @@ def main():
 
                 my_note = genanki.Note(
                     model=pipeline.model_basic,
-                    fields=[front, back, str(j)])
+                    fields=[front, back, str(j)],
+                    due = j
+                    )
                 j += 1
                 deck_dict[card["main_id"].split("_")[0]].add_note(my_note)
 
