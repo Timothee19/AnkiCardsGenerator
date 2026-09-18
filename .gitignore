@@ -25,6 +25,12 @@ node_modules/
 # Course text files (large, user-specific)
 *.txt
 
+# Image extracted from pdf
+*.jpeg
+
+# Generated graphs
+*.png
+
 # PDF files
 *.pdf
 
