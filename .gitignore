@@ -25,6 +25,9 @@ node_modules/
 # Course text files (large, user-specific)
 *.txt
 
+# Ocr cache
+*.json
+
 # Image extracted from pdf
 *.jpeg
 
